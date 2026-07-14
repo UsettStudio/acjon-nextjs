@@ -24,6 +24,7 @@ const DesignStudioPortfolio = () => {
                                             className="tp-anim-img "
                                             src={item.image}
                                             alt={item.title}
+                                            loading="eager"
                                             data-animate="true"
                                         />
                                     </Link>

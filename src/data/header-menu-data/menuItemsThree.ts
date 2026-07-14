@@ -24,11 +24,6 @@ export const menuItemsThree: MenuItemThree[] = [
         static: true,
     },
     {
-        title: 'Byggeprosessen',
-        link: '/#byggeprosessen',
-        static: false,
-    },
-    {
         title: 'Om oss',
         link: '/#om-oss',
         static: false,
