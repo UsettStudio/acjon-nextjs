@@ -22,7 +22,7 @@ export const siteConfig = {
     // Web3Forms access-key: hent på https://web3forms.com (skriv inn Mikael@Usett.no,
     // få nøkkelen på e-post) og lim inn her. Kontaktskjemaet sender da innsendinger
     // til den e-posten nøkkelen er knyttet til (Mikael@Usett.no). Trygg å ha i klientkode.
-    web3formsAccessKey: "",
+    web3formsAccessKey: "5d84fcbb-c295-4f33-8239-e28f29ab9365",
     address: {
         streetAddress: "Høvreveien 6",
         postalCode: "1712",
