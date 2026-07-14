@@ -676,6 +676,10 @@
     height: 100% !important;
     object-fit: cover;
     display: block;
+    /* Reveal-animasjonen (data-animate) satte bildene til opacity:0 og fikk dem
+       ikke tilbake på prod (inne i ScrollSmoother) → bildene var usynlige.
+       Tvinger dem synlige. */
+    opacity: 1 !important;
 }
 /* Luft før byggeprosessen-videoen */
 #prosjekter {

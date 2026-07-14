@@ -25,7 +25,6 @@ const DesignStudioPortfolio = () => {
                                             src={item.image}
                                             alt={item.title}
                                             loading="eager"
-                                            data-animate="true"
                                         />
                                     </Link>
                                 </div>
