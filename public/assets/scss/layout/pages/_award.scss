@@ -1,0 +1,380 @@
+@use '../../utils' as *;
+
+/*----------------------------------------*/
+/*  7.3 Award Css
+/*----------------------------------------*/
+
+.sa-award{
+    &-ptb{
+        @media #{$xxl,$xl} {
+            padding-top: 120px;
+        }
+        @media #{$lg,$md,$xs} {
+            padding-top: 50px;
+        }
+    }
+    &-right{
+        &-text{
+            @media #{$md,$xs} {
+                margin-bottom: 30px;
+            }
+            & p{
+                font-size: 14px;
+                font-weight: 600;
+                text-transform: uppercase;
+                color: var(--tp-common-black);
+                font-family: var(--tp-ff-unbounded);
+            }
+        }
+    }
+    &-title{
+        &-box{
+            @media #{$md,$xs} {
+                margin-bottom: 30px;
+            }
+        }
+    }
+    &-item{
+        z-index: 2;
+        padding: 19px 0;
+        position: relative;
+        transition: all 0.4s cubic-bezier(0.215, 0.61, 0.355, 1) 0s;
+        border-bottom: 1px solid rgba($color: #010103, $alpha: 0.1);
+        @media #{$xs} {
+            flex-wrap: wrap;
+        }
+        &:hover{
+            padding: 19px 35px;
+            &::before{
+                top: auto;
+                bottom: 0;
+                height: 100%;
+            }
+            & .sa-award-item{
+                &-left{
+                    span{
+                        color: var(--tp-common-white);
+                    }
+                }
+                &-title{
+                    color: var(--tp-common-white);
+                }
+                &-right{
+                    span{
+                        color: var(--tp-common-white);
+                    }
+                }
+            }
+        }
+        &::before{
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 0;
+            width: 100%;
+            z-index: -1;
+            content: "";
+            background-color: var(--tp-common-black);
+            transition: all 0.4s cubic-bezier(0.215, 0.61, 0.355, 1) 0s;
+        }
+        &-wrapper{
+            border-top: 1px solid rgba($color: #010103, $alpha: 0.1);
+        }
+        &-left{
+            gap: 95px;
+            @media #{$lg,$md} {
+                gap: 40px;
+            }
+            @media #{$xs} {
+                gap: 20px;
+                margin-bottom: 30px;
+            }
+            & span{
+                font-size: 16px;
+                font-weight: 400;
+                @include tp-transition();
+                color: var(--tp-common-black);
+                font-family: var(--tp-ff-unbounded);
+            }
+        }
+        &-title{
+            font-size: 24px;
+            font-weight: 500;
+            line-height: 1.1;
+            margin-bottom: 0;
+            letter-spacing: -0.72px;
+            text-transform: capitalize;
+            color: var(--tp-common-black);
+            font-family: var(--tp-ff-unbounded);
+            @media #{$xl,$md} {
+                font-size: 20px;
+            }
+            @media #{$lg,$xs} {
+                font-size: 18px;
+            }
+        }
+        &-right{
+            gap: 40px;
+            & span{
+                font-size: 16px;
+                font-weight: 400;
+                @include tp-transition();
+                text-transform: capitalize;
+                color: var(--tp-common-black);
+                & svg{
+                    transform: translateX(2px);
+                }
+            }
+        }
+        &-wrap{
+            & .tp-award-reveal-img{
+                width: 174px;
+                height: 172px;
+            }
+        }
+    }
+}
+
+.dgm-award{
+    &-thumb{
+        margin-right: 80px;
+        @media #{$lg,$md,$xs} {
+            margin-right: 0;
+        }
+    }
+    &-title{
+        &-box{
+            @media #{$md,$xs} {
+                margin-bottom: 30px;
+            }
+        }
+    }
+    &-style{
+        @media #{$xl,$lg} {
+            padding-top: 100px;
+            padding-bottom: 100px;
+        }
+        @media #{$md,$xs} {
+            padding-top: 80px;
+            padding-bottom: 80px;
+        }
+        & .sa-award-item-wrapper {
+            margin-top: 85px;
+            padding: 45px 60px;
+            border-top: 0;
+            margin-left: -180px;
+            background-color: var(--tp-common-white);
+            @media #{$md,$xs} {
+                margin-top: 50px;
+                padding: 30px;
+                margin-left: 0;
+            }
+            & .sa-award-item {
+                &:first-child{
+                    border-top: 1px solid rgba($color: #010103, $alpha: 0.05);
+                }
+            }
+        }
+        & .sa-award-item-title {
+            font-size: 20px;
+            @media #{$lg,$xs} {
+                font-size: 17px;
+                letter-spacing: 0;
+            }
+        }
+        & .sa-award-item {
+            padding: 32px 0;
+            transition: all 0.4s cubic-bezier(0.215, 0.61, 0.355, 1) 0s;
+            border-bottom: 1px solid rgba($color: #010103, $alpha: 0.05);
+            @media #{$xs} {
+                flex-wrap: wrap;
+            }
+            &::before{
+                background-color: var(--tp-theme-primary);
+            }
+            &:hover{
+                padding: 32px 30px;
+                & .sa-award-item-title {
+                    color: var(--tp-common-black);
+                }
+                & .sa-award-item-left span {
+                    color: var(--tp-common-black);
+                }
+                & .sa-award-item-right span {
+                    color: var(--tp-common-black);
+                }
+            }
+            &-left{
+                @media #{$xs} {
+                    gap: 35px;
+                }
+            }
+        }
+    }
+}
+
+
+.ca-award{
+    &-ptb{
+        @media #{$lg,$md,$xs} {
+            padding-top: 80px;
+        }
+    }
+    &-item{
+        position: relative;
+        padding: 37px 30px 31px;
+        @include tp-transition();
+        border-bottom: 1px solid rgba($color: #F5F7F5, $alpha: 0.1);
+        @media #{$xs}{
+            padding: 37px 20px;
+            padding-bottom: 31px;
+        }
+        &::after{
+            position: absolute;
+            content: '';
+            top: 0;
+            left: 0;
+            height: 0;
+            width: 100%;
+            transition: .3s ease-in-out;
+            background-color: var(--tp-theme-primary);
+        }
+        &:hover{
+            padding: 37px 60px 31px;
+            & .ca-award-year,
+            & .ca-award-text,
+            & .ca-award-position {
+                color: #010103;
+            }
+            & .ca-award-icon{
+                transform: rotate(-45deg);
+                color: var(--tp-common-white);
+                background-color: var(--tp-common-black);
+            }
+            &::after{
+                height: 100%;
+            }
+        }
+        &-wrap{
+            border-top: 1px solid rgba($color: #F5F7F5, $alpha: 0.1);
+        }
+    }
+    &-year{
+        font-size: 16px;
+        line-height: 1;
+        font-weight: 500;
+        min-width: 200px;
+        display: inline-block;
+        @include tp-transition();
+        text-transform: uppercase;
+        color: var(--tp-common-white);
+        font-family: var(--tp-ff-unbounded);
+        @media #{$lg} {
+            min-width: 156px;
+        }
+        @media #{$md}{
+            font-size: 14px;
+            min-width: 70px;
+        }
+        @media #{$xs}{
+            font-size: 14px;
+            min-width: 70px;
+            display: block;
+            margin-bottom: 10px;
+        }
+    }
+    &-text{
+        font-size: 24px;
+        font-weight: 500;
+        line-height: 1;
+        @include tp-transition();
+        letter-spacing: -0.02em;
+        text-transform: uppercase;
+        color: var(--tp-common-white);
+        font-family: var(--tp-ff-unbounded);
+        @media #{$xl} {
+            font-size: 20px;
+        }
+        @media #{$lg}{
+            font-size: 16px;
+        }
+        @media #{$md,$xs}{
+            font-size: 14px;
+        }
+        @media #{$sm}{
+            font-size: 20px;
+        }
+    }
+    &-position{
+        font-size: 16px;
+        font-weight: 500;
+        line-height: 1;
+        @include tp-transition();
+        text-transform: uppercase;
+        color: var(--tp-common-white);
+        font-family: var(--tp-ff-unbounded);
+        @media #{$lg,$md,$xs}{
+            font-size: 14px;
+        }
+    }
+    &-icon{
+        width: 40px;
+        height: 40px;
+        display: grid;
+        border-radius: 50%;
+        place-content: center;
+        @include tp-transition();
+        color: var(--tp-common-white);
+        border: 1px solid rgba($color: #F5F7F5, $alpha: 0.1);
+    }
+    &-btn{
+        @media #{$xs} {
+            display: none;
+        }
+        @media #{$sm} {
+            display: block;
+        }
+        & .tp-btn-green{
+            border-radius: 5px;
+            background: #0D0D0F;
+            color: var(--tp-common-white);
+        }
+    }
+}
+
+
+
+.inner-award{
+    &-style{
+        @media #{$lg,$md,$sm,$xs} {
+            padding-bottom: 100px;
+        }
+        & .ca-award-text {
+            color: var(--tp-common-black);
+        }
+        & .ca-award-year {
+            color: var(--tp-common-black);
+        }
+        & .ca-award-position {
+            color: var(--tp-common-black);
+        }
+        & .ca-award-icon {
+            color: var(--tp-common-black);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        & .ca-award-item {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        & .ca-award-item-wrap {
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+    }
+}
+
+.inner-text{
+    &-style{
+        & .ca-text-item p {
+            color: var(--tp-common-black);
+        }
+    }
+}

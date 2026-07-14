@@ -1,0 +1,101 @@
+@use '../../utils' as *;
+
+/*----------------------------------------*/
+/*  6.8 Footer Style 8
+/*----------------------------------------*/
+
+.tp-footer-8 {
+    &-input{
+        &-notifi{
+            & p{
+                gap: 5px;
+                display: flex;
+                font-size: 14px;
+                flex-wrap: wrap;
+                align-items: center;
+                color: var(--tp-common-white);
+                & span{
+                    width: 32px;
+                    height: 32px;
+                    display: grid;
+                    border-radius: 50%;
+                    place-content: center;
+                    background-color: #1F4C4A;
+                }
+            }
+        }
+        & .ds-footer-widget-input{
+            margin-bottom: 20px;
+            & input {
+                height: 60px;
+                border-radius: 60px;
+                padding-right: 70px;
+            }
+            & button{
+                top: 5px;
+                right: 10px;
+                width: 50px;
+                height: 50px;
+                display: grid;
+                border-radius: 50%;
+                position: absolute;
+                text-align: center;
+                place-content: center;
+                color: var(--tp-common-black);
+                border: 1px solid var(--tp-theme-primary);
+                background-color: var(--tp-theme-primary);
+                &:hover{
+                    background-color: transparent;
+                    color: var(--tp-common-white);
+                }
+            }
+        }
+        &-text{
+            & p{
+                font-size: 14px;
+                color: rgba($color: #ffff, $alpha: 0.7);
+            }
+        }
+    }
+    &-info{
+        & a{
+            font-size: 16px;
+            font-weight: 600;
+            padding: 16px 31px;
+            border-radius: 50px;
+            display: inline-block;
+            text-transform: capitalize;
+            border: 1px solid transparent;
+            color: var(--tp-common-black);
+            background-color: var(--tp-theme-primary);
+            @media #{$xl} {
+                font-size: 14px;
+                padding: 16px 20px;
+            }
+            & span{
+                margin-right: 5px;
+                display: inline-block;
+            }
+            &:hover{
+                color: var(--tp-common-white);
+                background-color: transparent;
+                border-color: var(--tp-theme-primary);
+            }
+        }
+    }
+
+    &-col{
+        &-1{
+            
+        }
+        &-2{
+
+        }
+        &-3{
+
+        }
+        &-4{
+
+        }
+    }
+}

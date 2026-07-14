@@ -1,0 +1,136 @@
+@use '../../utils' as *;
+
+/*----------------------------------------*/
+/*  6.6 Footer Style 6
+/*----------------------------------------*/
+
+.tp-footer-6 {
+    &-info{
+        & span{
+            display: block;
+            margin-bottom: 15px;
+            & a{
+                font-size: 18px;
+                font-weight: 400;
+                color: #CECECE;
+                text-transform: capitalize;
+                font-family: var(--tp-ff-p);
+                & br{
+                    @media #{$lg,$md,$xs} {
+                        display: none;
+                    }
+                }
+            }
+        }
+        & p{
+            font-size: 16px;
+            color: #CECECE;
+            margin-bottom: 20px;
+            & br{
+                @media #{$xl,$lg,$md,$xs} {
+                    display: none;
+                }
+            }
+        }
+    }
+    &-btn{
+        margin-top: 30px;
+        & a{
+            font-size: 14px;
+            font-weight: 600;
+            position: relative;
+            text-transform: uppercase;
+            color: var(--tp-common-white);
+            font-family: var(--tp-ff-unbounded);
+            &:hover{
+                color: var(--tp-theme-primary);
+                &::before{
+                    opacity: 0;
+                }
+            }
+            & span{
+                display: inline-block;
+                margin-left: 5px;
+            }
+            &::before{
+                content: '';
+                bottom: -2px;
+                left: 0;
+                height: 1px;
+                width: 100%;
+                position: absolute;
+                @include tp-transition();
+                background-color: var(--tp-common-white);
+            }
+        }
+    }
+    &-input{
+        &-btn{
+            width: 40px;
+            height: 40px;
+            display: grid;
+            text-align: center;
+            border-radius: 50%;
+            place-content: center;
+            color: var(--tp-common-black);
+            background-color: var(--tp-theme-primary);
+            &:hover{
+                transform: rotate(45deg);
+                color: var(--tp-common-black);
+            }
+        }
+    }
+    &-big{
+        &-title{
+            margin: 0;
+            line-height: 1;
+            font-size: 182px;
+            font-weight: 600;
+            text-transform: capitalize;
+            font-family: var(--tp-ff-unbounded);
+            background: linear-gradient(180deg, #141414 0%, #1a1919 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            @media #{$xxl} {
+                font-size: 135px;
+            }
+            @media #{$xl} {
+                font-size: 110px;
+            }
+            @media #{$lg} {
+                font-size: 92px;
+            }
+            @media #{$md} {
+                font-size: 74px;
+            }
+            @media #{$xs} {
+                font-size: 36px;
+            }
+            @media #{$sm} {
+                font-size: 54px;
+            }
+        }
+    }
+
+    &-col{
+        &-1{
+            
+        }
+        &-2{
+            padding-left: 72px;
+            @media #{$md,$xs} {
+                padding-left: 0;
+            }
+        }
+        &-3{
+            padding-left: 30px;
+            @media #{$md,$xs} {
+                padding-left: 0;
+            }
+        }
+        &-4{
+
+        }
+    }
+}

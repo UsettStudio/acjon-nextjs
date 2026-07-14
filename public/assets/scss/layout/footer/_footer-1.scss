@@ -1,0 +1,287 @@
+@use '../../utils' as *;
+
+/*----------------------------------------*/
+/*  6.1 Footer Style
+/*----------------------------------------*/
+
+.tp-footer{
+    &-widget{
+        &-title{
+            font-weight: 700;
+            font-size: 28px;
+            line-height: 1;
+            text-transform: capitalize;
+            color: var(--tp-common-white);
+            font-family: var(--tp-ff-bricolage);
+            &.ff{
+                &-unbounded{
+                    font-family: var(--tp-ff-unbounded);
+                }
+                &-poppins{
+                    font-family: var(--tp-ff-p);
+                }
+                &-space{
+                    font-family: var(--tp-ff-space);
+                }
+                &-play{
+                    font-family: var(--tp-ff-playfair);
+                }
+            }
+            &.fs{
+                &-16{
+                    font-size: 16px;
+                }
+                &-18{
+                    font-size: 18px;
+                }
+                &-20{
+                    font-size: 20px;
+                }
+                &-24{
+                    font-size: 24px;
+                }
+            }
+            &.fw{
+                &-500{
+                    font-weight: 500;
+                }
+                &-600{
+                    font-weight: 600;
+                }
+            }
+        }
+        &-menu{
+            & ul{
+                & li{
+                    list-style-type: none;
+                    &:not(:last-child){
+                        margin-bottom: 20px;
+                    }
+                    & a{
+                        font-weight: 400;
+                        font-size: 20px;
+                        line-height: 1;
+                        text-transform: capitalize;
+                        color: rgba(245, 247, 245, 0.8);
+                        &:hover{
+                            color: var(--tp-common-white);
+                        }
+                    }
+                }
+            }
+            &.fs-16,
+            &.fs-20{
+                & ul{
+                    & li{
+                        &:not(:last-child) {
+                            margin-bottom: 15px;
+                        }
+                        & a{
+                            font-size: 16px;
+                        }
+                    }
+                }
+            }
+        }
+        &-social{
+            & ul{
+                & li{
+                    list-style-type: none;
+                    &:not(:last-child){
+                        margin-bottom: 25px;
+                    }
+                    & a{
+                        font-weight: 500;
+                        font-size: 16px;
+                        line-height: 1;
+                        padding: 7px 24px;
+                        border-radius: 50px;
+                        display: inline-block;
+                        color: var(--tp-common-white);
+                        border: 1px solid rgba(255, 255, 255, 0.1);
+                        &:hover{
+                            color: var(--tp-common-black);
+                            border-color: var(--tp-common-white);
+                            background-color: var(--tp-common-white);
+                        }
+                    }
+                }
+            }
+        }
+        &-info{
+            & span{
+                display: block;
+                &:not(:last-child){
+                    margin-bottom: 10px;
+                }
+            }
+            & a{
+                font-size: 20px;
+                font-weight: 400;
+                line-height: 1;
+                text-transform: capitalize;
+                color: rgba(245, 247, 245, 0.8);
+                @media #{$lg,$md,$xs} {
+                    font-size: 16px;
+                }
+                & br{
+                    @media #{$xxl,$xl,$lg,$md,$xs} {
+                        display: none;
+                    }
+                }
+                &:hover{
+                    color: var(--tp-common-white);
+                }
+            }
+        }
+        &-input{
+            & input{
+                color: var(--tp-common-white);
+                background-color: transparent;
+                border: 1px solid rgba($color: #fff, $alpha: 0.1);
+                @include tp-placeholder{
+                    color: rgba(245, 247, 245, 0.80);
+                }
+                &:focus{
+                    border-color: var(--tp-theme-primary);
+                }
+            }
+            &-remember{
+                margin: 25px 0 30px;
+                & input {
+                    display: none;
+                    &:checked{
+                        & ~ label{
+                            &::after{
+                                border-color: var(--tp-common-white);
+                            }
+                            &::before{
+                                opacity: 1;
+                                visibility: visible;
+                            }
+                        }
+                    }
+                }
+                & label {
+                    font-size: 14px;
+                    font-weight: 400;
+                    cursor: pointer;
+                    padding-left: 26px;
+                    position: relative;
+                    color: rgba(#fff, 0.5);
+                    text-transform: capitalize;
+                    & a{
+                        color: var(--tp-common-white);
+                    }
+                    &::before {
+                        position: absolute;
+                        top: 5px;
+                        left: 0;
+                        width: 16px;
+                        height: 16px;
+                        opacity: 0;
+                        line-height: 16px;
+                        text-align: center;
+                        visibility: hidden;
+                        @include tp-transition();
+                        content: url("../../../img/icon/check.svg");
+                    }
+                    &::after {
+                        position: absolute;
+                        content: "";
+                        top: 5px;
+                        left: 0;
+                        width: 16px;
+                        height: 16px;
+                        line-height: 16px;
+                        text-align: center;
+                        z-index: 0;
+                        border-radius: 4px;
+                        @include tp-transition();
+                        border: 1px solid rgba($color: #F5F7F5, $alpha: 0.3);
+                        box-shadow: 0px 1px 4px 0px rgba(48, 54, 81, 0.06) inset, 0px 1px 1px 0px rgba(48, 54, 81, 0.06);
+                    }
+                }
+            }
+        }
+    }
+}
+
+.tp-copyright{
+    &-wrap{
+        padding: 30px 35px;
+        padding-bottom: 40px;
+        border-top: 1px solid rgba($color: #fff, $alpha: 0.1);
+        @media #{$md,$xs} {
+            padding: 30px 0px;
+        }
+    }
+    &-text{
+        @media #{$md,$xs} {
+            margin-bottom: 20px;
+        }
+        & p{
+            font-weight: 600;
+            font-size: 14px;
+            line-height: 1.4;
+            margin-bottom: 0;
+            text-transform: capitalize;
+            color: rgba($color: #f5f7f5, $alpha: 0.8);
+            & a{
+                color: var(--tp-common-white);
+            }
+        }
+        &.tp-copyright{
+            &-4{
+                & p{
+                    & a{
+                        color: var(--tp-theme-primary);
+                    }
+                }
+            }
+            &-9{
+                & p{
+                    & a{
+                        color: var(--tp-common-brown);
+                    }
+                }
+            }
+        }
+    }
+    &-menu{
+        & a{
+            font-weight: 400;
+            font-size: 14px;
+            line-height: 1;
+            text-transform: capitalize;
+            color: rgba($color: #f5f7f5, $alpha: 0.8);
+            &:not(:last-child){
+                margin-right: 50px;
+                @media #{$md,$xs} {
+                    margin-right: 30px;
+                }
+            }
+        }
+    }
+    &-slider{
+        &-item{
+            & p{
+                font-size: 150px;
+                font-weight: 700;
+                line-height: 1;
+                color: #272727;
+                margin-bottom: 0;
+                text-transform: uppercase;
+                font-family: var(--tp-ff-bricolage);
+                @media #{$xs} {
+                    font-size: 85px;
+                }
+            }
+        }
+        &-wrap{
+            & .swiper-slide{
+                width: auto;
+            }
+        }
+    }
+}

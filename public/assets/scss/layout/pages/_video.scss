@@ -1,0 +1,144 @@
+@use '../../utils' as *;
+/*----------------------------------------*/
+/*  7.19 video css
+/*----------------------------------------*/
+
+
+.bnc-video{
+    &-ptb{
+        @media #{$xs} {
+            margin-bottom: 80px;
+        }
+    }
+    &-thumb{
+        overflow: hidden;
+        & img{
+            width: 100%;
+            height: 950px;
+            object-fit: cover;
+            @media #{$xl} {
+                height: 800px;
+            }
+            @media #{$lg,$md} {
+                height: 850px;
+            }
+            @media #{$xs} {
+                height: 700px;
+            }
+        }
+        &-btn{
+            top: 50%;
+            left: 50%;
+            position: absolute;
+            transform: translate(-50%, -50%);
+            @media #{$lg,$md} {
+                top: 40%;
+            }
+            @media #{$xs} {
+                top: 30%;
+            }
+            & .dgm-hero-play-btn{
+                margin: 0;
+                width: 120px;
+                height: 120px;
+                line-height: 120px;
+            }
+        }
+    }
+    &-item{
+        bottom: 0;
+        left: 10%;
+        width: 424px;
+        position: absolute;
+        padding: 50px 40px;
+        fill: rgba(1, 1, 3, 0.30);
+        backdrop-filter: blur(10px);
+        clip-path: polygon(0 0, 74% 0, 100% 26%, 100% 100%, 0 100%, 0% 50%);
+        @media #{$xs} {
+            width: 100%;
+            margin-top: 30px;
+            position: static;
+            fill: rgb(0, 0, 0);
+            background-color: var(--tp-common-black);
+        }
+        &-icon{
+            margin-bottom: 40px;
+        }
+        &-content{
+            padding-bottom: 32px;
+            & p{
+                font-size: 30px;
+                font-weight: 700;
+                line-height: 1.32;
+                font-family: var(--tp-ff-bricolage );
+                color: var(--tp-common-white-solid);
+            }
+        }
+        &-btn{
+            padding-top: 10px;
+            border-top: 1px solid rgba($color: #F5F7F5, $alpha: 0.1);
+            & a{
+                font-size: 14px;
+                font-weight: 700;
+                text-transform: uppercase;
+                color: var(--tp-theme-primary);
+                & span{
+                    display: inline-block;
+                    & svg{
+                        @extend %svg-3;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.lw-video{
+    &-wrap{
+        height: 950px;
+        @media #{$xxl} {
+            height: 700px;
+        }
+        @media #{$xl} {
+            height: 530px;
+        }
+        @media #{$lg} {
+            height: 430px;
+        }
+        @media #{$md} {
+            height: 300px;
+        }
+        @media #{$xs} {
+            height: 200px;
+        }
+        & img{
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+    &-btn{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        height: 120px;
+        width: 120px;
+        display: grid;
+        place-content: center;
+        text-align: center;
+        border-radius: 50%;
+        display: inline-block;
+        color: var(--tp-common-black);
+        background-color: #dfae4f;
+        transform: translate(-50%,-50%);
+        animation: animate-pulse 3s linear infinite;
+        @media #{$xs} {
+            height: 100px;
+            width: 100px;
+        }
+        &:hover{
+            color: var(--tp-common-black);
+            background-color: var(--tp-common-white);
+        }
+    }
+}

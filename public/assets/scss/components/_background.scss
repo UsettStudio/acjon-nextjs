@@ -1,0 +1,51 @@
+@use '../utils' as *;
+
+/*----------------------------------------*/
+/*  2.3 Background
+/*----------------------------------------*/
+.grey-bg {
+	background-color: var(--tp-grey-1);
+}
+.theme-bg{
+	background-color: var(--tp-theme-primary);
+}
+.white-bg {
+	background-color: var(--tp-common-white);
+}
+.white-bg-2 {
+	background-color: #fff;
+}
+.black-bg{
+	background-color: var(--tp-common-black);
+}
+.grey-bg-2 {
+	background-color: #202020;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[data-bg-color = "footer-bg-grey"] {
+	background-color: var(--tp-footer-grey-1);
+}
+[data-bg-color = "footer-bg-white"] {
+	background-color : var(--tp-common-white);
+}

@@ -1,0 +1,152 @@
+@use '../../utils' as *;
+
+/*----------------------------------------*/
+/*  7.0 Footer Style 10
+/*----------------------------------------*/
+
+.tp-footer-10 {
+    &-ptb{
+        @media #{$md,$xs} {
+            padding-top: 80px;
+        }
+    }
+    &-shape{
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        @media #{$md,$xs} {
+            display: none;
+        }
+    }
+    &-mail-box{
+        padding: 30px 0;
+        border-radius: 20px;
+        background-color: #201B13;
+        & .tp-about-me-hero-work{
+            margin-bottom: 10px;
+        }
+    }
+    &-wrapper{
+        @media #{$md,$xs} {
+            padding-bottom: 80px;
+        }
+    }
+    &-input{
+        @media #{$md,$xs} {
+            margin-bottom: 20px;
+        }
+        & input{
+            border: none;
+            padding-right: 40px;
+            color: var(--tp-common-white);
+            background-color: transparent;
+            border-bottom: 1px solid rgba($color: #F5F7F5, $alpha: 0.1);
+            &::placeholder{
+                text-transform: uppercase;
+                color: var(--tp-common-solid-white);
+            }
+            &:focus{
+                border-color: var(--tp-common-white);
+            }
+        }
+        & button{
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            color: var(--tp-common-white);
+        }
+    }
+    &-title{
+        margin: 0;
+        font-size: 150px;
+        font-weight: 500;
+        line-height: 1;
+        letter-spacing: -4.5px;
+        color: var(--tp-common-white);
+        font-family: var(--tp-ff-teko);
+        @media #{$lg} {
+            font-size: 120px;
+        }
+        @media #{$md} {
+            font-size: 90px;
+            letter-spacing: -2.5px;
+        }
+        @media #{$xs} {
+            font-size: 38px;
+            letter-spacing: 0;
+        }
+        @media #{$sm} {
+            font-size: 60px;
+        }
+        & a{
+            line-height: 1;
+            display: inline-block;
+        }
+    }
+    &-btn{
+        font-size: 20px;
+        font-weight: 600;
+        border-radius: 14px;
+        padding: 10px 21px;
+        display: inline-block;
+        color: var(--tp-common-white);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        &:hover{
+            color: var(--tp-common-black);
+            background-color: var(--tp-common-white);
+        }
+        & span{
+            @extend %svg-2;
+            margin-left: 3px;
+            display: inline-block;
+        }
+        &-box{
+            gap: 20px;
+            animation-delay: .3s;
+            animation-duration: 1s;
+            @media #{$xs} {
+                flex-wrap: wrap;
+            }
+        }
+    }
+    &-copyright{
+        &-text{
+            & p{
+                font-size: 16px;
+                font-weight: 500;
+                text-transform: capitalize;
+                color: var(--tp-common-white);
+                & a{
+                    color: var(--tp-common-yellow);
+                }
+            }
+        }
+        &-menu{
+            & a{
+                font-size: 16px;
+                font-weight: 500;
+                display: inline-block;
+                color: rgba(245, 247, 245, 0.80);
+                &:not(:last-of-type){
+                    margin-right: 30px;
+                }
+            }
+        }
+    }
+
+    &-col{
+        &-1{
+
+        }
+        &-2{
+
+        }
+        &-3{
+
+        }
+        &-4{
+
+        }
+    }
+}

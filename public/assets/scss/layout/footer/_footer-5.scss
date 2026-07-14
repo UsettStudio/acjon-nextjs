@@ -1,0 +1,89 @@
+@use '../../utils' as *;
+
+/*----------------------------------------*/
+/*  6.5 Footer Style 5
+/*----------------------------------------*/
+
+.tp-footer-5 {
+    &-wrap{
+        border-radius: 16px;
+        padding: 40px 30px;
+        background-color: var(--tp-theme-primary);
+    }
+    &-info{
+        padding-bottom: 20px;
+        & span{
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+        & a{
+            font-size: 16px;
+            color: rgba($color: #010103, $alpha: 0.8);
+            & br{
+                @media #{$xl,$lg,$md,$xs} {
+                    display: none;
+                }
+            }
+        }
+        & p{
+            font-size: 16px;
+            font-weight: 500;
+            text-transform: capitalize;
+            color: var(--tp-common-black);
+        }
+    }
+    &-main{
+        &-warp{
+            @media #{$md,$xs} {
+                padding-bottom: 0;
+            }
+        }
+    }
+    &-social{
+        & a{
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--tp-common-black);
+            font-family: var(--tp-ff-space);
+            &:not(:last-of-type){
+                margin-right: 5px;
+            }
+        }
+    }
+
+    &-col{
+        &-1{
+            
+        }
+        &-2{
+            padding-top: 60px;
+            padding-left: 140px;
+            @media #{$lg} {
+                padding-left: 100px;
+            }
+            @media #{$md} {
+                padding-left: 40px;
+            }
+            @media #{$xs} {
+                padding-left: 0;
+                padding-top: 0px;
+            }
+        }
+        &-3{
+            padding-top: 60px;
+            padding-left: 60px;
+            @media #{$md,$xs} {
+                padding-left: 0;
+            }
+            @media #{$xs} {
+                padding-top: 0px;
+            }
+        }
+        &-4{
+            padding-top: 60px;
+            @media #{$xs} {
+                padding-top: 0px;
+            }
+        }
+    }
+}

@@ -1,0 +1,40 @@
+@use '../../utils' as *;
+
+/*----------------------------------------*/
+/*  7.2 application Css
+/*----------------------------------------*/
+
+.tp-application{
+    &-form{
+        &-spacing{
+            padding-top: 218px;
+            padding-bottom: 125px;
+            @media #{$xs} {
+                padding-top: 160px;
+                padding-bottom: 80px;
+            }
+        }
+        &-input{
+            & .tp-label{
+                font-weight: 500;
+                letter-spacing: -0.03em;
+                color: var(--tp-common-black);
+                margin-bottom: 8px;
+                text-transform: capitalize;
+            }
+            & .tp-input{
+                border-radius: 8px;
+                width: 100%;
+                height: 60px;
+                background: #f6f6f9;
+                &:focus{
+                    background-color: transparent;
+                }
+            }
+            & .tp-textarea{
+                height: 133px;
+                resize: none;
+            }
+        }
+    }
+}

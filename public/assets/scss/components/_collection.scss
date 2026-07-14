@@ -1,0 +1,147 @@
+@use '../utils' as *;
+/*----------------------------------------*/
+/*  2.7 collection Title
+/*----------------------------------------*/
+
+.tp-circle{
+    &-link{
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+        font-weight: 700;
+        font-size: 16px;
+        line-height: 1;
+        height: 120px;
+        width: 120px;
+        border-radius: 50%;
+        line-height: 120px;
+        text-align: center;
+        display: inline-block;
+        text-transform: uppercase;
+        opacity: 0;
+        visibility: hidden;
+        transition: .3s;
+        transform: translateY(-50%) scale(.8);
+        color: var(--tp-common-black);
+        font-family: var(--tp-ff-bricolage);
+        background-color: var(--tp-theme-primary);
+        & span{
+            display: inline-block;
+            transform: translateY(-3px);
+        }
+        &-hover{
+            &:hover{
+                & .tp-circle-link{
+                    opacity: 1;
+                    visibility: visible;
+                    transform: translateY(-50%) scale(1);
+                }
+            }
+        }
+    }
+}
+.slide-transtion {
+    -webkit-transition-timing-function: linear;
+    transition-timing-function: linear;
+}
+.tp-hover-line-white{
+    position: relative;
+    &.border-up{
+        &::after{
+            bottom: 3px;
+        }
+    }
+    &::after {
+        position: absolute;
+        content: "";
+        bottom: 1px;
+        right: 0;
+        width: 0;
+        height: 1px;
+        transition: 0.3s ease-in-out;
+        background-color: var(--tp-common-white);
+    }
+    &:hover{
+        &::after{
+            width: 100%;
+            right: auto;
+            left: 0;
+        }
+    }
+}
+.tp-line-black{
+	display: inline;
+	transition: all 0.3s linear;
+	background-repeat: no-repeat;
+	background-size: 0% 1px, 0 1px;
+	background-position: 100% 100%, 0 100%;
+	background-image: linear-gradient(currentcolor, currentcolor), linear-gradient(currentcolor, currentcolor);
+	&:hover{
+		background-size: 0% 1px, 100% 1px;
+	}
+}
+.tp-line-white{
+	display: inline;
+	transition: all 0.3s linear;
+	background-repeat: no-repeat;
+	background-size: 0% 1px, 0 1px;
+	background-position: 100% 100%, 0 100%;
+	background-image: linear-gradient(currentcolor, currentcolor), linear-gradient(currentcolor, currentcolor);
+	&:hover{
+		background-size: 0% 1px, 100% 1px;
+	}
+}
+
+.tp-split-title .char {
+  display: inline-block;
+  transform-origin: left center;
+  clip-path: inset(0 100% 0 0);
+}
+
+.tp-clip-anim {
+    width: 100%;
+    display: grid;
+    align-items: center;
+    justify-items: center;
+    overflow: hidden;
+    position: relative;
+    & .tp-anim-img {
+        opacity: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    & .mask {
+        background-size: cover;
+        background-position: center;
+        transform: scale(1.005);
+    }
+    >* {
+        grid-area: 1 / 1 / 2 / 2;
+        width: 100%;
+        height: 100%;
+        max-height: 100%;
+    }
+}
+
+.tp-blur-bottom {
+	-webkit-backdrop-filter: blur(7px);
+	backdrop-filter: blur(7px);
+	bottom: 0;
+	-webkit-box-flex: 0;
+	-ms-flex: none;
+	flex: none;
+	height: 100px;
+	left: 0;
+	-webkit-mask: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0)), to(black)) add;
+	-webkit-mask: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, black 100%) add;
+	mask: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0)), to(black)) add;
+	mask: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, black 100%) add;
+	overflow: visible;
+	position: fixed;
+	right: 0;
+	pointer-events: none;
+	z-index: 999;
+}

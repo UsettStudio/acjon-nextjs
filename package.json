@@ -1,0 +1,39 @@
+{
+  "name": "acjon-nextjs",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "clean": "rm -rf node_modules .next yarn.lock package-lock.json",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@gsap/react": "^2.1.2",
+    "@popperjs/core": "^2.11.8",
+    "@types/jquery": "^3.5.33",
+    "bootstrap": "^5.3.8",
+    "gsap": "^3.13.0",
+    "hover-effect": "^1.2.1",
+    "jquery": "^3.7.1",
+    "next": "16.1.6",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "react-hook-form": "^7.68.0",
+    "react-photo-view": "^1.2.7", 
+    "react-toastify": "^11.0.5",
+    "react-use": "^17.6.0",
+    "sass": "^1.93.1",
+    "swiper": "^12.0.2"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "15.5.3",
+    "typescript": "^5"
+  }
+}

@@ -1,0 +1,47 @@
+@use '../../utils' as *;
+
+/*----------------------------------------*/
+/*  6.7 Footer Style 7
+/*----------------------------------------*/
+
+.tp-footer-7 {
+    &-main-wrap{
+        @media #{$md,$xs} {
+            padding-bottom: 0;
+        }
+    }
+    &-bottom{
+        padding-top: 60px;
+        padding-bottom: 20px;
+        border-top: 1px solid rgba($color: #F5F7F5, $alpha: 0.1);
+        border-bottom: 1px solid rgba($color: #F5F7F5, $alpha: 0.1);
+        @media #{$lg,$md,$xs} {
+            padding-top: 40px;
+        }
+        @media #{$xs} {
+            padding-bottom: 0;
+        }
+    }
+    &-logo{
+        & img{
+            @media #{$md,$xs} {
+                width: 50%;
+            }
+        }
+    }
+
+    &-col{
+        &-1{
+            
+        }
+        &-2{
+
+        }
+        &-3{
+
+        }
+        &-4{
+
+        }
+    }
+}

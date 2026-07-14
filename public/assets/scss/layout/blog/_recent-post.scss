@@ -1,0 +1,88 @@
+@use '../../utils' as *;
+
+/*----------------------------------------*/
+/*  5.3 Recent Post css
+/*----------------------------------------*/
+
+.rc-post{
+    &-thumb{
+        flex: 0 0 auto;
+        overflow: hidden;
+        margin-right: 30px;
+        @media #{$xs}{
+            margin-right: 20px;
+        }
+        & img{
+            transition: .9s;
+            @media #{$xl,$lg,$md}{
+                height: 100px;
+                width: 100px;
+            }
+            @media #{$xs}{
+                height: 80px;
+                width: 80px;
+            }
+        }
+    }
+    &:hover{
+        & .rc-post-thumb{
+            & img{
+                transform: scale(1.1);
+            }
+        }
+    }
+    &-category{
+        margin-bottom: 10px;
+        & a{
+            font-weight: 600;
+            font-size: 13px;
+            line-height: 1;
+            color: var(--tp-common-black);
+            padding: 7px 12px;
+            border-radius: 15px;
+            display: inline-block;
+            background: #f2f2f2;
+            &:hover{
+                background: var(--tp-common-black);
+                color: var(--tp-common-white);
+            }
+        }
+    }
+    &-title{
+        font-weight: 600;
+        font-size: 19px;
+        line-height: 1.4;
+        margin-bottom: 8px;
+        letter-spacing: -0.01em;
+        color: var(--tp-common-black);
+        font-family: var(--tp-ff-popins);
+        @media #{$xl,$lg,$md,$xs}{
+            font-size: 18px;
+        }
+        @media #{$lg,$md,$xs}{
+            font-size: 16px;
+        }
+        & a{
+            &:hover{
+                color: var(--tp-common-green-light);
+            }
+        }
+    }
+    &-meta{
+        & span{
+            font-weight: 600;
+            font-size: 13px;
+            line-height: 1;
+            color: rgba(0, 0, 0, 0.6);
+        }
+    }
+    &-wrap{
+        & .rc-post{
+            &:not(:last-child){
+                padding-bottom: 25px;
+                margin-bottom: 25px;
+                border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+            }
+        }
+    }
+}

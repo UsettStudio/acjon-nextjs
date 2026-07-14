@@ -1,0 +1,85 @@
+@use '../../utils' as *;
+
+/*----------------------------------------*/
+/*  6.9 Footer Style 9
+/*----------------------------------------*/
+
+.tp-footer-9 {
+    &-border{
+        border-bottom: 1px solid rgba($color: #fff, $alpha: 0.1);
+        @media #{$lg,$md,$xs} {
+            padding: 30px 0;
+        }
+    }
+    &-top{
+        &-left{
+            gap: 50px;
+        }
+        &-thumb{
+            @media #{$xs} {
+                display: none;
+            }
+        }
+        &-title{
+            font-size: 42px;
+            font-weight: 500;
+            line-height: 1;
+            letter-spacing: -1.68px;
+            color: var(--tp-common-white);
+            font-family: var(--tp-ff-playfair);
+            & span{
+                font-style: italic;
+                color: var(--tp-common-brown);
+            }
+        }
+        &-right{
+            @media #{$md,$xs} {
+                margin-top: 30px;
+            }
+        }
+    }
+
+    &-col{
+        &-1{
+            & .ds-footer-social{
+                & a{
+                    &:hover{
+                        & span{
+                            color: var(--tp-common-white);
+                            background-color: var(--tp-common-brown);
+                        }
+                    }
+                }
+            }
+        }
+        &-2{
+            padding-left: 60px;
+            @media #{$lg,$md,$xs} {
+                padding-left: 0;
+            }
+        }
+        &-3{
+            padding-left: 30px;
+            @media #{$lg,$md,$xs} {
+                padding-left: 0;
+            }
+        }
+        &-4{
+            & .ds-footer-widget-input{
+                & input{
+                    &:focus{
+                        border-color: var(--tp-common-brown);
+                    }
+                }
+                & .tp-btn-green{
+                    background-color: transparent;
+                    color: var(--tp-common-brown);
+                    & span{
+                        margin-left: 5px;
+                        @extend %svg-2;
+                    }
+                }
+            }
+        }
+    }
+}

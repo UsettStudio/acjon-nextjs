@@ -1,0 +1,217 @@
+@use '../../utils' as *;
+
+/*----------------------------------------*/
+/*  7.20 Work Css
+/*----------------------------------------*/
+
+.tp-project{
+    &-ptb{
+        @media #{$lg,$md,$xs} {
+            padding-top: 80px;
+            padding-bottom: 80px;
+        }
+    }
+    &-title{
+        font-weight: 700;
+        font-size: 36px;
+        line-height: 1.2;
+        text-transform: capitalize;
+        color: var(--tp-common-black);
+        font-family: var(--tp-ff-bricolage);
+        @media #{$lg} {
+            font-size: 32px;
+        }
+        @media #{$xs} {
+            font-size: 24px;
+        }
+    }
+    &-content{
+        & > span{
+            font-weight: 400;
+            font-size: 16px;
+            line-height: 1;
+            color: #717171;
+            text-transform: capitalize;
+            & i{
+                font-style: normal;
+                &::after{
+                    content: "";
+                    height: 1px;
+                    width: 30px;
+                    margin: 0 11px;
+                    display: inline-block;
+                    transform: translateY(-4px);
+                    background-color: #717171;
+                }
+            }
+        }
+    }
+    &-item{
+        &:hover{
+            & .tp-project{
+                &-thumb{
+                    & img{
+                        transform: scale(1.1);
+                    }
+                }
+            }
+        }
+    }
+    &-thumb{
+        overflow: hidden;
+        & img{
+            width: 100%;
+            transition: .9s ease-in-out;
+        }
+    }
+}
+
+.sa-work{
+    &-ptb{
+        @media #{$xl,$lg,$md,$xs} {
+            margin-bottom: 0px;
+            padding-top: 100px;
+        }
+    }
+    &-subtitle{
+        font-size: 14px;
+        font-weight: 600;
+        display: inline-block;
+        text-transform: uppercase;
+        transform: translateY(30px);
+        color: var(--tp-common-black);
+        font-family: var(--tp-ff-unbounded);
+        @media #{$md,$xs} {
+            transform: translateY(0);
+        }
+        & svg{
+            margin-left: 5px;
+        }
+    }
+    &-title{
+        margin: 0;
+        font-size: 440px;
+        font-weight: 600;
+        line-height: .8;
+        text-transform: capitalize;
+        color: rgba($color: #010103, $alpha: 0.1);
+        @media #{$xxl} {
+            font-size: 400px;
+        }
+        @media #{$xl} {
+            font-size: 340px;
+        }
+        @media #{$lg} {
+            font-size: 270px;
+        }
+        @media #{$md} {
+            font-size: 200px;
+        }
+        @media #{$xs} {
+            font-size: 100px;
+        }
+        @media #{$sm} {
+            font-size: 160px;
+        }
+        &-box{
+            @media #{$md,$xs} {
+                margin-bottom: 40px;
+            }
+        }
+    }
+    &-item{
+        @media #{$xs} {
+            margin-bottom: 30px;
+        }
+    }
+}
+
+.tp-progress{
+    &-bg{
+        position: relative;
+        margin-left: -140px;
+        @media #{$md,$xs} {
+            margin-left: 0;
+        }
+        &::before{
+            content: "";
+            position: absolute;
+            background-color: transparent;
+            bottom: -40px;
+            left: 60px;
+            height: 40px;
+            width: 20px;
+            border-top-right-radius: 20px;
+            box-shadow: 0px -17px 0 0 #FFF;
+            @media #{$xl,$lg,$md,$xs} {
+                display: none;
+            }
+        }
+        &::after{
+            content: "";
+            position: absolute;
+            background-color: transparent;
+            top: -40px;
+            left: 60px;
+            height: 40px;
+            width: 20px;
+            border-bottom-right-radius: 20px;
+            box-shadow: 0 18px 0 0 #FFF;
+            @media #{$lg} {
+                left: 90px;
+            }
+            @media #{$md,$xs} {
+                display: none;
+            }
+        }
+    }
+    &-bar{
+        &-wrap{
+            margin-right: 50px;
+            padding: 45px 40px;
+            padding-right: 0;
+            border-radius: 20px;
+            background-color: var(--tp-common-white-solid);
+            @media #{$md,$xs} {
+                margin-right: 0;
+                padding: 30px 0px;
+            }
+        }
+        &-item{
+            margin-bottom: 30px;
+        }
+        &-title{
+            font-size: 22px;
+            font-weight: 500;
+            line-height: 1.1;
+            padding-bottom: 15px;
+            text-transform: capitalize;
+            color: var(--tp-common-black);
+            font-family: var(--tp-ff-space);
+        }
+        & .progress {
+            overflow: visible;
+            height: 6px;
+            border-radius: 5px;
+            background: var(--tp-common-white);
+        }
+        & .progress-bar {
+            position: relative;
+            top: 0;
+            height: 6px;
+            overflow: visible;
+            border-radius: 5px;
+            background-color: var(--tp-common-black);
+            &::after {
+                position: absolute;
+                content: "";
+                height: 16px;
+                width: 5px;
+                top: -5px;
+                right: 0;
+                border-radius: 30px;
+                background-color: var(--tp-common-black);
+            }
+        }
+    }
+}
