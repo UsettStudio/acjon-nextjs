@@ -6,36 +6,36 @@ type MenuItemThree = {
     subMenu?: { name: string; link: string }[];
 };
 
-// One-page: alle punktene scroller til en seksjon på forsiden (/design-studio#...).
+// One-page: alle punktene scroller til en seksjon på forsiden (/#...).
 export const menuItemsThree: MenuItemThree[] = [
     {
         title: 'Hjem',
-        link: '/design-studio#top',
+        link: '/#top',
         static: true,
     },
     {
         title: 'Tjenester',
-        link: '/design-studio#tjenester',
+        link: '/#tjenester',
         static: true,
     },
     {
         title: 'Prosjekter',
-        link: '/design-studio#prosjekter',
+        link: '/#prosjekter',
         static: true,
     },
     {
         title: 'Byggeprosessen',
-        link: '/design-studio#byggeprosessen',
+        link: '/#byggeprosessen',
         static: false,
     },
     {
         title: 'Om oss',
-        link: '/design-studio#om-oss',
+        link: '/#om-oss',
         static: false,
     },
     {
         title: 'Kontakt',
-        link: '/design-studio#kontakt-skjema',
+        link: '/#kontakt-skjema',
         static: false,
     },
 ];

@@ -6,6 +6,12 @@ const nextConfig: NextConfig = {
   // deployes uten å måtte rydde i alle malfiler. (ESLint kjøres ikke i build i
   // Next.js 16, så den nøkkelen er fjernet.)
   typescript: { ignoreBuildErrors: true },
+  // Forsiden ligger nå på "/". Gammel /design-studio-adresse sendes permanent dit.
+  async redirects() {
+    return [
+      { source: "/design-studio", destination: "/", permanent: true },
+    ];
+  },
 };
 
 export default nextConfig;

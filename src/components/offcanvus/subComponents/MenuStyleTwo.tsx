@@ -5,7 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import Link from 'next/link';
 
-const HOME_PATH = "/design-studio";
+const HOME_PATH = "/";
 
 const MenuStyleTwo = ({ onNavigate }: { onNavigate?: () => void }) => {
     const [hoveredMenu, setHoveredMenu] = useState<number | null>(null);
