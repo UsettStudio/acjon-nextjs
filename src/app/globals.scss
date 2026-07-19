@@ -413,6 +413,16 @@
     z-index: 0;
 }
 /* Usett: logo i hero (erstatter den store «Usett»-teksten) – midtstilt horisontalt */
+/* Flex-sentrering på wrapperen garanterer at logoen står midt på både PC og mobil,
+   uansett kolonne-/container-padding. margin:auto på selve bildet er backup. */
+.ds-hero-bottom {
+    text-align: center;
+}
+.ds-hero-bottom .ds-hero-text-wrap {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
 .ds-hero-logo {
     display: block;
     margin-left: auto;
@@ -676,10 +686,6 @@
     height: 100% !important;
     object-fit: cover;
     display: block;
-    /* Reveal-animasjonen (data-animate) satte bildene til opacity:0 og fikk dem
-       ikke tilbake på prod (inne i ScrollSmoother) → bildene var usynlige.
-       Tvinger dem synlige. */
-    opacity: 1 !important;
 }
 /* Luft før byggeprosessen-videoen */
 #prosjekter {

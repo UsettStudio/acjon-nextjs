@@ -35,7 +35,43 @@ export default function PinnedVideoScrub({
             const video = videoRef.current;
             if (!root || !video) return;
 
+            // Touch-enheter (mobil/nettbrett) klarer ikke å skrubbe en <video> via
+            // currentTime — særlig iOS Safari nekter å dekode/tegne en «seeket» frame
+            // uten at videoen faktisk spilles av. Resultat: svart/tom video på telefon
+            // («får ikke opp video»). På slike enheter dropper vi pin + scrub helt og
+            // lar videoen bare autospille i loop. muted + playsInline gjør at autoplay
+            // er tillatt på både iOS og Android.
+            const isTouch =
+                typeof window !== "undefined" &&
+                typeof window.matchMedia === "function" &&
+                window.matchMedia("(hover: none) and (pointer: coarse)").matches;
+
+            if (isTouch) {
+                video.loop = true;
+                video.muted = true;
+                const tryPlay = () => {
+                    const p = video.play();
+                    if (p && typeof p.catch === "function") p.catch(() => {});
+                };
+                if (video.readyState >= 2) tryPlay();
+                else video.addEventListener("canplay", tryPlay, { once: true });
+                // Fallback: start avspilling ved første berøring dersom nettleseren
+                // skulle blokkere autoplay.
+                const onFirstTouch = () => {
+                    tryPlay();
+                    window.removeEventListener("touchstart", onFirstTouch);
+                };
+                window.addEventListener("touchstart", onFirstTouch, { passive: true });
+                return () => {
+                    video.removeEventListener("canplay", tryPlay);
+                    window.removeEventListener("touchstart", onFirstTouch);
+                };
+            }
+
             gsap.registerPlugin(ScrollTrigger);
+
+            // Desktop: videoen skal skrubbes av scroll, ikke spilles av.
+            video.pause();
 
             let duration = 0;
             const onMeta = () => {
