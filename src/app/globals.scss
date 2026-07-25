@@ -686,6 +686,10 @@
     height: 100% !important;
     object-fit: cover;
     display: block;
+    /* VIKTIG: reveal-animasjonen (tp-anim-img) setter opacity:0 som ikke alltid
+       reverseres på prod inne i ScrollSmoother → tving bildene synlige. Ikke fjern. */
+    opacity: 1 !important;
+    visibility: visible !important;
 }
 /* Luft før byggeprosessen-videoen */
 #prosjekter {
