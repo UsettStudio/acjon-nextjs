@@ -1,3 +1,7 @@
+"use client";
+
+import { useState, useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
 import projectData from "@/data/projectData";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,6 +13,22 @@ const usettProjects = projectData.filter(
 );
 
 const DesignStudioPortfolio = () => {
+    // Aktivt bilde i lightbox (null = lukket)
+    const [active, setActive] = useState<{ src: string; alt: string } | null>(null);
+    const [mounted, setMounted] = useState(false);
+    const close = useCallback(() => setActive(null), []);
+
+    // createPortal krever at vi er i nettleseren (unngå SSR-feil)
+    useEffect(() => { setMounted(true); }, []);
+
+    // Lukk med Escape når lightbox er åpen
+    useEffect(() => {
+        if (!active) return;
+        const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") close(); };
+        document.addEventListener("keydown", onKey);
+        return () => document.removeEventListener("keydown", onKey);
+    }, [active, close]);
+
     return (
         <div className="ds-portfolio-area">
             <div className="container-fluid gx-0">
@@ -17,7 +37,13 @@ const DesignStudioPortfolio = () => {
                         <div key={index} className="col-lg-4 col-md-6">
                             <div className="ds-portfolio-item">
                                 <div className="ds-portfolio-item-thumb">
-                                    <Link className="tp-clip-anim" href="#kontakt-skjema">
+                                    {/* Klikk på bildet forstørrer det (lightbox) */}
+                                    <button
+                                        type="button"
+                                        className="tp-clip-anim ds-portfolio-zoom"
+                                        onClick={() => setActive({ src: item.image, alt: item.title })}
+                                        aria-label={`Forstørr bilde: ${item.title}`}
+                                    >
                                         <Image
                                             width={635}
                                             height={712}
@@ -26,7 +52,7 @@ const DesignStudioPortfolio = () => {
                                             alt={item.title}
                                             loading="eager"
                                         />
-                                    </Link>
+                                    </button>
                                 </div>
                                 <div className="ds-portfolio-item-content tp_fade_anim" data-delay=".6">
                                     <div className="ds-portfolio-item-content-hide">
@@ -45,6 +71,35 @@ const DesignStudioPortfolio = () => {
                     ))}
                 </div>
             </div>
+
+            {/* Lightbox – rendres på <body> via portal så den ikke påvirkes av
+                ScrollSmoother sin transform (position:fixed ville ellers bli feil). */}
+            {mounted && active && createPortal(
+                <div
+                    className="ds-lightbox"
+                    onClick={close}
+                    role="dialog"
+                    aria-modal="true"
+                    aria-label={active.alt}
+                >
+                    <button
+                        type="button"
+                        className="ds-lightbox-close"
+                        onClick={close}
+                        aria-label="Lukk"
+                    >
+                        &times;
+                    </button>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                        className="ds-lightbox-img"
+                        src={active.src}
+                        alt={active.alt}
+                        onClick={(e) => e.stopPropagation()}
+                    />
+                </div>,
+                document.body
+            )}
         </div>
     );
 };

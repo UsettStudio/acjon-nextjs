@@ -25,9 +25,10 @@ const DesignStudioAbout = () => {
                     <div className="col-lg-4">
                         <div className="ds-about-text-wrap mb-80 tp_fade_anim" data-delay=".5">
                             <p>
-                                Hos Usett kombinerer vi kreativitet og teknisk presisjon
-                                for å skape fotorealistiske 3D-opplevelser. Fra
-                                visualisering til digitale tvillinger og animasjon.
+                                Med over 10 års erfaring i bransjen kombinerer vi
+                                kreativitet og teknisk presisjon for å skape
+                                fotorealistiske 3D-opplevelser – fra visualisering til
+                                digitale tvillinger og animasjon.
                             </p>
                             <div className="ds-about-btn-box">
                                 <Link className="ds-about-btn" href="#kontakt-skjema">

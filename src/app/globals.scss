@@ -768,3 +768,65 @@
 /* Egen aksentfarge per tilleggskort (matcher merkeprofilen) */
 .ds-addons-wrap .row > [class*="col-"]:nth-child(1) .ds-addon-item:hover { border-color: var(--brus-1); box-shadow: 0 0 30px -8px var(--brus-1); }
 .ds-addons-wrap .row > [class*="col-"]:nth-child(3) .ds-addon-item:hover { border-color: var(--brus-3); box-shadow: 0 0 30px -8px var(--brus-3); }
+
+/* ------------------------------------------------------------------ */
+/*  Prosjekt-lightbox – klikk på et prosjektbilde forstørrer det.      */
+/*  Rendres på <body> via portal (utenfor ScrollSmoother-transform),   */
+/*  ellers ville position:fixed blitt feilplassert.                    */
+/* ------------------------------------------------------------------ */
+.ds-portfolio-item-thumb .ds-portfolio-zoom {
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    background: none;
+    cursor: zoom-in;
+}
+.ds-lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(1, 1, 3, 0.92);
+    cursor: zoom-out;
+    animation: ds-lightbox-fade 0.2s ease;
+}
+.ds-lightbox-img {
+    max-width: 92vw;
+    max-height: 88vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 24px 90px rgba(0, 0, 0, 0.6);
+    cursor: default;
+}
+.ds-lightbox-close {
+    position: fixed;
+    top: 14px;
+    right: 22px;
+    z-index: 100000;
+    width: 48px;
+    height: 48px;
+    line-height: 44px;
+    text-align: center;
+    font-size: 34px;
+    color: #fff;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+.ds-lightbox-close:hover {
+    transform: scale(1.1);
+    color: var(--brus-2);
+}
+@keyframes ds-lightbox-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
