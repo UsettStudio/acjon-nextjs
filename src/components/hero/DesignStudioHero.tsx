@@ -93,6 +93,31 @@ const DesignStudioHero = () => {
                 draw(Math.max(frameRef.current, 0));
             };
 
+            // MOBIL (<768px): ScrollSmoother opprettes IKKE (se useScrollSmooth.ts),
+            // og en ScrollTrigger-pin uten smoother bruker position:fixed. På telefon
+            // kollapser adresselinjen når man scroller => innerHeight endres => pin-
+            // lengden («+= innerHeight * 2.6») re-måles midt i scrollingen, og ALT
+            // under heroen forskyves. Det er det som gir tomme felt lenger nede.
+            // Derfor: ingen pin og ingen scrub på mobil – bare ett stillbilde.
+            // Bonus: vi slipper å laste 120 bilder over mobildata.
+            const isDesktop = window.matchMedia("(min-width: 768px)").matches;
+
+            if (!isDesktop) {
+                const still = new Image();
+                still.src = `${FRAME_DIR}/frame_0001.jpg`;
+                still.onload = () => {
+                    images[0] = still;
+                    frameRef.current = 0;
+                    resize();
+                };
+                images[0] = still;
+                resize();
+                window.addEventListener("resize", resize);
+                return () => {
+                    window.removeEventListener("resize", resize);
+                };
+            }
+
             for (let i = 0; i < FRAME_COUNT; i++) {
                 const img = new Image();
                 img.src = `${FRAME_DIR}/frame_${pad(i + 1)}.jpg`;

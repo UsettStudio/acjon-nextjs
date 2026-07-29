@@ -676,7 +676,9 @@
     aspect-ratio: 16 / 9;
     overflow: hidden;
 }
-.ds-portfolio-area .ds-portfolio-item-thumb a {
+/* Både gammel <a> og dagens lightbox-<button> skal fylle 16:9-boksen. */
+.ds-portfolio-area .ds-portfolio-item-thumb a,
+.ds-portfolio-area .ds-portfolio-item-thumb button {
     display: block;
     width: 100%;
     height: 100%;
@@ -829,4 +831,49 @@
 @keyframes ds-lightbox-fade {
     from { opacity: 0; }
     to { opacity: 1; }
+}
+
+/* ------------------------------------------------------------------ */
+/*  MOBIL (<768px): reveal-animasjonene skal ALDRI kunne skjule tekst   */
+/*                                                                      */
+/*  Bakgrunn: ScrollSmoother opprettes bare når innerWidth >= 768       */
+/*  (se useScrollSmooth.ts). Under 768px kjører altså ScrollTrigger     */
+/*  alene – og på telefon kollapser adresselinjen når man scroller,     */
+/*  slik at innerHeight (og dermed alle 100vh-mål og pin-avstander)     */
+/*  endrer seg MIDT i scrollingen. Da rekker aldri "play"-triggeren å   */
+/*  fyre for seksjoner lenger nede, og siden                            */
+/*      fadeAnimation() bruker gsap.from(..., { opacity: 0 })           */
+/*      splitTitleAnim() animerer .char FRA opacity 0                   */
+/*  blir innholdet stående usynlig => seksjonen vises som et TOMT       */
+/*  farget felt (sort på «Om oss»/footer, lyst før prosjektbildene).    */
+/*                                                                      */
+/*  Løsning: på mobil dropper vi reveal-effekten helt og tvinger alt    */
+/*  synlig. Desktop er 100 % uendret.                                   */
+/*  Samme prinsipp som portfolio-fiksen lenger oppe – ikke fjern.       */
+/* ------------------------------------------------------------------ */
+@media (max-width: 767px) {
+    .tp_fade_anim,
+    .tp-anim-img,
+    .tp-split-title,
+    .tp-split-title .char,
+    .tp-char-animation,
+    .tp-char-animation .char {
+        opacity: 1 !important;
+        visibility: visible !important;
+        transform: none !important;
+        clip-path: none !important;
+    }
+    /* Maskene fra imageClipingEffect ligger OVER bildet og fjernes først
+       av en scroll-animasjon. Fyrer den ikke, dekker de bildet. */
+    .tp-clip-anim .mask {
+        display: none !important;
+    }
+}
+
+/* Mobil: bruk «small viewport height» der nettleseren støtter det, slik at
+   heroen ikke hopper i høyde når adresselinjen kollapser/kommer tilbake. */
+@media (max-width: 767px) {
+    .ds-hero-scrub {
+        min-height: 100svh;
+    }
 }

@@ -1,60 +1,61 @@
 'use client';
 import { useEffect, useRef, useState } from "react";
 
-interface CounterProps  {
+interface CounterProps {
   min: number;
   max: number;
-  cls?:string
+  cls?: string;
 }
 
-export default function AnimatedCounterTwo({ min, max,cls='purecounter'}: CounterProps) {
+export default function AnimatedCounterTwo({ min, max, cls = 'purecounter' }: CounterProps) {
   const [counted, setCounted] = useState<number>(min);
-  const targetElement = useRef<HTMLSpanElement>(null); 
-
-  const startCountup = () => {
-    const intervalId = setInterval(() => {
-      setCounted((pre) => {
-        const tempCount = pre + Math.ceil(max / 20);
-        if (tempCount >= max) {
-          clearInterval(intervalId);
-          return max;
-        } else {
-          return tempCount;
-        }
-      });
-    }, 70);
-  };
+  const targetElement = useRef<HTMLElement>(null);
+  const startedRef = useRef(false);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
-    function handleIntersection(entries: IntersectionObserverEntry[]) {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          setCounted(min);
-          startCountup();
-        }
-      });
-    }
+    const el = targetElement.current;
 
-    // Options for the Intersection Observer
-    const options: IntersectionObserverInit = {
-      root: null,
-      rootMargin: "0px", 
-      threshold: 0.5,
+    const startCountup = () => {
+      // Kjør bare ÉN gang. Tidligere startet den på nytt hver gang elementet
+      // krysset viewporten, og det gamle intervallet ble aldri ryddet – på
+      // mobil (der heroen var pinnet) ga det hakking og tall som hoppet.
+      if (startedRef.current) return;
+      startedRef.current = true;
+      const step = Math.max(1, Math.ceil(max / 20));
+      intervalRef.current = setInterval(() => {
+        setCounted((pre) => {
+          const next = pre + step;
+          if (next >= max) {
+            if (intervalRef.current) clearInterval(intervalRef.current);
+            return max;
+          }
+          return next;
+        });
+      }, 70);
     };
 
-    // Create an Intersection Observer and pass in the callback function and options
-    const observer = new IntersectionObserver(handleIntersection, options);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) startCountup();
+        });
+      },
+      { root: null, rootMargin: "0px", threshold: 0.5 }
+    );
+    if (el) observer.observe(el);
 
-    // Start observing the target element
-    if (targetElement.current) {
-      observer.observe(targetElement.current);
-    }
+    // Sikkerhetsnett: IntersectionObserver fyrer ikke alltid inne i
+    // ScrollSmoother / på pinnede seksjoner, og tallet ble da stående på 0.
+    // Samme fallback som AnimatedCounter bruker.
+    const fallback = setTimeout(startCountup, 2500);
 
     return () => {
-      setCounted(min);
-      observer.disconnect(); // Disconnect the observer when component unmounts
+      observer.disconnect();
+      clearTimeout(fallback);
+      if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return <i ref={targetElement} className={cls}>{counted}</i>;
