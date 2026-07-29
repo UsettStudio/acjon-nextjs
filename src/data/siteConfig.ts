@@ -30,8 +30,8 @@ export const siteConfig = {
         addressRegion: "Østfold",
         addressCountry: "NO",
     },
-    // Org-nummer – fylles inn når brukeren sender det (vises i footer + kan legges i JSON-LD).
-    orgNumber: "", // TODO: legg inn org-nummer
+    // Org-nummer – vises i footer og legges inn som taxID i JSON-LD.
+    orgNumber: "938 095 132",
     // Omtrentlig senterpunkt (Grålum, Sarpsborg) – kan finjusteres ved eksakt punkt.
     geo: { latitude: 59.2769, longitude: 11.0645 },
     areaServed: ["Fredrikstad", "Sarpsborg", "Moss", "Halden", "Østfold", "Norge"],

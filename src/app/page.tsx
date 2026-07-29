@@ -12,7 +12,6 @@ import BootstrapLoader from "@/layouts/BootstrapLoader";
 
 import DesignStudioTextSlider from "@/components/text-slider/DesignStudioTextSlider";
 import DesignStudioPortfolio from "@/components/portfolio/DesignStudioPortfolio";
-import PinnedFrameScrub from "@/components/scroll-cinematic/PinnedFrameScrub";
 import HashScroll from "@/components/scroll-cinematic/HashScroll";
 import OnePageLinks from "@/components/scroll-cinematic/OnePageLinks";
 import DesignStudioService from "@/components/service/DesignStudioService";
@@ -98,16 +97,6 @@ export default function Page() {
 
                                         <section id="prosjekter">
                                             <DesignStudioPortfolio />
-                                        </section>
-
-                                        {/* Cinematisk scroll-bildesekvens av ferdig hus (uten tekst).
-                                            Bildesekvens (ikke <video>) slik at scroll styrer den på mobil også. */}
-                                        <section id="byggeprosessen">
-                                            <PinnedFrameScrub
-                                                frameDir="/assets/scroll/hus-frames"
-                                                frameCount={121}
-                                                scrollFactor={4.5}
-                                            />
                                         </section>
 
                                         <section id="om-oss">
