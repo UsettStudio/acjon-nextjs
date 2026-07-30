@@ -834,46 +834,72 @@
 }
 
 /* ------------------------------------------------------------------ */
-/*  MOBIL (<768px): reveal-animasjonene skal ALDRI kunne skjule tekst   */
+/*  MOBIL (<768px) – hero-scroll og reveal-animasjoner                  */
 /*                                                                      */
-/*  Bakgrunn: ScrollSmoother opprettes bare når innerWidth >= 768       */
-/*  (se useScrollSmooth.ts). Under 768px kjører altså ScrollTrigger     */
-/*  alene – og på telefon kollapser adresselinjen når man scroller,     */
-/*  slik at innerHeight (og dermed alle 100vh-mål og pin-avstander)     */
-/*  endrer seg MIDT i scrollingen. Da rekker aldri "play"-triggeren å   */
-/*  fyre for seksjoner lenger nede, og siden                            */
-/*      fadeAnimation() bruker gsap.from(..., { opacity: 0 })           */
-/*      splitTitleAnim() animerer .char FRA opacity 0                   */
-/*  blir innholdet stående usynlig => seksjonen vises som et TOMT       */
-/*  farget felt (sort på «Om oss»/footer, lyst før prosjektbildene).    */
+/*  ScrollSmoother opprettes bare når innerWidth >= 768 (useScrollSmooth)*/
+/*  Under 768px kjører ScrollTrigger alene, og en GSAP-pin blir da en    */
+/*  position:fixed-pin. På telefon kollapser adresselinjen under scroll  */
+/*  => innerHeight endres => pin-lengden re-måles midt i scrollingen og  */
+/*  alt under heroen forskyves. Derfor: ingen GSAP-pin på mobil.         */
 /*                                                                      */
-/*  Løsning: på mobil dropper vi reveal-effekten helt og tvinger alt    */
-/*  synlig. Desktop er 100 % uendret.                                   */
-/*  Samme prinsipp som portfolio-fiksen lenger oppe – ikke fjern.       */
+/*  I stedet pinner vi heroen med ekte CSS `position: sticky`. Det er    */
+/*  trygt nettopp fordi ScrollSmoother IKKE er aktiv her – det er        */
+/*  smootherens transform som ellers ødelegger sticky.                   */
+/*  DesignStudioHero.tsx leser #top sin posisjon ved hver scroll-event   */
+/*  og velger riktig frame. Ikke fjern noen av delene – de hører sammen. */
 /* ------------------------------------------------------------------ */
 @media (max-width: 767px) {
-    .tp_fade_anim,
-    .tp-anim-img,
-    .tp-split-title,
-    .tp-split-title .char,
-    .tp-char-animation,
-    .tp-char-animation .char {
+    /* Scroll-lengden rotasjonen får. 300svh = heroen står i ro i ca. to
+       skjermhøyder mens bygget roterer, så slippes den. svh (small viewport
+       height) gjør at høyden IKKE endrer seg når adresselinjen kollapser. */
+    #top {
+        position: relative;
+        height: 300svh;
+    }
+    #top > .ds-hero-scrub {
+        position: sticky;
+        top: 0;
+        height: 100svh;
+        min-height: 0;
+        padding-top: 110px;
+        padding-bottom: 30px;
+        overflow: hidden;
+    }
+    /* Innholdet må få plass på ÉN skjerm når heroen er sticky. */
+    #top > .ds-hero-scrub > .container {
+        justify-content: center;
+        gap: 26px;
+    }
+    #top > .ds-hero-scrub .ds-hero-top {
+        padding-bottom: 0 !important;
+    }
+    /* Lave telefoner (iPhone SE o.l.): krymp logoen så alt får plass. */
+    @media (max-height: 720px) {
+        #top > .ds-hero-scrub {
+            padding-top: 92px;
+        }
+        #top > .ds-hero-scrub > .container {
+            gap: 16px;
+        }
+        .ds-hero-logo {
+            width: clamp(190px, 38vw, 300px);
+        }
+    }
+
+    /* Maskene fra imageClipingEffect ligger OVER bildet og fjernes først av
+       en scroll-animasjon. Fyrer den ikke, dekker de bildet permanent. */
+    .tp-clip-anim .mask {
+        display: none !important;
+    }
+
+    /* Sikkerhetsnett-klassen settes av AnimationWrapper på elementer som er
+       inne i viewporten, men fortsatt usynlige etter at reveal-en skulle ha
+       kjørt. Da vises de uansett – ingen tomme farget felt. */
+    .ub-force-visible,
+    .ub-force-visible .char {
         opacity: 1 !important;
         visibility: visible !important;
         transform: none !important;
         clip-path: none !important;
-    }
-    /* Maskene fra imageClipingEffect ligger OVER bildet og fjernes først
-       av en scroll-animasjon. Fyrer den ikke, dekker de bildet. */
-    .tp-clip-anim .mask {
-        display: none !important;
-    }
-}
-
-/* Mobil: bruk «small viewport height» der nettleseren støtter det, slik at
-   heroen ikke hopper i høyde når adresselinjen kollapser/kommer tilbake. */
-@media (max-width: 767px) {
-    .ds-hero-scrub {
-        min-height: 100svh;
     }
 }

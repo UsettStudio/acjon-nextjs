@@ -93,28 +93,97 @@ const DesignStudioHero = () => {
                 draw(Math.max(frameRef.current, 0));
             };
 
-            // MOBIL (<768px): ScrollSmoother opprettes IKKE (se useScrollSmooth.ts),
-            // og en ScrollTrigger-pin uten smoother bruker position:fixed. På telefon
-            // kollapser adresselinjen når man scroller => innerHeight endres => pin-
-            // lengden («+= innerHeight * 2.6») re-måles midt i scrollingen, og ALT
-            // under heroen forskyves. Det er det som gir tomme felt lenger nede.
-            // Derfor: ingen pin og ingen scrub på mobil – bare ett stillbilde.
-            // Bonus: vi slipper å laste 120 bilder over mobildata.
+            // ============================================================
+            // MOBIL (<768px): egen scrub UTEN GSAP-pin.
+            //
+            // ScrollSmoother opprettes ikke under 768px (se useScrollSmooth.ts).
+            // En ScrollTrigger-pin uten smoother bruker position:fixed, og på
+            // telefon kollapser adresselinjen når man scroller => innerHeight
+            // endres => pin-lengden («+= innerHeight * 2.6») blir re-målt midt i
+            // scrollingen, og ALT under heroen forskyves (tomme felt lenger nede).
+            //
+            // Løsningen: la CSS gjøre pinningen med `position: sticky` på
+            // .ds-hero-scrub inne i #top (se globals.scss, @media max-width:767px).
+            // Sticky er trygt her nettopp fordi ScrollSmoother IKKE er aktiv –
+            // det er transformen fra smootheren som ellers ødelegger sticky.
+            //
+            // Frame-indeksen regnes ut fra #top sin faktiske posisjon ved HVER
+            // scroll-event. Da leses innerHeight og rect på nytt hver gang, og
+            // adresselinja kan kollapse så mye den vil uten at noe glipper.
+            // ============================================================
             const isDesktop = window.matchMedia("(min-width: 768px)").matches;
 
             if (!isDesktop) {
-                const still = new Image();
-                still.src = `${FRAME_DIR}/frame_0001.jpg`;
-                still.onload = () => {
-                    images[0] = still;
-                    frameRef.current = 0;
-                    resize();
+                // Hver 3. frame => 40 bilder (~4,7 MB) i stedet for 120 (~14 MB).
+                // 40 steg er rikelig for at rotasjonen skal se jevn ut.
+                const MOBILE_STEP = 3;
+                const mobileFrames: number[] = [];
+                for (let i = 0; i < FRAME_COUNT; i += MOBILE_STEP) mobileFrames.push(i);
+                if (mobileFrames[mobileFrames.length - 1] !== FRAME_COUNT - 1) {
+                    mobileFrames.push(FRAME_COUNT - 1);
+                }
+
+                mobileFrames.forEach((n, k) => {
+                    const img = new Image();
+                    img.src = `${FRAME_DIR}/frame_${pad(n + 1)}.jpg`;
+                    img.onload = () => {
+                        // Tegn så snart bildet vi faktisk står på er nede, så
+                        // heroen aldri blir stående svart mens resten lastes.
+                        // (k === 0 er første bilde – det trengs med én gang.)
+                        if (frameRef.current < 0) frameRef.current = n;
+                        if (frameRef.current === n || k === 0) draw(frameRef.current);
+                    };
+                    images[n] = img;
+                });
+
+                // Sporet som heroen «henger fast» i = #top.
+                const track =
+                    (root.closest("#top") as HTMLElement | null) ?? root.parentElement;
+
+                let ticking = false;
+
+                const update = () => {
+                    ticking = false;
+                    if (!track) return;
+                    const span = track.offsetHeight - window.innerHeight;
+                    if (span <= 0) return;
+                    const progress = Math.min(
+                        1,
+                        Math.max(0, -track.getBoundingClientRect().top / span)
+                    );
+                    const wanted = Math.round(progress * (FRAME_COUNT - 1));
+                    // Nærmeste frame vi faktisk har lastet på mobil.
+                    let best = mobileFrames[0];
+                    for (const n of mobileFrames) {
+                        if (Math.abs(n - wanted) < Math.abs(best - wanted)) best = n;
+                    }
+                    if (best !== frameRef.current) {
+                        frameRef.current = best;
+                        draw(best);
+                    }
                 };
-                images[0] = still;
+
+                const onScroll = () => {
+                    if (ticking) return;
+                    ticking = true;
+                    requestAnimationFrame(update);
+                };
+
+                const onResize = () => {
+                    resize();
+                    update();
+                };
+
                 resize();
-                window.addEventListener("resize", resize);
+                update();
+                window.addEventListener("scroll", onScroll, { passive: true });
+                window.addEventListener("resize", onResize);
+                window.addEventListener("orientationchange", onResize);
+
                 return () => {
-                    window.removeEventListener("resize", resize);
+                    window.removeEventListener("scroll", onScroll);
+                    window.removeEventListener("resize", onResize);
+                    window.removeEventListener("orientationchange", onResize);
                 };
             }
 
