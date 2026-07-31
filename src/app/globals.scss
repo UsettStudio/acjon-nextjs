@@ -903,3 +903,56 @@
         clip-path: none !important;
     }
 }
+
+/* ------------------------------------------------------------------ */
+/*  «Vi er de som skaper» – de tre tallboksene (Prosjekter / Kunder /  */
+/*  År med erfaring) får hver sin merkefarge, i samme rekkefølge som   */
+/*  knappenes gradient og tjenestekortene: oransje → magenta → lilla.  */
+/*  Boksene har fra malen en 1px hvit-10% ramme; vi bytter den ut.     */
+/* ------------------------------------------------------------------ */
+.ds-about-item {
+    border-radius: 10px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+.ds-about-item:hover {
+    transform: translateY(-4px);
+}
+
+.ds-about-ptb .row > [class*="col-"]:nth-child(1) .ds-about-item {
+    border-color: var(--brus-1) !important;
+    box-shadow: 0 0 26px -8px var(--brus-1);
+}
+.ds-about-ptb .row > [class*="col-"]:nth-child(2) .ds-about-item {
+    border-color: var(--brus-2) !important;
+    box-shadow: 0 0 26px -8px var(--brus-2);
+}
+.ds-about-ptb .row > [class*="col-"]:nth-child(3) .ds-about-item {
+    border-color: var(--brus-3) !important;
+    box-shadow: 0 0 26px -8px var(--brus-3);
+}
+.ds-about-ptb .row > [class*="col-"]:nth-child(1) .ds-about-item:hover {
+    box-shadow: 0 0 42px -6px var(--brus-1);
+}
+.ds-about-ptb .row > [class*="col-"]:nth-child(2) .ds-about-item:hover {
+    box-shadow: 0 0 42px -6px var(--brus-2);
+}
+.ds-about-ptb .row > [class*="col-"]:nth-child(3) .ds-about-item:hover {
+    box-shadow: 0 0 42px -6px var(--brus-3);
+}
+
+/* Selve tallet i merkefargen – etiketten over forblir hvit. */
+.ds-about-ptb .row > [class*="col-"]:nth-child(1) .ds-about-item-title,
+.ds-about-ptb .row > [class*="col-"]:nth-child(1) .ds-about-item-title .purecounter {
+    color: var(--brus-1);
+}
+.ds-about-ptb .row > [class*="col-"]:nth-child(2) .ds-about-item-title,
+.ds-about-ptb .row > [class*="col-"]:nth-child(2) .ds-about-item-title .purecounter {
+    color: var(--brus-2);
+}
+/* Lilla #7A2EB8 gir bare 2,9:1 kontrast mot den sorte bakgrunnen – like under
+   WCAG-kravet på 3:1 for stor tekst. Tallet får derfor en lysere lilla (4,7:1),
+   mens rammen og gløden beholder den ekte merkefargen. */
+.ds-about-ptb .row > [class*="col-"]:nth-child(3) .ds-about-item-title,
+.ds-about-ptb .row > [class*="col-"]:nth-child(3) .ds-about-item-title .purecounter {
+    color: #9B54D8;
+}

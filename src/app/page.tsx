@@ -25,7 +25,9 @@ import { siteConfig } from "@/data/siteConfig";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: { absolute: "3D-visualisering i Østfold – Usett 3D Studio" },
+    // Google klipper titler rundt 60 tegn – denne er 54 og får med både
+    // hovedsøkeordet, stedet, salgsargumentet og merkenavnet.
+    title: { absolute: "3D-visualisering i Østfold – levert på 48 timer | Usett" },
     description:
         "Usett er 3D-studioet i Østfold for fotorealistisk 3D-visualisering, interiør og eksteriør, foto- og dronemontasje, 3D-animasjon, 2D-plantegninger, 3D-skanning og hjemmesider. Rask levering til Fredrikstad, Sarpsborg, Moss og hele Østfold.",
     keywords: [
