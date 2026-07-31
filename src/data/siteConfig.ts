@@ -15,7 +15,7 @@ export const siteConfig = {
     url: SITE_URL,
     // Kort, salgs-/søkeoptimalisert beskrivelse (brukes som default meta description)
     description:
-        "Usett er et 3D-studio i Østfold som leverer fotorealistisk 3D-visualisering, interiør og eksteriør, foto- og dronemontasje, 3D-animasjon, 2D-plantegninger, 3D-skanning (Digital Twin) og hjemmesider. Vi betjener Fredrikstad, Sarpsborg, Moss og hele Østfold.",
+        "Usett leverer fotorealistisk 3D-visualisering, interiør og eksteriør, foto- og dronemontasje, 3D-animasjon, 2D-plantegninger, 3D-skanning (Digital Twin) og hjemmesider til hele Norge. Studioet ligger i Østfold, og vi betjener Fredrikstad, Sarpsborg, Moss og Halden lokalt.",
     telephone: "+4792806558",
     telephoneDisplay: "+47 92 80 65 58",
     email: "Mikael@Usett.no",
@@ -34,7 +34,7 @@ export const siteConfig = {
     orgNumber: "938 095 132",
     // Omtrentlig senterpunkt (Grålum, Sarpsborg) – kan finjusteres ved eksakt punkt.
     geo: { latitude: 59.2769, longitude: 11.0645 },
-    areaServed: ["Fredrikstad", "Sarpsborg", "Moss", "Halden", "Østfold", "Norge"],
+    areaServed: ["Norge", "Østfold", "Fredrikstad", "Sarpsborg", "Moss", "Halden"],
     priceRange: "24 000–53 500 kr",
     // Legg inn sosiale profiler her når de finnes (styrker E-E-A-T / kunnskapsgraf).
     sameAs: [] as string[],
@@ -54,7 +54,7 @@ export const services: ServiceDef[] = [
         slug: "3d-visualisering",
         name: "3D-visualisering",
         description:
-            "Fotorealistisk 3D-visualisering og arkitekturvisualisering for bolig, næring og produkt i Østfold – ideelt for salg, markedsføring og prosjektering.",
+            "Fotorealistisk 3D-visualisering og arkitekturvisualisering for bolig, næring og produkt – levert digitalt til hele Norge, ideelt for salg, markedsføring og prosjektering.",
     },
     {
         slug: "interiorvisualisering",
@@ -90,7 +90,7 @@ export const services: ServiceDef[] = [
         slug: "3d-skanning",
         name: "3D-skanning (Digital Twin)",
         description:
-            "3D-skanning og Digital Twin av bygg og lokaler i Østfold – nøyaktige punktskyer og 3D-modeller av eksisterende forhold.",
+            "3D-skanning og Digital Twin av bygg og lokaler – nøyaktige punktskyer og 3D-modeller av eksisterende forhold. Krever fysisk oppmøte: Østfold-området fast, ellers i landet etter avtale.",
     },
     {
         slug: "hjemmesider",
@@ -107,8 +107,8 @@ export const faqs: { q: string; a: string }[] = [
         a: "Vi tilbyr tre pakker: Basis fra 24 000 kr, Proff 39 000 kr og Komplett 53 500 kr. Endelig pris avhenger av antall bilder og kompleksitet, og du kan supplere med tilleggsvalg som 2D salgstegninger, AI-genererte sesongbilder og animasjon. Ta kontakt for et konkret tilbud.",
     },
     {
-        q: "Hvilke områder i Østfold dekker dere?",
-        a: "Vi holder til i Østfold og betjener Fredrikstad, Sarpsborg, Moss, Halden og resten av fylket. 3D-visualisering, animasjon og plantegninger leverer vi digitalt i hele Norge.",
+        q: "Hvor i landet leverer dere?",
+        a: "Overalt. 3D-visualisering, animasjon og plantegninger lager vi digitalt, så det spiller ingen rolle om du sitter i Tromsø eller på Nesodden – alt går på e-post. Studioet vårt ligger i Østfold, og 3D-skanning og dronefoto krever at vi møter opp fysisk. Det gjør vi fast i Østfold-området, og ellers i landet etter avtale.",
     },
     {
         q: "Hvor lang tid tar en 3D-visualisering?",
@@ -120,7 +120,7 @@ export const faqs: { q: string; a: string }[] = [
     },
     {
         q: "Tilbyr dere 3D-skanning og Digital Twin?",
-        a: "Ja. Vi utfører 3D-skanning av bygg og lokaler i Østfold og lager nøyaktige 3D-modeller / Digital Twin av eksisterende forhold.",
+        a: "Ja. Vi skanner bygg og lokaler og lager nøyaktige 3D-modeller / Digital Twin av det som allerede står der. Dette må gjøres på stedet – fast i Østfold-området, og ellers i landet etter avtale.",
     },
     {
         q: "Lager dere også dronefoto, fotomontasje og 2D-plantegninger?",

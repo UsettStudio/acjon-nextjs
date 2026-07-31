@@ -12,7 +12,7 @@ const FaqSection = () => {
                 <div className="ub-faq-head">
                     <span className="ub-faq-kicker">Ofte stilte spørsmål</span>
                     <h2 className="ub-faq-title">
-                        3D-visualisering i Østfold – pris, leveringstid og prosess
+                        3D-visualisering i hele Norge – pris, leveringstid og prosess
                     </h2>
                 </div>
                 <div className="ub-faq-list">
