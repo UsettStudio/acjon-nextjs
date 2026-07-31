@@ -12,6 +12,7 @@ import "./globals.scss";
 import "swiper/css/bundle";
 import { ToastContainer } from "react-toastify";
 import { SITE_URL, siteConfig } from "@/data/siteConfig";
+import CookieBanner from "@/components/consent/CookieBanner";
 
 // Initialize Google Fonts
 export const bricolageGrotesque = Bricolage_Grotesque({
@@ -119,6 +120,7 @@ export default function RootLayout({
     >
       <body>
         {children}
+        <CookieBanner />
         <ToastContainer />
       </body>
     </html>

@@ -1,3 +1,4 @@
+import ConsentSettingsLink from '@/components/consent/ConsentSettingsLink';
 import { getCurrentYear } from '@/utils/getCurrentYear';
 import Link from 'next/link';
 
@@ -12,8 +13,11 @@ const DesignSFooterCopyright = () => {
                 </div>
                 <div className="col-lg-6">
                     <div className="tp-copyright-menu text-lg-end">
-                        <Link className="tp-hover-line-white" href="#">Vilkår</Link>
-                        <Link className="tp-hover-line-white" href="#">Personvern</Link>
+                        <ConsentSettingsLink
+                            className="tp-hover-line-white"
+                            label="Informasjonskapsler"
+                        />
+                        <Link className="tp-hover-line-white" href="/personvern">Personvern</Link>
                     </div>
                 </div>
             </div>
