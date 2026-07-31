@@ -73,6 +73,14 @@ export const metadata: Metadata = {
   creator: siteConfig.legalName,
   publisher: siteConfig.legalName,
   category: "3D-visualisering",
+  // Metas domeneverifisering for usett.no (bedriftsportefølje BRUS Design Studio).
+  // MÅ ligge i <head> og MÅ rendres på serveren – Meta godtar ikke en tag som
+  // settes inn av JavaScript i ettertid. Derfor står den i metadata, ikke i en
+  // klientkomponent. Ikke fjern: uten den kan vi ikke styre hvilke konverteringer
+  // som måles på iPhone (Aggregated Event Measurement).
+  other: {
+    "facebook-domain-verification": "2ug94cjzme685xetovbl390g8l6z3w",
+  },
   formatDetection: { telephone: true, email: true, address: true },
   robots: {
     index: true,

@@ -123,6 +123,20 @@ const ContactForm = () => {
             });
             const result = await res.json();
             if (result.success) {
+                // Meldingen gikk faktisk gjennom => rapporter en Lead-hendelse til
+                // Meta, slik at annonsene kan optimaliseres mot ekte henvendelser
+                // og ikke bare klikk.
+                //
+                // window.fbq finnes KUN hvis brukeren har samtykket til
+                // markedsføringskapsler (se components/consent/CookieBanner.tsx).
+                // Uten samtykke er dette et stille no-op – ingen sporing skjer.
+                // Typen er deklarert globalt i CookieBanner.tsx.
+                if (typeof window !== "undefined" && typeof window.fbq === "function") {
+                    window.fbq("track", "Lead", {
+                        content_name: data.service || "Ikke valgt pakke",
+                        content_category: "Kontaktskjema usett.no",
+                    });
+                }
                 toast.success(`Takk, ${data.name}! Meldingen din er sendt.`);
                 reset();
             } else {
