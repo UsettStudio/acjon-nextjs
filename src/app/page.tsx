@@ -12,6 +12,7 @@ import BootstrapLoader from "@/layouts/BootstrapLoader";
 
 import DesignStudioTextSlider from "@/components/text-slider/DesignStudioTextSlider";
 import DesignStudioPortfolio from "@/components/portfolio/DesignStudioPortfolio";
+import PinnedFrameScrub from "@/components/scroll-cinematic/PinnedFrameScrub";
 import HashScroll from "@/components/scroll-cinematic/HashScroll";
 import OnePageLinks from "@/components/scroll-cinematic/OnePageLinks";
 import DesignStudioService from "@/components/service/DesignStudioService";
@@ -99,6 +100,17 @@ export default function Page() {
 
                                         <section id="prosjekter">
                                             <DesignStudioPortfolio />
+                                        </section>
+
+                                        {/* Dronefilm: drona letter fra bakken og stiger over et
+                                            norsk boligfelt. Bildesekvens (ikke <video>) slik at
+                                            scrollen styrer avspillingen – også på mobil. */}
+                                        <section id="drone">
+                                            <PinnedFrameScrub
+                                                frameDir="/assets/scroll/drone-frames"
+                                                frameCount={61}
+                                                scrollFactor={3}
+                                            />
                                         </section>
 
                                         <section id="om-oss">
