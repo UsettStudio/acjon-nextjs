@@ -3,13 +3,14 @@
 /**
  * HouseBuildFilm – «fra strek til ferdig hus».
  *
- * Scroll-skrubbet canvas-bildesekvens (public/hero/frames + frames-mobile),
- * bygget etter NØYAKTIG samme oppskrift som DesignStudioHero – den eneste
- * scroll-mekanikken på denne siden som er verifisert på ekte telefon.
+ * Scroll-skrubbet canvas-bildesekvens, bygget etter NØYAKTIG samme oppskrift
+ * som DesignStudioHero – den eneste scroll-mekanikken på denne siden som er
+ * verifisert på ekte telefon.
  *
  *  • DESKTOP (>=768px): ScrollSmoother er aktiv, og smootherens transform
  *    ødelegger `position: sticky`. Derfor pinnes seksjonen med GSAP
  *    ScrollTrigger (pin + scrub), som er fullt kompatibel med smootheren.
+ *    Bilder: /hero/frames (1600x900), hvert 2. bilde.
  *
  *  • MOBIL (<768px): ScrollSmoother opprettes IKKE (se useScrollSmooth.ts).
  *    Da faller en ScrollTrigger-pin tilbake på `position: fixed`, og når
@@ -17,9 +18,12 @@
  *    midt i scrollingen => alt under hopper. Derfor: ingen GSAP i det hele
  *    tatt på mobil. CSS gjør pinningen med ekte `position: sticky` (trygt
  *    nettopp fordi smootheren ikke er aktiv), og frame-indeksen regnes ut
- *    fra sporets faktiske posisjon ved HVER scroll-event – da leses
- *    innerHeight og rect på nytt hver gang.
+ *    fra sporets faktiske posisjon ved HVER scroll-event.
+ *    Bilder: /hero/frames-zoom (560x900) – ferdig sentrert beskåret til
+ *    stående format, så telefonen slipper å laste ned bildekanter som
+ *    likevel blir beskåret bort. 48 filer, ca. 2,3 MB.
  *
+ * Begge visninger fyller flaten helt (cover), som hero-videoen.
  * Se `.uh-film*` i globals.scss. CSS og komponent hører sammen.
  */
 import { useRef } from "react";
@@ -27,14 +31,14 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 
-/** Alle bildene finnes i begge mapper, frame_0001 … frame_0144. */
-const TOTAL = 144;
-const DIR_DESKTOP = "/hero/frames";          // 1600x900
-const DIR_MOBILE = "/hero/frames-mobile";    // 800x450
-/** Hvert 2. bilde på desktop (73 stk, ~12 MB), hvert 3. på mobil (49 stk, ~2,6 MB). */
-const STEP_DESKTOP = 2;
-const STEP_MOBILE = 3;
-/** Bakgrunn = samme som resten av forsiden, så «contain»-kantene på mobil forsvinner. */
+const DESKTOP_DIR = "/hero/frames";
+const DESKTOP_TOTAL = 144;
+const DESKTOP_STEP = 2; // 72 bilder, ~12 MB
+
+const MOBILE_DIR = "/hero/frames-zoom";
+const MOBILE_TOTAL = 48; // fortløpende nummerert 0001..0048
+
+/** Bakgrunn bak canvas mens bildene lastes. */
 const BG = "#F5F7F5";
 /** Hvor lenge seksjonen står i ro på desktop, målt i skjermhøyder. */
 const SCROLL_FACTOR = 2.6;
@@ -57,25 +61,29 @@ export default function HouseBuildFilm() {
             if (!ctx) return;
 
             const isDesktop = window.matchMedia("(min-width: 768px)").matches;
-            const dir = isDesktop ? DIR_DESKTOP : DIR_MOBILE;
-            const step = isDesktop ? STEP_DESKTOP : STEP_MOBILE;
 
-            // Hvilke kildebilder vi faktisk laster ned.
-            const loadedIdx: number[] = [];
-            for (let i = 0; i < TOTAL; i += step) loadedIdx.push(i);
-            if (loadedIdx[loadedIdx.length - 1] !== TOTAL - 1) loadedIdx.push(TOTAL - 1);
-
-            const images: HTMLImageElement[] = [];
+            // Bygg lista over bilder vi faktisk laster ned.
+            const urls: string[] = [];
+            if (isDesktop) {
+                for (let i = 1; i <= DESKTOP_TOTAL; i += DESKTOP_STEP) {
+                    urls.push(`${DESKTOP_DIR}/frame_${pad(i)}.jpg`);
+                }
+                if (!urls[urls.length - 1].endsWith(`${pad(DESKTOP_TOTAL)}.jpg`)) {
+                    urls.push(`${DESKTOP_DIR}/frame_${pad(DESKTOP_TOTAL)}.jpg`);
+                }
+            } else {
+                for (let i = 1; i <= MOBILE_TOTAL; i++) {
+                    urls.push(`${MOBILE_DIR}/frame_${pad(i)}.jpg`);
+                }
+            }
+            const last = urls.length - 1;
+            const images: HTMLImageElement[] = new Array(urls.length);
 
             // ---------------------------------------------------------------
-            // Tegning
+            // Tegning – alltid «cover», altså full flate uten kanter, slik
+            // hero-videoen gjør det. På mobil er bildene allerede beskåret til
+            // stående format, så beskjæringen her blir minimal.
             // ---------------------------------------------------------------
-            // Desktop-viewporten er omtrent 16:9 som bildene, så «cover» gir
-            // full bredde uten synlig beskjæring. På en høy telefonskjerm ville
-            // cover kuttet bort mesteparten av huset – der brukes «contain», og
-            // de smale feltene over/under får sidens egen bakgrunnsfarge.
-            const useCover = isDesktop;
-
             const paint = (img: HTMLImageElement) => {
                 const cw = canvas.clientWidth;
                 const ch = canvas.clientHeight;
@@ -83,7 +91,7 @@ export default function HouseBuildFilm() {
                 const ir = img.naturalWidth / img.naturalHeight;
                 const cr = cw / ch;
                 let dw: number, dh: number;
-                if (useCover ? ir > cr : ir <= cr) {
+                if (ir > cr) {
                     dh = ch;
                     dw = ch * ir;
                 } else {
@@ -97,19 +105,18 @@ export default function HouseBuildFilm() {
 
             /**
              * Tegn ønsket bilde – eller det nærmeste som faktisk er lastet ned.
-             * Uten dette kunne seksjonen bli stående tom mens bildene lastes,
-             * fordi bare ett bestemt bilde ville ha truffet.
+             * Uten dette kunne flaten bli stående tom mens sekvensen laster.
              */
             const drawNearestLoaded = (wanted: number) => {
                 let best = -1;
                 let bestDist = Infinity;
-                for (const n of loadedIdx) {
-                    const img = images[n];
+                for (let i = 0; i < images.length; i++) {
+                    const img = images[i];
                     if (!img || !img.complete || !img.naturalWidth) continue;
-                    const d = Math.abs(n - wanted);
+                    const d = Math.abs(i - wanted);
                     if (d < bestDist) {
                         bestDist = d;
-                        best = n;
+                        best = i;
                     }
                 }
                 if (best < 0) return;
@@ -126,26 +133,21 @@ export default function HouseBuildFilm() {
 
             /** Sett tilstand ut fra en progresjon 0..1. */
             const setProgress = (p: number) => {
-                const wanted = Math.round(
-                    Math.min(1, Math.max(0, p)) * (TOTAL - 1)
-                );
+                const wanted = Math.round(Math.min(1, Math.max(0, p)) * last);
                 if (wanted === frameRef.current) return;
                 frameRef.current = wanted;
                 drawNearestLoaded(wanted);
             };
 
-            // ---------------------------------------------------------------
-            // Nedlasting
-            // ---------------------------------------------------------------
-            loadedIdx.forEach((n) => {
+            urls.forEach((src, i) => {
                 const img = new Image();
-                img.src = `${dir}/frame_${pad(n + 1)}.jpg`;
+                img.src = src;
                 img.onload = () => {
                     // Tegn på nytt hver gang et bilde lander, så vi aldri blir
                     // stående med tom flate mens sekvensen laster.
                     drawNearestLoaded(Math.max(frameRef.current, 0));
                 };
-                images[n] = img;
+                images[i] = img;
             });
 
             resize();
