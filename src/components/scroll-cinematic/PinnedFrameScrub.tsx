@@ -91,96 +91,22 @@ export default function PinnedFrameScrub({
             };
 
             // ============================================================
-            // MOBIL (<768px): egen scrub UTEN GSAP-pin.
+            // MOBIL (<768px): seksjonen vises IKKE.
             //
-            // ScrollSmoother opprettes ikke under 768px (se useScrollSmooth.ts).
-            // En ScrollTrigger-pin uten smoother bruker position:fixed, og på
-            // telefon kollapser adresselinja når man scroller => innerHeight
-            // endres => pin-lengden («+= innerHeight * scrollFactor») re-måles
-            // midt i scrollingen. Resultatet er at seksjonen enten ikke pinnes
-            // i det hele tatt eller forskyver alt under seg.
+            // globals.scss skjuler #drone under 768px (`display: none`).
+            // Vi avbryter derfor før bildene i det hele tatt lastes – ellers
+            // hadde telefonen lastet ned megabyte med bilder til et element
+            // som aldri vises.
             //
-            // Løsningen er den samme som i heroen: la CSS gjøre pinningen med
-            // `position: sticky` på .ub-pin-scrub inne i wrapper-seksjonen (se
-            // globals.scss, @media max-width:767px), og regne frame-indeksen ut
-            // fra wrapperens faktiske posisjon ved HVER scroll-event. Da leses
-            // innerHeight og rect på nytt hver gang, og adresselinja kan
-            // kollapse så mye den vil uten at noe glipper.
+            // Bakgrunn: ScrollSmoother opprettes ikke under 768px (se
+            // useScrollSmooth.ts). Uten smoother pinner ScrollTrigger med
+            // position:fixed, og når adresselinja på telefonen kollapser
+            // endres innerHeight => pin-lengden re-måles midt i scrollingen.
+            // Både GSAP-pin og CSS-sticky-varianten ble ustabile her, så
+            // filmen er droppet på mobil. Desktop er uendret.
             // ============================================================
             const isDesktop = window.matchMedia("(min-width: 768px)").matches;
-
-            if (!isDesktop) {
-                // Hver 2. frame => halv datamengde på mobil. Rikelig for at
-                // bevegelsen skal se jevn ut.
-                const MOBILE_STEP = 2;
-                const mobileFrames: number[] = [];
-                for (let i = 0; i < frameCount; i += MOBILE_STEP) mobileFrames.push(i);
-                if (mobileFrames[mobileFrames.length - 1] !== frameCount - 1) {
-                    mobileFrames.push(frameCount - 1);
-                }
-
-                mobileFrames.forEach((n, k) => {
-                    const img = new Image();
-                    img.src = `${frameDir}/frame_${pad(n + 1)}.jpg`;
-                    img.onload = () => {
-                        // Tegn så snart bildet vi faktisk står på er nede, så
-                        // seksjonen aldri blir stående svart mens resten lastes.
-                        if (frameRef.current < 0) frameRef.current = n;
-                        if (frameRef.current === n || k === 0) draw(frameRef.current);
-                    };
-                    images[n] = img;
-                });
-
-                // Sporet som seksjonen «henger fast» i = wrapperen rundt.
-                const track = (root.parentElement as HTMLElement | null) ?? root;
-
-                let ticking = false;
-
-                const update = () => {
-                    ticking = false;
-                    if (!track) return;
-                    const span = track.offsetHeight - window.innerHeight;
-                    if (span <= 0) return;
-                    const progress = Math.min(
-                        1,
-                        Math.max(0, -track.getBoundingClientRect().top / span)
-                    );
-                    const wanted = Math.round(progress * (frameCount - 1));
-                    // Nærmeste frame vi faktisk har lastet på mobil.
-                    let best = mobileFrames[0];
-                    for (const n of mobileFrames) {
-                        if (Math.abs(n - wanted) < Math.abs(best - wanted)) best = n;
-                    }
-                    if (best !== frameRef.current) {
-                        frameRef.current = best;
-                        draw(best);
-                    }
-                    fadeLines(progress);
-                };
-
-                const onScroll = () => {
-                    if (ticking) return;
-                    ticking = true;
-                    requestAnimationFrame(update);
-                };
-
-                const onResize = () => {
-                    resize();
-                    update();
-                };
-
-                resize();
-                update();
-                window.addEventListener("scroll", onScroll, { passive: true });
-                window.addEventListener("resize", onResize);
-                window.addEventListener("orientationchange", onResize);
-
-                return () => {
-                    window.removeEventListener("scroll", onScroll);
-                    window.removeEventListener("resize", onResize);
-                    window.removeEventListener("orientationchange", onResize);
-                };
-            }
+            if (!isDesktop) return;
 
             for (let i = 0; i < frameCount; i++) {
                 const img = new Image();

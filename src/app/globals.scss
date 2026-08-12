@@ -958,34 +958,21 @@
 }
 
 /* ------------------------------------------------------------------ */
-/*  MOBIL: dronefilmen (#drone) pinnes med CSS sticky, ikke GSAP.       */
+/*  MOBIL: dronefilmen (#drone) vises IKKE under 768px.                 */
 /*                                                                      */
-/*  Samme grunn som for heroen: under 768px lages ikke ScrollSmoother,  */
-/*  og da faller ScrollTrigger sin pin tilbake på position:fixed. Når   */
-/*  adresselinja på telefonen kollapser endres innerHeight, pin-lengden */
-/*  re-måles midt i scrollingen, og seksjonen hopper eller pinnes ikke  */
-/*  i det hele tatt. Ekte `position: sticky` er trygt her nettopp fordi */
-/*  smootherens transform ikke er aktiv.                                */
+/*  Under 768px lages ikke ScrollSmoother, og da faller ScrollTrigger   */
+/*  sin pin tilbake på position:fixed. Når adresselinja på telefonen    */
+/*  kollapser endres innerHeight, pin-lengden re-måles midt i           */
+/*  scrollingen, og seksjonen hopper. CSS-sticky-varianten oppførte seg */
+/*  heller ikke stabilt nok. Filmen er derfor droppet på mobil – siden  */
+/*  går rett fra Prosjekter til «Vi er de som skaper».                  */
 /*                                                                      */
-/*  PinnedFrameScrub.tsx leser #drone sin posisjon ved hver scroll og   */
-/*  velger riktig frame. De to delene hører sammen – ikke fjern én av   */
-/*  dem alene.                                                          */
+/*  PinnedFrameScrub.tsx avbryter også før bildene lastes på mobil, så  */
+/*  telefonen ikke laster ned megabyte til et skjult element. De to     */
+/*  delene hører sammen – ikke fjern én av dem alene.                   */
 /* ------------------------------------------------------------------ */
 @media (max-width: 767px) {
-    /* 300svh => filmen står i ro i ca. to skjermhøyder mens den spilles.
-       svh (small viewport height) endrer seg IKKE når adresselinja
-       kollapser, så målingene holder seg stabile under scrollingen. */
     #drone {
-        position: relative;
-        height: 300svh;
-    }
-    #drone > .ub-pin-scrub {
-        position: sticky;
-        top: 0;
-        height: 100svh;
-        overflow: hidden;
-    }
-    #drone > .ub-pin-scrub .ub-pin-stage {
-        height: 100svh;
+        display: none;
     }
 }
