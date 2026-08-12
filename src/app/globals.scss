@@ -976,3 +976,46 @@
         display: none;
     }
 }
+
+/* ------------------------------------------------------------------ */
+/*  BYGGEFILM «fra strek til ferdig hus» (mellom Tjenester og          */
+/*  Prosjekter). Hører sammen med HouseBuildFilm.tsx.                  */
+/*                                                                      */
+/*  Desktop: .uh-film er 100vh og pinnes av GSAP ScrollTrigger.        */
+/*  Sporet (.uh-film-track) har ingen egen høyde – ScrollTrigger       */
+/*  setter selv inn pin-spacing.                                       */
+/*                                                                      */
+/*  Mobil (<768px): ingen GSAP. Sporet er 300svh høyt og .uh-film      */
+/*  henger fast med ekte `position: sticky`. `svh` er poenget – den    */
+/*  endrer seg IKKE når adresselinja kollapser, så målingene holder    */
+/*  seg stabile under scrollingen. Nøyaktig samme oppskrift som        */
+/*  heroen (#top / .ds-hero-scrub), som er testet på ekte telefon.     */
+/* ------------------------------------------------------------------ */
+.uh-film-track {
+    position: relative;
+    background: #f5f7f5;
+}
+.uh-film {
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+    background: #f5f7f5;
+}
+.uh-film-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+@media (max-width: 767px) {
+    .uh-film-track {
+        height: 300svh;
+    }
+    .uh-film {
+        position: sticky;
+        top: 0;
+        height: 100svh;
+    }
+}

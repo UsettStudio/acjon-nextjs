@@ -13,6 +13,7 @@ import BootstrapLoader from "@/layouts/BootstrapLoader";
 import DesignStudioTextSlider from "@/components/text-slider/DesignStudioTextSlider";
 import DesignStudioPortfolio from "@/components/portfolio/DesignStudioPortfolio";
 import PinnedFrameScrub from "@/components/scroll-cinematic/PinnedFrameScrub";
+import HouseBuildFilm from "@/components/scroll-cinematic/HouseBuildFilm";
 import HashScroll from "@/components/scroll-cinematic/HashScroll";
 import OnePageLinks from "@/components/scroll-cinematic/OnePageLinks";
 import DesignStudioService from "@/components/service/DesignStudioService";
@@ -97,6 +98,10 @@ export default function Page() {
                                         <section id="tjenester">
                                             <DesignStudioService />
                                         </section>
+
+                                        {/* Scroll-styrt byggefilm: fra strek til ferdig hus.
+                                            Samme mekanikk som heroen – pin på PC, CSS sticky på mobil. */}
+                                        <HouseBuildFilm />
 
                                         <section id="prosjekter">
                                             <DesignStudioPortfolio />
