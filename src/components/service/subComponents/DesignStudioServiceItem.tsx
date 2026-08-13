@@ -11,7 +11,17 @@ const DesignStudioServiceItem: React.FC<ServiceItemDt> = ({ id, title, image }) 
                 <div className="ds-service-item-wrapper fix">
                     <div className="ds-service-item-box">
                         <div className="ds-service-item-icon">
-                            {image && <Image width={60} height={60} className='img-fluid w-auto h-auto' src={image} alt="service icon" />}
+                            {/* Alt-teksten skal beskrive tjenesten, ikke si «icon». title kan
+                                inneholde <br /> fra dataene, så HTML strippes bort. */}
+                            {image && (
+                                <Image
+                                    width={60}
+                                    height={60}
+                                    className="img-fluid w-auto h-auto"
+                                    src={image}
+                                    alt={`${String(title).replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim()} \u2013 tjeneste fra Usett 3D Studio`}
+                                />
+                            )}
                         </div>
                         <h3 className="ds-service-item-title">
                             <Link href="#kontakt-skjema"

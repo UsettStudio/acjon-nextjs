@@ -40,7 +40,7 @@ const DesignStudioFooter = () => {
                         <div className="col-lg-3 col-md-6">
                             <div className="ds-footer-widget tp_fade_anim" data-delay=".3">
                                 <div className="tp-footer-logo mb-40">
-                                    <Link href="/"><Image width={150} height={103} style={{ width: "150px", height: "auto" }} src="/assets/img/logo/logo-white-v2.png" alt="Usett logo" /></Link>
+                                    <Link href="/"><Image width={150} height={103} style={{ width: "150px", height: "auto" }} src="/assets/img/logo/logo-white-v2.png" alt="Usett 3D Studio" /></Link>
                                 </div>
                                 <div className="ds-footer-social mb-40">
                                     <Link href="#">

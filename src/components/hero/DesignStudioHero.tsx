@@ -274,11 +274,15 @@ const DesignStudioHero = () => {
                     <div className="row align-items-start">
                         <div className="col-lg-6">
                             <div className="ds-hero-heading-wrap">
-                                <h4 className="ds-hero-title tp_fade_anim" data-delay=".3">
-                                    Fotorealistisk 3D som gir <br />
+                                {/* SEO: dette MÅ være sidens h1. Forsiden hadde
+                                    ingen h1 i det hele tatt frem til 13.08.26.
+                                    `.ds-hero-title` er en ren klasseselektor i
+                                    CSS-en, så utseendet er uendret. */}
+                                <h1 className="ds-hero-title tp_fade_anim" data-delay=".3">
+                                    Fotorealistisk 3D-visualisering som gir <br />
                                     ideene dine liv – presisjon, <br />
                                     kvalitet og detaljer.
-                                </h4>
+                                </h1>
                                 <div className="ds-hero-btn tp_fade_anim" data-delay=".4">
                                     <Link className="tp-btn-green btn-h-60 tp-btn-anim" href="#kontakt-skjema">
                                         <div className="tp-btn-text">ta kontakt </div>{""}
@@ -311,7 +315,7 @@ const DesignStudioHero = () => {
                                 <NextImage
                                     className="ds-hero-logo"
                                     src="/assets/img/logo/logo-white-v2.png"
-                                    alt="Usett – 3D Studio"
+                                    alt="Usett 3D Studio – 3D-visualisering i Østfold"
                                     width={620}
                                     height={425}
                                     priority

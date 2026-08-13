@@ -23,8 +23,8 @@ const DesignStudioHeader = ({ containerPaddingSpacing = "container-1510", zIndex
                                     <div className="tp-header-14-left">
                                         <div className="tp-header-logo">
                                             <Link href="/">
-                                                <Image width={150} height={103} style={{ width: "150px", height: "auto" }} className="logo-white" src="/assets/img/logo/logo-white-v2.png" alt="Usett logo" />
-                                                <Image width={150} height={103} style={{ width: "150px", height: "auto" }} className="logo-black" src="/assets/img/logo/logo-black-v2.png" alt="Usett logo" />
+                                                <Image width={150} height={103} style={{ width: "150px", height: "auto" }} className="logo-white" src="/assets/img/logo/logo-white-v2.png" alt="Usett 3D Studio" />
+                                                <Image width={150} height={103} style={{ width: "150px", height: "auto" }} className="logo-black" src="/assets/img/logo/logo-black-v2.png" alt="Usett 3D Studio" />
                                             </Link>
                                         </div>
                                     </div>

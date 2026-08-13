@@ -12,6 +12,12 @@ const usettProjects = projectData.filter(
     (p) => typeof p.image === "string" && p.image.includes("/design-studio/portfolio/usett-")
 );
 
+// Beskrivende alt-tekst. Google skal forstå HVA bildet viser – ikke bare
+// prosjektnavnet. Formatet blir f.eks.:
+// «3D-visualisering av baderom – interiør, Usett 3D Studio, Østfold»
+const altFor = (title: string, category: string) =>
+    `3D-visualisering av ${title.toLowerCase()} \u2013 ${category.toLowerCase()}, Usett 3D Studio, \u00d8stfold`;
+
 const DesignStudioPortfolio = () => {
     // Aktivt bilde i lightbox (null = lukket)
     const [active, setActive] = useState<{ src: string; alt: string } | null>(null);
@@ -41,7 +47,7 @@ const DesignStudioPortfolio = () => {
                                     <button
                                         type="button"
                                         className="tp-clip-anim ds-portfolio-zoom"
-                                        onClick={() => setActive({ src: item.image, alt: item.title })}
+                                        onClick={() => setActive({ src: item.image, alt: altFor(item.title, item.category) })}
                                         aria-label={`Forstørr bilde: ${item.title}`}
                                     >
                                         <Image
@@ -49,7 +55,7 @@ const DesignStudioPortfolio = () => {
                                             height={712}
                                             className="tp-anim-img "
                                             src={item.image}
-                                            alt={item.title}
+                                            alt={altFor(item.title, item.category)}
                                             loading="eager"
                                         />
                                     </button>
