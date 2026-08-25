@@ -95,7 +95,10 @@ export const siteConfig = {
         // sjekker taggen med jevne mellomrom, og forsvinner den, mister du
         // tilgangen til eiendommen.
         google: "OksFXXczm1SVZ5GQjHwgpDq-P54OJUjSBD0Rt3HfGhE",
-        bing: "",
+        // Bing Webmaster Tools, lagt til 25.08.2026. Samme regel som over:
+        // ikke fjern taggen etter at verifiseringen er godkjent – Bing sjekker
+        // den på nytt jevnlig og fjerner nettstedet hvis den er borte.
+        bing: "0CF4DE990CAE542DD3635B196661C1C6",
     },
     /**
      * IndexNow-nøkkel. Ligger også som public/48ef29...txt, som er måten
