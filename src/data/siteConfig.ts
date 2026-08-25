@@ -90,7 +90,11 @@ export const siteConfig = {
      * tokenene er på plass.
      */
     verification: {
-        google: "",
+        // Verifisert i Google Search Console 25.08.2026 (URL-prefiks https://usett.no).
+        // Ikke fjern denne selv etter at eiendommen er verifisert – Google
+        // sjekker taggen med jevne mellomrom, og forsvinner den, mister du
+        // tilgangen til eiendommen.
+        google: "OksFXXczm1SVZ5GQjHwgpDq-P54OJUjSBD0Rt3HfGhE",
         bing: "",
     },
     /**
