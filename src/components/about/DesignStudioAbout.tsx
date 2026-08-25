@@ -24,9 +24,27 @@ const DesignStudioAbout = () => {
                     </div>
                     <div className="col-lg-4">
                         <div className="ds-about-text-wrap mb-80 tp_fade_anim" data-delay=".5">
+                            {/*
+                              Tallene står også i brødteksten, ikke bare i tellerne.
+                              Grunnen: AnimatedCounter starter på 0 og teller opp med
+                              JavaScript. Crawlerne til ChatGPT, Claude og Perplexity
+                              kjører ikke JavaScript – de leser HTML-en slik den kommer
+                              fra serveren, og der står tallet 0. Uten denne setningen
+                              er «0 års erfaring» det en AI-modell faktisk ser.
+
+                              Merk også at tallene tilskrives PERSONEN, ikke selskapet.
+                              Vysion AS ble stiftet i juli 2026; erfaringen og prosjektene
+                              er eldre enn det. Uten skillet ser en AI-modell «stiftet
+                              2026» og «120 prosjekter» samtidig og leser det som en
+                              motsigelse. Navnene står i selve faktasetningen fordi
+                              modellen lagrer koblingen navn↔faktum, ikke side↔faktum –
+                              «vi har levert 120 prosjekter» kan ikke siteres tilbake
+                              til noen.
+                            */}
                             <p>
-                                Med over 10 års erfaring i bransjen kombinerer vi
-                                kreativitet og teknisk presisjon for å skape
+                                Mikael Herman Nilsen har over 10 års erfaring i bransjen og
+                                har levert over 120 prosjekter for mer enn 40 kunder. Usett
+                                kombinerer kreativitet og teknisk presisjon for å skape
                                 fotorealistiske 3D-opplevelser – fra visualisering til
                                 digitale tvillinger og animasjon.
                             </p>
@@ -50,8 +68,20 @@ const DesignStudioAbout = () => {
                             >
                                 <span className="ds-about-item-sub">{item.title}</span>
                                 <h3 className="ds-about-item-title">
-                                    <AnimatedCounter min={0} max={item.value} />
-                                    {item.suffix}
+                                    {/*
+                                      Den animerte telleren er dekorativ og skjules for
+                                      skjermlesere. Den ekte verdien ligger rett ved siden
+                                      av, server-rendret og lesbar både for hjelpemidler
+                                      og for crawlere som ikke kjører JavaScript.
+                                    */}
+                                    <span aria-hidden="true">
+                                        <AnimatedCounter min={0} max={item.value} />
+                                        {item.suffix}
+                                    </span>
+                                    <span className="visually-hidden">
+                                        {item.value}
+                                        {item.suffix} {item.title.toLowerCase()}
+                                    </span>
                                 </h3>
                             </div>
                         </div>

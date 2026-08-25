@@ -81,6 +81,15 @@ export const metadata: Metadata = {
   other: {
     "facebook-domain-verification": "2ug94cjzme685xetovbl390g8l6z3w",
   },
+  // Verifisering for Google Search Console og Bing Webmaster Tools.
+  // Tokenene fylles inn i siteConfig.verification – tomme verdier rendrer
+  // ingenting, så det er trygt å deploye før de er på plass.
+  verification: {
+    ...(siteConfig.verification.google ? { google: siteConfig.verification.google } : {}),
+    ...(siteConfig.verification.bing
+      ? { other: { "msvalidate.01": siteConfig.verification.bing } }
+      : {}),
+  },
   formatDetection: { telephone: true, email: true, address: true },
   robots: {
     index: true,
@@ -115,8 +124,13 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  /*
+   * lang er "nb-NO", ikke "no": den generiske koden lar søkemotorer og
+   * AI-modeller gjette hvilket norsk marked og hvilken målform siden hører til.
+   * Verdien styres fra siteConfig slik at den er lik overalt.
+   */
   return (
-    <html lang="no"
+    <html lang={siteConfig.lang}
       className={`
           ${bricolageGrotesque.variable} 
           ${playfairDisplay.variable} 

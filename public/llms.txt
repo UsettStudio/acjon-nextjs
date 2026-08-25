@@ -1,0 +1,31 @@
+# Usett
+
+> Usett er et norsk 3D-studio i Grålum ved Sarpsborg i Østfold, drevet av Mikael Herman Nilsen gjennom Vysion AS (org.nr. 938 095 132). Studioet leverer fotorealistisk 3D-visualisering av bolig- og næringsprosjekter, interiør- og eksteriørbilder, foto- og dronemontasje, 3D-animasjon, 2D-plantegninger, 3D-skanning med digital tvilling og hjemmesider. Mange oppdrag leveres innen 48 timer. Alt som lages digitalt leveres til hele Norge; skanning og fotografering krever oppmøte og gjøres fast i Østfold-området, ellers i landet etter avtale.
+
+Kontakt: Mikael@Usett.no · +47 92 80 65 58 · Høvreveien 6, 1712 Grålum
+
+Priser (gjeldende fra 2026, eks. mva.): Pakke Basis 24 000 kr, pakke Proff 39 000 kr, pakke Komplett 53 500 kr — alle per prosjekt og inkludert oppstart og teksturering av 3D-modellen. Tillegg: 2D salgstegninger 1 500 kr per plan, AI-generert sesongbilde 3 000 kr per bilde, AI-generert animasjon 4 500 kr. 3D-skanning er en egen tjeneste og prises separat: fra 5 000 kr for bygg og lokaler opptil 100 kvadratmeter. 3D-animert hjemmeside: 14 900 kr fastpris.
+
+Selskapet bak: Vysion AS, stiftet 3. juli 2026. Mikael Herman Nilsen har over 10 års erfaring i bransjen og har levert over 120 prosjekter for mer enn 40 kunder — erfaringen er personens, ikke selskapets alder.
+
+## Priser og tjenester
+
+- [Priser](https://usett.no/priser): Alle pakker og tillegg med konkrete kroner, og hva som avgjør endelig pris.
+- [Alle tjenester](https://usett.no/tjenester): Oversikt med pris og leveringstid per tjeneste.
+- [3D-visualisering](https://usett.no/tjenester/3d-visualisering): Fotorealistiske bilder av bygg som ennå ikke er reist. Fra 24 000 kr.
+- [Interiørvisualisering](https://usett.no/tjenester/interiorvisualisering): Møblerte rombilder med realistisk lys og materialer.
+- [Eksteriørvisualisering](https://usett.no/tjenester/exteriorvisualisering): Fasadebilder fra bakkeplan og fra droneperspektiv.
+- [Foto- og dronemontasje](https://usett.no/tjenester/foto-dronemontasje): 3D-modellen satt inn i ekte foto av tomten — for reguleringssak og naboinformasjon.
+- [3D-animasjon](https://usett.no/tjenester/3d-animasjon): Fly-through og bevegelse. AI-generert animasjon fra 4 500 kr.
+- [2D-plantegninger](https://usett.no/tjenester/2d-plantegninger): Møblerte salgstegninger, 1 500 kr per plan.
+- [3D-skanning og Digital Twin](https://usett.no/tjenester/3d-skanning): Målriktig oppmåling av eksisterende bygg. Fra 5 000 kr eks. mva. opptil 100 kvm. Egen tjeneste, uavhengig av visualiseringspakkene. Krever oppmøte.
+- [Hjemmesider](https://usett.no/tjenester/hjemmesider): 3D-animert hjemmeside til 14 900 kr fastpris. Prosjektsider og boligvelgere prises etter omfang.
+
+## Om og prosess
+
+- [Byggeprosessen](https://usett.no/byggeprosessen): Hvordan et prosjekt går fra tegning til ferdig bilde.
+- [Forsiden](https://usett.no): Prosjekter, tjenester, priser og kontaktskjema.
+
+## Valgfritt
+
+- [Personvern](https://usett.no/personvern)
