@@ -79,46 +79,10 @@ export default async function TjenestePage({ params }: Props) {
                     "@type": "BusinessAudience",
                     name: "Utbyggere, arkitekter, entreprenører og eiendomsmeglere",
                 },
-                // Pris legges bare inn når den faktisk er fastsatt. En Offer
-                // uten pris er verdiløs; en Offer med gjettet pris er verre.
-                ...(s.priceFrom
-                    ? {
-                          offers: {
-                              "@type": "Offer",
-                              url: pageUrl,
-                              priceCurrency: "NOK",
-                              availability: "https://schema.org/InStock",
-                              // En fastpris er `price`; et «fra»-tall er
-                              // priceSpecification.minPrice. Blandes de, kan en
-                              // modell gjengi en fastpris som et minimum – og da
-                              // lover du for lite.
-                              ...(s.priceIsFixed
-                                  ? { price: s.priceFrom }
-                                  : {
-                                        priceSpecification: {
-                                            "@type": "PriceSpecification",
-                                            minPrice: s.priceFrom,
-                                            priceCurrency: "NOK",
-                                            valueAddedTaxIncluded: false,
-                                            // Arealgrensen gjør at tallet ikke står
-                                            // alene. «Fra 5 000 kr» uten kontekst kan
-                                            // siteres feil; «fra 5 000 kr for inntil
-                                            // 100 kvm» kan ikke.
-                                            ...(s.maxAreaSqm
-                                                ? {
-                                                      eligibleQuantity: {
-                                                          "@type": "QuantitativeValue",
-                                                          maxValue: s.maxAreaSqm,
-                                                          unitCode: "MTK",
-                                                          unitText: "kvadratmeter",
-                                                      },
-                                                  }
-                                                : {}),
-                                        },
-                                    }),
-                          },
-                      }
-                    : {}),
+                // Ingen Offer her. Tjenestesidene viser bevisst ingen priser,
+                // og en pris i strukturerte data som ikke står synlig på siden
+                // regner Google som feil bruk. Prisene ligger i stedet på
+                // /priser, der de faktisk vises – se OfferCatalog der.
             },
             {
                 "@type": "WebPage",
@@ -180,18 +144,6 @@ export default async function TjenestePage({ params }: Props) {
 
                 <dl className="doc-meta">
                     <div>
-                        <dt>Pris</dt>
-                        <dd>
-                            {s.priceFrom
-                                ? s.priceIsFixed
-                                    ? `${s.priceFrom.toLocaleString("nb-NO")} kr fastpris`
-                                    : `Fra ${s.priceFrom.toLocaleString("nb-NO")} kr${
-                                          s.maxAreaSqm ? ` / ${s.maxAreaSqm} kvm` : ""
-                                      }`
-                                : "Etter omfang"}
-                        </dd>
-                    </div>
-                    <div>
                         <dt>Leveres til</dt>
                         <dd>
                             {s.slug === "3d-skanning" || s.slug === "foto-dronemontasje"
@@ -215,10 +167,13 @@ export default async function TjenestePage({ params }: Props) {
                 <h2>Leveringstid</h2>
                 <p>{s.leveringstid}</p>
 
-                <h2>Pris</h2>
-                <p>{s.priceNote}</p>
+                {/*
+                  Ingen pris på denne siden – bevisst valg. Lenken står igjen
+                  uten tall, slik at /priser fortsatt har en intern lenke inn
+                  og ikke blir en foreldreløs side crawlerne finner sjeldnere.
+                */}
                 <p>
-                    <Link href="/priser">Se alle priser og pakker</Link>
+                    <Link href="/priser">Se priser og pakker</Link>
                 </p>
 
                 <h2>Spørsmål om {s.name.toLowerCase()}</h2>

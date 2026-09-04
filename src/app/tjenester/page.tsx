@@ -5,9 +5,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 // Uten "Usett" til slutt – malen i layout.tsx legger på "| Usett" selv.
-const TITLE = "Alle tjenester – pris og leveringstid";
+const TITLE = "Alle tjenester – hva Usett leverer";
 const DESCRIPTION =
-    "Oversikt over tjenestene fra Usett: 3D-visualisering, interiør og eksteriør, foto- og dronemontasje, 3D-animasjon, 2D-plantegninger, 3D-skanning og hjemmesider. Hver tjeneste med pris og leveringstid.";
+    "Oversikt over tjenestene fra Usett: 3D-visualisering, interiør og eksteriør, foto- og dronemontasje, 3D-animasjon, 2D-plantegninger, 3D-skanning og hjemmesider. Hver tjeneste med leveringstid og hva du får.";
 
 export const metadata: Metadata = {
     title: { absolute: `${TITLE} | Usett` },
@@ -90,13 +90,9 @@ export default function TjenesterPage() {
                         <Link key={s.slug} className="doc-link" href={`/tjenester/${s.slug}`}>
                             <strong>{s.name}</strong>
                             <span>{s.description}</span>
-                            <em>
-                                {s.priceFrom
-                                    ? s.priceIsFixed
-                                        ? `${s.priceFrom.toLocaleString("nb-NO")} kr fastpris →`
-                                        : `Fra ${s.priceFrom.toLocaleString("nb-NO")} kr →`
-                                    : "Se pris og leveringstid →"}
-                            </em>
+                            {/* Ingen pris i kortene – prisene hører hjemme på
+                                forsiden og /priser, ikke i tjenestenavigasjonen. */}
+                            <em>Se tjenesten →</em>
                         </Link>
                     ))}
                 </div>

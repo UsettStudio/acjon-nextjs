@@ -289,8 +289,14 @@ export type ServicePage = ServiceDef & {
     leveringstid: string;
     /**
      * Laveste pris i kroner, eller null hvis den ikke er fastsatt.
-     * TODO: fyll inn de som står som null – en side med et konkret tall blir
-     * sitert, en som sier «ta kontakt» blir det ikke.
+     *
+     * MERK: priceFrom og priceNote brukes IKKE lenger på tjenestesidene.
+     * Tjenestesidene er bevisst prisfrie – prisene skal bare møte kunden i
+     * pakkeseksjonen på forsiden og på /priser. Feltene lever videre fordi
+     * /priser leser dem for seksjonen «Priser på de øvrige tjenestene».
+     * Legger du dem tilbake på tjenestesidene, husk at Offer-schemaet der
+     * også må gjeninnføres – en pris i strukturerte data som ikke står synlig
+     * på siden er noe Google regner som feil bruk.
      */
     priceFrom: number | null;
     priceNote: string;
@@ -315,12 +321,12 @@ export const servicePages: ServicePage[] = [
         slug: "3d-visualisering",
         name: "3D-visualisering",
         description: services[0].description,
-        heading: "Hva koster 3D-visualisering, og hva får du?",
-        metaTitle: "3D-visualisering – pris, leveringstid og hva du får",
+        heading: "Hva er 3D-visualisering, og hva får du?",
+        metaTitle: "3D-visualisering – leveringstid og hva du får",
         metaDescription:
-            "Usett leverer fotorealistisk 3D-visualisering fra 24 000 kr per prosjekt, mange oppdrag innen 48 timer. Se hva som inngår i hver pakke, hva vi trenger fra deg og hvor vi leverer.",
+            "Usett leverer fotorealistisk 3D-visualisering av bolig- og næringsprosjekter, mange oppdrag innen 48 timer. Se hva som inngår, hva vi trenger fra deg og hvor vi leverer.",
         answer:
-            "Usett leverer fotorealistisk 3D-visualisering fra 24 000 kr per prosjekt. Prisen dekker en komplett pakke med både interiør- og eksteriørbilder, inkludert oppstart og teksturering av modellen. Mange oppdrag leveres innen 48 timer, og bildene sendes digitalt til hele Norge.",
+            "Usett leverer fotorealistisk 3D-visualisering av bygg som ennå ikke er reist. En komplett leveranse inneholder både interiør- og eksteriørbilder, inkludert oppstart og teksturering av modellen. Mange oppdrag leveres innen 48 timer, og bildene sendes digitalt til hele Norge.",
         deliverables: [
             "Fotorealistiske interiørbilder med realistisk lys, materialer og møblering",
             "Eksteriørbilder fra bakkeplan, og fra droneperspektiv i pakke Proff og Komplett",
@@ -355,14 +361,14 @@ export const servicePages: ServicePage[] = [
         slug: "interiorvisualisering",
         name: "Interiørvisualisering",
         description: services[1].description,
-        heading: "Interiørvisualisering – pris og hva som inngår",
-        metaTitle: "Interiørvisualisering – pris, leveringstid og eksempler",
+        heading: "Interiørvisualisering – hva som inngår",
+        metaTitle: "Interiørvisualisering – leveringstid og eksempler",
         metaDescription:
-            "Usett lager fotorealistiske interiørbilder av leiligheter, boliger, hytter og næringslokaler. Fra 24 000 kr per prosjekt, mange oppdrag innen 48 timer.",
+            "Usett lager fotorealistiske interiørbilder av leiligheter, boliger, hytter og næringslokaler, med realistisk lys, materialer og møblering. Mange oppdrag innen 48 timer.",
         answer:
-            "Usett lager fotorealistiske interiørbilder av rom som ennå ikke er bygget – leiligheter, boliger, hytter og næringslokaler. Bildene inngår i pakkene fra 24 000 kr, som starter på to interiørbilder. Alle rom bygges med realistisk lys, materialer og møblering.",
+            "Usett lager fotorealistiske interiørbilder av rom som ennå ikke er bygget – leiligheter, boliger, hytter og næringslokaler. En leveranse starter på to interiørbilder og kan utvides. Alle rom bygges med realistisk lys, materialer og møblering.",
         deliverables: [
-            "2–4 interiørbilder avhengig av pakke",
+            "2–4 interiørbilder avhengig av omfang",
             "Realistisk dagslys tilpasset husets faktiske himmelretning",
             "Møblering og styling i den stilen prosjektet skal selges på",
             "Materialer og overflater etter dine faktiske materialvalg",
@@ -393,12 +399,12 @@ export const servicePages: ServicePage[] = [
         heading: "Eksteriørvisualisering av bygg som ikke er reist ennå",
         metaTitle: "Eksteriørvisualisering – fasadebilder fra bakkeplan og drone",
         metaDescription:
-            "Usett lager eksteriørbilder av eneboliger, rekkehus og boligblokker satt inn i realistiske omgivelser – fra bakkeplan og fra droneperspektiv. Fra 24 000 kr.",
+            "Usett lager eksteriørbilder av eneboliger, rekkehus og boligblokker satt inn i realistiske omgivelser – fra bakkeplan og fra droneperspektiv.",
         answer:
-            "Usett lager eksteriørbilder av bygg som ennå ikke er reist – eneboliger, rekkehus og boligblokker satt inn i realistiske omgivelser. Alle pakker inneholder minst ett eksteriørbilde fra bakkeplan, og pakkene Proff og Komplett inneholder i tillegg et bilde plassert i dronefoto av den faktiske tomten.",
+            "Usett lager eksteriørbilder av bygg som ennå ikke er reist – eneboliger, rekkehus og boligblokker satt inn i realistiske omgivelser. Hver leveranse inneholder minst ett eksteriørbilde fra bakkeplan, og kan utvides med bilder plassert i dronefoto av den faktiske tomten.",
         deliverables: [
             "1–2 eksteriørbilder fra bakkeplan",
-            "Eksteriør plassert i dronefoto av tomten (Proff og Komplett)",
+            "Eksteriør plassert i dronefoto av den faktiske tomten",
             "Terreng, vegetasjon og nabobebyggelse tilpasset stedet",
             "Lyssetting etter tidspunkt og årstid prosjektet skal selges i",
         ],
@@ -417,7 +423,7 @@ export const servicePages: ServicePage[] = [
             },
             {
                 q: "Kan dere vise samme bygg i ulike årstider?",
-                a: "Ja. AI-genererte sesongbilder koster 3 000 kr per bilde og lages fra et bilde som allerede er produsert – sommer, høst, vinter eller vår.",
+                a: "Ja. AI-genererte sesongbilder lages fra et bilde som allerede er produsert – sommer, høst, vinter eller vår.",
             },
         ],
     },
@@ -462,14 +468,14 @@ export const servicePages: ServicePage[] = [
         name: "3D-animasjon",
         description: services[4].description,
         heading: "3D-animasjon og fly-through av byggeprosjekt",
-        metaTitle: "3D-animasjon av byggeprosjekt – pris og leveringstid",
+        metaTitle: "3D-animasjon og fly-through av byggeprosjekt",
         metaDescription:
-            "Usett lager fotorealistisk 3D-animasjon og fly-through-video av bygg og produkter. AI-generert animasjon fra 4 500 kr som tillegg til alle pakker.",
+            "Usett lager fotorealistisk 3D-animasjon og fly-through-video som viser bygg og produkter i bevegelse – for nettside, sosiale medier og visningsskjerm.",
         answer:
-            "Usett lager fotorealistisk 3D-animasjon og fly-through-video som viser bygg og produkter i bevegelse. Som tillegg til alle pakker koster en AI-generert animasjon på 6 sekunder 4 500 kr. Lengre, fullt modellerte animasjoner prises etter omfang.",
+            "Usett lager fotorealistisk 3D-animasjon og fly-through-video som viser bygg og produkter i bevegelse. Den korteste varianten er en AI-generert animasjon på 6 sekunder, laget fra et bilde som allerede er produsert. Lengre animasjoner bygges fra selve 3D-modellen.",
         deliverables: [
             "Fly-through gjennom eller rundt prosjektet",
-            "AI-generert animasjon på 6 sekunder fra et allerede produsert bilde",
+            "AI-generert animasjon på 6 sekunder, laget fra et allerede produsert bilde",
             "Video i formater klare for nettside, Facebook, Instagram og visningsskjerm",
         ],
         leveringstid:
@@ -479,8 +485,8 @@ export const servicePages: ServicePage[] = [
             "AI-generert animasjon på 6 sekunder: 4 500 kr som tillegg til alle pakker. Lengre animasjoner prises etter omfang.",
         faq: [
             {
-                q: "Hva koster en 3D-animasjon av et boligprosjekt?",
-                a: "En AI-generert animasjon på 6 sekunder koster 4 500 kr som tillegg til en pakke. Lengre fly-through-animasjoner bygget fra 3D-modellen prises etter lengde og antall scener.",
+                q: "Hva slags animasjoner lager Usett?",
+                a: "Alt fra en kort AI-generert sekvens på 6 sekunder, laget fra et bilde som allerede er produsert, til lengre fly-through-animasjoner bygget fra selve 3D-modellen. Den siste typen prises etter lengde og antall scener.",
             },
             {
                 q: "Hvor lang bør en animasjon være?",
@@ -496,12 +502,12 @@ export const servicePages: ServicePage[] = [
         slug: "2d-plantegninger",
         name: "2D-plantegninger",
         description: services[5].description,
-        heading: "2D-plantegninger til prospekt og salg – 1 500 kr per plan",
-        metaTitle: "2D-plantegninger til prospekt – 1 500 kr per plan",
+        heading: "2D-plantegninger til prospekt og salg",
+        metaTitle: "2D-plantegninger til prospekt og salg",
         metaDescription:
-            "Usett lager tydelige, møblerte 2D-plantegninger for prospekt, søknad og salg. 1 500 kr per plan som tillegg til alle pakker.",
+            "Usett lager tydelige, møblerte 2D-plantegninger for prospekt, søknad og salg – klare til å settes rett inn i salgsmateriell.",
         answer:
-            "Usett lager tydelige 2D-plantegninger og møblerte planløsninger for prospekt, søknad og salg. Prisen er 1 500 kr per plan som tillegg til alle pakker. Tegningene leveres i et format som er klart til å settes rett inn i salgsmateriell.",
+            "Usett lager tydelige 2D-plantegninger og møblerte planløsninger for prospekt, søknad og salg. Tegningene prises per plan og leveres i et format som er klart til å settes rett inn i salgsmateriell.",
         deliverables: [
             "Møblert planløsning per etasje",
             "Romnavn og arealer",
@@ -513,8 +519,8 @@ export const servicePages: ServicePage[] = [
         priceNote: "1 500 kr per plan, som tillegg til alle pakker.",
         faq: [
             {
-                q: "Hva koster en 2D-plantegning?",
-                a: "1 500 kr per plan. En enebolig over to etasjer koster altså 3 000 kr for begge planene.",
+                q: "Hvordan prises 2D-plantegninger?",
+                a: "Per plan. En enebolig over to etasjer regnes altså som to plantegninger. Ta kontakt for et konkret tilbud.",
             },
             {
                 q: "Hva er forskjellen på en salgstegning og en byggetegning?",
@@ -531,7 +537,7 @@ export const servicePages: ServicePage[] = [
         metaDescription:
             "Usett skanner bygg og lokaler og lager nøyaktige 3D-modeller og Digital Twin av eksisterende forhold. Fast i Østfold-området, ellers i landet etter avtale.",
         answer:
-            "3D-skanning hos Usett koster fra 5 000 kr eks. mva. for bygg og lokaler opptil 100 kvadratmeter. Usett skanner det som allerede står der og lager nøyaktige punktskyer og 3D-modeller – en Digital Twin. Forskjellen fra en vanlig 3D-modell er at en Digital Twin er målriktig: den er bygget fra faktiske målinger av bygget, ikke fra tegninger. Skanningen krever fysisk oppmøte, fast i Østfold-området og ellers i landet etter avtale.",
+            "Usett skanner bygg og lokaler og lager nøyaktige punktskyer og 3D-modeller – en Digital Twin. Forskjellen fra en vanlig 3D-modell er at en Digital Twin er målriktig: den er bygget fra faktiske målinger av bygget, ikke fra tegninger. Skanningen krever fysisk oppmøte, fast i Østfold-området og ellers i landet etter avtale.",
         deliverables: [
             "Punktsky av bygget eller lokalet",
             "3D-modell av eksisterende forhold, målriktig mot skanningen",
@@ -545,8 +551,8 @@ export const servicePages: ServicePage[] = [
             "Fra 5 000 kr eks. mva. for bygg og lokaler opptil 100 kvadratmeter. Større bygg og lengre reisevei prises etter omfang.",
         faq: [
             {
-                q: "Hva koster 3D-skanning av et bygg?",
-                a: "Fra 5 000 kr eks. mva. for bygg og lokaler opptil 100 kvadratmeter. Over det prises oppdraget etter areal og reisevei. Prisen dekker skanningen på stedet og den ferdige 3D-modellen. 3D-skanning er en egen tjeneste hos Usett og prises uavhengig av visualiseringspakkene.",
+                q: "Hvordan prises 3D-skanning av et bygg?",
+                a: "Etter areal og reisevei, fordi skanning krever fysisk oppmøte. Leveransen dekker skanningen på stedet og den ferdige 3D-modellen. 3D-skanning er en egen tjeneste hos Usett og prises uavhengig av visualiseringsoppdrag.",
             },
             {
                 q: "Hva er forskjellen på en Digital Twin og en vanlig 3D-modell?",
@@ -566,12 +572,12 @@ export const servicePages: ServicePage[] = [
         slug: "hjemmesider",
         name: "Hjemmesider",
         description: services[7].description,
-        heading: "Hva koster en 3D-animert hjemmeside?",
-        metaTitle: "3D-animert hjemmeside til 14 900 kr fastpris",
+        heading: "3D-animert hjemmeside for bygg, eiendom og design",
+        metaTitle: "3D-animert hjemmeside med innebygd visualisering",
         metaDescription:
-            "En 3D-animert hjemmeside fra Usett koster 14 900 kr i fastpris. Moderne, rask nettside med innebygd 3D og visualisering – for bygg, eiendom og design.",
+            "Usett lager moderne, raske hjemmesider med innebygd 3D og visualisering – for bygg, eiendom og design. Prosjektsider og boligvelgere til boligprosjekter.",
         answer:
-            "En 3D-animert hjemmeside fra Usett koster 14 900 kr i fastpris. Det er ikke et estimat: prisen står fast uansett hvor lang tid siden tar å bygge. Det som skiller den fra en vanlig nettside er at 3D-materialet ligger i selve siden – en prosjektside der kjøper kan navigere i bygget, ikke bare se bilder av det.",
+            "Usett lager 3D-animerte hjemmesider til fast pris, uten timeregning. Det som skiller dem fra en vanlig nettside er at 3D-materialet ligger i selve siden – en prosjektside der kjøper kan navigere i bygget, ikke bare se bilder av det.",
         deliverables: [
             "3D-animert hjemmeside til fast pris, uten timeregning",
             "Nettside bygget for fart og synlighet i søk",
@@ -586,8 +592,8 @@ export const servicePages: ServicePage[] = [
             "3D-animert hjemmeside: 14 900 kr fastpris. Større prosjektsider og boligvelgere prises etter omfang.",
         faq: [
             {
-                q: "Hva koster en 3D-animert hjemmeside?",
-                a: "14 900 kr i fastpris hos Usett. Prisen er fast, ikke et estimat, så den endrer seg ikke med hvor lang tid siden tar å bygge. Større prosjektsider med boligvelger prises etter omfang.",
+                q: "Prises en hjemmeside etter timer eller fast?",
+                a: "Fast. Du får en pris før vi begynner, og den endrer seg ikke med hvor lang tid siden tar å bygge. Større prosjektsider med boligvelger prises etter omfang.",
             },
             {
                 q: "Hva er en prosjektside for et boligprosjekt?",
