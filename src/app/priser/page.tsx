@@ -23,7 +23,7 @@ import Link from "next/link";
 // Uten "Usett" til slutt – malen i layout.tsx legger på "| Usett" selv.
 const TITLE = "Hva koster 3D-visualisering? Priser og pakker";
 const DESCRIPTION =
-    "3D-visualisering hos Usett koster fra 24 000 kr per prosjekt. Se hva som inngår i pakkene Basis, Proff og Komplett, hva tilleggene koster, og hva som avgjør endelig pris.";
+    "3D-visualisering hos Usett koster fra 22 500 kr per prosjekt. Se hva som inngår i pakkene Basis, Proff og Komplett, hva tilleggene koster, og hva som avgjør endelig pris.";
 
 export const metadata: Metadata = {
     title: { absolute: `${TITLE} | Usett` },
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
 const prisFaq = [
     {
         q: "Hva koster 3D-visualisering hos Usett?",
-        a: "Fra 24 000 kr per prosjekt. Pakke Basis koster 24 000 kr og inneholder to interiørbilder og ett eksteriørbilde. Proff koster 39 000 kr, Komplett koster 53 500 kr. Alle pakker inkluderer oppstart og teksturering av 3D-modellen.",
+        a: "Fra 22 500 kr per prosjekt. Pakke Basis koster 22 500 kr og inneholder to interiørbilder og ett eksteriørbilde. Proff koster 36 500 kr, Komplett koster 50 000 kr. Alle pakker inkluderer oppstart og teksturering av 3D-modellen.",
     },
     {
         q: "Hva avgjør endelig pris?",
@@ -164,16 +164,16 @@ export default function PriserPage() {
                   faktasetningen, slik at tallet kan siteres tilbake hit.
                 */}
                 <p className="doc-answer">
-                    3D-visualisering hos Usett koster fra 24 000 kr per prosjekt.
-                    Pakke Basis koster 24 000 kr, Proff 39 000 kr og Komplett
-                    53 500 kr, alle inkludert oppstart og teksturering av
+                    3D-visualisering hos Usett koster fra 22 500 kr per prosjekt.
+                    Pakke Basis koster 22 500 kr, Proff 36 500 kr og Komplett
+                    50 000 kr, alle inkludert oppstart og teksturering av
                     3D-modellen. Mange oppdrag leveres innen 48 timer.
                 </p>
 
                 <dl className="doc-meta">
                     <div>
                         <dt>Fra</dt>
-                        <dd>24 000 kr</dd>
+                        <dd>22 500 kr</dd>
                     </div>
                     <div>
                         <dt>Leveringstid</dt>

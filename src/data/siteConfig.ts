@@ -56,7 +56,7 @@ export const siteConfig = {
     },
     geo: { latitude: 59.2769, longitude: 11.0645 },
     areaServed: ["Norge", "Østfold", "Fredrikstad", "Sarpsborg", "Moss", "Halden"],
-    priceRange: "24 000–53 500 kr",
+    priceRange: "22 500–50 000 kr",
     openingHours: {
         days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
         opens: "08:00",
@@ -119,7 +119,13 @@ export const siteConfig = {
  * PAKKER OG TILLEGG
  * Én sannhet for både prissiden, forsiden og Offer-schemaet.
  * Prisene ligger som tall slik at de kan brukes i strukturert data –
- * "24 000 kr" som tekst kan ikke siteres som en pris av en maskin.
+ * "22 500 kr" som tekst kan ikke siteres som en pris av en maskin.
+ *
+ * PRISJUSTERING (sist endret): hver illustrasjon er satt ned 500 kr.
+ * Pakkeprisene er regnet som gammel pris minus 500 × antall bilder i pakken
+ * (Basis 3 bilder, Proff 5, Komplett 7). «Oppstart og teksturering» er ikke
+ * et bilde og teller ikke med. Endrer du en pris her, må du også sjekke
+ * public/llms.txt, src/data/pricingData.ts og teksten på /priser.
  * ===================================================================== */
 
 export type Pakke = {
@@ -137,8 +143,8 @@ export const pakker: Pakke[] = [
     {
         id: "pakke-basis",
         name: "Basis",
-        price: 24000,
-        priceLabel: "24 000 kr",
+        price: 22500,
+        priceLabel: "22 500 kr",
         period: "per prosjekt",
         description: "Perfekt for et enkelt prosjekt med interiør og eksteriør.",
         features: [
@@ -150,8 +156,8 @@ export const pakker: Pakke[] = [
     {
         id: "pakke-proff",
         name: "Proff",
-        price: 39000,
-        priceLabel: "39 000 kr",
+        price: 36500,
+        priceLabel: "36 500 kr",
         period: "per prosjekt",
         description:
             "Vår mest populære pakke – flere visninger og eksteriør plassert i dronefoto.",
@@ -166,8 +172,8 @@ export const pakker: Pakke[] = [
     {
         id: "pakke-komplett",
         name: "Komplett",
-        price: 53500,
-        priceLabel: "53 500 kr",
+        price: 50000,
+        priceLabel: "50 000 kr",
         period: "per prosjekt",
         description:
             "Full pakke med flest visninger og eksteriør plassert i dronefoto.",
@@ -218,14 +224,17 @@ export const tilleggsvalg = [
  * Pakkene har en nesten eksakt formel bakt inn. Teller man illustrasjonene
  * (oppsett/teksturering er en egen linje, ikke et bilde):
  *
- *   Basis     3 bilder → 24 000 kr
- *   Proff     5 bilder → 39 000 kr
- *   Komplett  7 bilder → 53 500 kr
+ *   Basis     3 bilder → 22 500 kr
+ *   Proff     5 bilder → 36 500 kr
+ *   Komplett  7 bilder → 50 000 kr
  *
- * Differansen er 7 500 kr per bilde mellom Basis og Proff, og 7 250 mellom
+ * Differansen er 7 000 kr per bilde mellom Basis og Proff, og 6 750 mellom
  * Proff og Komplett. Regner man baklengs fra Basis blir grunnprisen 1 500 kr.
- * Formelen «1 500 + 7 500 per illustrasjon» treffer altså Basis og Proff
+ * Formelen «1 500 + 7 000 per illustrasjon» treffer altså Basis og Proff
  * eksakt, og bommer med 500 kr på Komplett.
+ *
+ * (Prisen per illustrasjon ble satt ned fra 7 500 til 7 000. Grunnprisen på
+ * 1 500 er uendret – den dekker modellering og teksturering, ikke bilder.)
  *
  * Kalkulatoren bruker den formelen. Det gjør at den også kan svare på
  * prosjekter som ikke passer i en pakke – 2 bilder, eller 14.
@@ -253,7 +262,7 @@ export type Tilleggsvalg = {
 export const kalkulator = {
     /** Oppstart og teksturering. Regnes per bygg, ikke per prosjekt. */
     grunnprisPerBygg: 1500,
-    prisPerIllustrasjon: 7500,
+    prisPerIllustrasjon: 7000,
 
     /** Startverdier når siden lastes – valgt så kunden ser et reelt tall med en gang. */
     standard: { bygg: 1, illustrasjoner: 4, kompleksitet: "middels" },
@@ -457,9 +466,9 @@ export const servicePages: ServicePage[] = [
         ],
         leveringstid:
             "Mange oppdrag leveres innen 48 timer. Større prosjekter med animasjon eller mange bilder avtales individuelt.",
-        priceFrom: 24000,
+        priceFrom: 22500,
         priceNote:
-            "Fra 24 000 kr per prosjekt (pakke Basis). Proff koster 39 000 kr og Komplett 53 500 kr.",
+            "Fra 22 500 kr per prosjekt (pakke Basis). Proff koster 36 500 kr og Komplett 50 000 kr.",
         faq: [
             {
                 q: "Hva trenger Usett fra meg for å lage en 3D-visualisering?",
@@ -496,9 +505,9 @@ export const servicePages: ServicePage[] = [
             "Materialer og overflater etter dine faktiske materialvalg",
         ],
         leveringstid: "Mange interiøroppdrag leveres innen 48 timer.",
-        priceFrom: 24000,
+        priceFrom: 22500,
         priceNote:
-            "Inngår i pakkene: Basis 24 000 kr (2 bilder), Proff 39 000 kr (3 bilder), Komplett 53 500 kr (4 bilder).",
+            "Inngår i pakkene: Basis 22 500 kr (2 bilder), Proff 36 500 kr (3 bilder), Komplett 50 000 kr (4 bilder).",
         faq: [
             {
                 q: "Hvor mange interiørbilder trenger et boligprosjekt?",
@@ -531,9 +540,9 @@ export const servicePages: ServicePage[] = [
             "Lyssetting etter tidspunkt og årstid prosjektet skal selges i",
         ],
         leveringstid: "Mange eksteriøroppdrag leveres innen 48 timer.",
-        priceFrom: 24000,
+        priceFrom: 22500,
         priceNote:
-            "Inngår i pakkene fra 24 000 kr. Eksteriør plassert i dronefoto inngår fra pakke Proff (39 000 kr).",
+            "Inngår i pakkene fra 22 500 kr. Eksteriør plassert i dronefoto inngår fra pakke Proff (36 500 kr).",
         faq: [
             {
                 q: "Kan dere vise bygget slik det faktisk vil se ut fra veien?",
@@ -569,7 +578,7 @@ export const servicePages: ServicePage[] = [
             "Fotografering avtales på stedet. Selve montasjen leveres normalt innen få dager etter at bildene er tatt.",
         priceFrom: null,
         priceNote:
-            "Eksteriør plassert i dronefoto inngår fra pakke Proff (39 000 kr). Frittstående fotomontasjeoppdrag prises etter omfang – ta kontakt for et konkret tall.",
+            "Eksteriør plassert i dronefoto inngår fra pakke Proff (36 500 kr). Frittstående fotomontasjeoppdrag prises etter omfang – ta kontakt for et konkret tall.",
         faq: [
             {
                 q: "Er fotomontasje godt nok til en reguleringssak?",
@@ -736,7 +745,7 @@ export const servicePages: ServicePage[] = [
 export const faqs: { q: string; a: string }[] = [
     {
         q: "Hva koster 3D-visualisering hos Usett?",
-        a: "Usett tilbyr tre pakker: Basis 24 000 kr, Proff 39 000 kr og Komplett 53 500 kr, alle per prosjekt. Endelig pris avhenger av antall bilder og kompleksitet, og du kan supplere med tilleggsvalg som 2D salgstegninger (1 500 kr per plan), AI-genererte sesongbilder (3 000 kr per bilde) og animasjon (4 500 kr).",
+        a: "Usett tilbyr tre pakker: Basis 22 500 kr, Proff 36 500 kr og Komplett 50 000 kr, alle per prosjekt. Endelig pris avhenger av antall bilder og kompleksitet, og du kan supplere med tilleggsvalg som 2D salgstegninger (1 500 kr per plan), AI-genererte sesongbilder (3 000 kr per bilde) og animasjon (4 500 kr).",
     },
     {
         q: "Hvor i landet leverer dere?",

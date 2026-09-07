@@ -671,10 +671,27 @@
 /*     Nå er boksen alltid like høy => pinnen «låser» riktig.          */
 /*  2) Luft mellom siste bilderad og byggeprosessen-videoen.           */
 /* ------------------------------------------------------------------ */
+/*  3) Luft RUNDT hvert bilde. Griddet lå tidligere med «gx-0», altså helt
+       uten gutter, så de ni bildene møttes kant i kant og ble lest som ett
+       stort teppe i stedet for ni separate prosjekter. Avstanden settes her
+       via Bootstrap sine gutter-variabler, slik at kolonnene beholder sin
+       vanlige responsive oppførsel.                                       */
+.ds-portfolio-area .ds-portfolio-grid {
+    padding-left: 40px;
+    padding-right: 40px;
+}
+.ds-portfolio-area .ds-portfolio-grid > .row {
+    --bs-gutter-x: 32px;
+    --bs-gutter-y: 32px;
+}
+
 .ds-portfolio-area .ds-portfolio-item-thumb {
     position: relative;
     aspect-ratio: 16 / 9;
     overflow: hidden;
+    /* Myk kant gjør at mellomrommet leses som bevisst luft og ikke som
+       et hull mellom to bilder som burde ligget inntil hverandre. */
+    border-radius: 14px;
 }
 /* Både gammel <a> og dagens lightbox-<button> skal fylle 16:9-boksen. */
 .ds-portfolio-area .ds-portfolio-item-thumb a,
@@ -693,6 +710,29 @@
     opacity: 1 !important;
     visibility: visible !important;
 }
+/* Mindre marger på små skjermer – 40 px hver vei spiser for mye av
+   bildebredden på telefon. */
+@media (max-width: 991px) {
+    .ds-portfolio-area .ds-portfolio-grid {
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+    .ds-portfolio-area .ds-portfolio-grid > .row {
+        --bs-gutter-x: 24px;
+        --bs-gutter-y: 24px;
+    }
+}
+@media (max-width: 575px) {
+    .ds-portfolio-area .ds-portfolio-grid {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+    .ds-portfolio-area .ds-portfolio-grid > .row {
+        --bs-gutter-x: 16px;
+        --bs-gutter-y: 16px;
+    }
+}
+
 /* Luft før byggeprosessen-videoen */
 #prosjekter {
     padding-bottom: 110px;

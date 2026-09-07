@@ -37,8 +37,14 @@ const DesignStudioPortfolio = () => {
 
     return (
         <div className="ds-portfolio-area">
-            <div className="container-fluid gx-0">
-                <div className="row gx-0">
+            {/*
+              «gx-0» er fjernet med vilje. Med null gutter lå bildene helt
+              inntil hverandre og leste som ett sammenhengende teppe. Luften
+              styres nå av .ds-portfolio-grid i globals.scss – ett sted å
+              justere avstanden, i stedet for klasser spredt i markupen.
+            */}
+            <div className="container-fluid ds-portfolio-grid">
+                <div className="row">
                     {usettProjects.map((item, index) => (
                         <div key={index} className="col-lg-4 col-md-6">
                             <div className="ds-portfolio-item">

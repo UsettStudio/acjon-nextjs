@@ -16,8 +16,8 @@ import JsonLd from "./JsonLd";
  *  1. HVEM Usett er – knyttet til et organisasjonsnummer, en adresse og en
  *     person, slik at en AI-modell kan skille studioet fra ordet «usett».
  *  2. HVA tjenestene koster – som Offer med tallpriser. En pris skrevet som
- *     «24 000 kr» i brødtekst kan ikke siteres som en pris av en maskin;
- *     price: 24000 + priceCurrency: "NOK" kan det.
+ *     «22 500 kr» i brødtekst kan ikke siteres som en pris av en maskin;
+ *     price: 22500 + priceCurrency: "NOK" kan det.
  *  3. HVILKE SPØRSMÅL Usett svarer på – som FAQPage.
  *
  * @graph:
