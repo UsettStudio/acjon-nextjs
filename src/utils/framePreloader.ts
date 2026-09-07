@@ -23,6 +23,17 @@
 type Opts = {
     /** Bildene som skal lastes, i rekkefølge. */
     urls: string[];
+    /**
+     * Reservebilder, én per indeks i `urls`. Brukes hvis hovedbildet ikke
+     * finnes (404) eller er ødelagt.
+     *
+     * Grunnen til at dette finnes: mobilsekvensen i heroen genereres av et
+     * skript og er nye, usporede filer. Blir de ikke generert eller ikke
+     * lagt til i git før deploy, svarer serveren 404 – og uten reserve ble
+     * heroen stående helt tom på telefon. Nå faller den tilbake på original-
+     * bildene i stedet: tyngre, men siden ser riktig ut.
+     */
+    fallbackUrls?: string[];
     /** Hvor mange som hentes umiddelbart. Standard 2. */
     eager?: number;
     /** Hvor mange som hentes per pulje etterpå. Standard 6. */
@@ -50,6 +61,7 @@ const nårLedig = (fn: () => void): number => {
  */
 export function lastRammer({
     urls,
+    fallbackUrls,
     eager = 2,
     batch = 6,
     onLoad,
@@ -57,8 +69,14 @@ export function lastRammer({
 }: Opts): () => void {
     let avbrutt = false;
 
-    const hent = (i: number, lavPrioritet: boolean) => {
-        if (avbrutt || target[i]) return;
+    /** Har vi allerede advart om at hovedsekvensen mangler? */
+    let harAdvart = false;
+
+    const hent = (i: number, lavPrioritet: boolean, brukReserve = false) => {
+        if (avbrutt || (target[i] && !brukReserve)) return;
+        const kilde = brukReserve ? fallbackUrls?.[i] : urls[i];
+        if (!kilde) return;
+
         const img = new Image();
         // fetchPriority er ikke i alle TS-DOM-typene ennå.
         if (lavPrioritet) {
@@ -68,7 +86,19 @@ export function lastRammer({
         img.onload = () => {
             if (!avbrutt) onLoad?.(i, img);
         };
-        img.src = urls[i];
+        img.onerror = () => {
+            if (avbrutt || brukReserve || !fallbackUrls?.[i]) return;
+            if (!harAdvart) {
+                harAdvart = true;
+                console.warn(
+                    `[framePreloader] Fant ikke ${urls[i]} – faller tilbake på ` +
+                    `originalbildene. Kjør «node scripts/lag-orbit-mobile.mjs» og ` +
+                    `husk «git add public/assets/scroll/orbit-mobile».`
+                );
+            }
+            hent(i, lavPrioritet, true);
+        };
+        img.src = kilde;
         target[i] = img;
     };
 

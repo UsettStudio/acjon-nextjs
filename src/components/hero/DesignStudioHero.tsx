@@ -143,6 +143,10 @@ const DesignStudioHero = () => {
                 const mobilBuffer: HTMLImageElement[] = [];
                 stoppLasting = lastRammer({
                     urls: mobileFrames.map((n) => `${FRAME_DIR_MOBILE}/frame_${pad(n + 1)}.webp`),
+                    // Mangler mobilsettet (ikke generert / ikke lagt til i git),
+                    // brukes originalene i stedet. Da blir siden tyngre, men
+                    // heroen står aldri tom.
+                    fallbackUrls: mobileFrames.map((n) => `${FRAME_DIR}/frame_${pad(n + 1)}.jpg`),
                     eager: 2,
                     batch: 4,
                     target: mobilBuffer,
