@@ -733,10 +733,27 @@
     }
 }
 
-/* Luft før byggeprosessen-videoen */
+/* Luft rundt hele seksjonen.
+   Byggefilmen over har nøyaktig samme bakgrunn (#f5f7f5), så uten padding
+   på toppen begynte den første bilderaden rett under siste filmbilde uten
+   noe skille – de leste som én sammenhengende flate. Bunnpaddingen skiller
+   på samme måte mot prisberegneren under. */
 #prosjekter {
+    padding-top: 110px;
     padding-bottom: 110px;
     background: #F5F7F5;
+}
+@media (max-width: 991px) {
+    #prosjekter {
+        padding-top: 70px;
+        padding-bottom: 70px;
+    }
+}
+@media (max-width: 575px) {
+    #prosjekter {
+        padding-top: 50px;
+        padding-bottom: 50px;
+    }
 }
 
 /* ------------------------------------------------------------------ */
