@@ -56,7 +56,15 @@ const DesignStudioPortfolio = () => {
                                             className="tp-anim-img "
                                             src={item.image}
                                             alt={altFor(item.title, item.category)}
-                                            loading="eager"
+                                            /*
+                                              Bare de to første hentes med en gang.
+                                              Resten er under skjermkanten, og med
+                                              loading="eager" på alle lastet mobilen
+                                              ned hele galleriet (1,3 MB) mens den
+                                              fortsatt prøvde å vise heroen.
+                                            */
+                                            loading={index < 2 ? "eager" : "lazy"}
+                                            sizes="(max-width: 767px) 90vw, 635px"
                                         />
                                     </button>
                                 </div>

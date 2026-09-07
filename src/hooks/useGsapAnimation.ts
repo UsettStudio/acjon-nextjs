@@ -58,7 +58,32 @@ export const buttonTextAnim = () => {
 
 
 //fade animation
+/**
+ * Skal reveal-animasjonene kjøre i det hele tatt?
+ *
+ * Nei på to tilfeller:
+ *
+ *  1. MOBIL (<768px). ScrollSmoother opprettes ikke der (se useScrollSmooth.ts),
+ *     og uten smoother bommer ScrollTrigger jevnlig på målingene når adresse-
+ *     linja kollapser. Resultatet var at tjenestekortene ble stående usynlige
+ *     til sikkerhetsnettet i AnimationWrapper slo inn – etter 2,2 sekunder.
+ *     Animasjonene startet dessuten fra `gsap.from(..., {opacity: 0})`, som
+ *     betyr at innholdet FØRST ble malt synlig av serveren og deretter skjult
+ *     igjen når GSAP kom i gang. Det var blinket man så ved innlasting.
+ *     På telefon er gevinsten av effekten liten og kostnaden stor, så der
+ *     vises innholdet med en gang.
+ *
+ *  2. Når brukeren har slått på «reduser bevegelse» i systeminnstillingene.
+ */
+const skalAnimere = () => {
+  if (typeof window === "undefined") return false;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return false;
+  return window.matchMedia("(min-width: 768px)").matches;
+};
+
 export const fadeAnimation = () => {
+  if (!skalAnimere()) return;
+
   gsap.utils.toArray<HTMLElement>(".tp_fade_anim").forEach((item) => {
     const offset = parseFloat(item.dataset.fadeOffset || "40");
     const duration = parseFloat(item.dataset.duration || "0.75");
@@ -229,6 +254,8 @@ export const imageClipingEffect = () => {
 
 //split-title element
 export const splitTitleAnim = () => {
+  if (!skalAnimere()) return;
+
   document.querySelectorAll(".tp-split-title").forEach(title => {
     const split = new SplitText(title, { type: "chars" });
 

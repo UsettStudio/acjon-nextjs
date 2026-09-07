@@ -17,10 +17,19 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import AnimatedCounterTwo from "../shared/Counter/AnimatedCounterTwo";
 import { ButtonArrowIcon } from "@/svg";
+import { lastRammer } from "@/utils/framePreloader";
 import NextImage from "next/image";
 import Link from "next/link";
 
 const FRAME_DIR = "/assets/scroll/orbit";
+/**
+ * Egen mobilsekvens: samme bilder, men 800 px brede og som WebP.
+ * Telefonen lastet tidligere desktop-oppløsningen (1600 px JPEG, 113 KB per
+ * bilde = 4,5 MB for de 41 bildene mobilen bruker). Nedskalert til bredden
+ * canvasen faktisk har på en telefon koster de 26 KB stykket – 1,1 MB totalt.
+ * Genereres med skriptet i scripts/lag-orbit-mobile.mjs.
+ */
+const FRAME_DIR_MOBILE = "/assets/scroll/orbit-mobile";
 const FRAME_COUNT = 120;
 const BG = "#010103";
 
@@ -58,6 +67,10 @@ const DesignStudioHero = () => {
             const root = rootRef.current;
             const canvas = canvasRef.current;
             if (!root || !canvas) return;
+
+            // Settes av lastRammer; kalles i opprydningen så bildepuljer ikke
+            // fortsetter å lastes etter at komponenten er demontert.
+            let stoppLasting: (() => void) | null = null;
             const ctx = canvas.getContext("2d", { alpha: false });
             if (!ctx) return;
 
@@ -123,17 +136,22 @@ const DesignStudioHero = () => {
                     mobileFrames.push(FRAME_COUNT - 1);
                 }
 
-                mobileFrames.forEach((n, k) => {
-                    const img = new Image();
-                    img.src = `${FRAME_DIR}/frame_${pad(n + 1)}.jpg`;
-                    img.onload = () => {
-                        // Tegn så snart bildet vi faktisk står på er nede, så
-                        // heroen aldri blir stående svart mens resten lastes.
-                        // (k === 0 er første bilde – det trengs med én gang.)
+                // Bildene hentes gjennom lastRammer: de to første med en gang
+                // (så heroen aldri står svart), resten først når siden er
+                // ferdig lastet og med lav prioritet. Tidligere ble alle 40
+                // startet samtidig og konkurrerte med alt annet på siden.
+                const mobilBuffer: HTMLImageElement[] = [];
+                stoppLasting = lastRammer({
+                    urls: mobileFrames.map((n) => `${FRAME_DIR_MOBILE}/frame_${pad(n + 1)}.webp`),
+                    eager: 2,
+                    batch: 4,
+                    target: mobilBuffer,
+                    onLoad: (k, img) => {
+                        const n = mobileFrames[k];
+                        images[n] = img;
                         if (frameRef.current < 0) frameRef.current = n;
                         if (frameRef.current === n || k === 0) draw(frameRef.current);
-                    };
-                    images[n] = img;
+                    },
                 });
 
                 // Sporet som heroen «henger fast» i = #top.
@@ -181,16 +199,26 @@ const DesignStudioHero = () => {
                 window.addEventListener("orientationchange", onResize);
 
                 return () => {
+                    stoppLasting?.();
                     window.removeEventListener("scroll", onScroll);
                     window.removeEventListener("resize", onResize);
                     window.removeEventListener("orientationchange", onResize);
                 };
             }
 
-            for (let i = 0; i < FRAME_COUNT; i++) {
-                const img = new Image();
-                img.src = `${FRAME_DIR}/frame_${pad(i + 1)}.jpg`;
-                img.onload = () => {
+            // Samme høflige lasting på desktop. Sekvensen blir like komplett,
+            // den slutter bare å kappes med LCP-bildet om båndbredden.
+            const desktopBuffer: HTMLImageElement[] = [];
+            stoppLasting = lastRammer({
+                urls: Array.from(
+                    { length: FRAME_COUNT },
+                    (_, i) => `${FRAME_DIR}/frame_${pad(i + 1)}.jpg`
+                ),
+                eager: 3,
+                batch: 8,
+                target: desktopBuffer,
+                onLoad: (i, img) => {
+                    images[i] = img;
                     loaded++;
                     if (i === 0) {
                         frameRef.current = 0;
@@ -201,9 +229,8 @@ const DesignStudioHero = () => {
                     // alle bildene er lastet re-målte alle pins – også bygg-pinnen
                     // lenger nede – midt i at man scrollet, noe som fikk den til å
                     // hoppe / "stoppe på feil sted".
-                };
-                images[i] = img;
-            }
+                },
+            });
 
             resize();
 
@@ -247,6 +274,7 @@ const DesignStudioHero = () => {
             const t2 = setTimeout(safeRefresh, 1400);
 
             return () => {
+                stoppLasting?.();
                 clearTimeout(t1);
                 clearTimeout(t2);
                 window.removeEventListener("resize", resize);
@@ -261,7 +289,7 @@ const DesignStudioHero = () => {
         <div
             ref={rootRef}
             className="ds-hero-ptb ds-hero-bg ds-hero-scrub include-bg fix"
-            style={{ backgroundImage: `url(/assets/img/design-studio/hero/hero-bg.png)` }}
+            style={{ backgroundImage: `url(/assets/img/design-studio/hero/hero-bg.webp)` }}
         >
             {/* 3D-bygget som roterer når man scroller (orbit-bildesekvens) */}
             <canvas ref={canvasRef} className="ds-hero-scrub-canvas" />

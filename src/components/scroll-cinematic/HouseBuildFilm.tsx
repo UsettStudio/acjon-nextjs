@@ -30,6 +30,7 @@ import { useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import { lastRammer, nårNær } from "@/utils/framePreloader";
 
 const DESKTOP_DIR = "/hero/frames";
 const DESKTOP_TOTAL = 144;
@@ -139,15 +140,33 @@ export default function HouseBuildFilm() {
                 drawNearestLoaded(wanted);
             };
 
-            urls.forEach((src, i) => {
-                const img = new Image();
-                img.src = src;
-                img.onload = () => {
-                    // Tegn på nytt hver gang et bilde lander, så vi aldri blir
-                    // stående med tom flate mens sekvensen laster.
-                    drawNearestLoaded(Math.max(frameRef.current, 0));
-                };
-                images[i] = img;
+            // ---------------------------------------------------------------
+            // Bildene lastes IKKE ved montering.
+            //
+            // Denne seksjonen ligger godt under skjermkanten. Før lastet den
+            // ned hele sekvensen (48 bilder på mobil, 72 på desktop) med én
+            // gang siden åpnet, samtidig som heroen lastet sine – til sammen
+            // flere megabyte som konkurrerte med innholdet brukeren faktisk
+            // så på. Det var hovedgrunnen til at tjenestekortene lenger nede
+            // kom så sent på telefon.
+            //
+            // Nå venter vi til seksjonen nærmer seg viewporten (rootMargin
+            // gir halvannen skjermhøyde forsprang, så bildene er nede før man
+            // er framme), og henter dem deretter i puljer med lav prioritet.
+            // ---------------------------------------------------------------
+            let stoppLasting: (() => void) | null = null;
+            const stoppObservatør = nårNær(track, () => {
+                stoppLasting = lastRammer({
+                    urls,
+                    eager: 2,
+                    batch: 6,
+                    target: images,
+                    onLoad: () => {
+                        // Tegn på nytt hver gang et bilde lander, så vi aldri
+                        // blir stående med tom flate mens sekvensen laster.
+                        drawNearestLoaded(Math.max(frameRef.current, 0));
+                    },
+                });
             });
 
             resize();
@@ -186,6 +205,8 @@ export default function HouseBuildFilm() {
                 window.addEventListener("orientationchange", onResize);
 
                 return () => {
+                    stoppObservatør();
+                    stoppLasting?.();
                     window.removeEventListener("scroll", onScroll);
                     window.removeEventListener("resize", onResize);
                     window.removeEventListener("orientationchange", onResize);
@@ -227,6 +248,8 @@ export default function HouseBuildFilm() {
             const t2 = setTimeout(safeRefresh, 1400);
 
             return () => {
+                stoppObservatør();
+                stoppLasting?.();
                 clearTimeout(t1);
                 clearTimeout(t2);
                 window.removeEventListener("resize", resize);
