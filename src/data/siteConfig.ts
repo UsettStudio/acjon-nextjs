@@ -209,6 +209,128 @@ export const tilleggsvalg = [
 ];
 
 /* ========================================================================
+ * PRISKALKULATOR
+ *
+ * Alle tallene kalkulatoren på forsiden regner med, samlet ett sted.
+ * Skal prisene justeres, er det HER det gjøres – ikke i komponenten.
+ *
+ * HVORDAN MODELLEN BLE TIL
+ * Pakkene har en nesten eksakt formel bakt inn. Teller man illustrasjonene
+ * (oppsett/teksturering er en egen linje, ikke et bilde):
+ *
+ *   Basis     3 bilder → 24 000 kr
+ *   Proff     5 bilder → 39 000 kr
+ *   Komplett  7 bilder → 53 500 kr
+ *
+ * Differansen er 7 500 kr per bilde mellom Basis og Proff, og 7 250 mellom
+ * Proff og Komplett. Regner man baklengs fra Basis blir grunnprisen 1 500 kr.
+ * Formelen «1 500 + 7 500 per illustrasjon» treffer altså Basis og Proff
+ * eksakt, og bommer med 500 kr på Komplett.
+ *
+ * Kalkulatoren bruker den formelen. Det gjør at den også kan svare på
+ * prosjekter som ikke passer i en pakke – 2 bilder, eller 14.
+ * ===================================================================== */
+
+export type Kompleksitet = {
+    id: string;
+    navn: string;
+    /** Ganges med grunnsummen. Enkel = 1. */
+    faktor: number;
+    beskrivelse: string;
+};
+
+export type Tilleggsvalg = {
+    id: string;
+    navn: string;
+    pris: number;
+    /** Vises i grått ved siden av prisen, f.eks. «per plan». */
+    enhet?: string;
+    /** True = kunden kan velge antall. False = av/på. */
+    harAntall?: boolean;
+    maks?: number;
+};
+
+export const kalkulator = {
+    /** Oppstart og teksturering. Regnes per bygg, ikke per prosjekt. */
+    grunnprisPerBygg: 1500,
+    prisPerIllustrasjon: 7500,
+
+    /** Startverdier når siden lastes – valgt så kunden ser et reelt tall med en gang. */
+    standard: { bygg: 1, illustrasjoner: 4, kompleksitet: "middels" },
+
+    maksBygg: 10,
+    maksIllustrasjoner: 30,
+
+    kompleksitet: [
+        {
+            id: "enkel",
+            navn: "Enkel bygning",
+            faktor: 1,
+            beskrivelse:
+                "Enebolig eller tomannsbolig. Oversiktlige bygg med enkel fasade og få detaljer.",
+        },
+        {
+            id: "middels",
+            navn: "Middels kompleksitet",
+            faktor: 1.25,
+            beskrivelse:
+                "Firemannsbolig, rekkehus eller mindre boligblokk. Flere etasjer og mer bearbeidet fasade.",
+        },
+        {
+            id: "kompleks",
+            navn: "Kompleks bygning",
+            faktor: 1.6,
+            beskrivelse:
+                "Større boligblokker og kombinerte prosjekter. Krevende arkitektur og høy detaljgrad.",
+        },
+    ] as Kompleksitet[],
+
+    /**
+     * Hvor bredt intervallet vises. Litt mer rom oppover enn nedover, fordi
+     * det er endringer og tillegg underveis som drar prisen opp – sjelden ned.
+     */
+    intervall: { ned: 0.05, opp: 0.12 },
+    /** Alle viste tall rundes til nærmeste 500 kr. */
+    avrunding: 500,
+
+    tillegg: [
+        {
+            id: "plantegning",
+            navn: "2D salgstegninger",
+            pris: 1500,
+            enhet: "per plan",
+            harAntall: true,
+            maks: 12,
+        },
+        {
+            id: "sesong",
+            navn: "AI-generert sesongbilde",
+            pris: 3000,
+            enhet: "per bilde",
+            harAntall: true,
+            maks: 8,
+        },
+        {
+            id: "animasjon",
+            navn: "AI-generert animasjon, 6 sekunder",
+            pris: 4500,
+        },
+        {
+            id: "hjemmeside",
+            navn: "3D-animert hjemmeside",
+            pris: 14900,
+            enhet: "fastpris",
+        },
+        {
+            id: "skanning",
+            navn: "3D-skanning og digital tvilling",
+            pris: 5000,
+            enhet: "fra, inntil 100 kvm",
+        },
+    ] as Tilleggsvalg[],
+};
+
+/* ========================================================================
  * TJENESTER
  * `services` beholdes uendret (brukes av StudioJsonLd på forsiden).
  * `servicePages` er den utvidede versjonen som driver /tjenester/[slug].

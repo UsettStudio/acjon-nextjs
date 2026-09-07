@@ -1019,3 +1019,130 @@
         height: 100svh;
     }
 }
+
+/* ==================================================================== */
+/*  PRISBEREGNER (forsiden, der dronefilmen lå)                         */
+/*                                                                      */
+/*  Samme uttrykk som kontaktskjemaet: lyst kort, hvite felt, gradient  */
+/*  på topplinjen, rosa fokusring. De tre merkefargene brukes på        */
+/*  kompleksitetsvalgene, i samme rekkefølge som ellers på siden.       */
+/* ==================================================================== */
+
+.ub-kalk-area { padding: 120px 0; background: #F5F7F5; }
+
+.ub-kalk-kort {
+    position: relative;
+    max-width: 900px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 10px;
+    padding: 56px 48px 48px;
+    box-shadow: 0 24px 60px -30px rgba(1, 1, 3, .35);
+}
+/* Gradientstripen på toppen – identisk med .tp-contact-us-form-border */
+.ub-kalk-kort::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 0;
+    width: 100%; height: 5px;
+    background: var(--brus-grad);
+    border-radius: 10px 10px 0 0;
+}
+
+.ub-kalk-hode { margin-bottom: 44px; }
+.ub-kalk-kicker {
+    display: block; color: var(--brus-3); font-weight: 600;
+    text-transform: uppercase; letter-spacing: .1em; font-size: 13px; margin-bottom: 10px;
+}
+.ub-kalk-tittel { font-size: clamp(26px, 3.4vw, 38px); line-height: 1.15; margin: 0 0 14px; color: #010103; }
+.ub-kalk-ingress { color: #4b5158; font-size: 17px; line-height: 1.6; margin: 0; max-width: 62ch; }
+
+.ub-kalk-felt { margin-bottom: 40px; }
+.ub-kalk-sporsmal { display: block; font-size: 18px; font-weight: 600; color: #010103; margin-bottom: 6px; }
+.ub-kalk-sporsmal em { font-style: normal; color: var(--brus-2); }
+.ub-kalk-hjelp { font-size: 14px; color: #6b7178; margin: 0 0 16px; }
+
+/* ---- pluss/minus-teller ---- */
+.ub-kalk-teller {
+    display: inline-flex; align-items: center;
+    border: 1px solid #dcdce2; border-radius: 8px; overflow: hidden; background: #fff;
+}
+.ub-kalk-teller button {
+    width: 46px; height: 48px; border: 0; background: #fff; cursor: pointer;
+    font-size: 22px; line-height: 1; color: var(--brus-3);
+    transition: background .15s ease;
+}
+.ub-kalk-teller button:hover:not(:disabled) { background: #f4f0f9; }
+.ub-kalk-teller button:disabled { color: #c9ccd1; cursor: not-allowed; }
+.ub-kalk-teller span {
+    min-width: 54px; text-align: center; font-size: 18px; font-weight: 600; color: #010103;
+    border-left: 1px solid #ececf1; border-right: 1px solid #ececf1; line-height: 48px;
+    font-variant-numeric: tabular-nums;
+}
+
+/* ---- kompleksitetsvalg ---- */
+.ub-kalk-nivaer { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin-bottom: 14px; }
+.ub-kalk-nivaa {
+    text-align: left; background: #fff; border: 1px solid #dcdce2; border-radius: 8px;
+    padding: 20px 18px 18px; cursor: pointer; position: relative; overflow: hidden;
+    transition: border-color .18s ease, box-shadow .18s ease;
+}
+.ub-kalk-nivaa::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+.ub-kalk-nivaa-1::before { background: var(--brus-1); }
+.ub-kalk-nivaa-2::before { background: var(--brus-2); }
+.ub-kalk-nivaa-3::before { background: var(--brus-3); }
+.ub-kalk-nivaa strong { display: block; font-size: 16px; color: #010103; margin-bottom: 6px; }
+.ub-kalk-nivaa span { display: block; font-size: 14px; line-height: 1.5; color: #6b7178; }
+.ub-kalk-nivaa-1.er-valgt { border-color: var(--brus-1); box-shadow: 0 0 0 3px rgba(249, 160, 27, .16); }
+.ub-kalk-nivaa-2.er-valgt { border-color: var(--brus-2); box-shadow: 0 0 0 3px rgba(236, 59, 135, .16); }
+.ub-kalk-nivaa-3.er-valgt { border-color: var(--brus-3); box-shadow: 0 0 0 3px rgba(122, 46, 184, .16); }
+.ub-kalk-nivaa:focus-visible { outline: 2px solid var(--brus-2); outline-offset: 2px; }
+
+/* ---- tilleggstjenester ---- */
+.ub-kalk-tillegg { border: 1px solid #ececf1; border-radius: 8px; overflow: hidden; }
+.ub-kalk-tillegg-rad {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: 14px 18px; border-bottom: 1px solid #ececf1; flex-wrap: wrap;
+    transition: background .15s ease;
+}
+.ub-kalk-tillegg-rad:last-child { border-bottom: 0; }
+.ub-kalk-tillegg-rad.er-valgt { background: #fdf7fa; }
+.ub-kalk-tillegg-navn { display: flex; align-items: center; gap: 12px; cursor: pointer; margin: 0; flex: 1 1 200px; }
+.ub-kalk-tillegg-navn input { width: 18px; height: 18px; accent-color: var(--brus-2); cursor: pointer; flex: 0 0 auto; }
+.ub-kalk-tillegg-navn span { font-size: 16px; color: #010103; }
+.ub-kalk-tillegg-hoyre { display: flex; align-items: center; gap: 14px; }
+.ub-kalk-tillegg-hoyre .ub-kalk-teller button { width: 36px; height: 38px; font-size: 18px; }
+.ub-kalk-tillegg-hoyre .ub-kalk-teller span { min-width: 40px; line-height: 38px; font-size: 16px; }
+.ub-kalk-tillegg-pris { font-size: 16px; font-weight: 600; color: #010103; white-space: nowrap; }
+.ub-kalk-tillegg-pris i { font-style: normal; font-weight: 400; font-size: 13px; color: #8a9097; }
+
+/* ---- resultat ---- */
+.ub-kalk-resultat {
+    background: #010103; border-radius: 10px; padding: 38px 34px; margin-top: 8px; text-align: center;
+    position: relative; overflow: hidden;
+}
+.ub-kalk-resultat::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--brus-grad); }
+.ub-kalk-resultat-merke {
+    display: block; text-transform: uppercase; letter-spacing: .14em; font-size: 12px;
+    color: #A6ADB2; margin-bottom: 12px;
+}
+.ub-kalk-sum {
+    font-size: clamp(30px, 5vw, 46px); font-weight: 700; color: #fff; margin: 0;
+    letter-spacing: -.02em; font-variant-numeric: tabular-nums;
+}
+.ub-kalk-mva { font-size: 14px; color: #A6ADB2; margin: 4px 0 0; }
+.ub-kalk-tom { font-size: 18px; color: #A6ADB2; margin: 6px 0; }
+.ub-kalk-forbehold { font-size: 14px; line-height: 1.6; color: #8a9097; max-width: 56ch; margin: 22px auto 0; }
+.ub-kalk-knapper { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; justify-content: center; margin-top: 28px; }
+.ub-kalk-lenke { color: var(--brus-1); font-size: 15px; text-decoration: underline; }
+.ub-kalk-lenke:hover { color: #fff; }
+.ub-kalk-oppsummering { font-size: 14px; color: #8a9097; margin: 24px 0 0; }
+.ub-kalk-oppsummering span { color: #fff; font-weight: 600; }
+
+@media (max-width: 767px) {
+    .ub-kalk-area { padding: 80px 0; }
+    .ub-kalk-kort { padding: 40px 22px 32px; border-radius: 8px; }
+    .ub-kalk-resultat { padding: 30px 20px; }
+    .ub-kalk-tillegg-rad { align-items: flex-start; }
+    .ub-kalk-tillegg-hoyre { width: 100%; justify-content: space-between; }
+}

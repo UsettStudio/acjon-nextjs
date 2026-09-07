@@ -12,7 +12,7 @@ import BootstrapLoader from "@/layouts/BootstrapLoader";
 
 import DesignStudioTextSlider from "@/components/text-slider/DesignStudioTextSlider";
 import DesignStudioPortfolio from "@/components/portfolio/DesignStudioPortfolio";
-import PinnedFrameScrub from "@/components/scroll-cinematic/PinnedFrameScrub";
+import Prisberegner from "@/components/kalkulator/Prisberegner";
 import HouseBuildFilm from "@/components/scroll-cinematic/HouseBuildFilm";
 import HashScroll from "@/components/scroll-cinematic/HashScroll";
 import OnePageLinks from "@/components/scroll-cinematic/OnePageLinks";
@@ -107,16 +107,11 @@ export default function Page() {
                                             <DesignStudioPortfolio />
                                         </section>
 
-                                        {/* Dronefilm: drona letter fra bakken og stiger over et
-                                            norsk boligfelt. Bildesekvens (ikke <video>) slik at
-                                            scrollen styrer avspillingen – også på mobil. */}
-                                        <section id="drone">
-                                            <PinnedFrameScrub
-                                                frameDir="/assets/scroll/drone-frames"
-                                                frameCount={61}
-                                                scrollFactor={3}
-                                            />
-                                        </section>
+                                        {/* Prisberegner – erstattet dronefilmen som lå her.
+                                            Dronefilmen var 6,3 MB bildesekvens og ble uansett
+                                            skjult på mobil; kalkulatoren svarer på spørsmålet
+                                            flest stiller før de tar kontakt. */}
+                                        <Prisberegner />
 
                                         <section id="om-oss">
                                             <DesignStudioAbout />
