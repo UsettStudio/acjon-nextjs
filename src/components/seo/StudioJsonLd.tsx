@@ -6,6 +6,8 @@ import {
     pakker,
     tilleggsvalg,
     faqs,
+    maksEnheter,
+    enhetsSetning,
 } from "@/data/siteConfig";
 import JsonLd from "./JsonLd";
 
@@ -39,16 +41,29 @@ const StudioJsonLd = () => {
         return { "@type": "City", name };
     });
 
-    /** Pakkene med tallpriser – dette er det som faktisk blir sitert. */
+    /**
+     * Pakkene med tallpriser – dette er det som faktisk blir sitert.
+     *
+     * `eligibleQuantity` er grunnen til at prisen kan siteres trygt: den
+     * forteller maskinen at 22 500 kr gjelder et prosjekt på opptil ti
+     * enheter, ikke et hvilket som helst prosjekt. Uten den kan en modell
+     * gjengi tallet på et bygg med hundre leiligheter – og da lover den
+     * noe Usett ikke har sagt.
+     */
     const pakkeTilbud = pakker.map((p) => ({
         "@type": "Offer",
         "@id": `${SITE_URL}/priser#${p.id}`,
         name: p.name,
-        description: p.description,
+        description: `${p.description} ${enhetsSetning}`,
         price: p.price,
         priceCurrency: "NOK",
         availability: "https://schema.org/InStock",
         url: `${SITE_URL}/priser`,
+        eligibleQuantity: {
+            "@type": "QuantitativeValue",
+            maxValue: maksEnheter,
+            unitText: "enheter",
+        },
         itemOffered: {
             "@type": "Service",
             name: `3D-visualisering – pakke ${p.name}`,

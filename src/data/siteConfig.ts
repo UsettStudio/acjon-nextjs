@@ -128,6 +128,28 @@ export const siteConfig = {
  * public/llms.txt, src/data/pricingData.ts og teksten på /priser.
  * ===================================================================== */
 
+/**
+ * Øvre grense pakkeprisene er regnet for.
+ *
+ * En pakkepris uten et omfang er ikke en pris – den er et anslag kunden kan
+ * lese som han vil, og et tall en AI-modell kan sitere på et prosjekt den
+ * aldri var ment for. Grensen står derfor synlig på hvert pakkekort, i
+ * teksten på /priser, i FAQ-ene, i llms.txt og som eligibleQuantity i
+ * Offer-schemaet – slik at både mennesket og maskinen ser hva tallet dekker.
+ *
+ * Med «enheter» menes boenheter: leiligheter, rekkehus eller boliger i
+ * prosjektet – ikke antall bilder og ikke antall bygg.
+ */
+export const maksEnheter = 10;
+
+/** Kort variant til pakkekortene. */
+export const enhetsNote = `Gjelder prosjekter med opptil ${maksEnheter} enheter`;
+
+/** Hel setning til brødtekst, FAQ og strukturerte data. */
+export const enhetsSetning =
+    `Pakkeprisene gjelder prosjekter med opptil ${maksEnheter} enheter. ` +
+    `Større prosjekter prises etter omfang – ta kontakt for et konkret tall.`;
+
 export type Pakke = {
     id: string;
     name: string;
@@ -745,7 +767,7 @@ export const servicePages: ServicePage[] = [
 export const faqs: { q: string; a: string }[] = [
     {
         q: "Hva koster 3D-visualisering hos Usett?",
-        a: "Usett tilbyr tre pakker: Basis 22 500 kr, Proff 36 500 kr og Komplett 50 000 kr, alle per prosjekt. Endelig pris avhenger av antall bilder og kompleksitet, og du kan supplere med tilleggsvalg som 2D salgstegninger (1 500 kr per plan), AI-genererte sesongbilder (3 000 kr per bilde) og animasjon (4 500 kr).",
+        a: `Usett tilbyr tre pakker: Basis 22 500 kr, Proff 36 500 kr og Komplett 50 000 kr, alle per prosjekt og regnet for prosjekter med opptil ${maksEnheter} enheter. Er prosjektet større, prises det etter omfang. Endelig pris avhenger ellers av antall bilder og kompleksitet, og du kan supplere med tilleggsvalg som 2D salgstegninger (1 500 kr per plan), AI-genererte sesongbilder (3 000 kr per bilde) og animasjon (4 500 kr).`,
     },
     {
         q: "Hvor i landet leverer dere?",

@@ -6,6 +6,9 @@ import {
     pakker,
     tilleggsvalg,
     servicePages,
+    maksEnheter,
+    enhetsNote,
+    enhetsSetning,
 } from "@/data/siteConfig";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -23,7 +26,7 @@ import Link from "next/link";
 // Uten "Usett" til slutt – malen i layout.tsx legger på "| Usett" selv.
 const TITLE = "Hva koster 3D-visualisering? Priser og pakker";
 const DESCRIPTION =
-    "3D-visualisering hos Usett koster fra 22 500 kr per prosjekt. Se hva som inngår i pakkene Basis, Proff og Komplett, hva tilleggene koster, og hva som avgjør endelig pris.";
+    `3D-visualisering hos Usett koster fra 22 500 kr per prosjekt for prosjekter med opptil ${maksEnheter} enheter. Se hva som inngår i pakkene Basis, Proff og Komplett, hva tilleggene koster, og hva som avgjør endelig pris.`;
 
 export const metadata: Metadata = {
     title: { absolute: `${TITLE} | Usett` },
@@ -44,11 +47,11 @@ export const metadata: Metadata = {
 const prisFaq = [
     {
         q: "Hva koster 3D-visualisering hos Usett?",
-        a: "Fra 22 500 kr per prosjekt. Pakke Basis koster 22 500 kr og inneholder to interiørbilder og ett eksteriørbilde. Proff koster 36 500 kr, Komplett koster 50 000 kr. Alle pakker inkluderer oppstart og teksturering av 3D-modellen.",
+        a: `Fra 22 500 kr per prosjekt. Pakke Basis koster 22 500 kr og inneholder to interiørbilder og ett eksteriørbilde. Proff koster 36 500 kr, Komplett koster 50 000 kr. Alle pakker inkluderer oppstart og teksturering av 3D-modellen. ${enhetsSetning}`,
     },
     {
         q: "Hva avgjør endelig pris?",
-        a: "Antall bilder og hvor komplekst bygget er. Et rekkehusfelt med samme boligtype gjentatt koster mindre per bilde enn fire ulike boligtyper. Tillegg som plantegninger, sesongbilder og animasjon kommer i tillegg til pakkeprisen.",
+        a: `Antall bilder, hvor komplekst bygget er og hvor stort prosjektet er. Pakkeprisene er regnet for prosjekter med opptil ${maksEnheter} enheter; er prosjektet større, prises det etter omfang. Et rekkehusfelt med samme boligtype gjentatt koster mindre per bilde enn fire ulike boligtyper. Tillegg som plantegninger, sesongbilder og animasjon kommer i tillegg til pakkeprisen.`,
     },
     {
         q: "Er prisene inkludert merverdiavgift?",
@@ -167,13 +170,18 @@ export default function PriserPage() {
                     3D-visualisering hos Usett koster fra 22 500 kr per prosjekt.
                     Pakke Basis koster 22 500 kr, Proff 36 500 kr og Komplett
                     50 000 kr, alle inkludert oppstart og teksturering av
-                    3D-modellen. Mange oppdrag leveres innen 48 timer.
+                    3D-modellen. Prisene gjelder prosjekter med opptil{" "}
+                    {maksEnheter} enheter. Mange oppdrag leveres innen 48 timer.
                 </p>
 
                 <dl className="doc-meta">
                     <div>
                         <dt>Fra</dt>
                         <dd>22 500 kr</dd>
+                    </div>
+                    <div>
+                        <dt>Omfang</dt>
+                        <dd>Opptil {maksEnheter} enheter</dd>
                     </div>
                     <div>
                         <dt>Leveringstid</dt>
@@ -200,7 +208,9 @@ export default function PriserPage() {
                             {p.isPopular && <span className="tag">Mest valgt</span>}
                             <h3>{p.name}</h3>
                             <div className="price">{p.priceLabel}</div>
-                            <div className="period">{p.period}</div>
+                            <div className="period">
+                                {p.period} · {enhetsNote.toLowerCase()}
+                            </div>
                             <p>{p.description}</p>
                             <ul>
                                 {p.features.map((f) => (

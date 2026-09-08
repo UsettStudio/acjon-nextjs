@@ -404,6 +404,44 @@
     justify-content: space-between;
     width: 100%;
 }
+/* ------------------------------------------------------------------ */
+/*  HEROENS PLAKAT – det som fjerner det svarte glimtet ved innlasting */
+/*                                                                     */
+/*  Problemet: canvasen kan ikke tegne noe før JavaScript har kjørt OG */
+/*  første orbit-bilde er lastet ned. Bakgrunnen bak den var           */
+/*  hero-bg.webp, som selv er nesten helt svart – så det man så det    */
+/*  første sekundet var en svart flate.                                */
+/*                                                                     */
+/*  Nå er bakgrunnen FØRSTE BILDE i sekvensen. Bygget står der fra     */
+/*  første maling, og canvasen tones inn over nøyaktig samme motiv.    */
+/*                                                                     */
+/*  To lag i samme background-image:                                   */
+/*    1) hero-poster*.webp – ekte bilde, forhåndslastet fra <head>     */
+/*    2) et 228 byte uskarpt miniatyrbilde bakt inn som data-URI.      */
+/*       Det krever ingen forespørsel og males derfor i aller første   */
+/*       frame, uansett hvor treg forbindelsen er.                     */
+/*                                                                     */
+/*  Mobil får 800 px-varianten (29 KB), desktop 1600 px (69 KB).       */
+/* ------------------------------------------------------------------ */
+$hero-lqip: url("data:image/webp;base64,UklGRtwAAABXRUJQVlA4INAAAADwBQCdASogABIAPsFOoEqnpCMhsAgA8BgJYwCxH47vbLQov9A8OkXP+OT7s+nSQ5l24IWhCRCAoAD+6uJ4Zd8LA3tORN2XOoza+fv4kYoDVmROfuDq1/PM0QP+YtCw5kjWk+0SZI+LqMWEvpFRoNsJfHtZ441OH3kHTHquvPtlC+bhol4V2HxAVCd0766DmCuGaLezxvmpX+UMFSzoCM8ZYmukmCUK4fRcJfdtSErhnaF9mIK0YLnJqbBl0j2ezO36E+N1AGIRKw6LJBhFqAAA");
+
+.ds-hero-scrub {
+    background-color: #010103;
+    background-image:
+        url("/assets/img/design-studio/hero/hero-poster-mobile.webp"),
+        $hero-lqip;
+    background-repeat: no-repeat, no-repeat;
+    background-size: cover, cover;
+    background-position: center center, center center;
+}
+@media (min-width: 768px) {
+    .ds-hero-scrub {
+        background-image:
+            url("/assets/img/design-studio/hero/hero-poster.webp"),
+            $hero-lqip;
+    }
+}
+
 .ds-hero-scrub-canvas {
     position: absolute;
     inset: 0;
@@ -411,6 +449,20 @@
     height: 100%;
     display: block;
     z-index: 0;
+    /* Gjennomsiktig til første bilde er tegnet. En canvas med `alpha: false`
+       er ugjennomsiktig SVART før første drawImage, og dekket derfor
+       plakaten. Klassen settes fra DesignStudioHero når draw() har kjørt. */
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+.ds-hero-scrub-canvas.er-tegnet {
+    opacity: 1;
+}
+/* Uten animasjon: ingen inntoning, men canvasen må fortsatt bli synlig. */
+@media (prefers-reduced-motion: reduce) {
+    .ds-hero-scrub-canvas {
+        transition: none;
+    }
 }
 /* Usett: logo i hero (erstatter den store «Usett»-teksten) – midtstilt horisontalt */
 /* Flex-sentrering på wrapperen garanterer at logoen står midt på både PC og mobil,
@@ -1074,6 +1126,80 @@
         position: sticky;
         top: 0;
         height: 100svh;
+    }
+}
+
+/* ==================================================================== */
+/*  PAKKEKORT (forsiden) – «Populær»-merket og omfanget                 */
+/*                                                                      */
+/*  1) MERKET LÅ OVER TEKSTEN. Temaet gir «Populær» som en loddrett     */
+/*     vimpel: position:absolute, writing-mode:vertical-rl, 107 px høy, */
+/*     plassert 50 px fra høyre kant. På den engelske originalteksten   */
+/*     («Most popular package») gikk det så vidt, men den norske        */
+/*     beskrivelsen er lengre og la seg rett under vimpelen – ordet     */
+/*     «Visninger» ble dekket.                                          */
+/*                                                                      */
+/*     Løsningen er å legge merket vannrett OPPÅ kortets overkant i     */
+/*     stedet for nedover i innholdet. Da kan det aldri kollidere med   */
+/*     tekst, uansett hvor lang beskrivelsen blir, og de tre kortene    */
+/*     beholder samme høyde på innholdet (et merke som flyter med i     */
+/*     teksten ville dyttet Proff-kortet ned og brutt linja mellom de   */
+/*     tre prisene).                                                    */
+/*                                                                      */
+/*  2) FARGEN. Vimpelen brukte --tp-theme-primary (#7A2EB8, lilla).     */
+/*     Merket er nå oransje (--brus-1), som er den fargen som ellers    */
+/*     brukes til å framheve på siden.                                  */
+/* ==================================================================== */
+.ds-price-area .ds-price-item.active {
+    /* Merket henger utenfor kortet, så kortet må ikke klippe det bort. */
+    overflow: visible;
+}
+.ds-price-area .ds-price-item.active .ds-price-item-tag {
+    top: -15px;
+    right: 28px;
+    left: auto;
+    writing-mode: horizontal-tb;
+    transform: none;
+    line-height: 0;
+}
+.ds-price-area .ds-price-item.active .ds-price-item-tag span {
+    /* clip-path fjernes – den formet vimpelspissen og gir ingen mening
+       på en vannrett pille. */
+    clip-path: none;
+    border-radius: 999px;
+    padding: 9px 18px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background-color: var(--brus-1);
+    color: #010103;
+    box-shadow: 0 6px 18px -8px rgba(249, 160, 27, 0.9);
+}
+
+/*  Omfanget under prisen: «Gjelder prosjekter med opptil 10 enheter».
+    Dempet, men lesbar – den skal opplyse, ikke konkurrere med tallet. */
+.ds-price-area .ds-price-item-scope {
+    margin: 14px 0 0;
+    font-size: 14px;
+    line-height: 1.5;
+    text-transform: none;
+    color: rgba(245, 247, 245, 0.62);
+}
+.ds-price-area .ds-price-item-scope::before {
+    content: "";
+    display: block;
+    width: 28px;
+    height: 2px;
+    margin-bottom: 12px;
+    border-radius: 2px;
+    background: var(--brus-1);
+}
+
+@media (max-width: 767px) {
+    .ds-price-area .ds-price-item.active .ds-price-item-tag {
+        right: 20px;
     }
 }
 

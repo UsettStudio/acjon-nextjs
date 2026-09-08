@@ -33,6 +33,34 @@ const FRAME_DIR_MOBILE = "/assets/scroll/orbit-mobile";
 const FRAME_COUNT = 120;
 const BG = "#010103";
 
+/**
+ * PLAKATEN – det som fjerner det svarte glimtet.
+ *
+ * Canvasen kan ikke tegne noe før JavaScript har kjørt og første bilde er
+ * lastet ned. Fram til da så man svart, av to grunner samtidig: bakgrunnen
+ * bak canvasen (hero-bg.webp) er selv nesten helt svart, og en canvas som
+ * er opprettet med `alpha: false` males ugjennomsiktig svart før første
+ * `drawImage` – så den dekket bakgrunnen uansett.
+ *
+ * Nå gjelder tre ting:
+ *  1. Bakgrunnen ER første bilde i sekvensen (hero-poster*.webp), lagt inn
+ *     via CSS med hver sin mediaspørring, så telefonen henter 29 KB og ikke
+ *     69 KB.
+ *  2. Plakaten forhåndslastes fra <head> (lenkene under), slik at
+ *     nedlastingen starter mens HTML-en leses – ikke etter at hele
+ *     JavaScript-pakken er lastet og hydrert.
+ *  3. Under plakaten ligger et 228 byte stort uskarpt miniatyrbilde som er
+ *     bakt rett inn i HTML-en. Det krever ingen forespørsel i det hele tatt
+ *     og males derfor i aller første frame, uansett hvor treg linja er.
+ *
+ * Canvasen starter gjennomsiktig og tones inn når første bilde er tegnet.
+ * Siden plakaten og første bilde er samme motiv, er overgangen usynlig.
+ */
+const POSTER = "/assets/img/design-studio/hero/hero-poster.webp";
+const POSTER_MOBILE = "/assets/img/design-studio/hero/hero-poster-mobile.webp";
+const MOBIL_SPØRRING = "(max-width: 767px)";
+const DESKTOP_SPØRRING = "(min-width: 768px)";
+
 const counterData = [
     {
         id: 1,
@@ -80,6 +108,17 @@ const DesignStudioHero = () => {
             const images: HTMLImageElement[] = [];
             let loaded = 0;
 
+            /**
+             * Canvasen ligger gjennomsiktig over plakaten til den faktisk har
+             * noe å vise. Uten dette dekker den plakaten med svart, fordi en
+             * canvas opprettet med `alpha: false` er ugjennomsiktig svart før
+             * første drawImage.
+             */
+            const visCanvas = () => {
+                if (canvas.classList.contains("er-tegnet")) return;
+                canvas.classList.add("er-tegnet");
+            };
+
             const draw = (index: number) => {
                 const img = images[index];
                 if (!img || !img.complete || !img.naturalWidth) return;
@@ -96,6 +135,7 @@ const DesignStudioHero = () => {
                 ctx.fillStyle = BG;
                 ctx.fillRect(0, 0, cw, ch);
                 ctx.drawImage(img, dx, dy, dw, dh);
+                visCanvas();
             };
 
             const resize = () => {
@@ -290,13 +330,33 @@ const DesignStudioHero = () => {
     );
 
     return (
-        <div
-            ref={rootRef}
-            className="ds-hero-ptb ds-hero-bg ds-hero-scrub include-bg fix"
-            style={{ backgroundImage: `url(/assets/img/design-studio/hero/hero-bg.webp)` }}
-        >
-            {/* 3D-bygget som roterer når man scroller (orbit-bildesekvens) */}
-            <canvas ref={canvasRef} className="ds-hero-scrub-canvas" />
+        <>
+            {/*
+              Forhåndslasting av plakaten. React løfter <link> opp i <head>,
+              så disse står i HTML-en før alt JavaScript – nettleseren begynner
+              å hente bildet mens den fortsatt leser dokumentet. `media` gjør
+              at bare den ene av dem faktisk hentes.
+            */}
+            <link
+                rel="preload"
+                as="image"
+                href={POSTER_MOBILE}
+                media={MOBIL_SPØRRING}
+                fetchPriority="high"
+            />
+            <link
+                rel="preload"
+                as="image"
+                href={POSTER}
+                media={DESKTOP_SPØRRING}
+                fetchPriority="high"
+            />
+            <div
+                ref={rootRef}
+                className="ds-hero-ptb ds-hero-bg ds-hero-scrub include-bg fix"
+            >
+                {/* 3D-bygget som roterer når man scroller (orbit-bildesekvens) */}
+                <canvas ref={canvasRef} className="ds-hero-scrub-canvas" />
             <div className="ds-hero-bg-overlay"></div>
             <div className="ds-hero-scroll-hint" aria-hidden="true">
                 <span></span>
@@ -356,8 +416,9 @@ const DesignStudioHero = () => {
                         </div>
                     </div>
                 </div>
+                </div>
             </div>
-        </div>
+        </>
     );
 };
 
