@@ -404,6 +404,17 @@
     justify-content: space-between;
     width: 100%;
 }
+/* Enheten ved siden av tallene i heroen («+», «dager»). Sto tidligere i
+   samme størrelse som selve tallet – det gikk greit på ett tegn, men
+   «dager» ble like stort som «2–5» og tok over hele kolonnen. */
+.ds-hero-counter-title .ds-hero-counter-enhet {
+    font-style: normal;
+    font-size: 0.38em;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    vertical-align: baseline;
+}
+
 /* ------------------------------------------------------------------ */
 /*  HEROENS PLAKAT – det som fjerner det svarte glimtet ved innlasting */
 /*                                                                     */

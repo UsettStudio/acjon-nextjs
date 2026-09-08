@@ -142,6 +142,20 @@ export const siteConfig = {
  */
 export const maksEnheter = 10;
 
+/**
+ * LEVERINGSTID – ett sted.
+ *
+ * Sto tidligere som «48 timer» spredt over ni filer: sidetitler, meta-
+ * beskrivelser, tjenestesidene, prissiden, FAQ-ene, telleren i heroen og
+ * llms.txt. Endres den ett sted og ikke de andre, motsier nettstedet seg
+ * selv – og en AI-modell som finner to ulike tall siterer gjerne det gamle.
+ * Derfor ligger den her, og alt annet leser herfra.
+ *
+ * Bruk tankestrek (–), ikke bindestrek, i det som vises.
+ */
+export const leveringstidKort = "2–5 dager";
+export const leveringstidSetning = `De fleste oppdrag leveres på ${leveringstidKort}.`;
+
 /** Kort variant til pakkekortene. */
 export const enhetsNote = `Gjelder prosjekter med opptil ${maksEnheter} enheter`;
 
@@ -477,9 +491,9 @@ export const servicePages: ServicePage[] = [
         heading: "Hva er 3D-visualisering, og hva får du?",
         metaTitle: "3D-visualisering – leveringstid og hva du får",
         metaDescription:
-            "Usett leverer fotorealistisk 3D-visualisering av bolig- og næringsprosjekter, mange oppdrag innen 48 timer. Se hva som inngår, hva vi trenger fra deg og hvor vi leverer.",
+            `Usett leverer fotorealistisk 3D-visualisering av bolig- og næringsprosjekter, de fleste oppdrag på ${leveringstidKort}. Se hva som inngår, hva vi trenger fra deg og hvor vi leverer.`,
         answer:
-            "Usett leverer fotorealistisk 3D-visualisering av bygg som ennå ikke er reist. En komplett leveranse inneholder både interiør- og eksteriørbilder, inkludert oppstart og teksturering av modellen. Mange oppdrag leveres innen 48 timer, og bildene sendes digitalt til hele Norge.",
+            `Usett leverer fotorealistisk 3D-visualisering av bygg som ennå ikke er reist. En komplett leveranse inneholder både interiør- og eksteriørbilder, inkludert oppstart og teksturering av modellen. De fleste oppdrag leveres på ${leveringstidKort}, og bildene sendes digitalt til hele Norge.`,
         deliverables: [
             "Fotorealistiske interiørbilder med realistisk lys, materialer og møblering",
             "Eksteriørbilder fra bakkeplan, og fra droneperspektiv i pakke Proff og Komplett",
@@ -487,7 +501,7 @@ export const servicePages: ServicePage[] = [
             "Bilder i full oppløsning, klare for prospekt, annonser og reguleringssak",
         ],
         leveringstid:
-            "Mange oppdrag leveres innen 48 timer. Større prosjekter med animasjon eller mange bilder avtales individuelt.",
+            `${leveringstidSetning} Større prosjekter med animasjon eller mange bilder avtales individuelt.`,
         priceFrom: 22500,
         priceNote:
             "Fra 22 500 kr per prosjekt (pakke Basis). Proff koster 36 500 kr og Komplett 50 000 kr.",
@@ -517,7 +531,7 @@ export const servicePages: ServicePage[] = [
         heading: "Interiørvisualisering – hva som inngår",
         metaTitle: "Interiørvisualisering – leveringstid og eksempler",
         metaDescription:
-            "Usett lager fotorealistiske interiørbilder av leiligheter, boliger, hytter og næringslokaler, med realistisk lys, materialer og møblering. Mange oppdrag innen 48 timer.",
+            `Usett lager fotorealistiske interiørbilder av leiligheter, boliger, hytter og næringslokaler, med realistisk lys, materialer og møblering. De fleste oppdrag på ${leveringstidKort}.`,
         answer:
             "Usett lager fotorealistiske interiørbilder av rom som ennå ikke er bygget – leiligheter, boliger, hytter og næringslokaler. En leveranse starter på to interiørbilder og kan utvides. Alle rom bygges med realistisk lys, materialer og møblering.",
         deliverables: [
@@ -526,7 +540,7 @@ export const servicePages: ServicePage[] = [
             "Møblering og styling i den stilen prosjektet skal selges på",
             "Materialer og overflater etter dine faktiske materialvalg",
         ],
-        leveringstid: "Mange interiøroppdrag leveres innen 48 timer.",
+        leveringstid: `De fleste interiøroppdrag leveres på ${leveringstidKort}.`,
         priceFrom: 22500,
         priceNote:
             "Inngår i pakkene: Basis 22 500 kr (2 bilder), Proff 36 500 kr (3 bilder), Komplett 50 000 kr (4 bilder).",
@@ -561,7 +575,7 @@ export const servicePages: ServicePage[] = [
             "Terreng, vegetasjon og nabobebyggelse tilpasset stedet",
             "Lyssetting etter tidspunkt og årstid prosjektet skal selges i",
         ],
-        leveringstid: "Mange eksteriøroppdrag leveres innen 48 timer.",
+        leveringstid: `De fleste eksteriøroppdrag leveres på ${leveringstidKort}.`,
         priceFrom: 22500,
         priceNote:
             "Inngår i pakkene fra 22 500 kr. Eksteriør plassert i dronefoto inngår fra pakke Proff (36 500 kr).",
@@ -775,7 +789,7 @@ export const faqs: { q: string; a: string }[] = [
     },
     {
         q: "Hvor lang tid tar en 3D-visualisering?",
-        a: "Mange oppdrag leveres innen 48 timer. Større prosjekter med animasjon eller flere bilder avtales individuelt, men Usett er kjent for rask levering.",
+        a: `${leveringstidSetning} Større prosjekter med animasjon eller flere bilder avtales individuelt, men Usett er kjent for rask levering.`,
     },
     {
         q: "Hva trenger Usett fra meg for å komme i gang?",

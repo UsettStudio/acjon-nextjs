@@ -9,6 +9,8 @@ import {
     maksEnheter,
     enhetsNote,
     enhetsSetning,
+    leveringstidKort,
+    leveringstidSetning,
 } from "@/data/siteConfig";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -171,7 +173,7 @@ export default function PriserPage() {
                     Pakke Basis koster 22 500 kr, Proff 36 500 kr og Komplett
                     50 000 kr, alle inkludert oppstart og teksturering av
                     3D-modellen. Prisene gjelder prosjekter med opptil{" "}
-                    {maksEnheter} enheter. Mange oppdrag leveres innen 48 timer.
+                    {maksEnheter} enheter. {leveringstidSetning}
                 </p>
 
                 <dl className="doc-meta">
@@ -185,7 +187,7 @@ export default function PriserPage() {
                     </div>
                     <div>
                         <dt>Leveringstid</dt>
-                        <dd>Ofte 48 timer</dd>
+                        <dd>{leveringstidKort}</dd>
                     </div>
                     <div>
                         <dt>Leveres til</dt>

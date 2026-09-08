@@ -18,6 +18,7 @@ import { useGSAP } from "@gsap/react";
 import AnimatedCounterTwo from "../shared/Counter/AnimatedCounterTwo";
 import { ButtonArrowIcon } from "@/svg";
 import { lastRammer } from "@/utils/framePreloader";
+import { leveringstidKort } from "@/data/siteConfig";
 import NextImage from "next/image";
 import Link from "next/link";
 
@@ -61,7 +62,22 @@ const POSTER_MOBILE = "/assets/img/design-studio/hero/hero-poster-mobile.webp";
 const MOBIL_SPØRRING = "(max-width: 767px)";
 const DESKTOP_SPØRRING = "(min-width: 768px)";
 
-const counterData = [
+/**
+ * Tellerne i heroen.
+ *
+ * `tekst` overstyrer den animerte telleren. Den finnes fordi leveringstiden
+ * er et INTERVALL («2–5 dager»), og en teller som ruller opp til ett tall kan
+ * ikke vise et intervall uten å love noe annet enn det som står ellers på
+ * siden. Da er et stille tall riktigere enn en animasjon som lyver.
+ */
+const counterData: {
+    id: number;
+    duration: number;
+    end?: number;
+    tekst?: string;
+    symbol: string;
+    label: string;
+}[] = [
     {
         id: 1,
         duration: 1,
@@ -79,9 +95,12 @@ const counterData = [
     {
         id: 3,
         duration: 2,
-        end: 48,
-        symbol: "t",
-        label: "Rask levering",
+        tekst: leveringstidKort.replace(" dager", ""),
+        // Enheten står i etiketten under, ikke ved siden av tallet. «Dager»
+        // er fem tegn og brøt til egen linje i den smale kolonnen; slik
+        // følger denne telleren samme form som de to andre.
+        symbol: "",
+        label: "Dagers levering",
     },
 ];
 
@@ -387,11 +406,15 @@ const DesignStudioHero = () => {
                         </div>
                         <div className="col-lg-6">
                             <div className="ds-hero-counter-wrapper d-flex justify-content-between justify-content-lg-end tp_fade_anim" data-delay=".3">
-                                {counterData.map(({ id, end, symbol, label }) => (
+                                {counterData.map(({ id, end, tekst, symbol, label }) => (
                                     <div key={id} className="ds-hero-counter-item">
                                         <h4 className="ds-hero-counter-title">
-                                            <AnimatedCounterTwo min={0} max={end} />{" "}
-                                            {symbol}
+                                            {tekst !== undefined ? (
+                                                tekst
+                                            ) : (
+                                                <AnimatedCounterTwo min={0} max={end ?? 0} />
+                                            )}{" "}
+                                            <i className="ds-hero-counter-enhet">{symbol}</i>
                                         </h4>
                                         <span>{label}</span>
                                     </div>
