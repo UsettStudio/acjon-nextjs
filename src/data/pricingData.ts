@@ -52,39 +52,36 @@ export const pricingData: PricingTier = {
             id: 'pakke-basis',
             name: 'Basis',
             description: 'Perfekt for et enkelt prosjekt med interiør og eksteriør.',
-            price: '22 500 kr',
+            price: '21 000 kr',
             period: '/prosjekt',
             features: [
                 '2 × interiørbilder',
-                '1 × eksteriør fra bakkeplan',
-                '1 × oppstart og teksturering'
+                '1 × eksteriør fra bakkeplan'
             ]
         },
         {
             id: 'pakke-proff',
             name: 'Proff',
             description: 'Vår mest populære pakke – flere visninger og eksteriør i dronefoto.',
-            price: '36 500 kr',
+            price: '35 000 kr',
             period: '/prosjekt',
             isPopular: true,
             features: [
                 '3 × interiørbilder',
                 '1 × eksteriør fra bakkeplan',
-                '1 × eksteriør plassert i dronefoto',
-                '1 × oppstart og teksturering'
+                '1 × eksteriør plassert i dronefoto'
             ]
         },
         {
             id: 'pakke-komplett',
             name: 'Komplett',
             description: 'Full pakke med flest visninger og eksteriør plassert i dronefoto.',
-            price: '50 000 kr',
+            price: '48 500 kr',
             period: '/prosjekt',
             features: [
                 '4 × interiørbilder',
                 '2 × eksteriør fra bakkeplan',
-                '1 × eksteriør plassert i dronefoto',
-                '1 × oppstart og teksturering'
+                '1 × eksteriør plassert i dronefoto'
             ]
         }
     ]

@@ -8,6 +8,7 @@ import {
     faqs,
     maksEnheter,
     enhetsSetning,
+    fraPrisSetning,
 } from "@/data/siteConfig";
 import JsonLd from "./JsonLd";
 
@@ -18,8 +19,8 @@ import JsonLd from "./JsonLd";
  *  1. HVEM Usett er – knyttet til et organisasjonsnummer, en adresse og en
  *     person, slik at en AI-modell kan skille studioet fra ordet «usett».
  *  2. HVA tjenestene koster – som Offer med tallpriser. En pris skrevet som
- *     «22 500 kr» i brødtekst kan ikke siteres som en pris av en maskin;
- *     price: 22500 + priceCurrency: "NOK" kan det.
+ *     «fra 21 000 kr» i brødtekst kan ikke siteres som en pris av en maskin;
+ *     minPrice: 21000 + priceCurrency: "NOK" kan det.
  *  3. HVILKE SPØRSMÅL Usett svarer på – som FAQPage.
  *
  * @graph:
@@ -44,18 +45,31 @@ const StudioJsonLd = () => {
     /**
      * Pakkene med tallpriser – dette er det som faktisk blir sitert.
      *
-     * `eligibleQuantity` er grunnen til at prisen kan siteres trygt: den
-     * forteller maskinen at 22 500 kr gjelder et prosjekt på opptil ti
-     * enheter, ikke et hvilket som helst prosjekt. Uten den kan en modell
-     * gjengi tallet på et bygg med hundre leiligheter – og da lover den
-     * noe Usett ikke har sagt.
+     * TO TING GJØR AT TALLET KAN SITERES TRYGT:
+     *
+     *  1. `priceSpecification.minPrice` og IKKE `price`. Pakkeprisene er
+     *     fra-priser: de forutsetter en enkel bygning, og et mer komplisert
+     *     bygg koster 500–1 000 kr mer per bilde. Legger man et minimum inn
+     *     som `price`, leser maskinen det som en fastpris og gjengir 21 000
+     *     kr på et prosjekt som i virkeligheten koster mer. `minPrice` sier
+     *     det det er: laveste pris, ikke prisen.
+     *
+     *  2. `eligibleQuantity` forteller maskinen at tallet gjelder et
+     *     prosjekt på opptil ti enheter, ikke et hvilket som helst prosjekt.
+     *     Uten den kan en modell gjengi tallet på et bygg med hundre
+     *     leiligheter – og da lover den noe Usett ikke har sagt.
      */
     const pakkeTilbud = pakker.map((p) => ({
         "@type": "Offer",
         "@id": `${SITE_URL}/priser#${p.id}`,
         name: p.name,
-        description: `${p.description} ${enhetsSetning}`,
-        price: p.price,
+        description: `${p.description} ${enhetsSetning} ${fraPrisSetning}`,
+        priceSpecification: {
+            "@type": "PriceSpecification",
+            minPrice: p.price,
+            priceCurrency: "NOK",
+            valueAddedTaxIncluded: false,
+        },
         priceCurrency: "NOK",
         availability: "https://schema.org/InStock",
         url: `${SITE_URL}/priser`,

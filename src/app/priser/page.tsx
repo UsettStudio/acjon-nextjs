@@ -11,6 +11,8 @@ import {
     enhetsSetning,
     leveringstidKort,
     leveringstidSetning,
+    prisPrefiks,
+    fraPrisSetning,
 } from "@/data/siteConfig";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -28,7 +30,7 @@ import Link from "next/link";
 // Uten "Usett" til slutt – malen i layout.tsx legger på "| Usett" selv.
 const TITLE = "Hva koster 3D-visualisering? Priser og pakker";
 const DESCRIPTION =
-    `3D-visualisering hos Usett koster fra 22 500 kr per prosjekt for prosjekter med opptil ${maksEnheter} enheter. Se hva som inngår i pakkene Basis, Proff og Komplett, hva tilleggene koster, og hva som avgjør endelig pris.`;
+    `3D-visualisering hos Usett koster fra 21 000 kr per prosjekt for prosjekter med opptil ${maksEnheter} enheter. Se hva som inngår i pakkene Basis, Proff og Komplett, hva tilleggene koster, og hva som avgjør endelig pris.`;
 
 export const metadata: Metadata = {
     title: { absolute: `${TITLE} | Usett` },
@@ -49,11 +51,11 @@ export const metadata: Metadata = {
 const prisFaq = [
     {
         q: "Hva koster 3D-visualisering hos Usett?",
-        a: `Fra 22 500 kr per prosjekt. Pakke Basis koster 22 500 kr og inneholder to interiørbilder og ett eksteriørbilde. Proff koster 36 500 kr, Komplett koster 50 000 kr. Alle pakker inkluderer oppstart og teksturering av 3D-modellen. ${enhetsSetning}`,
+        a: `Fra 21 000 kr per prosjekt. Pakke Basis starter på 21 000 kr og inneholder to interiørbilder og ett eksteriørbilde. Proff starter på 35 000 kr, Komplett på 48 500 kr. ${fraPrisSetning} ${enhetsSetning}`,
     },
     {
         q: "Hva avgjør endelig pris?",
-        a: `Antall bilder, hvor komplekst bygget er og hvor stort prosjektet er. Pakkeprisene er regnet for prosjekter med opptil ${maksEnheter} enheter; er prosjektet større, prises det etter omfang. Et rekkehusfelt med samme boligtype gjentatt koster mindre per bilde enn fire ulike boligtyper. Tillegg som plantegninger, sesongbilder og animasjon kommer i tillegg til pakkeprisen.`,
+        a: `Antall bilder, hvor komplekst bygget er og hvor stort prosjektet er. Et bilde koster 7 000 kr for en enkel bygning, 7 500 kr for middels kompleksitet og 8 000 kr for en kompleks bygning – derfor er pakkeprisene fra-priser. Pakkeprisene er dessuten regnet for prosjekter med opptil ${maksEnheter} enheter; er prosjektet større, prises det etter omfang. Tillegg som plantegninger, sesongbilder og animasjon kommer i tillegg til pakkeprisen.`,
     },
     {
         q: "Er prisene inkludert merverdiavgift?",
@@ -65,7 +67,7 @@ const prisFaq = [
     },
     {
         q: "Kan jeg kjøpe enkeltbilder i stedet for en hel pakke?",
-        a: "Pakkene er satt opp fordi oppstart og teksturering av 3D-modellen er den tyngste jobben, og den er den samme enten det skal lages ett eller fire bilder. Har du et prosjekt som ikke passer i noen av pakkene, ta kontakt så setter vi opp et konkret tilbud.",
+        a: "Pakkene er satt opp fordi de fleste prosjekter trenger den samme kombinasjonen av interiør- og eksteriørbilder, og fordi en fast pakke er lettere å budsjettere med enn et tilbud du må vente på. Har du et prosjekt som ikke passer i noen av pakkene, ta kontakt så setter vi opp et konkret tilbud.",
     },
     {
         q: "Hva koster en 3D-animert hjemmeside?",
@@ -169,17 +171,17 @@ export default function PriserPage() {
                   faktasetningen, slik at tallet kan siteres tilbake hit.
                 */}
                 <p className="doc-answer">
-                    3D-visualisering hos Usett koster fra 22 500 kr per prosjekt.
-                    Pakke Basis koster 22 500 kr, Proff 36 500 kr og Komplett
-                    50 000 kr, alle inkludert oppstart og teksturering av
-                    3D-modellen. Prisene gjelder prosjekter med opptil{" "}
+                    3D-visualisering hos Usett koster fra 21 000 kr per prosjekt.
+                    Pakke Basis starter på 21 000 kr og gir tre bilder, Proff
+                    på 35 000 kr og gir fem, Komplett på 48 500 kr og gir sju.
+                    {" "}{fraPrisSetning} Prisene gjelder prosjekter med opptil{" "}
                     {maksEnheter} enheter. {leveringstidSetning}
                 </p>
 
                 <dl className="doc-meta">
                     <div>
                         <dt>Fra</dt>
-                        <dd>22 500 kr</dd>
+                        <dd>21 000 kr</dd>
                     </div>
                     <div>
                         <dt>Omfang</dt>
@@ -209,7 +211,7 @@ export default function PriserPage() {
                         >
                             {p.isPopular && <span className="tag">Mest valgt</span>}
                             <h3>{p.name}</h3>
-                            <div className="price">{p.priceLabel}</div>
+                            <div className="price">{prisPrefiks} {p.priceLabel}</div>
                             <div className="period">
                                 {p.period} · {enhetsNote.toLowerCase()}
                             </div>

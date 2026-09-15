@@ -8,13 +8,21 @@
  * sende en e-post og vente.
  *
  * REGNEMÅTEN
- *   ((grunnpris × antall bygg) + (pris per illustrasjon × antall illustrasjoner))
- *   × kompleksitetsfaktor  +  tilleggstjenester
+ *   (pris per illustrasjon + påslag for kompleksitet) × antall illustrasjoner
+ *   + tilleggstjenester
  *
- * Grunnprisen regnes per bygg fordi hvert bygg må modelleres og tekstureres
- * for seg – det er den jobben som ligger i «oppstart og teksturering» i
- * pakkene. Tilleggene ganges IKKE med kompleksitet: en plantegning koster
- * det samme uansett hvor komplisert fasaden er.
+ * Kompleksiteten er et KRONEBELØP PER BILDE, ikke en ganging: 0 kr for en
+ * enkel bygning, 500 for middels, 1 000 for kompleks. Tidligere var det en
+ * faktor (1 / 1,25 / 1,6), som vokste med prosjektets størrelse – et oppdrag
+ * med tjue bilder fikk da et påslag på titusener kroner.
+ *
+ * Tilleggene ganges IKKE med kompleksitet: en plantegning koster det samme
+ * uansett hvor komplisert fasaden er.
+ *
+ * Kalkulatoren hadde tidligere en grunnpris per bygg («oppstart og
+ * teksturering», 1 500 kr) og et eget felt for antall bygg. Begge deler er
+ * fjernet. Beløpet er ute av prisen, og da måtte feltet ut også – et felt
+ * som ikke endrer summen er bare forvirrende for den som fyller det ut.
  *
  * Alle tall ligger i siteConfig.kalkulator. Ingenting er hardkodet her.
  *
@@ -64,7 +72,6 @@ const Teller = ({ verdi, settVerdi, min, maks, etikett }: Teller) => (
 );
 
 const Prisberegner = () => {
-    const [bygg, settBygg] = useState(kalkulator.standard.bygg);
     const [illustrasjoner, settIllustrasjoner] = useState(
         kalkulator.standard.illustrasjoner
     );
@@ -79,10 +86,9 @@ const Prisberegner = () => {
         kalkulator.kompleksitet[0];
 
     const resultat = useMemo(() => {
-        const grunn =
-            kalkulator.grunnprisPerBygg * bygg +
-            kalkulator.prisPerIllustrasjon * illustrasjoner;
-        const visualisering = grunn * valgtNivå.faktor;
+        const prisPerBilde =
+            kalkulator.prisPerIllustrasjon + valgtNivå.tilleggPerBilde;
+        const visualisering = prisPerBilde * illustrasjoner;
 
         const tilleggSum = kalkulator.tillegg.reduce((sum, t) => {
             const antall = tillegg[t.id] ?? 0;
@@ -99,12 +105,11 @@ const Prisberegner = () => {
             harIllustrasjoner: illustrasjoner > 0,
             tilleggSum,
         };
-    }, [bygg, illustrasjoner, valgtNivå, tillegg]);
+    }, [illustrasjoner, valgtNivå, tillegg]);
 
     /** Lesbar oppsummering kunden kan ta med seg inn i henvendelsen. */
     const oppsummering = useMemo(() => {
         const deler = [
-            `${bygg} ${bygg === 1 ? "bygg" : "bygg"}`,
             `${illustrasjoner} illustrasjoner`,
             valgtNivå.navn.toLowerCase(),
         ];
@@ -114,7 +119,7 @@ const Prisberegner = () => {
                 t.harAntall ? `${t.navn} ×${tillegg[t.id]}` : t.navn
             );
         return [...deler, ...valgteTillegg].join(", ");
-    }, [bygg, illustrasjoner, valgtNivå, tillegg]);
+    }, [illustrasjoner, valgtNivå, tillegg]);
 
     const settAntall = (id: string, n: number) =>
         settTillegg((f) => ({ ...f, [id]: n }));
@@ -131,23 +136,6 @@ const Prisberegner = () => {
                             gang. Helt uforpliktende – du trenger ikke oppgi noe om deg
                             selv for å se prisen.
                         </p>
-                    </div>
-
-                    {/* ---------- Antall bygg ---------- */}
-                    <div className="ub-kalk-felt">
-                        <label className="ub-kalk-sporsmal">
-                            Hvor mange <em>bygg</em> gjelder prosjektet?
-                        </label>
-                        <p className="ub-kalk-hjelp">
-                            Med bygg mener vi separate bygninger – ikke antall bilder.
-                        </p>
-                        <Teller
-                            verdi={bygg}
-                            settVerdi={settBygg}
-                            min={1}
-                            maks={kalkulator.maksBygg}
-                            etikett="antall bygg"
-                        />
                     </div>
 
                     {/* ---------- Kompleksitet ---------- */}
@@ -169,6 +157,14 @@ const Prisberegner = () => {
                                 >
                                     <strong>{k.navn}</strong>
                                     <span>{k.beskrivelse}</span>
+                                    {/* Prisen per bilde synlig på hvert valg. Uten den
+                                        ser kunden bare at totalen hopper, uten å forstå
+                                        hvorfor – og et prisnivå man ikke forstår, tror
+                                        man heller ikke på. */}
+                                    <em className="ub-kalk-nivaa-pris">
+                                        {kr(kalkulator.prisPerIllustrasjon + k.tilleggPerBilde)} kr
+                                        <i> per bilde</i>
+                                    </em>
                                 </button>
                             ))}
                         </div>

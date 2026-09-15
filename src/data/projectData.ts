@@ -287,26 +287,30 @@ const projectData: projectDt[] = [
     },
     //business consulting portfolio project data end
     // design studio portfolio project data start
+    //
+    // REKKEFØLGEN HER ER DISPLAY-REKKEFØLGEN på forsiden – DesignStudioPortfolio
+    // filtrerer bare på bildestien og beholder rekkefølgen fra denne fila.
+    //
+    // Den er bevisst blandet. Tidligere lå alle eksteriørbildene i første rad,
+    // alle interiørbildene i andre og næringsbildene i tredje. Griddet leste
+    // da som tre adskilte bolker i stedet for én portefølje, og de tre nyeste
+    // bildene ville lagt seg som en stripe nederst. Nå veksler eksteriør og
+    // interiør nedover, og de tre nye (enebolig, stue, hytte ved vannet)
+    // ligger på plass 1, 6 og 11 – ulik rad OG ulik kolonne i et tre-kolonners
+    // grid, og godt spredt også i én og to kolonner.
+    {
+        id: 50,
+        year: "2026",
+        category: "EKSTERIØR",
+        title: "Enebolig i skogkanten",
+        image: "/assets/img/design-studio/portfolio/usett-eksterior-enebolig-v2.jpg",
+    },
     {
         id: 41,
         year: "2025",
         category: "EKSTERIØR",
         title: "Boligblokk",
         image: "/assets/img/design-studio/portfolio/usett-eksterior-blokk-v2.jpg",
-    },
-    {
-        id: 42,
-        year: "2025",
-        category: "EKSTERIØR",
-        title: "Leiligheter ved sjøen",
-        image: "/assets/img/design-studio/portfolio/usett-eksterior-leiligheter-v2.jpg",
-    },
-    {
-        id: 43,
-        year: "2025",
-        category: "EKSTERIØR",
-        title: "Rekkehus",
-        image: "/assets/img/design-studio/portfolio/usett-eksterior-rekkehus-v2.jpg",
     },
     {
         id: 44,
@@ -316,11 +320,11 @@ const projectData: projectDt[] = [
         image: "/assets/img/design-studio/portfolio/usett-interior-bad-v2.jpg",
     },
     {
-        id: 45,
-        year: "2024",
-        category: "INTERIØR",
-        title: "Hytteinteriør",
-        image: "/assets/img/design-studio/portfolio/usett-interior-hytte-v2.jpg",
+        id: 43,
+        year: "2025",
+        category: "EKSTERIØR",
+        title: "Rekkehus",
+        image: "/assets/img/design-studio/portfolio/usett-eksterior-rekkehus-v2.jpg",
     },
     {
         id: 46,
@@ -330,6 +334,20 @@ const projectData: projectDt[] = [
         image: "/assets/img/design-studio/portfolio/usett-interior-leilighet-v2.jpg",
     },
     {
+        id: 51,
+        year: "2026",
+        category: "INTERIØR",
+        title: "Stue med sjøutsikt",
+        image: "/assets/img/design-studio/portfolio/usett-interior-stue-v2.jpg",
+    },
+    {
+        id: 42,
+        year: "2025",
+        category: "EKSTERIØR",
+        title: "Leiligheter ved sjøen",
+        image: "/assets/img/design-studio/portfolio/usett-eksterior-leiligheter-v2.jpg",
+    },
+    {
         id: 47,
         year: "2024",
         category: "NÆRING",
@@ -337,11 +355,11 @@ const projectData: projectDt[] = [
         image: "/assets/img/design-studio/portfolio/usett-interior-naering-v2.jpg",
     },
     {
-        id: 48,
+        id: 45,
         year: "2024",
-        category: "NÆRING",
-        title: "Lagerseksjon",
-        image: "/assets/img/design-studio/portfolio/usett-interior-lager-v2.jpg",
+        category: "INTERIØR",
+        title: "Hytteinteriør",
+        image: "/assets/img/design-studio/portfolio/usett-interior-hytte-v2.jpg",
     },
     {
         id: 49,
@@ -349,6 +367,20 @@ const projectData: projectDt[] = [
         category: "INTERIØR",
         title: "Kontorplass",
         image: "/assets/img/design-studio/portfolio/usett-interior-kontor-v2.jpg",
+    },
+    {
+        id: 52,
+        year: "2026",
+        category: "EKSTERIØR",
+        title: "Hytte ved vannet",
+        image: "/assets/img/design-studio/portfolio/usett-eksterior-hytte-v2.jpg",
+    },
+    {
+        id: 48,
+        year: "2024",
+        category: "NÆRING",
+        title: "Lagerseksjon",
+        image: "/assets/img/design-studio/portfolio/usett-interior-lager-v2.jpg",
     },
     // design studio portfolio project data end
     //HR Consulting portfolio data start

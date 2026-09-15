@@ -56,7 +56,7 @@ export const siteConfig = {
     },
     geo: { latitude: 59.2769, longitude: 11.0645 },
     areaServed: ["Norge", "Østfold", "Fredrikstad", "Sarpsborg", "Moss", "Halden"],
-    priceRange: "22 500–50 000 kr",
+    priceRange: "21 000–48 500 kr",
     openingHours: {
         days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
         opens: "08:00",
@@ -119,14 +119,41 @@ export const siteConfig = {
  * PAKKER OG TILLEGG
  * Én sannhet for både prissiden, forsiden og Offer-schemaet.
  * Prisene ligger som tall slik at de kan brukes i strukturert data –
- * "22 500 kr" som tekst kan ikke siteres som en pris av en maskin.
+ * "21 000 kr" som tekst kan ikke siteres som en pris av en maskin.
  *
- * PRISJUSTERING (sist endret): hver illustrasjon er satt ned 500 kr.
- * Pakkeprisene er regnet som gammel pris minus 500 × antall bilder i pakken
- * (Basis 3 bilder, Proff 5, Komplett 7). «Oppstart og teksturering» er ikke
- * et bilde og teller ikke med. Endrer du en pris her, må du også sjekke
- * public/llms.txt, src/data/pricingData.ts og teksten på /priser.
+ * PRISHISTORIKK
+ *  1. Hver illustrasjon ble satt ned 500 kr (7 500 → 7 000).
+ *  2. «Oppstart og teksturering» er tatt helt ut – både som linje i pakkene
+ *     og som grunnpris. Den var 1 500 kr per bygg, og hele beløpet er
+ *     fjernet fra prisen; pakkene er altså 1 500 kr billigere enn før.
+ *
+ * Prisen er nå ren: ANTALL ILLUSTRASJONER × pris per bilde. Prisen per
+ * bilde avhenger av hvor komplisert bygget er – 7 000 for en enkel
+ * bygning, 7 500 for middels og 8 000 for en kompleks (se `kalkulator`).
+ *
+ * PAKKEPRISENE ER DERFOR «FRA»-PRISER. De er regnet med 7 000 per bilde,
+ * altså en enkel bygning: Basis 3 bilder = 21 000, Proff 5 = 35 000,
+ * Komplett 7 = 49 000 etter formelen, satt til 48 500 som pakkepris.
+ * Et mer komplisert bygg koster mer, og da er tallet på kortet et
+ * minimum – ikke en fastpris. Det MÅ stå «fra» foran overalt der prisen
+ * vises, og i strukturerte data må den ligge som priceSpecification
+ * .minPrice og ikke som `price`; en fastpris i schema som egentlig er et
+ * minimum, er et løfte nettstedet ikke kan holde.
+ *
+ * Endrer du en pris her, må du også sjekke public/llms.txt,
+ * src/data/pricingData.ts og teksten på /priser.
  * ===================================================================== */
+
+/**
+ * Står foran hver pakkepris. Se forklaringen over: pakkeprisene forutsetter
+ * en enkel bygning, og et mer komplisert bygg koster mer per bilde.
+ */
+export const prisPrefiks = "Fra";
+
+/** Hel setning til brødtekst og strukturerte data. */
+export const fraPrisSetning =
+    "Pakkeprisene er fra-priser, regnet for en enkel bygning. " +
+    "Er bygget mer komplisert, koster hvert bilde 500–1 000 kr mer.";
 
 /**
  * Øvre grense pakkeprisene er regnet for.
@@ -179,21 +206,20 @@ export const pakker: Pakke[] = [
     {
         id: "pakke-basis",
         name: "Basis",
-        price: 22500,
-        priceLabel: "22 500 kr",
+        price: 21000,
+        priceLabel: "21 000 kr",
         period: "per prosjekt",
         description: "Perfekt for et enkelt prosjekt med interiør og eksteriør.",
         features: [
             "2 × interiørbilder",
             "1 × eksteriør fra bakkeplan",
-            "1 × oppstart og teksturering",
         ],
     },
     {
         id: "pakke-proff",
         name: "Proff",
-        price: 36500,
-        priceLabel: "36 500 kr",
+        price: 35000,
+        priceLabel: "35 000 kr",
         period: "per prosjekt",
         description:
             "Vår mest populære pakke – flere visninger og eksteriør plassert i dronefoto.",
@@ -202,14 +228,13 @@ export const pakker: Pakke[] = [
             "3 × interiørbilder",
             "1 × eksteriør fra bakkeplan",
             "1 × eksteriør plassert i dronefoto",
-            "1 × oppstart og teksturering",
         ],
     },
     {
         id: "pakke-komplett",
         name: "Komplett",
-        price: 50000,
-        priceLabel: "50 000 kr",
+        price: 48500,
+        priceLabel: "48 500 kr",
         period: "per prosjekt",
         description:
             "Full pakke med flest visninger og eksteriør plassert i dronefoto.",
@@ -217,7 +242,6 @@ export const pakker: Pakke[] = [
             "4 × interiørbilder",
             "2 × eksteriør fra bakkeplan",
             "1 × eksteriør plassert i dronefoto",
-            "1 × oppstart og teksturering",
         ],
     },
 ];
@@ -257,30 +281,41 @@ export const tilleggsvalg = [
  * Skal prisene justeres, er det HER det gjøres – ikke i komponenten.
  *
  * HVORDAN MODELLEN BLE TIL
- * Pakkene har en nesten eksakt formel bakt inn. Teller man illustrasjonene
- * (oppsett/teksturering er en egen linje, ikke et bilde):
+ * Pakkene har formelen bakt inn. Teller man illustrasjonene:
  *
- *   Basis     3 bilder → 22 500 kr
- *   Proff     5 bilder → 36 500 kr
- *   Komplett  7 bilder → 50 000 kr
+ *   Basis     3 bilder → 21 000 kr
+ *   Proff     5 bilder → 35 000 kr
+ *   Komplett  7 bilder → 48 500 kr
  *
- * Differansen er 7 000 kr per bilde mellom Basis og Proff, og 6 750 mellom
- * Proff og Komplett. Regner man baklengs fra Basis blir grunnprisen 1 500 kr.
- * Formelen «1 500 + 7 000 per illustrasjon» treffer altså Basis og Proff
- * eksakt, og bommer med 500 kr på Komplett.
+ * Det er 7 000 kr per bilde. Formelen «7 000 per illustrasjon» treffer
+ * Basis og Proff eksakt, og bommer med 500 kr på Komplett (som er satt
+ * bevisst litt lavere enn formelen for å belønne den største pakken).
  *
- * (Prisen per illustrasjon ble satt ned fra 7 500 til 7 000. Grunnprisen på
- * 1 500 er uendret – den dekker modellering og teksturering, ikke bilder.)
+ * GRUNNPRISEN ER FJERNET. Kalkulatoren hadde tidligere 1 500 kr per bygg
+ * for «oppstart og teksturering», og spurte derfor hvor mange bygg
+ * prosjektet gjaldt. Både beløpet og spørsmålet er tatt ut: et felt som
+ * ikke påvirker prisen er bare forvirrende for den som fyller det ut.
+ * Omfanget fanges nå av antall illustrasjoner og kompleksitetsvalget.
  *
- * Kalkulatoren bruker den formelen. Det gjør at den også kan svare på
- * prosjekter som ikke passer i en pakke – 2 bilder, eller 14.
+ * Kalkulatoren bruker samme formel som pakkene. Det gjør at den også kan
+ * svare på prosjekter som ikke passer i en pakke – 2 bilder, eller 14.
  * ===================================================================== */
 
 export type Kompleksitet = {
     id: string;
     navn: string;
-    /** Ganges med grunnsummen. Enkel = 1. */
-    faktor: number;
+    /**
+     * Kroner som legges til prisen PER BILDE. Enkel bygning er 0 og utgjør
+     * grunnprisen; de to andre koster 500 og 1 000 kr mer per illustrasjon.
+     *
+     * Dette var tidligere en ganging (1 / 1,25 / 1,6). Forskjellen er stor:
+     * en faktor vokser med prosjektets størrelse, så et oppdrag med tjue
+     * bilder fikk et påslag på titusener. Et kronebeløp per bilde vokser
+     * lineært med antall bilder, som er nærmere den faktiske merjobben –
+     * en vanskelig fasade må løses én gang, men koster litt ekstra i hver
+     * eneste vinkel den vises fra.
+     */
+    tilleggPerBilde: number;
     beskrivelse: string;
 };
 
@@ -296,35 +331,32 @@ export type Tilleggsvalg = {
 };
 
 export const kalkulator = {
-    /** Oppstart og teksturering. Regnes per bygg, ikke per prosjekt. */
-    grunnprisPerBygg: 1500,
     prisPerIllustrasjon: 7000,
 
     /** Startverdier når siden lastes – valgt så kunden ser et reelt tall med en gang. */
-    standard: { bygg: 1, illustrasjoner: 4, kompleksitet: "middels" },
+    standard: { illustrasjoner: 4, kompleksitet: "middels" },
 
-    maksBygg: 10,
     maksIllustrasjoner: 30,
 
     kompleksitet: [
         {
             id: "enkel",
             navn: "Enkel bygning",
-            faktor: 1,
+            tilleggPerBilde: 0,
             beskrivelse:
                 "Enebolig eller tomannsbolig. Oversiktlige bygg med enkel fasade og få detaljer.",
         },
         {
             id: "middels",
             navn: "Middels kompleksitet",
-            faktor: 1.25,
+            tilleggPerBilde: 500,
             beskrivelse:
                 "Firemannsbolig, rekkehus eller mindre boligblokk. Flere etasjer og mer bearbeidet fasade.",
         },
         {
             id: "kompleks",
             navn: "Kompleks bygning",
-            faktor: 1.6,
+            tilleggPerBilde: 1000,
             beskrivelse:
                 "Større boligblokker og kombinerte prosjekter. Krevende arkitektur og høy detaljgrad.",
         },
@@ -493,18 +525,17 @@ export const servicePages: ServicePage[] = [
         metaDescription:
             `Usett leverer fotorealistisk 3D-visualisering av bolig- og næringsprosjekter, de fleste oppdrag på ${leveringstidKort}. Se hva som inngår, hva vi trenger fra deg og hvor vi leverer.`,
         answer:
-            `Usett leverer fotorealistisk 3D-visualisering av bygg som ennå ikke er reist. En komplett leveranse inneholder både interiør- og eksteriørbilder, inkludert oppstart og teksturering av modellen. De fleste oppdrag leveres på ${leveringstidKort}, og bildene sendes digitalt til hele Norge.`,
+            `Usett leverer fotorealistisk 3D-visualisering av bygg som ennå ikke er reist. En komplett leveranse inneholder både interiør- og eksteriørbilder. De fleste oppdrag leveres på ${leveringstidKort}, og bildene sendes digitalt til hele Norge.`,
         deliverables: [
             "Fotorealistiske interiørbilder med realistisk lys, materialer og møblering",
             "Eksteriørbilder fra bakkeplan, og fra droneperspektiv i pakke Proff og Komplett",
-            "Oppstart og teksturering av 3D-modellen – inkludert i alle pakker",
             "Bilder i full oppløsning, klare for prospekt, annonser og reguleringssak",
         ],
         leveringstid:
             `${leveringstidSetning} Større prosjekter med animasjon eller mange bilder avtales individuelt.`,
-        priceFrom: 22500,
+        priceFrom: 21000,
         priceNote:
-            "Fra 22 500 kr per prosjekt (pakke Basis). Proff koster 36 500 kr og Komplett 50 000 kr.",
+            "Fra 21 000 kr per prosjekt (pakke Basis). Proff koster 35 000 kr og Komplett 48 500 kr.",
         faq: [
             {
                 q: "Hva trenger Usett fra meg for å lage en 3D-visualisering?",
@@ -541,9 +572,9 @@ export const servicePages: ServicePage[] = [
             "Materialer og overflater etter dine faktiske materialvalg",
         ],
         leveringstid: `De fleste interiøroppdrag leveres på ${leveringstidKort}.`,
-        priceFrom: 22500,
+        priceFrom: 21000,
         priceNote:
-            "Inngår i pakkene: Basis 22 500 kr (2 bilder), Proff 36 500 kr (3 bilder), Komplett 50 000 kr (4 bilder).",
+            "Inngår i pakkene: Basis 21 000 kr (2 bilder), Proff 35 000 kr (3 bilder), Komplett 48 500 kr (4 bilder).",
         faq: [
             {
                 q: "Hvor mange interiørbilder trenger et boligprosjekt?",
@@ -576,9 +607,9 @@ export const servicePages: ServicePage[] = [
             "Lyssetting etter tidspunkt og årstid prosjektet skal selges i",
         ],
         leveringstid: `De fleste eksteriøroppdrag leveres på ${leveringstidKort}.`,
-        priceFrom: 22500,
+        priceFrom: 21000,
         priceNote:
-            "Inngår i pakkene fra 22 500 kr. Eksteriør plassert i dronefoto inngår fra pakke Proff (36 500 kr).",
+            "Inngår i pakkene fra 21 000 kr. Eksteriør plassert i dronefoto inngår fra pakke Proff (35 000 kr).",
         faq: [
             {
                 q: "Kan dere vise bygget slik det faktisk vil se ut fra veien?",
@@ -614,7 +645,7 @@ export const servicePages: ServicePage[] = [
             "Fotografering avtales på stedet. Selve montasjen leveres normalt innen få dager etter at bildene er tatt.",
         priceFrom: null,
         priceNote:
-            "Eksteriør plassert i dronefoto inngår fra pakke Proff (36 500 kr). Frittstående fotomontasjeoppdrag prises etter omfang – ta kontakt for et konkret tall.",
+            "Eksteriør plassert i dronefoto inngår fra pakke Proff (35 000 kr). Frittstående fotomontasjeoppdrag prises etter omfang – ta kontakt for et konkret tall.",
         faq: [
             {
                 q: "Er fotomontasje godt nok til en reguleringssak?",
@@ -781,7 +812,7 @@ export const servicePages: ServicePage[] = [
 export const faqs: { q: string; a: string }[] = [
     {
         q: "Hva koster 3D-visualisering hos Usett?",
-        a: `Usett tilbyr tre pakker: Basis 22 500 kr, Proff 36 500 kr og Komplett 50 000 kr, alle per prosjekt og regnet for prosjekter med opptil ${maksEnheter} enheter. Er prosjektet større, prises det etter omfang. Endelig pris avhenger ellers av antall bilder og kompleksitet, og du kan supplere med tilleggsvalg som 2D salgstegninger (1 500 kr per plan), AI-genererte sesongbilder (3 000 kr per bilde) og animasjon (4 500 kr).`,
+        a: `Usett tilbyr tre pakker: Basis fra 21 000 kr, Proff fra 35 000 kr og Komplett fra 48 500 kr, alle per prosjekt og regnet for prosjekter med opptil ${maksEnheter} enheter. Prisene forutsetter en enkel bygning; et bilde koster 7 000 kr for en enkel bygning, 7 500 for middels og 8 000 for en kompleks. Er prosjektet større, prises det etter omfang. Endelig pris avhenger ellers av antall bilder og kompleksitet, og du kan supplere med tilleggsvalg som 2D salgstegninger (1 500 kr per plan), AI-genererte sesongbilder (3 000 kr per bilde) og animasjon (4 500 kr).`,
     },
     {
         q: "Hvor i landet leverer dere?",

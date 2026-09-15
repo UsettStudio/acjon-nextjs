@@ -1189,6 +1189,21 @@ $hero-lqip: url("data:image/webp;base64,UklGRtwAAABXRUJQVlA4INAAAADwBQCdASogABIA
     box-shadow: 0 6px 18px -8px rgba(249, 160, 27, 0.9);
 }
 
+/*  «Fra» foran pakkeprisen. Liten og dempet – den skal leses sammen med
+    tallet, ikke stjele plass fra det. Uten `display:inline-block` og egen
+    linjehøyde flytter den grunnlinja til hele h4-en. */
+.ds-price-area .ds-price-item-head h4 .ds-price-item-fra {
+    display: inline-block;
+    font-style: normal;
+    font-size: 0.3em;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    transform: translateY(-0.55em);
+    margin-right: -0.15em;
+    opacity: 0.75;
+}
+
 /*  Omfanget under prisen: «Gjelder prosjekter med opptil 10 enheter».
     Dempet, men lesbar – den skal opplyse, ikke konkurrere med tallet. */
 .ds-price-area .ds-price-item-scope {
@@ -1287,6 +1302,26 @@ $hero-lqip: url("data:image/webp;base64,UklGRtwAAABXRUJQVlA4INAAAADwBQCdASogABIA
 .ub-kalk-nivaa-3::before { background: var(--brus-3); }
 .ub-kalk-nivaa strong { display: block; font-size: 16px; color: #010103; margin-bottom: 6px; }
 .ub-kalk-nivaa span { display: block; font-size: 14px; line-height: 1.5; color: #6b7178; }
+/* Prisen per bilde nederst på hvert kompleksitetsvalg. Tallet skal være
+   lesbart, men ikke konkurrere med navnet på nivået. */
+.ub-kalk-nivaa .ub-kalk-nivaa-pris {
+    display: block;
+    margin-top: 12px;
+    font-style: normal;
+    font-size: 15px;
+    font-weight: 700;
+    color: #010103;
+}
+.ub-kalk-nivaa .ub-kalk-nivaa-pris i {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 13px;
+    color: #6b7178;
+}
+.ub-kalk-nivaa-1 .ub-kalk-nivaa-pris { color: #B36A00; }
+.ub-kalk-nivaa-2 .ub-kalk-nivaa-pris { color: var(--brus-2); }
+.ub-kalk-nivaa-3 .ub-kalk-nivaa-pris { color: var(--brus-3); }
+
 .ub-kalk-nivaa-1.er-valgt { border-color: var(--brus-1); box-shadow: 0 0 0 3px rgba(249, 160, 27, .16); }
 .ub-kalk-nivaa-2.er-valgt { border-color: var(--brus-2); box-shadow: 0 0 0 3px rgba(236, 59, 135, .16); }
 .ub-kalk-nivaa-3.er-valgt { border-color: var(--brus-3); box-shadow: 0 0 0 3px rgba(122, 46, 184, .16); }

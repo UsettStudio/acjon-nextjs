@@ -1,6 +1,6 @@
 import { CheckIconTwo } from '@/svg/CheckIcons';
 import { PricingPlan } from '@/types/custom-dt';
-import { enhetsNote } from '@/data/siteConfig';
+import { enhetsNote, prisPrefiks } from '@/data/siteConfig';
 import Link from 'next/link';
 import React from 'react';
 
@@ -17,7 +17,15 @@ const DesignStudioPricingCard: React.FC<{ plan: PricingPlan }> = ({ plan }) => {
                 <div className="ds-price-item-head">
                     <span>{plan.name}</span>
                     <p>{plan.description}</p>
-                    <h4>{plan.price} <i>{plan.period}</i></h4>
+                    {/*
+                      «Fra» foran prisen. Pakkeprisene forutsetter en enkel
+                      bygning; et mer komplisert bygg koster 500–1 000 kr mer
+                      per bilde. Uten dette ordet leses tallet som en fastpris.
+                    */}
+                    <h4>
+                        <i className="ds-price-item-fra">{prisPrefiks}</i>{" "}
+                        {plan.price} <i>{plan.period}</i>
+                    </h4>
                     {/*
                       Omfanget må stå rett under tallet. En pakkepris uten
                       grense blir lest som «dette koster prosjektet mitt»
