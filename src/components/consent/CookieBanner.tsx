@@ -3,16 +3,20 @@
 /**
  * Samtykkebanner for informasjonskapsler (GDPR / ekomloven §2-7b).
  *
- * Ingen sporing kjører før brukeren har tatt et aktivt valg. Meta-pikselen
- * lastes først når kategorien "markedsforing" er samtykket til – det er
- * kravet for å kunne kjøre Meta-annonser lovlig mot norske brukere.
+ * Ingen sporing kjører før brukeren har tatt et aktivt valg. Både Meta-pikselen
+ * og Google Ads-taggen lastes først når kategorien "markedsforing" er samtykket
+ * til – det er kravet for å kunne kjøre annonser lovlig mot norske brukere.
  *
- * Pikselen aktiveres ved å sette NEXT_PUBLIC_META_PIXEL_ID i Netlify
+ * Meta-pikselen aktiveres ved å sette NEXT_PUBLIC_META_PIXEL_ID i Netlify
  * (Site settings → Environment variables). Er den ikke satt, lastes ingenting.
+ *
+ * Google Ads-taggen har ID-en hardkodet i data/googleAds.ts og trenger ingen
+ * miljøvariabel.
  */
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
+import { GOOGLE_ADS_ID } from "@/data/googleAds";
 
 const STORAGE_KEY = "usett-consent-v1";
 export const CONSENT_OPEN_EVENT = "usett:open-consent";
@@ -28,6 +32,8 @@ declare global {
     interface Window {
         fbq?: ((...args: unknown[]) => void) & { queue?: unknown[]; callMethod?: (...a: unknown[]) => void; push?: unknown; loaded?: boolean; version?: string };
         _fbq?: unknown;
+        // dataLayer og gtag er deklarert i data/googleAds.ts, som eier
+        // Google Ads-oppsettet. Ikke dupliser dem her.
     }
 }
 
@@ -70,6 +76,39 @@ function loadMetaPixel() {
     window.fbq?.("track", "PageView");
 }
 
+/**
+ * Laster Google Ads-taggen (gtag.js) én gang, kun etter samtykke til
+ * markedsføring. Uten dette kan Google Ads ikke måle at kontaktskjemaet
+ * er sendt inn, og kampanjene har ingenting å optimalisere mot.
+ *
+ * Selve konverteringen rapporteres fra components/form/ContactForm.tsx
+ * via sporKontaktskjema() i data/googleAds.ts.
+ */
+function loadGoogleAds() {
+    if (typeof window === "undefined" || window.gtag) return;
+
+    window.dataLayer = window.dataLayer || [];
+
+    /* eslint-disable prefer-rest-params */
+    // Googles egen kodebit pusher selve arguments-objektet. Behold det slik –
+    // gtag.js leser køen som array-like, og dette er den formen Google tester mot.
+    function gtag(this: unknown) {
+        window.dataLayer!.push(arguments);
+    }
+    /* eslint-enable prefer-rest-params */
+
+    const g = gtag as unknown as (...args: unknown[]) => void;
+    window.gtag = g;
+
+    g("js", new Date());
+    g("config", GOOGLE_ADS_ID);
+
+    const script = document.createElement("script");
+    script.async = true;
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ADS_ID}`;
+    document.head.appendChild(script);
+}
+
 const CookieBanner = () => {
     const [open, setOpen] = useState(false);
     const [showDetails, setShowDetails] = useState(false);
@@ -85,7 +124,10 @@ const CookieBanner = () => {
         }
         setStatistikk(saved.statistikk);
         setMarkedsforing(saved.markedsforing);
-        if (saved.markedsforing) loadMetaPixel();
+        if (saved.markedsforing) {
+            loadMetaPixel();
+            loadGoogleAds();
+        }
     }, []);
 
     // Lar footeren (eller hvilken som helst knapp) åpne banneret på nytt.
@@ -113,7 +155,10 @@ const CookieBanner = () => {
         } catch {
             /* privat modus e.l. – valget gjelder da kun for denne økten */
         }
-        if (valg.markedsforing) loadMetaPixel();
+        if (valg.markedsforing) {
+            loadMetaPixel();
+            loadGoogleAds();
+        }
         setOpen(false);
         setShowDetails(false);
     }, []);
@@ -127,7 +172,7 @@ const CookieBanner = () => {
                     <h2 className="usett-consent__title">Vi bruker informasjonskapsler</h2>
                     <p className="usett-consent__text">
                         Noen er nødvendige for at nettsiden skal fungere. Andre bruker vi til å måle
-                        trafikk og til markedsføring på Facebook og Instagram. Du velger selv.{" "}
+                        trafikk og til markedsføring på Google, Facebook og Instagram. Du velger selv.{" "}
                         <Link href="/personvern" className="usett-consent__link">
                             Les personvernerklæringen
                         </Link>
@@ -163,7 +208,7 @@ const CookieBanner = () => {
                                 />
                                 <span>
                                     <strong>Markedsføring</strong>
-                                    <em>Meta-pikselen, som måler effekten av annonsene våre.</em>
+                                    <em>Google Ads-taggen og Meta-pikselen, som måler effekten av annonsene våre.</em>
                                 </span>
                             </label>
                         </div>

@@ -2,6 +2,7 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import { toast } from "react-toastify";
 import { siteConfig } from "@/data/siteConfig";
+import { sporKontaktskjema } from "@/data/googleAds";
 import { ArrowIconTwo } from "@/svg";
 
 /* ------------------ TypeScript Form Values ------------------ */
@@ -137,6 +138,12 @@ const ContactForm = () => {
                         content_category: "Kontaktskjema usett.no",
                     });
                 }
+
+                // Samme melding til Google Ads, slik at Performance Max kan
+                // optimalisere mot ekte henvendelser i stedet for billige klikk.
+                // Også dette er et stille no-op uten samtykke til markedsføring.
+                sporKontaktskjema();
+
                 toast.success(`Takk, ${data.name}! Meldingen din er sendt.`);
                 reset();
             } else {
