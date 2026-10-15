@@ -1,5 +1,5 @@
 "use client"
-import { DribbbleIconThree, InstragramIconFive, TwitorIconFour } from '@/svg/SocialIcons';
+import SocialLinks, { hasSocialLinks } from '@/components/shared/SocialLinks';
 import { getScrollSmoother } from '@/hooks/useScrollSmooth';
 import MenuStyleTwo from './subComponents/MenuStyleTwo';
 import { offcanvasIProps } from '@/types/custom-dt';
@@ -81,20 +81,14 @@ const OffCanvasPanelTwo: React.FC<offcanvasIProps> = ({ openOffcanvas, setOpenOf
                                 Norge
                             </Link>
                         </div>
-                        <div className="tp-offcanvas-2-right-info-item">
-                            <label className="mb-15">Følg oss</label>
-                            <div className="tp-offcanvas-2-right-social">
-                                <Link href="#">
-                                    <DribbbleIconThree />
-                                </Link>{" "}
-                                <Link href="#">
-                                    <TwitorIconFour />
-                                </Link>{" "}
-                                <Link href="#">
-                                    <InstragramIconFive />
-                                </Link>
+                        {hasSocialLinks && (
+                            <div className="tp-offcanvas-2-right-info-item">
+                                <label className="mb-15">Følg oss</label>
+                                <div className="tp-offcanvas-2-right-social">
+                                    <SocialLinks variant="offcanvas" />
+                                </div>
                             </div>
-                        </div>
+                        )}
                     </div>
                 </div>
             </div>

@@ -62,15 +62,26 @@ export const siteConfig = {
         opens: "08:00",
         closes: "16:00",
     },
-    // TODO: legg inn profillenker etter hvert som de opprettes. Hver lenke her
-    // er en bekreftelse utenfra på at Usett finnes – det er den enkeltfaktoren
-    // som veier tyngst når en AI-modell velger hvem den skal nevne.
-    // Eksempler på hva som bør inn:
+    /**
+     * Sosiale medier – vises som ikoner i bunnteksten og i sidemenyen
+     * («Følg oss»), og legges automatisk inn i sameAs i strukturert data.
+     *
+     * Lim inn hele lenken (https://...). Tom streng = ikonet skjules, så det
+     * finnes aldri døde ikoner som peker til «#». Er alle tomme, skjules
+     * hele «Følg oss»-blokken.
+     */
+    socials: {
+        facebook: "https://www.facebook.com/UsettStudio",
+        instagram: "https://www.instagram.com/usettstudio/",
+        linkedin: "",
+        x: "",
+    },
+    // Andre profillenker som IKKE skal vises som ikoner, men som bekrefter
+    // utenfra at Usett finnes (veier tungt når en AI-modell velger hvem den
+    // skal nevne). Sosiale medier over legges til automatisk – ikke dobbelt.
+    // Eksempler på hva som bør inn her:
     //   "https://www.google.com/maps/place/..."   (Google-bedriftsprofil)
-    //   "https://www.linkedin.com/company/..."
     //   "https://www.proff.no/selskap/vysion-as/..."
-    //   "https://www.facebook.com/..."
-    //   "https://www.instagram.com/..."
     sameAs: [] as string[],
     /**
      * Verifiseringstokens for Google Search Console og Bing Webmaster Tools.

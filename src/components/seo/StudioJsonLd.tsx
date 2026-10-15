@@ -10,6 +10,7 @@ import {
     enhetsSetning,
     fraPrisSetning,
 } from "@/data/siteConfig";
+import { profileUrls } from "@/data/socials";
 import JsonLd from "./JsonLd";
 
 /**
@@ -198,7 +199,7 @@ const StudioJsonLd = () => {
             "2D-plantegninger",
             "Prosjektsider for boligprosjekter",
         ],
-        ...(siteConfig.sameAs.length ? { sameAs: siteConfig.sameAs } : {}),
+        ...(profileUrls.length ? { sameAs: profileUrls } : {}),
         makesOffer: [...pakkeTilbud, ...tilleggTilbud],
         hasOfferCatalog: {
             "@type": "OfferCatalog",

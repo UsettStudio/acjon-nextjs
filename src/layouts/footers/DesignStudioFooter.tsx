@@ -1,4 +1,4 @@
-import { FacebookIconThree, InstragramIconThree, LinkdinIcon, TwitorIconThree } from '@/svg/SocialIcons';
+import SocialLinks, { hasSocialLinks } from '@/components/shared/SocialLinks';
 import DesignSFooterCopyright from './subComponents/DesignSFooterCopyright';
 import { TextArrowIcon } from '@/svg/ArrowIcon';
 import { siteConfig } from '@/data/siteConfig';
@@ -42,28 +42,11 @@ const DesignStudioFooter = () => {
                                 <div className="tp-footer-logo mb-40">
                                     <Link href="/"><Image width={150} height={103} style={{ width: "150px", height: "auto" }} src="/assets/img/logo/logo-white-v2.png" alt="Usett 3D Studio" /></Link>
                                 </div>
-                                <div className="ds-footer-social mb-40">
-                                    <Link href="#">
-                                        <span>
-                                            <FacebookIconThree />
-                                        </span>
-                                    </Link>
-                                    <Link href="#">
-                                        <span>
-                                            <TwitorIconThree />
-                                        </span>
-                                    </Link>
-                                    <Link href="#">
-                                        <span>
-                                            <InstragramIconThree />
-                                        </span>
-                                    </Link>
-                                    <Link href="#">
-                                        <span>
-                                            <LinkdinIcon />
-                                        </span>
-                                    </Link>
-                                </div>
+                                {hasSocialLinks && (
+                                    <div className="ds-footer-social mb-40">
+                                        <SocialLinks variant="footer" />
+                                    </div>
+                                )}
                             </div>
                         </div>
                         <div className="col-lg-3 col-md-6">

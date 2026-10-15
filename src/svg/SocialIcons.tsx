@@ -83,9 +83,9 @@ export const FacebookIconTwo = () => {
         </svg>
     );
 };
-export const FacebookIconThree = () => {
+export const FacebookIconThree = ({ width = "6", height = "12" }) => {
     return (
-        <svg xmlns="http://www.w3.org/2000/svg" width="6" height="12" viewBox="0 0 6 12" fill="none">
+        <svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} viewBox="0 0 6 12" fill="none">
             <path d="M1.35756 7.01484V12H3.74357V7.01484H5.5228L5.89304 4.72266H3.74357V3.91172C3.74357 2.7 4.16112 2.23594 5.23894 2.23594C5.57422 2.23594 5.84368 2.24531 6 2.26406V0.185156C5.70586 0.09375 4.98594 0 4.57045 0C2.37161 0 1.35756 1.18359 1.35756 3.73594V4.72266H0V7.01484H1.35756Z" fill="currentColor"></path>
         </svg>
     );
@@ -132,9 +132,9 @@ export const InstragramIconFive = () => {
         </svg>
     );
 };
-export const LinkdinIcon = () => {
+export const LinkdinIcon = ({ width = "12", height = "12" }) => {
     return (
-        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
+        <svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} viewBox="0 0 12 12" fill="none">
             <path d="M2.68661 12H0.198214V3.98839H2.68661V12ZM1.44107 2.89554C0.645536 2.89554 0 2.23661 0 1.44107C0 1.05888 0.151827 0.692333 0.42208 0.42208C0.692333 0.151827 1.05888 0 1.44107 0C1.82327 0 2.18981 0.151827 2.46006 0.42208C2.73032 0.692333 2.88214 1.05888 2.88214 1.44107C2.88214 2.23661 2.23661 2.89554 1.44107 2.89554ZM11.9973 12H9.51429V8.1C9.51429 7.17054 9.49554 5.97857 8.22054 5.97857C6.92679 5.97857 6.72857 6.98839 6.72857 8.03304V12H4.24286V3.98839H6.62946V5.08125H6.66429C6.99643 4.45179 7.80804 3.7875 9.01875 3.7875C11.5366 3.7875 12 5.44554 12 7.59911V12H11.9973Z" fill="currentColor"></path>
         </svg>
     );
