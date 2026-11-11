@@ -1,0 +1,278 @@
+{
+  "meta": {
+    "description": "Unit selector and project sites for residential developers and real estate agents."
+  },
+  "common": {
+    "save": "Save",
+    "saving": "Saving …",
+    "saved": "Your changes have been saved.",
+    "cancel": "Cancel",
+    "close": "Close",
+    "copy": "Copy",
+    "copied": "Copied",
+    "loading": "Loading …",
+    "or": "or",
+    "you": "you",
+    "readOnly": "The subscription has expired, so the organisation is read-only. Published pages are still available."
+  },
+  "roles": {
+    "owner": "Owner",
+    "admin": "Administrator",
+    "editor": "Editor",
+    "agent": "Agent"
+  },
+  "roleDescriptions": {
+    "owner": "Everything, including subscription and users.",
+    "admin": "Everything except the subscription.",
+    "editor": "Content, units, unit selector and project sites in assigned projects.",
+    "agent": "Status and price of units, and leads in assigned projects."
+  },
+  "subscriptionStatus": {
+    "trialing": "Trial",
+    "active": "Active",
+    "past_due": "Payment failed",
+    "canceled": "Cancelled",
+    "unpaid": "Unpaid",
+    "incomplete": "Incomplete",
+    "incomplete_expired": "Expired",
+    "paused": "Paused"
+  },
+  "validation": {
+    "required": "Fill in this field.",
+    "email": "Enter a valid email address.",
+    "passwordMin": "The password must have at least 10 characters.",
+    "passwordMax": "The password can have at most 72 characters.",
+    "passwordMismatch": "The passwords do not match.",
+    "nameLength": "Enter between 1 and 200 characters.",
+    "slugFormat": "Use lowercase letters (a–z), numbers and hyphens. At most 63 characters.",
+    "slugReserved": "This address is reserved. Choose another one.",
+    "slugTaken": "This address is already in use. Choose another one.",
+    "retentionRange": "Choose between 30 and 3650 days.",
+    "phone": "Enter a valid phone number.",
+    "role": "Choose a role."
+  },
+  "errors": {
+    "unauthenticated": "Please sign in again.",
+    "forbidden": "You do not have permission to do this.",
+    "readOnly": "The organisation is read-only because the subscription has expired.",
+    "notFound": "We could not find what you were looking for.",
+    "invalidInput": "Check the highlighted fields.",
+    "rateLimited": "Too many attempts. Wait a moment and try again.",
+    "unknown": "Something went wrong. Please try again shortly."
+  },
+  "auth": {
+    "email": "Email",
+    "password": "Password",
+    "fullName": "Name",
+    "linkInvalid": "The link is invalid or has expired. Request a new one.",
+    "login": {
+      "title": "Sign in",
+      "description": "Sign in to manage your projects.",
+      "submit": "Sign in",
+      "forgotPassword": "Forgot your password?",
+      "magicLink": "Email me a sign-in link instead",
+      "magicLinkSent": "We have sent a sign-in link to {email}. The link works for one hour.",
+      "invalidCredentials": "Wrong email or password.",
+      "emailNotConfirmed": "You must confirm your email address before you can sign in. Check your inbox.",
+      "noAccount": "No account yet?",
+      "signupLink": "Create an account"
+    },
+    "signup": {
+      "title": "Create an account",
+      "description": "Get started with a free 30-day trial. No card needed.",
+      "passwordHint": "At least 10 characters.",
+      "submit": "Create account",
+      "checkEmailTitle": "Confirm your email address",
+      "checkEmail": "We have sent a link to {email}. Click the link to finish signing up.",
+      "alreadyRegistered": "An account with this email address already exists. Sign in instead.",
+      "haveAccount": "Already have an account?",
+      "loginLink": "Sign in"
+    },
+    "forgot": {
+      "title": "Forgot your password?",
+      "description": "Enter your email address and we will send you a link to create a new password.",
+      "submit": "Send link",
+      "sent": "If there is an account for {email}, we have sent a link. The link works for one hour.",
+      "backToLogin": "Back to sign in"
+    },
+    "reset": {
+      "title": "Create a new password",
+      "description": "Choose a new password for your account.",
+      "newPassword": "New password",
+      "confirmPassword": "Repeat the password",
+      "submit": "Save password",
+      "success": "Your password has been changed."
+    },
+    "signOut": "Sign out"
+  },
+  "invite": {
+    "title": "Invitation",
+    "heading": "You are invited to {organization}",
+    "body": "You are invited as {role}. The invitation is for {email}.",
+    "accept": "Accept the invitation",
+    "signupCta": "Create an account",
+    "loginCta": "Sign in",
+    "chooseHint": "If you do not have an account with {email}, create one. If you do, sign in.",
+    "wrongAccount": "You are signed in as {current}, but the invitation is for {email}. Sign out and sign in with the right account.",
+    "invalidTitle": "The invitation does not exist",
+    "invalid": "The link is wrong, or the invitation has been deleted. Ask the person who invited you for a new invitation.",
+    "expired": "The invitation has expired. Ask the person who invited you for a new one.",
+    "revoked": "The invitation has been withdrawn.",
+    "accepted": "The invitation has already been accepted.",
+    "goToOrganization": "Go to {organization}",
+    "emailNotConfirmed": "Confirm your email address before you accept the invitation.",
+    "signupHint": "You are invited to {organization}. Create an account with the email address the invitation was sent to."
+  },
+  "onboarding": {
+    "title": "Create an organisation",
+    "description": "The organisation is your company. Projects, users and brand profile belong to the organisation.",
+    "name": "Company name",
+    "namePlaceholder": "Fjord Homes Ltd",
+    "slug": "Address",
+    "slugHelp": "Used in links in the admin: {url}",
+    "submit": "Create organisation",
+    "trial": "You get a free 30-day trial. No card needed."
+  },
+  "nav": {
+    "mainMenu": "Main menu",
+    "skipToContent": "Skip to content",
+    "overview": "Overview",
+    "settings": "Settings",
+    "platform": "Platform admin",
+    "organization": "Organisation",
+    "switchOrganization": "Switch organisation",
+    "newOrganization": "New organisation",
+    "userMenu": "User menu",
+    "account": "My profile"
+  },
+  "dashboard": {
+    "title": "Overview",
+    "welcome": "Welcome, {name}",
+    "yourRole": "Your role: {role}",
+    "subscription": "Subscription",
+    "trialEndsOn": "The trial lasts until {date}.",
+    "trialDaysLeft": "{days, plural, =0 {Last day} one {# day left} other {# days left}}",
+    "trialEnded": "The trial is over. The organisation is read-only.",
+    "members": "Users",
+    "memberCount": "{count, plural, one {# user} other {# users}}",
+    "pendingInvites": "{count, plural, =0 {No pending invitations} one {# pending invitation} other {# pending invitations}}",
+    "manageMembers": "Manage users",
+    "projects": "Projects",
+    "projectCount": "{count, plural, =0 {No projects yet} one {# project} other {# projects}}"
+  },
+  "settings": {
+    "title": "Settings",
+    "tabs": {
+      "organization": "Organisation",
+      "members": "Users"
+    },
+    "organization": {
+      "title": "Organisation",
+      "description": "Name, address and privacy for the organisation.",
+      "name": "Company name",
+      "slug": "Address",
+      "slugHelp": "If you change the address, old links to the admin stop working.",
+      "leadRetention": "Lead retention (days)",
+      "leadRetentionHelp": "Leads are deleted automatically when they are older than this. Leave the field empty to keep them until they are deleted manually.",
+      "saved": "The organisation has been updated."
+    }
+  },
+  "members": {
+    "title": "Users",
+    "description": "Invite colleagues and decide what they can access.",
+    "name": "Name",
+    "email": "Email",
+    "role": "Role",
+    "projects": "Projects",
+    "actions": "Actions",
+    "allProjects": "All projects",
+    "projectCount": "{count, plural, =0 {No projects} one {# project} other {# projects}}",
+    "unnamed": "No name",
+    "changeRoleLabel": "Role for {name}",
+    "roleChanged": "The role has been changed.",
+    "memberActions": "Actions for {name}",
+    "editAccess": "Project access",
+    "remove": "Remove from the organisation",
+    "leave": "Leave the organisation",
+    "removeTitle": "Remove {name}?",
+    "removeBody": "{name} loses access to the organisation and all projects.",
+    "leaveTitle": "Leave the organisation?",
+    "leaveBody": "You lose access to the organisation and all projects.",
+    "removed": "{name} has been removed.",
+    "left": "You have left the organisation.",
+    "lastOwner": "The organisation must have at least one owner.",
+    "accessTitle": "Project access for {name}",
+    "accessDescription": "Editors and agents only see the projects they are assigned to. Owners and administrators see all of them.",
+    "noProjects": "The organisation has no projects yet.",
+    "accessSaved": "Project access has been updated.",
+    "invitations": "Pending invitations",
+    "noInvitations": "No pending invitations.",
+    "invitedBy": "Invited by {name}",
+    "expires": "Expires {date}",
+    "resend": "Send again",
+    "revoke": "Withdraw",
+    "revoked": "The invitation has been withdrawn.",
+    "resent": "The invitation has been sent again to {email}.",
+    "invite": {
+      "open": "Invite user",
+      "title": "Invite user",
+      "description": "We send an invitation by email. The link works for seven days.",
+      "email": "Email",
+      "role": "Role",
+      "projects": "Project access",
+      "projectsHelp": "Editors and agents only see the selected projects.",
+      "submit": "Send invitation",
+      "sentTitle": "The invitation has been sent",
+      "sent": "We have sent an invitation to {email}. You can also share the link directly:",
+      "emailFailed": "The invitation has been created, but the email could not be sent. Share the link directly:",
+      "linkLabel": "Invitation link",
+      "alreadyMember": "{email} is already a member of the organisation.",
+      "alreadyInvited": "{email} already has a pending invitation. Send it again from the list.",
+      "done": "Done",
+      "expiredBadge": "Expired"
+    }
+  },
+  "account": {
+    "title": "My profile",
+    "description": "Your name and contact details are shown to your colleagues.",
+    "fullName": "Name",
+    "phone": "Phone",
+    "email": "Email",
+    "saved": "Your profile has been updated.",
+    "passwordTitle": "Change password",
+    "passwordDescription": "Choose a new password for your account.",
+    "passwordSaved": "Your password has been changed."
+  },
+  "platform": {
+    "title": "Platform admin",
+    "description": "All organisations on the platform.",
+    "name": "Organisation",
+    "slug": "Address",
+    "created": "Created",
+    "subscription": "Subscription",
+    "members": "Users",
+    "projects": "Projects",
+    "empty": "No organisations yet."
+  },
+  "notFound": {
+    "title": "Page not found",
+    "body": "The page does not exist, or you do not have access to it.",
+    "home": "Go to the front page"
+  },
+  "errorPage": {
+    "title": "Something went wrong",
+    "body": "An unexpected error occurred. Try again, or come back later.",
+    "retry": "Try again"
+  },
+  "email": {
+    "invitation": {
+      "subject": "{inviter} has invited you to {organization}",
+      "heading": "You are invited to {organization}",
+      "body": "{inviter} has invited you as {role} in {product}.",
+      "cta": "Accept the invitation",
+      "expires": "The link works until {date}.",
+      "fallback": "Button not working? Copy this link into your browser:",
+      "ignore": "If you were not expecting this invitation, you can ignore this email."
+    }
+  }
+}

@@ -1,8 +1,17 @@
 # Plan per fase
 
-Hver fase avsluttes med grønne tester, typekontroll og lint, og en kort oppsummering av hva som er bygget, hva som gjenstår og hvilke valg som er tatt. Fasene bygger på migrasjonene og testene som er levert nå (se [arkitektur.md](arkitektur.md)).
+Hver fase avsluttes med grønne tester, typekontroll og lint, og en kort oppsummering av hva som er bygget, hva som gjenstår og hvilke valg som er tatt. Se også [arkitektur.md](arkitektur.md).
 
-## Levert nå (til godkjenning)
+## Status
+
+| Fase | Status |
+|---|---|
+| Datamodell og RLS | Godkjent |
+| 0 Grunnmur | Ferdig, se oppsummeringen under fase 0 |
+| 1 Prosjekter og enheter | Neste |
+| 2–5 | Ikke påbegynt |
+
+## Leveranse 1: datamodell og RLS (godkjent)
 
 - **Mappestruktur:** se arkitektur.md, avsnitt 2.
 - **Syv SQL-migrasjoner:** datamodell, tilgangsfunksjoner, RLS for alle 25 tabeller, domenelogikk, offentlig lese-API, fillagring, sanntid og nattlig vedlikehold.
@@ -16,8 +25,6 @@ Hver fase avsluttes med grønne tester, typekontroll og lint, og en kort oppsumm
   - `supabase db reset` og `supabase test db` er grønne, og `supabase db lint` gir ingen feil.
   - Isolasjonstesten er sjekket ved å ødelegge RLS-regler med vilje. Testen ble rød.
   - En statusendring nådde en anonym sanntidsklient på 35 ms.
-
-Det finnes ingen app-kode ennå. Den bygges fra fase 0.
 
 ## Fase 0: Grunnmur
 
@@ -39,6 +46,72 @@ Det finnes ingen app-kode ennå. Den bygges fra fase 0.
 - **Rollekontroll i TypeScript** som speiler SQL-rollene, i grensesnitt og serverhandlinger.
 - **Minimal plattformadmin:** liste over organisasjoner.
 - **Ferdig når:** en ny bruker kan registrere seg, opprette organisasjon og invitere en kollega, og kollegaen ser bare egen organisasjon. Isolasjonstesten kjører i CI.
+
+### Oppsummering av fase 0
+
+**Bygget:**
+
+- **Next.js 16.4 i `platform/`:**
+  - TypeScript strict med `noUncheckedIndexedAccess`.
+  - Cache Components og Partial Prefetching.
+  - Tailwind CSS 4 og shadcn/ui-komponenter.
+  - next-intl med all tekst i `messages/` på bokmål, engelsk og svensk.
+  - Sentry med EU-region og uten personopplysninger.
+  - Sikkerhetshoder. Admin kan ikke vises i iframe.
+- **Pålogging:**
+  - Registrering, innlogging med passord og med magisk lenke.
+  - Glemt passord og nytt passord.
+  - Bekreftelseslenker via `/auth/confirm`, som støtter både `token_hash` og PKCE-kode.
+  - Utlogging.
+  - Pålogging logges i revisjonsloggen.
+- **`proxy.ts`:**
+  - Fornyer sesjonen og sender uinnloggede til innlogging med retur til siden de kom fra.
+  - Husker sist brukte organisasjon.
+  - Hindrer åpne omdirigeringer.
+- **Organisasjoner:**
+  - Oppretting med 30 dagers prøveperiode.
+  - Adresse `/{organisasjon}/…` som lages fra firmanavnet.
+  - Organisasjonsvelger og innstillinger (navn, adresse, lagringstid for leads).
+  - Oversiktsside med abonnement, brukere og prosjekter.
+  - Lesemodus-banner.
+- **Brukere:**
+  - Invitasjon på e-post med rolle og prosjekttilgang. Lenken vises også i appen og kan deles direkte.
+  - Sende på nytt (gammel lenke slutter å virke) og trekke tilbake.
+  - Invitasjonsside for nye og eksisterende brukere.
+  - Endre rolle, fjerne medlem, forlate organisasjonen.
+  - Prosjekttilgang for redaktører og meglere.
+- **Rollekontroll i TypeScript** (`src/lib/auth/permissions.ts`), lik databasen. Hver serverhandling sjekker rolle og lesemodus før kallet. RLS er siste sperre.
+- **Plattformadmin:** liste over alle organisasjoner med abonnement, brukere og prosjekter.
+- **Databasetillegg (migrasjon 0008):**
+  - Reserverte organisasjonsadresser.
+  - Invitasjonsoppslag uten innlogging.
+  - Koblinger fra medlemskap og invitasjoner til profiler.
+  - Prosjekttilgang som én transaksjon.
+- **Tester:**
+
+  | Type | Antall | Dekker |
+  |---|---|---|
+  | pgTAP | 230 | Skjema, RLS og isolasjon per tabell, roller, statuslogg, publisering, fase 0-funksjonene |
+  | Vitest | 72 | Rollematrisen og reserverte adresser mot SQL-filene, norsk tallformat, lesemodus, trygge omdirigeringer, tokener, e-post-escaping, skjemaer, lik nøkkelmengde i alle språkfilene |
+  | Playwright | 3 | Registrering → organisasjon → invitasjon → godkjenning → redaktør uten innstillinger → annen organisasjon ser ingenting; innlogging med feil og riktig passord; retur etter innlogging |
+
+- **CI:** `.github/workflows/platform.yml` kjører lint, typekontroll, enhetstester, `supabase test db`, `supabase db lint`, kontroll av at databasetypene er oppdatert, bygg og Playwright.
+
+**Gjenstår (ikke del av fase 0):**
+
+- **Kontoer og miljøer:** Supabase, Vercel, Resend og Sentry er ikke opprettet. Alt er bygget og testet lokalt. Oppsettet er beskrevet i README.
+- **E-postmaler for Supabase Auth:** malene på norsk med `token_hash`-lenker legges inn når Supabase-prosjektene finnes.
+- **CI:** arbeidsflyten er skrevet, men har ikke kjørt på GitHub ennå. Den kjører ved neste push hvis Actions er slått på for repoet. Alle stegene er kjørt lokalt.
+- **Språk:** admin bruker standardspråket (bokmål). Valg av språk per bruker kommer sammen med publiserte sider i fase 3.
+
+**Valg i fase 0:**
+
+- **Cache Components er slått på fra start**, som i Next.js 16.4 sine standarder. Publiserte prosjektsider (fase 3) trenger mellomlagring med tagger. Admin-sider leser innlogging bak `Suspense`, slik dokumentasjonen krever.
+- **Organisasjonen ligger i adressen** (`/{slug}/…`), så lenker kan deles og flere faner kan vise ulike organisasjoner. Ruter i admin har engelske navn. Teksten er norsk.
+- **Admin bruker ett fast språk per installasjon.** Språket leses ikke fra cookies. Da kan oversatt tekst ligge i det forhåndsrenderte skallet.
+- **Invitasjonslenken vises i appen etter sending.** Den virker bare for e-postadressen den ble sendt til, og bare med bekreftet adresse (kontrolleres i databasen).
+- **Passord:** minst 10 tegn.
+- **shadcn/ui-komponentene er skrevet inn for hånd**, i samme stil som shadcn sitt register. Registeret er ikke tilgjengelig fra byggemiljøet.
 
 ## Fase 1: Prosjekter og enheter
 
@@ -145,7 +218,7 @@ Det finnes ingen app-kode ennå. Den bygges fra fase 0.
   - Publisert prosjektside.
 - **Drift og personvern:** GDPR-eksport per person og driftsrutiner.
 
-## Valg som inngår i godkjenningen
+## Valg som er godkjent
 
 1. **Plassering:** plattformen ligger i `platform/` i dette repoet. Nettsiden røres ikke.
 2. **Tenant-konsistens:** sammensatte fremmednøkler og uforanderlige nøkkelkolonner, i tillegg til RLS.
@@ -180,7 +253,9 @@ Det finnes ingen app-kode ennå. Den bygges fra fase 0.
 
 ## Åpne spørsmål
 
-1. **Navn og domene:** hva er `[PRODUKTNAVN]` og `[PLATTFORMDOMENE]`? Domenet trengs til underdomener og e-postavsender.
-2. **Repo:** er det greit at plattformen ligger i `platform/` i dette repoet, eller ønsker dere et eget repo?
-3. **Abonnement:** hvilke planer skal finnes (antall aktive prosjekter og pris per måned)? Hva teller som aktivt prosjekt? Forslag: fasene «Kommer for salg», «I salg» og «Utsolgt».
-4. **Kontoer:** hvem oppretter Supabase, Vercel, Stripe, Resend, Cloudflare Turnstile og Sentry, og når? Fase 0 kan bygges og testes helt lokalt, men staging trenger kontoene.
+Spørsmålene under er ikke besvart ennå. Standardvalgene i parentes brukes inntil videre.
+
+1. **Navn og domene:** hva er `[PRODUKTNAVN]` og `[PLATTFORMDOMENE]`? Domenet trengs til underdomener (fase 4) og e-postavsender. (Arbeidsnavnet «Boligplattform», satt med miljøvariabler.)
+2. **Repo:** er det greit at plattformen ligger i `platform/` i dette repoet, eller ønsker dere et eget repo? (`platform/` i dette repoet.)
+3. **Abonnement:** hvilke planer skal finnes (antall aktive prosjekter og pris per måned)? Hva teller som aktivt prosjekt? Trengs i fase 4. (Aktive prosjekter er de i fasene «Kommer for salg», «I salg» og «Utsolgt».)
+4. **Kontoer:** hvem oppretter Supabase, Vercel, Stripe, Resend, Cloudflare Turnstile og Sentry, og når? (Alt utvikles og testes lokalt til kontoene finnes.)

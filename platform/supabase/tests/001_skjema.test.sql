@@ -97,9 +97,9 @@ select set_eq(
        and has_function_privilege('anon', p.oid, 'execute') $$,
   array[
     'get_published_selector', 'get_public_units', 'get_public_unit',
-    'resolve_site', 'get_published_page', 'get_public_assets'
+    'resolve_site', 'get_published_page', 'get_public_assets', 'get_invitation'
   ],
-  'anon kan bare kjøre de offentlige lesefunksjonene'
+  'anon kan bare kjøre de offentlige lesefunksjonene og invitasjonsoppslaget'
 );
 
 select is_empty(

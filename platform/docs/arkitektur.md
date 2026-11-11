@@ -10,74 +10,62 @@ Repoet inneholder i dag Usett-nettsiden (Next.js med Bootstrap, publisert på Ne
 
 ## 2. Mappestruktur
 
-✔ = levert nå. Resten bygges i fasene i [plan.md](plan.md).
+✔ = bygget. Resten bygges i fasene i [plan.md](plan.md).
 
 ```
 platform/
-├── README.md                          ✔
-├── docs/
-│   ├── arkitektur.md                  ✔ dette dokumentet
-│   └── plan.md                        ✔ plan per fase, valg og åpne spørsmål
+├── README.md                          ✔ oppstart, kommandoer, miljøer
+├── docs/                              ✔ arkitektur og plan
 ├── supabase/
 │   ├── config.toml                    ✔ lokal Supabase (CLI)
-│   ├── migrations/                    ✔ datamodell, RLS, funksjoner, lagring, sanntid
-│   ├── tests/                         ✔ pgTAP: skjemaregler, isolasjon, roller, status, publisering
-│   └── seed.sql                       lokale utviklingsdata (fase 0)
-├── package.json, tsconfig.json        TypeScript i strict-modus (fase 0)
-├── next.config.ts, eslint.config.mjs
-├── vitest.config.ts, playwright.config.ts
-├── instrumentation.ts                 Sentry (server)
-├── instrumentation-client.ts          Sentry (nettleser)
-├── components.json                    shadcn/ui
-├── .env.example
-├── messages/                          all tekst: nb.json (standard), en.json, sv.json
-├── e2e/                               Playwright: akseptkriteriene 1–6
+│   ├── migrations/                    ✔ datamodell, RLS, funksjoner, lagring, sanntid, fase 0
+│   └── tests/                         ✔ pgTAP: skjema, isolasjon, roller, status, publisering, fase 0
+├── package.json, tsconfig.json        ✔ TypeScript strict
+├── next.config.ts                     ✔ Cache Components, sikkerhetshoder, next-intl, Sentry
+├── eslint.config.mjs, vitest.config.mts, playwright.config.ts   ✔
+├── instrumentation.ts, instrumentation-client.ts                ✔ Sentry (EU, uten personopplysninger)
+├── components.json                    ✔ shadcn/ui
+├── vercel.json                        ✔ funksjoner i Stockholm (arn1)
+├── .env.example                       ✔
+├── messages/                          ✔ all tekst: nb.json (standard), en.json, sv.json
+├── e2e/                               ✔ Playwright (fase 0); flere akseptkriterier per fase
+├── test/                              ✔ tester på tvers av moduler (oversettelser)
 ├── scripts/seed-demo.ts               Demo Bolig AS / Fjordparken (fase 5)
 └── src/
-    ├── proxy.ts                       vertsnavn → admin eller prosjektside, fornyer sesjon
+    ├── proxy.ts                       ✔ fornyer sesjonen, krever innlogging, husker organisasjon
     ├── app/
-    │   ├── (auth)/                    logg inn, registrer, glemt passord, invitasjon
-    │   ├── (admin)/                   app.[PLATTFORMDOMENE]
-    │   │   ├── page.tsx               Oversikt
-    │   │   ├── onboarding/            oppstartsveiviser
-    │   │   ├── projects/
-    │   │   │   ├── new/               veiviser for nytt prosjekt
-    │   │   │   └── [projectId]/
-    │   │   │       ├── page.tsx       prosjektoversikt med sjekkliste
-    │   │   │       ├── units/         regnearktabell, import/eksport, enhetsskjema
-    │   │   │       ├── selectors/     boligvelger-editor (Tegn, Koble, Status)
-    │   │   │       ├── site/          blokkeditor, sider, tema, versjoner
-    │   │   │       ├── leads/
-    │   │   │       └── settings/
-    │   │   ├── leads/
-    │   │   ├── media/                 mediebibliotek
-    │   │   └── settings/              organisasjon, brukere, merkevare, domener, abonnement, API
-    │   ├── (platform)/platform/       plattformadmin (support)
-    │   ├── sites/[site]/              publiserte prosjektsider (omskrevet fra proxy.ts)
-    │   │   ├── [[...slug]]/           sider fra blokkeditoren
-    │   │   ├── bolig/[unitSlug]/      enhetsside
-    │   │   └── personvern/, informasjonskapsler/
-    │   ├── embed/selector/[id]/       iframe-reserve for innbygging
-    │   └── api/
-    │       ├── public/v1/             offentlig lese-API (CORS, bare publiserte data)
-    │       ├── leads/                 interesseskjema (Turnstile, honeypot, rate limit)
-    │       ├── assets/process/        WebP-varianter med sharp
-    │       ├── stripe/webhook/
-    │       └── cron/                  webhook-utsending
+    │   ├── (auth)/                    ✔ login, signup, forgot-password, reset-password, invite/[token]
+    │   ├── auth/confirm/              ✔ mål for lenker i e-post fra Supabase Auth
+    │   ├── (app)/
+    │   │   ├── page.tsx               ✔ sender til sist brukte organisasjon
+    │   │   ├── (user)/                ✔ onboarding, account, platform (plattformadmin)
+    │   │   └── [org]/                 ✔ admin per organisasjon: app.[PLATTFORMDOMENE]/{org}/…
+    │   │       ├── page.tsx           ✔ Oversikt
+    │   │       ├── settings/          ✔ organisasjon og brukere; merkevare, domener, abonnement, API senere
+    │   │       ├── projects/          prosjekter, enheter, boligvelger, prosjektside (fase 1–3)
+    │   │       ├── leads/             (fase 3)
+    │   │       └── media/             mediebibliotek (fase 1)
+    │   ├── sites/[site]/              publiserte prosjektsider med egen rotlayout (fase 3)
+    │   ├── embed/selector/[id]/       iframe-reserve for innbygging (fase 4)
+    │   └── api/                       offentlig API, leads, bildebehandling, Stripe, cron (fase 1–4)
     ├── components/
-    │   ├── ui/                        shadcn/ui
-    │   ├── admin/
-    │   └── site/blocks/               én komponent per blokktype
+    │   ├── ui/                        ✔ shadcn/ui
+    │   ├── forms/                     ✔ felles skjemahjelpere
+    │   └── admin/                     ✔ toppmeny, organisasjonsvelger, brukermeny
     ├── features/                      domenemoduler: Zod-skjema, serverhandlinger, spørringer, komponenter
-    │   ├── organizations/  projects/  units/  selector/  site-builder/
-    │   └── leads/  media/  billing/  domains/
+    │   ├── auth/  organizations/  members/  invitations/  account/   ✔
+    │   └── projects/  units/  selector/  site-builder/  leads/  media/  billing/  domains/
+    ├── i18n/                          ✔ språkoppsett for next-intl
     ├── lib/
-    │   ├── supabase/                  klient for server og nettleser, service-rolle (server-only), genererte typer
-    │   ├── auth/                      roller og rettigheter (speiler SQL)
-    │   ├── format/                    norsk tallformat: 2 450 000 kr, 68 m²
-    │   ├── i18n/
-    │   └── cache/                     cache-tagger og revalidering
-    └── embed/                         web-komponenten, bygges til public/embed.js
+    │   ├── supabase/                  ✔ klient for server og proxy, genererte typer
+    │   ├── auth/                      ✔ datatilgangslag (DAL) og roller som speiler SQL
+    │   ├── actions/                   ✔ felles svarformat og kontroller for serverhandlinger
+    │   ├── format/                    ✔ norsk format: 2 450 000 kr, 68 m²
+    │   ├── billing/                   ✔ prøveperiode og lesemodus
+    │   ├── email/                     ✔ Resend og maler
+    │   ├── navigation/, security/     ✔ trygge omdirigeringer, tokener
+    │   └── cache/                     cache-tagger og revalidering (fase 2–3)
+    └── embed/                         web-komponenten (fase 4)
 ```
 
 ## 3. Systemoversikt
@@ -237,6 +225,10 @@ Testene i `005_publisering_og_offentlig_api.test.sql` kontrollerer dette.
 | `domains`: `verification_token`, `status`, `dns_records`, `last_checked_at`, `last_error` | Bekreftelse av egne domener. Bare bekreftede domener må være unike, så ingen kan blokkere den reelle eieren. |
 | `leads`: `unit_number`, `consented_at`, `internal_note`, `notified_at` | Riktig enhet også etter sletting, samtykketidspunkt, internt notat og sporing av e-postvarsel |
 | `unit_status_events`: `unit_number`, `source` | Historikk etter sletting, og hvor endringen kom fra |
+| `memberships.user_id` og `invitations.invited_by` → `profiles` (fase 0) | Navn og e-post hentes sammen med medlemskap og invitasjoner i én spørring |
+| `get_invitation()` (fase 0) | Invitasjonssiden viser organisasjon og rolle før mottakeren har konto. Kan kalles av anon med tokenet. |
+| `set_project_access()` (fase 0) | Prosjekttilgang for en redaktør eller megler settes i én transaksjon, med RLS |
+| Reserverte organisasjonsadresser (fase 0) | Ord appen bruker selv, som `login` og `settings`, kan ikke bli navnet på en organisasjon |
 
 ## 12. Supabase sin sikkerhetsrådgiver
 

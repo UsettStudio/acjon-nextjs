@@ -1,0 +1,278 @@
+{
+  "meta": {
+    "description": "Bostadsväljare och projektsidor för bostadsutvecklare och fastighetsmäklare."
+  },
+  "common": {
+    "save": "Spara",
+    "saving": "Sparar …",
+    "saved": "Ändringarna har sparats.",
+    "cancel": "Avbryt",
+    "close": "Stäng",
+    "copy": "Kopiera",
+    "copied": "Kopierat",
+    "loading": "Laddar …",
+    "or": "eller",
+    "you": "du",
+    "readOnly": "Abonnemanget har gått ut, så organisationen är skrivskyddad. Publicerade sidor är fortfarande tillgängliga."
+  },
+  "roles": {
+    "owner": "Ägare",
+    "admin": "Administratör",
+    "editor": "Redaktör",
+    "agent": "Mäklare"
+  },
+  "roleDescriptions": {
+    "owner": "Allt, inklusive abonnemang och användare.",
+    "admin": "Allt utom abonnemanget.",
+    "editor": "Innehåll, bostäder, bostadsväljare och projektsidor i tilldelade projekt.",
+    "agent": "Status och pris på bostäder samt leads i tilldelade projekt."
+  },
+  "subscriptionStatus": {
+    "trialing": "Provperiod",
+    "active": "Aktivt",
+    "past_due": "Betalningen misslyckades",
+    "canceled": "Avslutat",
+    "unpaid": "Obetalt",
+    "incomplete": "Ofullständigt",
+    "incomplete_expired": "Utgånget",
+    "paused": "Pausat"
+  },
+  "validation": {
+    "required": "Fyll i fältet.",
+    "email": "Ange en giltig e-postadress.",
+    "passwordMin": "Lösenordet måste ha minst 10 tecken.",
+    "passwordMax": "Lösenordet får ha högst 72 tecken.",
+    "passwordMismatch": "Lösenorden matchar inte.",
+    "nameLength": "Ange mellan 1 och 200 tecken.",
+    "slugFormat": "Använd små bokstäver (a–z), siffror och bindestreck. Högst 63 tecken.",
+    "slugReserved": "Den här adressen är reserverad. Välj en annan.",
+    "slugTaken": "Adressen används redan. Välj en annan.",
+    "retentionRange": "Välj mellan 30 och 3650 dagar.",
+    "phone": "Ange ett giltigt telefonnummer.",
+    "role": "Välj en roll."
+  },
+  "errors": {
+    "unauthenticated": "Du måste logga in igen.",
+    "forbidden": "Du har inte behörighet att göra detta.",
+    "readOnly": "Organisationen är skrivskyddad eftersom abonnemanget har gått ut.",
+    "notFound": "Det du letade efter hittades inte.",
+    "invalidInput": "Kontrollera de markerade fälten.",
+    "rateLimited": "För många försök. Vänta en stund och försök igen.",
+    "unknown": "Något gick fel. Försök igen om en stund."
+  },
+  "auth": {
+    "email": "E-post",
+    "password": "Lösenord",
+    "fullName": "Namn",
+    "linkInvalid": "Länken är ogiltig eller har gått ut. Begär en ny.",
+    "login": {
+      "title": "Logga in",
+      "description": "Logga in för att hantera dina projekt.",
+      "submit": "Logga in",
+      "forgotPassword": "Glömt lösenordet?",
+      "magicLink": "Skicka en inloggningslänk till mig i stället",
+      "magicLinkSent": "Vi har skickat en inloggningslänk till {email}. Länken fungerar i en timme.",
+      "invalidCredentials": "Fel e-post eller lösenord.",
+      "emailNotConfirmed": "Du måste bekräfta e-postadressen innan du kan logga in. Kontrollera din inkorg.",
+      "noAccount": "Har du inget konto?",
+      "signupLink": "Skapa konto"
+    },
+    "signup": {
+      "title": "Skapa konto",
+      "description": "Kom igång med 30 dagars gratis provperiod. Inget kort behövs.",
+      "passwordHint": "Minst 10 tecken.",
+      "submit": "Skapa konto",
+      "checkEmailTitle": "Bekräfta e-postadressen",
+      "checkEmail": "Vi har skickat en länk till {email}. Klicka på länken för att slutföra registreringen.",
+      "alreadyRegistered": "Det finns redan ett konto med den här e-postadressen. Logga in i stället.",
+      "haveAccount": "Har du redan ett konto?",
+      "loginLink": "Logga in"
+    },
+    "forgot": {
+      "title": "Glömt lösenordet?",
+      "description": "Ange din e-postadress så skickar vi en länk för att skapa ett nytt lösenord.",
+      "submit": "Skicka länk",
+      "sent": "Om det finns ett konto för {email} har vi skickat en länk. Länken fungerar i en timme.",
+      "backToLogin": "Tillbaka till inloggningen"
+    },
+    "reset": {
+      "title": "Skapa nytt lösenord",
+      "description": "Välj ett nytt lösenord för ditt konto.",
+      "newPassword": "Nytt lösenord",
+      "confirmPassword": "Upprepa lösenordet",
+      "submit": "Spara lösenord",
+      "success": "Lösenordet har ändrats."
+    },
+    "signOut": "Logga ut"
+  },
+  "invite": {
+    "title": "Inbjudan",
+    "heading": "Du är inbjuden till {organization}",
+    "body": "Du är inbjuden som {role}. Inbjudan gäller {email}.",
+    "accept": "Acceptera inbjudan",
+    "signupCta": "Skapa konto",
+    "loginCta": "Logga in",
+    "chooseHint": "Har du inget konto med {email} skapar du ett. Har du det loggar du in.",
+    "wrongAccount": "Du är inloggad som {current}, men inbjudan gäller {email}. Logga ut och logga in med rätt konto.",
+    "invalidTitle": "Inbjudan finns inte",
+    "invalid": "Länken är fel, eller så har inbjudan tagits bort. Be personen som bjöd in dig om en ny inbjudan.",
+    "expired": "Inbjudan har gått ut. Be personen som bjöd in dig om en ny.",
+    "revoked": "Inbjudan har dragits tillbaka.",
+    "accepted": "Inbjudan har redan accepterats.",
+    "goToOrganization": "Gå till {organization}",
+    "emailNotConfirmed": "Bekräfta din e-postadress innan du accepterar inbjudan.",
+    "signupHint": "Du är inbjuden till {organization}. Skapa ett konto med e-postadressen som inbjudan skickades till."
+  },
+  "onboarding": {
+    "title": "Skapa organisation",
+    "description": "Organisationen är ditt företag. Projekt, användare och varumärkesprofil hör till organisationen.",
+    "name": "Företagsnamn",
+    "namePlaceholder": "Fjordbygg AB",
+    "slug": "Adress",
+    "slugHelp": "Används i länkarna i administrationen: {url}",
+    "submit": "Skapa organisation",
+    "trial": "Du får 30 dagars gratis provperiod. Inget kort behövs."
+  },
+  "nav": {
+    "mainMenu": "Huvudmeny",
+    "skipToContent": "Hoppa till innehållet",
+    "overview": "Översikt",
+    "settings": "Inställningar",
+    "platform": "Plattformsadmin",
+    "organization": "Organisation",
+    "switchOrganization": "Byt organisation",
+    "newOrganization": "Ny organisation",
+    "userMenu": "Användarmeny",
+    "account": "Min profil"
+  },
+  "dashboard": {
+    "title": "Översikt",
+    "welcome": "Välkommen, {name}",
+    "yourRole": "Din roll: {role}",
+    "subscription": "Abonnemang",
+    "trialEndsOn": "Provperioden varar till {date}.",
+    "trialDaysLeft": "{days, plural, =0 {Sista dagen} one {# dag kvar} other {# dagar kvar}}",
+    "trialEnded": "Provperioden är slut. Organisationen är skrivskyddad.",
+    "members": "Användare",
+    "memberCount": "{count, plural, one {# användare} other {# användare}}",
+    "pendingInvites": "{count, plural, =0 {Inga väntande inbjudningar} one {# väntande inbjudan} other {# väntande inbjudningar}}",
+    "manageMembers": "Hantera användare",
+    "projects": "Projekt",
+    "projectCount": "{count, plural, =0 {Inga projekt ännu} one {# projekt} other {# projekt}}"
+  },
+  "settings": {
+    "title": "Inställningar",
+    "tabs": {
+      "organization": "Organisation",
+      "members": "Användare"
+    },
+    "organization": {
+      "title": "Organisation",
+      "description": "Namn, adress och integritet för organisationen.",
+      "name": "Företagsnamn",
+      "slug": "Adress",
+      "slugHelp": "Om du ändrar adressen slutar gamla länkar till administrationen att fungera.",
+      "leadRetention": "Lagringstid för leads (dagar)",
+      "leadRetentionHelp": "Leads raderas automatiskt när de är äldre än så här. Lämna fältet tomt för att behålla dem tills de raderas manuellt.",
+      "saved": "Organisationen har uppdaterats."
+    }
+  },
+  "members": {
+    "title": "Användare",
+    "description": "Bjud in kollegor och bestäm vad de har tillgång till.",
+    "name": "Namn",
+    "email": "E-post",
+    "role": "Roll",
+    "projects": "Projekt",
+    "actions": "Åtgärder",
+    "allProjects": "Alla projekt",
+    "projectCount": "{count, plural, =0 {Inga projekt} one {# projekt} other {# projekt}}",
+    "unnamed": "Utan namn",
+    "changeRoleLabel": "Roll för {name}",
+    "roleChanged": "Rollen har ändrats.",
+    "memberActions": "Åtgärder för {name}",
+    "editAccess": "Projektåtkomst",
+    "remove": "Ta bort från organisationen",
+    "leave": "Lämna organisationen",
+    "removeTitle": "Ta bort {name}?",
+    "removeBody": "{name} förlorar åtkomsten till organisationen och alla projekt.",
+    "leaveTitle": "Lämna organisationen?",
+    "leaveBody": "Du förlorar åtkomsten till organisationen och alla projekt.",
+    "removed": "{name} har tagits bort.",
+    "left": "Du har lämnat organisationen.",
+    "lastOwner": "Organisationen måste ha minst en ägare.",
+    "accessTitle": "Projektåtkomst för {name}",
+    "accessDescription": "Redaktörer och mäklare ser bara de projekt de har tilldelats. Ägare och administratörer ser alla.",
+    "noProjects": "Organisationen har inga projekt ännu.",
+    "accessSaved": "Projektåtkomsten har uppdaterats.",
+    "invitations": "Väntande inbjudningar",
+    "noInvitations": "Inga väntande inbjudningar.",
+    "invitedBy": "Inbjuden av {name}",
+    "expires": "Går ut {date}",
+    "resend": "Skicka igen",
+    "revoke": "Dra tillbaka",
+    "revoked": "Inbjudan har dragits tillbaka.",
+    "resent": "Inbjudan har skickats igen till {email}.",
+    "invite": {
+      "open": "Bjud in användare",
+      "title": "Bjud in användare",
+      "description": "Vi skickar en inbjudan via e-post. Länken fungerar i sju dagar.",
+      "email": "E-post",
+      "role": "Roll",
+      "projects": "Projektåtkomst",
+      "projectsHelp": "Redaktörer och mäklare ser bara valda projekt.",
+      "submit": "Skicka inbjudan",
+      "sentTitle": "Inbjudan har skickats",
+      "sent": "Vi har skickat en inbjudan till {email}. Du kan också dela länken direkt:",
+      "emailFailed": "Inbjudan har skapats, men e-postmeddelandet kunde inte skickas. Dela länken direkt:",
+      "linkLabel": "Inbjudningslänk",
+      "alreadyMember": "{email} är redan medlem i organisationen.",
+      "alreadyInvited": "{email} har redan en väntande inbjudan. Skicka den igen från listan.",
+      "done": "Klar",
+      "expiredBadge": "Utgången"
+    }
+  },
+  "account": {
+    "title": "Min profil",
+    "description": "Ditt namn och dina kontaktuppgifter visas för dina kollegor.",
+    "fullName": "Namn",
+    "phone": "Telefon",
+    "email": "E-post",
+    "saved": "Profilen har uppdaterats.",
+    "passwordTitle": "Byt lösenord",
+    "passwordDescription": "Välj ett nytt lösenord för ditt konto.",
+    "passwordSaved": "Lösenordet har ändrats."
+  },
+  "platform": {
+    "title": "Plattformsadmin",
+    "description": "Alla organisationer på plattformen.",
+    "name": "Organisation",
+    "slug": "Adress",
+    "created": "Skapad",
+    "subscription": "Abonnemang",
+    "members": "Användare",
+    "projects": "Projekt",
+    "empty": "Inga organisationer ännu."
+  },
+  "notFound": {
+    "title": "Sidan hittades inte",
+    "body": "Sidan finns inte, eller så har du inte åtkomst till den.",
+    "home": "Till startsidan"
+  },
+  "errorPage": {
+    "title": "Något gick fel",
+    "body": "Ett oväntat fel uppstod. Försök igen eller kom tillbaka senare.",
+    "retry": "Försök igen"
+  },
+  "email": {
+    "invitation": {
+      "subject": "{inviter} har bjudit in dig till {organization}",
+      "heading": "Du är inbjuden till {organization}",
+      "body": "{inviter} har bjudit in dig som {role} i {product}.",
+      "cta": "Acceptera inbjudan",
+      "expires": "Länken fungerar till {date}.",
+      "fallback": "Fungerar inte knappen? Kopiera den här länken till webbläsaren:",
+      "ignore": "Om du inte väntade dig den här inbjudan kan du bortse från e-postmeddelandet."
+    }
+  }
+}

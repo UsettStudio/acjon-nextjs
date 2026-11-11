@@ -1,0 +1,93 @@
+# CI for boligplattformen i platform/. Nettsiden i rotmappen påvirkes ikke.
+name: Plattform
+
+on:
+  push:
+    paths:
+      - "platform/**"
+      - ".github/workflows/platform.yml"
+  pull_request:
+    paths:
+      - "platform/**"
+      - ".github/workflows/platform.yml"
+
+concurrency:
+  group: platform-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: platform
+
+jobs:
+  kvalitet:
+    name: Lint, typekontroll og enhetstester
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: platform/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+
+  database-og-e2e:
+    name: Database (RLS og isolasjon) og ende-til-ende
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: platform/package-lock.json
+      - run: npm ci
+
+      - name: Start lokal Supabase
+        run: npx supabase start -x studio,imgproxy,logflare,vector,supavisor,postgres-meta
+
+      - name: Databasetester (pgTAP)
+        run: npx supabase test db
+
+      - name: Statisk sjekk av databasefunksjoner
+        run: npx supabase db lint -s public,app --level warning --fail-on warning
+
+      - name: Genererte databasetyper er oppdatert
+        run: |
+          npx supabase gen types typescript --local --schema public > /tmp/database.types.ts
+          diff -u src/lib/supabase/database.types.ts /tmp/database.types.ts
+
+      - name: Miljøvariabler for appen
+        run: |
+          PUBLISHABLE_KEY=$(npx supabase status -o env | grep '^PUBLISHABLE_KEY=' | cut -d= -f2- | tr -d '"')
+          {
+            echo "NEXT_PUBLIC_PRODUCT_NAME=Boligplattform"
+            echo "NEXT_PUBLIC_PLATFORM_DOMAIN=localhost:3000"
+            echo "NEXT_PUBLIC_APP_URL=http://localhost:3000"
+            echo "NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321"
+            echo "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=${PUBLISHABLE_KEY}"
+          } > .env.local
+
+      - run: npm run build
+
+      - name: Installer nettleser for Playwright
+        run: npx playwright install --with-deps chromium
+
+      - name: Ende-til-ende-tester
+        run: npm run test:e2e
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: platform/playwright-report
+          retention-days: 7

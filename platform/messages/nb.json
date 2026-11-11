@@ -1,0 +1,278 @@
+{
+  "meta": {
+    "description": "Boligvelger og prosjektsider for boligutbyggere og eiendomsmeglere."
+  },
+  "common": {
+    "save": "Lagre",
+    "saving": "Lagrer …",
+    "saved": "Endringene er lagret.",
+    "cancel": "Avbryt",
+    "close": "Lukk",
+    "copy": "Kopier",
+    "copied": "Kopiert",
+    "loading": "Laster …",
+    "or": "eller",
+    "you": "deg",
+    "readOnly": "Abonnementet er utløpt, så organisasjonen er i lesemodus. Publiserte sider er fortsatt tilgjengelige."
+  },
+  "roles": {
+    "owner": "Eier",
+    "admin": "Administrator",
+    "editor": "Redaktør",
+    "agent": "Megler"
+  },
+  "roleDescriptions": {
+    "owner": "Alt, inkludert abonnement og brukere.",
+    "admin": "Alt unntatt abonnement.",
+    "editor": "Innhold, enheter, boligvelger og prosjektsider i tildelte prosjekter.",
+    "agent": "Status og pris på enheter, og leads i tildelte prosjekter."
+  },
+  "subscriptionStatus": {
+    "trialing": "Prøveperiode",
+    "active": "Aktiv",
+    "past_due": "Betaling feilet",
+    "canceled": "Avsluttet",
+    "unpaid": "Ubetalt",
+    "incomplete": "Ufullstendig",
+    "incomplete_expired": "Utløpt",
+    "paused": "Satt på pause"
+  },
+  "validation": {
+    "required": "Fyll ut feltet.",
+    "email": "Skriv en gyldig e-postadresse.",
+    "passwordMin": "Passordet må ha minst 10 tegn.",
+    "passwordMax": "Passordet kan ha høyst 72 tegn.",
+    "passwordMismatch": "Passordene er ikke like.",
+    "nameLength": "Skriv mellom 1 og 200 tegn.",
+    "slugFormat": "Bruk små bokstaver (a–z), tall og bindestrek. Høyst 63 tegn.",
+    "slugReserved": "Denne adressen er reservert. Velg en annen.",
+    "slugTaken": "Adressen er allerede i bruk. Velg en annen.",
+    "retentionRange": "Velg mellom 30 og 3650 dager.",
+    "phone": "Skriv et gyldig telefonnummer.",
+    "role": "Velg en rolle."
+  },
+  "errors": {
+    "unauthenticated": "Du må logge inn på nytt.",
+    "forbidden": "Du har ikke tilgang til å gjøre dette.",
+    "readOnly": "Organisasjonen er i lesemodus fordi abonnementet er utløpt.",
+    "notFound": "Fant ikke det du lette etter.",
+    "invalidInput": "Sjekk feltene som er markert.",
+    "rateLimited": "For mange forsøk. Vent litt og prøv igjen.",
+    "unknown": "Noe gikk galt. Prøv igjen om litt."
+  },
+  "auth": {
+    "email": "E-post",
+    "password": "Passord",
+    "fullName": "Navn",
+    "linkInvalid": "Lenken er ugyldig eller utløpt. Be om en ny.",
+    "login": {
+      "title": "Logg inn",
+      "description": "Logg inn for å administrere prosjektene dine.",
+      "submit": "Logg inn",
+      "forgotPassword": "Glemt passordet?",
+      "magicLink": "Send meg en innloggingslenke i stedet",
+      "magicLinkSent": "Vi har sendt en innloggingslenke til {email}. Lenken virker i én time.",
+      "invalidCredentials": "Feil e-post eller passord.",
+      "emailNotConfirmed": "Du må bekrefte e-postadressen før du kan logge inn. Sjekk innboksen din.",
+      "noAccount": "Har du ikke konto?",
+      "signupLink": "Opprett konto"
+    },
+    "signup": {
+      "title": "Opprett konto",
+      "description": "Kom i gang med 30 dagers gratis prøveperiode. Du trenger ikke kort.",
+      "passwordHint": "Minst 10 tegn.",
+      "submit": "Opprett konto",
+      "checkEmailTitle": "Bekreft e-postadressen",
+      "checkEmail": "Vi har sendt en lenke til {email}. Klikk på lenken for å fullføre registreringen.",
+      "alreadyRegistered": "Det finnes allerede en konto med denne e-postadressen. Logg inn i stedet.",
+      "haveAccount": "Har du allerede konto?",
+      "loginLink": "Logg inn"
+    },
+    "forgot": {
+      "title": "Glemt passordet?",
+      "description": "Skriv inn e-postadressen din, så sender vi en lenke for å lage nytt passord.",
+      "submit": "Send lenke",
+      "sent": "Hvis det finnes en konto for {email}, har vi sendt en lenke. Lenken virker i én time.",
+      "backToLogin": "Tilbake til innlogging"
+    },
+    "reset": {
+      "title": "Lag nytt passord",
+      "description": "Velg et nytt passord for kontoen din.",
+      "newPassword": "Nytt passord",
+      "confirmPassword": "Gjenta passordet",
+      "submit": "Lagre passord",
+      "success": "Passordet er endret."
+    },
+    "signOut": "Logg ut"
+  },
+  "invite": {
+    "title": "Invitasjon",
+    "heading": "Du er invitert til {organization}",
+    "body": "Du er invitert som {role}. Invitasjonen gjelder {email}.",
+    "accept": "Godta invitasjonen",
+    "signupCta": "Opprett konto",
+    "loginCta": "Logg inn",
+    "chooseHint": "Har du ikke konto med {email}, oppretter du en. Har du det, logger du inn.",
+    "wrongAccount": "Du er logget inn som {current}, men invitasjonen gjelder {email}. Logg ut og logg inn med riktig konto.",
+    "invalidTitle": "Invitasjonen finnes ikke",
+    "invalid": "Lenken er feil, eller invitasjonen er slettet. Be den som inviterte deg om en ny invitasjon.",
+    "expired": "Invitasjonen er utløpt. Be den som inviterte deg om en ny.",
+    "revoked": "Invitasjonen er trukket tilbake.",
+    "accepted": "Invitasjonen er allerede godtatt.",
+    "goToOrganization": "Gå til {organization}",
+    "emailNotConfirmed": "Bekreft e-postadressen din før du godtar invitasjonen.",
+    "signupHint": "Du er invitert til {organization}. Opprett konto med e-postadressen invitasjonen ble sendt til."
+  },
+  "onboarding": {
+    "title": "Opprett organisasjon",
+    "description": "Organisasjonen er firmaet ditt. Prosjekter, brukere og merkevareprofil hører til organisasjonen.",
+    "name": "Firmanavn",
+    "namePlaceholder": "Fjordbygg AS",
+    "slug": "Adresse",
+    "slugHelp": "Brukes i lenkene i admin: {url}",
+    "submit": "Opprett organisasjon",
+    "trial": "Du får 30 dagers gratis prøveperiode. Du trenger ikke kort."
+  },
+  "nav": {
+    "mainMenu": "Hovedmeny",
+    "skipToContent": "Hopp til innhold",
+    "overview": "Oversikt",
+    "settings": "Innstillinger",
+    "platform": "Plattformadmin",
+    "organization": "Organisasjon",
+    "switchOrganization": "Bytt organisasjon",
+    "newOrganization": "Ny organisasjon",
+    "userMenu": "Brukermeny",
+    "account": "Min profil"
+  },
+  "dashboard": {
+    "title": "Oversikt",
+    "welcome": "Velkommen, {name}",
+    "yourRole": "Din rolle: {role}",
+    "subscription": "Abonnement",
+    "trialEndsOn": "Prøveperioden varer til {date}.",
+    "trialDaysLeft": "{days, plural, =0 {Siste dag} one {# dag igjen} other {# dager igjen}}",
+    "trialEnded": "Prøveperioden er over. Organisasjonen er i lesemodus.",
+    "members": "Brukere",
+    "memberCount": "{count, plural, one {# bruker} other {# brukere}}",
+    "pendingInvites": "{count, plural, =0 {Ingen ventende invitasjoner} one {# ventende invitasjon} other {# ventende invitasjoner}}",
+    "manageMembers": "Administrer brukere",
+    "projects": "Prosjekter",
+    "projectCount": "{count, plural, =0 {Ingen prosjekter ennå} one {# prosjekt} other {# prosjekter}}"
+  },
+  "settings": {
+    "title": "Innstillinger",
+    "tabs": {
+      "organization": "Organisasjon",
+      "members": "Brukere"
+    },
+    "organization": {
+      "title": "Organisasjon",
+      "description": "Navn, adresse og personvern for organisasjonen.",
+      "name": "Firmanavn",
+      "slug": "Adresse",
+      "slugHelp": "Endrer du adressen, slutter gamle lenker til admin å virke.",
+      "leadRetention": "Lagringstid for leads (dager)",
+      "leadRetentionHelp": "Leads slettes automatisk når de er eldre enn dette. La feltet stå tomt for å beholde dem til de slettes manuelt.",
+      "saved": "Organisasjonen er oppdatert."
+    }
+  },
+  "members": {
+    "title": "Brukere",
+    "description": "Inviter kolleger og bestem hva de har tilgang til.",
+    "name": "Navn",
+    "email": "E-post",
+    "role": "Rolle",
+    "projects": "Prosjekter",
+    "actions": "Handlinger",
+    "allProjects": "Alle prosjekter",
+    "projectCount": "{count, plural, =0 {Ingen prosjekter} one {# prosjekt} other {# prosjekter}}",
+    "unnamed": "Uten navn",
+    "changeRoleLabel": "Rolle for {name}",
+    "roleChanged": "Rollen er endret.",
+    "memberActions": "Handlinger for {name}",
+    "editAccess": "Prosjekttilgang",
+    "remove": "Fjern fra organisasjonen",
+    "leave": "Forlat organisasjonen",
+    "removeTitle": "Fjerne {name}?",
+    "removeBody": "{name} mister tilgangen til organisasjonen og alle prosjekter.",
+    "leaveTitle": "Forlate organisasjonen?",
+    "leaveBody": "Du mister tilgangen til organisasjonen og alle prosjekter.",
+    "removed": "{name} er fjernet.",
+    "left": "Du har forlatt organisasjonen.",
+    "lastOwner": "Organisasjonen må ha minst én eier.",
+    "accessTitle": "Prosjekttilgang for {name}",
+    "accessDescription": "Redaktører og meglere ser bare prosjektene de er tildelt. Eiere og administratorer ser alle.",
+    "noProjects": "Organisasjonen har ingen prosjekter ennå.",
+    "accessSaved": "Prosjekttilgangen er oppdatert.",
+    "invitations": "Ventende invitasjoner",
+    "noInvitations": "Ingen ventende invitasjoner.",
+    "invitedBy": "Invitert av {name}",
+    "expires": "Utløper {date}",
+    "resend": "Send på nytt",
+    "revoke": "Trekk tilbake",
+    "revoked": "Invitasjonen er trukket tilbake.",
+    "resent": "Invitasjonen er sendt på nytt til {email}.",
+    "invite": {
+      "open": "Inviter bruker",
+      "title": "Inviter bruker",
+      "description": "Vi sender en invitasjon på e-post. Lenken virker i sju dager.",
+      "email": "E-post",
+      "role": "Rolle",
+      "projects": "Prosjekttilgang",
+      "projectsHelp": "Redaktører og meglere ser bare valgte prosjekter.",
+      "submit": "Send invitasjon",
+      "sentTitle": "Invitasjonen er sendt",
+      "sent": "Vi har sendt en invitasjon til {email}. Du kan også dele lenken direkte:",
+      "emailFailed": "Invitasjonen er opprettet, men e-posten kunne ikke sendes. Del lenken direkte:",
+      "linkLabel": "Invitasjonslenke",
+      "alreadyMember": "{email} er allerede medlem av organisasjonen.",
+      "alreadyInvited": "{email} har allerede en ventende invitasjon. Send den på nytt fra listen.",
+      "done": "Ferdig",
+      "expiredBadge": "Utløpt"
+    }
+  },
+  "account": {
+    "title": "Min profil",
+    "description": "Navn og kontaktinformasjon vises for kollegene dine.",
+    "fullName": "Navn",
+    "phone": "Telefon",
+    "email": "E-post",
+    "saved": "Profilen er oppdatert.",
+    "passwordTitle": "Endre passord",
+    "passwordDescription": "Velg et nytt passord for kontoen din.",
+    "passwordSaved": "Passordet er endret."
+  },
+  "platform": {
+    "title": "Plattformadmin",
+    "description": "Alle organisasjoner på plattformen.",
+    "name": "Organisasjon",
+    "slug": "Adresse",
+    "created": "Opprettet",
+    "subscription": "Abonnement",
+    "members": "Brukere",
+    "projects": "Prosjekter",
+    "empty": "Ingen organisasjoner ennå."
+  },
+  "notFound": {
+    "title": "Fant ikke siden",
+    "body": "Siden finnes ikke, eller du har ikke tilgang til den.",
+    "home": "Til forsiden"
+  },
+  "errorPage": {
+    "title": "Noe gikk galt",
+    "body": "En uventet feil oppstod. Prøv igjen, eller kom tilbake senere.",
+    "retry": "Prøv igjen"
+  },
+  "email": {
+    "invitation": {
+      "subject": "{inviter} har invitert deg til {organization}",
+      "heading": "Du er invitert til {organization}",
+      "body": "{inviter} har invitert deg som {role} i {product}.",
+      "cta": "Godta invitasjonen",
+      "expires": "Lenken virker til {date}.",
+      "fallback": "Virker ikke knappen? Kopier denne lenken inn i nettleseren:",
+      "ignore": "Venter du ikke denne invitasjonen, kan du se bort fra e-posten."
+    }
+  }
+}

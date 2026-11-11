@@ -1,0 +1,28 @@
+# Avhengigheter
+/node_modules
+
+# Next.js
+/.next/
+/out/
+next-env.d.ts
+*.tsbuildinfo
+
+# Tester
+/coverage
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
+# Miljøvariabler. .env.example er malen og skal ligge i repoet.
+.env*
+!.env.example
+
+# Vercel og Sentry
+.vercel
+.env.sentry-build-plugin
+
+# Diverse
+.DS_Store
+*.pem
+npm-debug.log*
