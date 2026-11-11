@@ -59,14 +59,14 @@ export function OrganizationSettingsForm({
     <form onSubmit={onSubmit} noValidate className="grid max-w-xl gap-5">
       <FormAlert message={formError} />
       <fieldset disabled={disabled} className="grid gap-5">
-        <Field id="name" label={t("name")} error={validation(errors.name?.message)}>
+        <Field name="name" label={t("name")} error={validation(errors.name?.message)}>
           {(field) => <Input {...field} autoComplete="organization" {...form.register("name")} />}
         </Field>
-        <Field id="slug" label={t("slug")} description={t("slugHelp")} error={validation(errors.slug?.message)}>
+        <Field name="slug" label={t("slug")} description={t("slugHelp")} error={validation(errors.slug?.message)}>
           {(field) => <Input {...field} autoCapitalize="none" spellCheck={false} {...form.register("slug")} />}
         </Field>
         <Field
-          id="leadRetentionDays"
+          name="leadRetentionDays"
           label={t("leadRetention")}
           description={t("leadRetentionHelp")}
           error={validation(errors.leadRetentionDays?.message)}

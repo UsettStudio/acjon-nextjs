@@ -249,7 +249,6 @@ export function MembersTable({
             <DialogDescription>{t("accessDescription")}</DialogDescription>
           </DialogHeader>
           <ProjectChecklist
-            idPrefix="access-project"
             projects={projects}
             selected={accessSelection}
             onChange={setAccessSelection}

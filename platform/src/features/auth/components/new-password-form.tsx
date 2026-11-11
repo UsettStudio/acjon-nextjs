@@ -53,10 +53,10 @@ export function NewPasswordForm({
   return (
     <form onSubmit={onSubmit} noValidate className="grid gap-5">
       <FormAlert message={formError} />
-      <Field id="password" label={t("newPassword")} error={validation(errors.password?.message)}>
+      <Field name="password" label={t("newPassword")} error={validation(errors.password?.message)}>
         {(field) => <Input {...field} type="password" autoComplete="new-password" {...form.register("password")} />}
       </Field>
-      <Field id="confirmPassword" label={t("confirmPassword")} error={validation(errors.confirmPassword?.message)}>
+      <Field name="confirmPassword" label={t("confirmPassword")} error={validation(errors.confirmPassword?.message)}>
         {(field) => (
           <Input {...field} type="password" autoComplete="new-password" {...form.register("confirmPassword")} />
         )}

@@ -1,6 +1,7 @@
 import type { EmailOtpType } from "@supabase/supabase-js";
 import { NextResponse, type NextRequest } from "next/server";
 
+import { recordLogin } from "@/lib/auth/record-login";
 import { safeNextPath } from "@/lib/navigation/safe-redirect";
 import { createClient } from "@/lib/supabase/server";
 
@@ -33,6 +34,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(new URL("/login?error=link", request.url));
   }
 
-  await supabase.rpc("record_login");
+  await recordLogin(supabase);
   return NextResponse.redirect(new URL(next, request.url));
 }

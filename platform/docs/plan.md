@@ -93,15 +93,15 @@ Hver fase avsluttes med grønne tester, typekontroll og lint, og en kort oppsumm
   |---|---|---|
   | pgTAP | 230 | Skjema, RLS og isolasjon per tabell, roller, statuslogg, publisering, fase 0-funksjonene |
   | Vitest | 72 | Rollematrisen og reserverte adresser mot SQL-filene, norsk tallformat, lesemodus, trygge omdirigeringer, tokener, e-post-escaping, skjemaer, lik nøkkelmengde i alle språkfilene |
-  | Playwright | 3 | Registrering → organisasjon → invitasjon → godkjenning → redaktør uten innstillinger → annen organisasjon ser ingenting; innlogging med feil og riktig passord; retur etter innlogging |
+  | Playwright | 5 | Registrering → organisasjon → invitasjon → godkjenning → redaktør uten innstillinger → annen organisasjon ser ingenting; innlogging med feil og riktig passord; retur etter innlogging; innloggingslenke og glemt passord via e-post; ugyldig lenke |
 
-- **CI:** `.github/workflows/platform.yml` kjører lint, typekontroll, enhetstester, `supabase test db`, `supabase db lint`, kontroll av at databasetypene er oppdatert, bygg og Playwright.
+- **Norske e-postmaler** for bekreftelse, innloggingslenke, nytt passord og ny e-postadresse, med `token_hash`-lenker som virker uansett nettleser.
+- **CI:** `.github/workflows/platform.yml` kjører lint, typekontroll, enhetstester, `supabase test db`, `supabase db lint`, kontroll av at databasetypene er oppdatert, bygg og Playwright. Første kjøring på GitHub var grønn på drøyt fire minutter.
 
 **Gjenstår (ikke del av fase 0):**
 
 - **Kontoer og miljøer:** Supabase, Vercel, Resend og Sentry er ikke opprettet. Alt er bygget og testet lokalt. Oppsettet er beskrevet i README.
-- **E-postmaler for Supabase Auth:** malene på norsk med `token_hash`-lenker legges inn når Supabase-prosjektene finnes.
-- **CI:** arbeidsflyten er skrevet, men har ikke kjørt på GitHub ennå. Den kjører ved neste push hvis Actions er slått på for repoet. Alle stegene er kjørt lokalt.
+- **E-postmaler i Supabase-prosjektene:** de norske malene i `supabase/templates/` brukes lokalt og i testene. De må limes inn i staging og produksjon når prosjektene finnes.
 - **Språk:** admin bruker standardspråket (bokmål). Valg av språk per bruker kommer sammen med publiserte sider i fase 3.
 
 **Valg i fase 0:**
@@ -112,6 +112,7 @@ Hver fase avsluttes med grønne tester, typekontroll og lint, og en kort oppsumm
 - **Invitasjonslenken vises i appen etter sending.** Den virker bare for e-postadressen den ble sendt til, og bare med bekreftet adresse (kontrolleres i databasen).
 - **Passord:** minst 10 tegn.
 - **shadcn/ui-komponentene er skrevet inn for hånd**, i samme stil som shadcn sitt register. Registeret er ikke tilgjengelig fra byggemiljøet.
+- **Unike id-er i skjemaer (`useId`).** Next.js 16 beholder tidligere sider skjult i DOM-en (React Activity). Faste id-er kunne derfor koble en etikett til et skjult felt på en annen side. «Hopp til innhold» flytter fokus til synlig `<main>` av samme grunn.
 
 ## Fase 1: Prosjekter og enheter
 

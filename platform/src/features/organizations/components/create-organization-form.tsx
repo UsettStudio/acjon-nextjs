@@ -55,11 +55,11 @@ export function CreateOrganizationForm({ appUrl }: { appUrl: string }) {
   return (
     <form onSubmit={onSubmit} noValidate className="grid gap-5">
       <FormAlert message={formError} />
-      <Field id="name" label={t("name")} error={validation(errors.name?.message)}>
+      <Field name="name" label={t("name")} error={validation(errors.name?.message)}>
         {(field) => <Input {...field} placeholder={t("namePlaceholder")} autoComplete="organization" {...nameField} />}
       </Field>
       <Field
-        id="slug"
+        name="slug"
         label={t("slug")}
         description={t("slugHelp", { url: `${appUrl.replace(/\/$/, "")}/${slug || "…"}` })}
         error={validation(errors.slug?.message)}

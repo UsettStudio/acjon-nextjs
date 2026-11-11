@@ -119,7 +119,7 @@ export function InviteMemberDialog({
               <DialogDescription>{t("description")}</DialogDescription>
             </DialogHeader>
             <FormAlert message={formError} />
-            <Field id="invite-email" label={t("email")} error={validation(errors.email?.message)}>
+            <Field name="invite-email" label={t("email")} error={validation(errors.email?.message)}>
               {(field) => <Input {...field} type="email" autoComplete="off" {...form.register("email")} />}
             </Field>
             <Controller
@@ -127,7 +127,7 @@ export function InviteMemberDialog({
               name="role"
               render={({ field }) => (
                 <Field
-                  id="invite-role"
+                  name="invite-role"
                   label={t("role")}
                   description={tRoleDescriptions(field.value)}
                   error={validation(errors.role?.message)}
@@ -158,7 +158,6 @@ export function InviteMemberDialog({
                     <legend className="mb-2 text-sm font-medium">{t("projects")}</legend>
                     <p className="text-sm text-muted-foreground">{t("projectsHelp")}</p>
                     <ProjectChecklist
-                      idPrefix="invite-project"
                       projects={projects}
                       selected={field.value}
                       onChange={field.onChange}

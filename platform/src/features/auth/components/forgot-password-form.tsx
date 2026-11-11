@@ -41,7 +41,7 @@ export function ForgotPasswordForm() {
     <form onSubmit={onSubmit} noValidate className="grid gap-5">
       <FormAlert message={formError} />
       <FormAlert message={notice} variant="success" />
-      <Field id="email" label={t("email")} error={validation(form.formState.errors.email?.message)}>
+      <Field name="email" label={t("email")} error={validation(form.formState.errors.email?.message)}>
         {(field) => <Input {...field} type="email" autoComplete="email" {...form.register("email")} />}
       </Field>
       <SubmitButton pending={pending} className="w-full">

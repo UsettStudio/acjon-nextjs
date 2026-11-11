@@ -19,7 +19,8 @@ platform/
 ├── supabase/
 │   ├── config.toml                    ✔ lokal Supabase (CLI)
 │   ├── migrations/                    ✔ datamodell, RLS, funksjoner, lagring, sanntid, fase 0
-│   └── tests/                         ✔ pgTAP: skjema, isolasjon, roller, status, publisering, fase 0
+│   ├── tests/                         ✔ pgTAP: skjema, isolasjon, roller, status, publisering, fase 0
+│   └── templates/                     ✔ norske e-postmaler for Supabase Auth
 ├── package.json, tsconfig.json        ✔ TypeScript strict
 ├── next.config.ts                     ✔ Cache Components, sikkerhetshoder, next-intl, Sentry
 ├── eslint.config.mjs, vitest.config.mts, playwright.config.ts   ✔

@@ -2,6 +2,7 @@ import { getTranslations } from "next-intl/server";
 
 import { NavLink } from "@/components/admin/nav-link";
 import { OrganizationSwitcher } from "@/components/admin/organization-switcher";
+import { SkipLink } from "@/components/admin/skip-link";
 import { UserMenu } from "@/components/admin/user-menu";
 import { can, type MemberRole } from "@/lib/auth/permissions";
 import { getMemberships, getProfile, isPlatformAdmin, requireUser } from "@/lib/auth/dal";
@@ -23,12 +24,7 @@ export async function AppHeader({ orgSlug, role }: { orgSlug?: string; role?: Me
 
   return (
     <header className="border-b bg-background">
-      <a
-        href="#innhold"
-        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded-md focus:bg-background focus:px-3 focus:py-2 focus:shadow"
-      >
-        {t("skipToContent")}
-      </a>
+      <SkipLink label={t("skipToContent")} />
       <div className="mx-auto flex min-h-14 max-w-6xl flex-wrap items-center gap-x-4 gap-y-1 px-4 py-2">
         <OrganizationSwitcher
           current={current}

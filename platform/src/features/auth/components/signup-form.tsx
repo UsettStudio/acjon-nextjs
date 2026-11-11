@@ -57,16 +57,16 @@ export function SignupForm({ next, email }: { next?: string; email?: string }) {
   return (
     <form onSubmit={onSubmit} noValidate className="grid gap-5">
       <FormAlert message={formError} />
-      <Field id="fullName" label={t("fullName")} error={validation(errors.fullName?.message)}>
+      <Field name="fullName" label={t("fullName")} error={validation(errors.fullName?.message)}>
         {(field) => <Input {...field} autoComplete="name" {...form.register("fullName")} />}
       </Field>
-      <Field id="email" label={t("email")} error={validation(errors.email?.message)}>
+      <Field name="email" label={t("email")} error={validation(errors.email?.message)}>
         {(field) => (
           <Input {...field} type="email" autoComplete="email" readOnly={Boolean(email)} {...form.register("email")} />
         )}
       </Field>
       <Field
-        id="password"
+        name="password"
         label={t("password")}
         description={t("signup.passwordHint")}
         error={validation(errors.password?.message)}

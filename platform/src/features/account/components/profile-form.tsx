@@ -41,13 +41,13 @@ export function ProfileForm({ profile }: { profile: { fullName: string; phone: s
   return (
     <form onSubmit={onSubmit} noValidate className="grid max-w-xl gap-5">
       <FormAlert message={formError} />
-      <Field id="email" label={t("email")}>
+      <Field name="email" label={t("email")}>
         {(field) => <Input {...field} value={profile.email} readOnly disabled />}
       </Field>
-      <Field id="fullName" label={t("fullName")} error={validation(errors.fullName?.message)}>
+      <Field name="fullName" label={t("fullName")} error={validation(errors.fullName?.message)}>
         {(field) => <Input {...field} autoComplete="name" {...form.register("fullName")} />}
       </Field>
-      <Field id="phone" label={t("phone")} error={validation(errors.phone?.message)}>
+      <Field name="phone" label={t("phone")} error={validation(errors.phone?.message)}>
         {(field) => <Input {...field} type="tel" autoComplete="tel" {...form.register("phone")} />}
       </Field>
       <div>

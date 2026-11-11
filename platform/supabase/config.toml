@@ -249,6 +249,24 @@ otp_expiry = 3600
 # admin_email = "admin@email.com"
 # sender_name = "Admin"
 
+# Norske e-postmaler. Lenkene går til appens /auth/confirm med token_hash.
+# Samme filer brukes i Supabase-prosjektene (Authentication > Email Templates).
+[auth.email.template.confirmation]
+subject = "Bekreft e-postadressen din"
+content_path = "./supabase/templates/bekreft-epost.html"
+
+[auth.email.template.magic_link]
+subject = "Innloggingslenke"
+content_path = "./supabase/templates/innloggingslenke.html"
+
+[auth.email.template.recovery]
+subject = "Lag nytt passord"
+content_path = "./supabase/templates/nytt-passord.html"
+
+[auth.email.template.email_change]
+subject = "Bekreft ny e-postadresse"
+content_path = "./supabase/templates/ny-epost.html"
+
 # Uncomment to customize email template
 # [auth.email.template.invite]
 # subject = "You have been invited"

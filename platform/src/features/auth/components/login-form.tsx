@@ -71,10 +71,10 @@ export function LoginForm({ next, linkError }: { next?: string; linkError: boole
     <form onSubmit={onSubmit} noValidate className="grid gap-5">
       <FormAlert message={shownError} />
       <FormAlert message={notice} variant="success" />
-      <Field id="email" label={t("email")} error={validation(errors.email?.message)}>
+      <Field name="email" label={t("email")} error={validation(errors.email?.message)}>
         {(field) => <Input {...field} type="email" autoComplete="email" {...form.register("email")} />}
       </Field>
-      <Field id="password" label={t("password")} error={validation(errors.password?.message)}>
+      <Field name="password" label={t("password")} error={validation(errors.password?.message)}>
         {(field) => <Input {...field} type="password" autoComplete="current-password" {...form.register("password")} />}
       </Field>
       <div className="flex justify-end">

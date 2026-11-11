@@ -72,7 +72,7 @@ Kontoene er ikke opprettet ennå. Slik skal de settes opp:
    - Legg `https://app.[PLATTFORMDOMENE]/**` til som redirect-URL.
    - Slå på e-postbekreftelse og sett minste passordlengde til 10.
    - Send e-post via Resend SMTP.
-   - Pek lenkene i e-postmalene til `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=<type>&next=…`, slik at lenken virker uansett hvilken nettleser den åpnes i.
+   - Lim inn de norske e-postmalene fra `supabase/templates/`. Lenkene går til `/auth/confirm` med `token_hash`, slik at de virker uansett hvilken nettleser de åpnes i. Lokalt brukes malene automatisk (`config.toml`).
 2. **Vercel.** Opprett et prosjekt med Root Directory `platform`. Funksjonene kjører i Stockholm (`arn1`, se `vercel.json`). Miljøvariablene står i `.env.example`.
 3. **Resend.** Bekreft avsenderdomenet og sett `RESEND_API_KEY` og `EMAIL_FROM`.
 4. **Sentry.** Opprett et prosjekt i EU-regionen og sett `NEXT_PUBLIC_SENTRY_DSN`, samt `SENTRY_ORG`, `SENTRY_PROJECT` og `SENTRY_AUTH_TOKEN` for kildekart. Personopplysninger, cookies, hoder og forespørselsinnhold sendes ikke.
@@ -88,4 +88,5 @@ Kontoene er ikke opprettet ennå. Slik skal de settes opp:
 | `messages/` | All tekst på bokmål, engelsk og svensk |
 | `supabase/migrations/` | Datamodell, RLS, funksjoner, lagring, sanntid og jobber |
 | `supabase/tests/` | pgTAP-tester (230 tester) |
+| `supabase/templates/` | Norske e-postmaler for Supabase Auth |
 | `e2e/` | Playwright-tester |

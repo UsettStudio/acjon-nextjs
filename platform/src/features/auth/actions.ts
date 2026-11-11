@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { appUrl } from "@/lib/env";
 import { fail, ok, type ActionResult } from "@/lib/actions/result";
 import { parseInput, runAction } from "@/lib/actions/server";
+import { recordLogin } from "@/lib/auth/record-login";
 import { safeNextPath } from "@/lib/navigation/safe-redirect";
 import { createClient } from "@/lib/supabase/server";
 import {
@@ -49,7 +50,7 @@ export async function signIn(
           throw error;
       }
     }
-    await supabase.rpc("record_login");
+    await recordLogin(supabase);
     redirect(safeNextPath(parsed.data.next));
   });
 }
@@ -90,7 +91,7 @@ export async function signUp(
     }
     // Uten krav om e-postbekreftelse (lokal utvikling) er brukeren logget inn med en gang.
     if (data.session) {
-      await supabase.rpc("record_login");
+      await recordLogin(supabase);
       redirect(next);
     }
     return ok({ email: parsed.data.email });
