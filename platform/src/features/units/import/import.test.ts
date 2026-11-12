@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { buildUnitsCsv, csvNumber, csvText, type ExportColumn, type ExportUnit } from "@/features/units/export";
 import { matchHeader, suggestMapping } from "@/features/units/import/columns";
 import { decodeCsv, parseCsv, SpreadsheetError, toSpreadsheet } from "@/features/units/import/spreadsheet";
-import { MAX_IMPORT_ROWS, validateImport } from "@/features/units/import/validate";
+import { importRowSchema, MAX_IMPORT_ROWS, validateImport } from "@/features/units/import/validate";
 import { parseUnitPatch } from "@/features/units/schemas";
 
 describe("kolonnekobling", () => {
@@ -114,6 +114,20 @@ describe("validering av importrader", () => {
     expect(result.rows[3]?.errors).toEqual([{ field: "unit_number", message: "duplicateInFile" }]);
     expect(result.errorCount).toBe(3);
     expect(result.validRows.map((row) => row.line)).toEqual([2]);
+  });
+
+  it("validerer hver rad med et Zod-skjema og viser gyldige felt også i rader med feil", () => {
+    const result = validateImport([["A-1", "mye", "Ledig"]], ["unit_number", "price", "status"]);
+    expect(result.rows[0]).toMatchObject({
+      values: { unit_number: "A-1", status: "available" },
+      errors: [{ field: "price", message: "numberInvalid" }],
+    });
+    const schema = importRowSchema(["unit_number", "price"]);
+    expect(schema.row.safeParse({ unit_number: "A-1", price: "2 450 000 kr" })).toEqual({
+      success: true,
+      data: { unit_number: "A-1", price: 2450000 },
+    });
+    expect(importRowSchema(["price"]).row.safeParse({ price: "1" }).success).toBe(false);
   });
 
   it("tar tall og datoer fra Excel som de er", () => {

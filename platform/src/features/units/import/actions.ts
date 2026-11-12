@@ -4,7 +4,7 @@ import { refresh } from "next/cache";
 import { z } from "zod";
 
 import { IMPORT_FIELDS, isImportField, type ImportField } from "@/features/units/import/columns";
-import { MAX_IMPORT_ROWS, validateImportValues } from "@/features/units/import/validate";
+import { importRowSchema, MAX_IMPORT_ROWS, validateImportValues } from "@/features/units/import/validate";
 import { fail, ok, type ActionResult } from "@/lib/actions/result";
 import { ActionError, postgresErrorCode, requireOrgCapability, runAction } from "@/lib/actions/server";
 import { createClient } from "@/lib/supabase/server";
@@ -63,9 +63,10 @@ export async function importUnits(
     }
     const columns = parsed.data.columns.filter(isImportField);
 
+    const schema = importRowSchema(columns);
     const rows: Record<string, unknown>[] = [];
     for (const row of parsed.data.rows) {
-      const { values, errors } = validateImportValues(row.values as Partial<Record<ImportField, unknown>>, columns);
+      const { values, errors } = validateImportValues(row.values as Partial<Record<ImportField, unknown>>, schema);
       if (errors.length > 0) {
         return fail("invalidInput", { [`row.${row.line}`]: errors[0]?.message ?? "required" });
       }

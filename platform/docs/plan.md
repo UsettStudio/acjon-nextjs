@@ -163,7 +163,7 @@ Hver fase avsluttes med grønne tester, typekontroll og lint, og en kort oppsumm
 - **Import og eksport:**
   - CSV (semikolon eller komma, UTF-8 eller Windows-1252) og Excel (XLSX). Overskriften finnes også under en tittelrad.
   - Kolonnene kobles automatisk etter vanlige overskrifter på norsk, engelsk og svensk, og kan endres.
-  - Forhåndsvisning med feil per rad. Rader med feil kan hoppes over.
+  - Hver rad valideres med et Zod-skjema bygget fra de koblede kolonnene, med samme regler som enhetsskjemaet. Forhåndsvisningen viser feil per rad, og rader med feil kan hoppes over. Serveren validerer på nytt med det samme skjemaet.
   - Eksisterende enheter oppdateres på enhetsnummer. Byggetrinn og bygg opprettes etter navn.
   - Alt lagres, eller ingenting. Statusendringer logges med kilde «import».
   - Eksport til CSV som Excel åpner riktig, og som kan importeres igjen uten endringer.
@@ -178,7 +178,7 @@ Hver fase avsluttes med grønne tester, typekontroll og lint, og en kort oppsumm
   | Type | Antall | Nytt i fase 1 |
   |---|---|---|
   | pgTAP | 274 | 44 nye: opprettelse av prosjekt, import (roller, lesemodus, isolasjon, radnummer ved feil, alt eller ingenting), prisjustering, telling per status, filstier |
-  | Vitest | 122 | 50 nye: norske tall, prisberegning, felt og statusnavn, kolonnekobling, CSV og Excel-data, eksport og import tur-retur, Kartverket, bildevarianter |
+  | Vitest | 123 | 51 nye: norske tall, prisberegning, felt og statusnavn, kolonnekobling, Zod-validering per importrad, CSV og Excel-data, eksport og import tur-retur, Kartverket, bildevarianter |
   | Playwright | 8 | 3 nye: veiviser med adressesøk, import av 24 enheter fra CSV og 24 fra Excel, redigering i cellen, status i sanntid i en annen fane, statuslogg, ny import som oppdaterer, eksport; enhetsskjema med plantegning fra mediebiblioteket; megler som bare kan endre status og pris |
 
 **Gjenstår (ikke del av fase 1):**
