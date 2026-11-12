@@ -779,7 +779,7 @@ export function EditorCanvas({
                             cx={x * width}
                             cy={y * height}
                             r={handleRadius}
-                            className={hotspot.shape === "rect" ? "cursor-nwse-resize" : "cursor-grab"}
+                            className={hotspot.shape === "rect" ? (index % 2 === 0 ? "cursor-nwse-resize" : "cursor-nesw-resize") : "cursor-grab"}
                             style={{ fill: "#ffffff", stroke: EDIT, strokeWidth: 2 }}
                             vectorEffect="non-scaling-stroke"
                           />

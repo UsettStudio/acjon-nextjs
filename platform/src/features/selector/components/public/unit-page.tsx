@@ -4,7 +4,7 @@
 
 import { ArrowLeftIcon, FileTextIcon, MailIcon, PhoneIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 
 import { imageSources } from "@/features/selector/components/hotspot-svg";
 import { StatusPill } from "@/features/selector/components/public/unit-card";
@@ -53,13 +53,22 @@ export function PublicUnitPage({ selectorId, projectId, unit: initial }: { selec
   const tOwnership = useTranslations("units.ownership");
   const formatUnit = useUnitFormat();
   const [unit, setUnit] = useState(initial);
+  // Kommer en statusendring mens enheten hentes, kan svaret være eldre enn endringen. Da hentes den på nytt.
+  const eventCount = useRef(0);
 
   const reload = useCallback(async () => {
-    const { data, error } = await getPublicBrowserClient().rpc("get_public_unit", { p_project_id: projectId, p_slug: initial.slug });
-    if (!error) {
-      const fresh = parsePublicUnitDetail(data);
-      if (fresh) {
-        setUnit(fresh);
+    for (let attempt = 0; attempt < 5; attempt++) {
+      const before = eventCount.current;
+      const { data, error } = await getPublicBrowserClient().rpc("get_public_unit", { p_project_id: projectId, p_slug: initial.slug });
+      if (error) {
+        return;
+      }
+      if (eventCount.current === before) {
+        const fresh = parsePublicUnitDetail(data);
+        if (fresh) {
+          setUnit(fresh);
+        }
+        return;
       }
     }
   }, [initial.slug, projectId]);
@@ -69,6 +78,7 @@ export function PublicUnitPage({ selectorId, projectId, unit: initial }: { selec
       if (unitId !== initial.id) {
         return;
       }
+      eventCount.current += 1;
       const hidden = isPriceHidden(status, unit.project.show_price_on_sold);
       if (unit.price_hidden && !hidden) {
         void reload();

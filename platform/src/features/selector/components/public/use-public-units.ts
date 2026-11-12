@@ -73,14 +73,22 @@ export function useLiveUnits(
 ): { units: PublicUnit[]; live: LiveState } {
   const [units, setUnits] = useState(initial);
   const refetchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Telles opp for hver statusendring. Kommer en endring mens listen hentes, kan svaret
+  // være eldre enn endringen. Da brukes ikke svaret, og listen hentes på nytt.
+  const eventCount = useRef(0);
 
   const reload = useCallback(() => {
     if (refetchTimer.current) {
       clearTimeout(refetchTimer.current);
     }
-    refetchTimer.current = setTimeout(async () => {
+    refetchTimer.current = setTimeout(async function fetchUnits() {
+      const before = eventCount.current;
       const { data, error } = await getPublicBrowserClient().rpc("get_public_units", { p_project_id: projectId });
       if (error) {
+        return;
+      }
+      if (eventCount.current !== before) {
+        refetchTimer.current = setTimeout(fetchUnits, 300);
         return;
       }
       const fresh = parsePublicUnits(data);
@@ -106,6 +114,7 @@ export function useLiveUnits(
 
   const live = usePublicUnitStatus(projectId, enabled, {
     onStatus: (unitId, status) => {
+      eventCount.current += 1;
       const hidden = isPriceHidden(status, showPriceOnSold);
       const known = unitsRef.current.find((unit) => unit.id === unitId);
       // Ukjent enhet (ny eller tidligere skjult), eller pris som må hentes: last listen på nytt.
