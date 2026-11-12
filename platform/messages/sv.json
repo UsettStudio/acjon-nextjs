@@ -2159,7 +2159,8 @@
       "threeMonths": "3 månader",
       "dependsOnTools": "Beror på verktygen som laddas",
       "turnstile": "Intresseformuläret använder Cloudflare Turnstile för att stoppa spam. Turnstile kan läsa teknisk information om din webbläsare när du skickar formuläret.",
-      "privacyLink": "Läs om hur personuppgifter behandlas"
+      "privacyLink": "Läs om hur personuppgifter behandlas",
+      "tableCaption": "Kakor och lagring i webbläsaren på den här sidan"
     }
   },
   "leads": {

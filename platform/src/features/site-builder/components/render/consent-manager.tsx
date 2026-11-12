@@ -169,6 +169,8 @@ export function ConsentManager({ tracking, cookiesHref }: { tracking: SiteTracki
   const t = useTranslations("site.consent");
   const headingId = useId();
   const headingRef = useRef<HTMLHeadingElement>(null);
+  // Knappen «Endre samtykke» som åpnet banneret. Fokus går tilbake dit etter valget.
+  const openerRef = useRef<HTMLElement | null>(null);
   const raw = useSyncExternalStore(subscribe, readRaw, () => SERVER);
   const consent = useMemo(() => (raw === SERVER ? null : parseStoredConsent(raw)), [raw]);
   const [reopened, setReopened] = useState(false);
@@ -186,6 +188,7 @@ export function ConsentManager({ tracking, cookiesHref }: { tracking: SiteTracki
 
   useEffect(() => {
     function reopen() {
+      openerRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
       setReopened(true);
       setCustomizing(true);
       setDraft(null);
@@ -225,6 +228,12 @@ export function ConsentManager({ tracking, cookiesHref }: { tracking: SiteTracki
         // og siden lastes på nytt uten sporingen.
         clearTrackingCookies();
         window.location.reload();
+        return;
+      }
+      const opener = openerRef.current;
+      openerRef.current = null;
+      if (opener?.isConnected) {
+        requestAnimationFrame(() => opener.focus());
       }
     },
     [consent, inUse.marketing, inUse.statistics],

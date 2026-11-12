@@ -117,3 +117,9 @@
     font-family: var(--site-heading-font, inherit);
   }
 }
+
+/* Kartets kildehenvisning: lenkene skilles fra teksten med understrek, ikke bare med farge (WCAG 1.4.1).
+   Utenfor lag og med høyere spesifisitet, fordi CSS-en til MapLibre ligger utenfor lag og ellers vinner. */
+.maplibregl-ctrl.maplibregl-ctrl-attrib a {
+  text-decoration: underline;
+}

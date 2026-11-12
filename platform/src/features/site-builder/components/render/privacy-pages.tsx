@@ -139,9 +139,17 @@ export function CookiesPageContent({ data, turnstile }: { data: SiteRenderData; 
         <p className="text-lg">{t("intro")}</p>
         <p>{inUse.statistics || inUse.marketing ? t("consentNeeded") : t("noConsentNeeded")}</p>
       </header>
-      <div className="overflow-x-auto">
+      {/* Tabellen kan rulles sideveis på smale skjermer. Området kan få fokus, så den kan rulles med tastaturet. */}
+      <div
+        role="region"
+        aria-labelledby="informasjonskapsler-tabell"
+        tabIndex={0}
+        className="overflow-x-auto rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--site-primary)]"
+      >
         <table className="w-full min-w-[36rem] border-collapse text-left text-sm">
-          <caption className="sr-only">{t("title")}</caption>
+          <caption id="informasjonskapsler-tabell" className="sr-only">
+            {t("tableCaption")}
+          </caption>
           <thead>
             <tr className="border-b-2" style={{ borderColor: "color-mix(in srgb, var(--site-foreground) 25%, transparent)" }}>
               <th scope="col" className="py-2 pr-4">{t("name")}</th>

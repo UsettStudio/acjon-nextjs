@@ -25,9 +25,11 @@ export function OrganizationSwitcher({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="max-w-64 justify-between gap-2 px-2" aria-label={labels.switch}>
+        <Button variant="ghost" className="max-w-64 justify-between gap-2 px-2">
           <Building2Icon aria-hidden="true" />
+          {/* Navnet som vises, står først i det tilgjengelige navnet (WCAG 2.5.3). */}
           <span className="truncate font-semibold">{current?.name ?? labels.fallback}</span>
+          <span className="sr-only">, {labels.switch}</span>
           <ChevronsUpDownIcon className="opacity-60" aria-hidden="true" />
         </Button>
       </DropdownMenuTrigger>

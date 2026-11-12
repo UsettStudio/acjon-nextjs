@@ -23,7 +23,7 @@ export async function createOrganization(page: Page, name: string) {
 }
 
 export async function signOut(page: Page) {
-  await page.getByRole("button", { name: "Brukermeny" }).click();
+  await page.getByRole("button", { name: /Brukermeny/ }).click();
   await page.getByRole("menuitem", { name: "Logg ut" }).click();
   await expect(page).toHaveURL(/\/login/);
 }

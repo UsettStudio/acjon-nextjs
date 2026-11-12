@@ -2159,7 +2159,8 @@
       "threeMonths": "3 måneder",
       "dependsOnTools": "Etter verktøyene som lastes",
       "turnstile": "Interesseskjemaet bruker Cloudflare Turnstile for å stoppe spam. Turnstile kan lese teknisk informasjon om nettleseren din når du sender skjemaet.",
-      "privacyLink": "Les om hvordan personopplysninger behandles"
+      "privacyLink": "Les om hvordan personopplysninger behandles",
+      "tableCaption": "Informasjonskapsler og lagring i nettleseren på denne siden"
     }
   },
   "leads": {

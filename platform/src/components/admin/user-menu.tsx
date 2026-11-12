@@ -34,12 +34,13 @@ export function UserMenu({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="rounded-full" aria-label={labels.menu}>
-          <span
-            aria-hidden="true"
-            className="flex size-8 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground"
-          >
+        <Button variant="ghost" size="icon" className="rounded-full">
+          {/* Initialene som vises, er med i det tilgjengelige navnet (WCAG 2.5.3). */}
+          <span className="flex size-8 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground">
             {initials(name)}
+          </span>
+          <span className="sr-only">
+            , {labels.menu} ({name})
           </span>
         </Button>
       </DropdownMenuTrigger>

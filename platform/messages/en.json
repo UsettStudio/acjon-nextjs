@@ -2159,7 +2159,8 @@
       "threeMonths": "3 months",
       "dependsOnTools": "Depends on the tools loaded",
       "turnstile": "The interest form uses Cloudflare Turnstile to stop spam. Turnstile can read technical information about your browser when you send the form.",
-      "privacyLink": "Read how personal data is processed"
+      "privacyLink": "Read how personal data is processed",
+      "tableCaption": "Cookies and browser storage on this site"
     }
   },
   "leads": {

@@ -43,6 +43,8 @@ export function HeroBlock({ block, data, isFirst }: BlockProps<"hero">) {
         <>
           <SiteImage asset={image} sizes="100vw" priority={isFirst} alt="" className="absolute inset-0 -z-20 size-full object-cover" />
           <div className="absolute inset-0 -z-10 bg-black" style={{ opacity: props.overlay / 100 }} aria-hidden="true" />
+          {/* Teksten står nederst. Toningen gir den nok kontrast også over lyse bilder (WCAG 1.4.3). */}
+          <div className="absolute inset-0 -z-10 bg-linear-to-t from-black/80 via-black/50 to-black/10" aria-hidden="true" />
         </>
       ) : null}
       <div className={cn("mx-auto w-full max-w-6xl px-4 py-12 sm:px-6 sm:py-16", props.align === "center" && "text-center")}>
