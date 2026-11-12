@@ -18,23 +18,44 @@ import {
   ViewingsBlock,
 } from "@/features/site-builder/components/render/content-blocks";
 import { MapBlock } from "@/features/site-builder/components/render/map-block";
+import {
+  NordicGalleryBlock,
+  NordicHeroBlock,
+  NordicKeyFiguresBlock,
+  NordicProgressBlock,
+  NordicTextImageBlock,
+} from "@/features/site-builder/components/render/nordic-blocks";
 import { LeadFormBlock, SelectorBlock, UnitListBlock } from "@/features/site-builder/components/render/unit-blocks";
 import type { SiteRenderData } from "@/features/site-builder/site";
 
+/**
+ * Blokken i designstilen til siden. Hero, tekst og bilde, galleri, nøkkeltall og
+ * fremdrift er bygget annerledes i Nordisk. De andre blokkene er de samme, men
+ * får typografien og fargene fra stilen (nordic:-klasser i komponentene).
+ */
 export function BlockRenderer({ block, data, isFirst }: { block: Block; data: SiteRenderData; isFirst: boolean }) {
+  const nordic = data.theme.style === "nordic";
   switch (block.type) {
     case "hero":
-      return <HeroBlock block={block} data={data} isFirst={isFirst} />;
+      return nordic ? <NordicHeroBlock block={block} data={data} isFirst={isFirst} /> : <HeroBlock block={block} data={data} isFirst={isFirst} />;
     case "text":
       return <TextBlock block={block} data={data} isFirst={isFirst} />;
     case "text_image":
-      return <TextImageBlock block={block} data={data} isFirst={isFirst} />;
+      return nordic ? (
+        <NordicTextImageBlock block={block} data={data} isFirst={isFirst} />
+      ) : (
+        <TextImageBlock block={block} data={data} isFirst={isFirst} />
+      );
     case "gallery":
-      return <GalleryBlock block={block} data={data} isFirst={isFirst} />;
+      return nordic ? <NordicGalleryBlock block={block} data={data} isFirst={isFirst} /> : <GalleryBlock block={block} data={data} isFirst={isFirst} />;
     case "key_figures":
-      return <KeyFiguresBlock block={block} data={data} isFirst={isFirst} />;
+      return nordic ? (
+        <NordicKeyFiguresBlock block={block} data={data} isFirst={isFirst} />
+      ) : (
+        <KeyFiguresBlock block={block} data={data} isFirst={isFirst} />
+      );
     case "progress":
-      return <ProgressBlock block={block} data={data} isFirst={isFirst} />;
+      return nordic ? <NordicProgressBlock block={block} data={data} isFirst={isFirst} /> : <ProgressBlock block={block} data={data} isFirst={isFirst} />;
     case "selector":
       return <SelectorBlock block={block} data={data} isFirst={isFirst} />;
     case "unit_list":

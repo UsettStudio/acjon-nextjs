@@ -1520,17 +1520,28 @@
       "leadButton": "Skicka",
       "keyFiguresHeading": "Projektet i siffror",
       "selectorHeading": "Hitta din bostad",
-      "unitsHeading": "Bostäderna",
-      "galleryHeading": "Bilder",
-      "progressHeading": "Tidplan",
-      "mapHeading": "Läge",
+      "unitsHeading": "Hitta din bostad",
+      "galleryHeading": "Bilder från projektet",
+      "progressHeading": "Från säljstart till inflyttning",
+      "mapHeading": "Närområdet",
       "viewingsHeading": "Visningar",
       "viewingsIntro": "Välkommen på visning. Anmäl intresse så får du besked om nya visningar.",
       "documentsHeading": "Dokument och prospekt",
       "faqHeading": "Vanliga frågor",
-      "contactsHeading": "Kontakt",
+      "contactsHeading": "Fråga oss om projektet",
       "navUnits": "Bostäder",
-      "navContact": "Kontakt"
+      "navContact": "Anmäl intresse",
+      "keyFiguresEyebrow": "Fakta",
+      "selectorEyebrow": "Bostäderna",
+      "unitsEyebrow": "Bostäderna",
+      "galleryEyebrow": "Galleri",
+      "progressEyebrow": "Tidsplan",
+      "mapEyebrow": "Läge",
+      "viewingsEyebrow": "Kom och titta",
+      "documentsEyebrow": "Att ladda ner",
+      "faqEyebrow": "Frågor och svar",
+      "contactsEyebrow": "Kontakt",
+      "leadEyebrow": "Intresse"
     },
     "pageTitle": "Projektsida – {project}",
     "preview": {
@@ -1657,6 +1668,7 @@
       "buttonStyle": "Knappstil",
       "inheritOption": "Standard ({value})",
       "fonts": {
+        "jost": "Jost",
         "inter": "Inter",
         "dm_sans": "DM Sans",
         "lora": "Lora",
@@ -1672,7 +1684,20 @@
       "sample": "Exempel",
       "sampleHeading": "Nya bostäder vid fjorden",
       "sampleText": "Så här ser text, rubriker och knappar ut med dessa val.",
-      "sampleButton": "Anmäl intresse"
+      "sampleButton": "Anmäl intresse",
+      "style": "Designstil",
+      "styleTitle": "Utseende",
+      "styles": {
+        "nordic": "Nordisk",
+        "classic": "Klassisk"
+      },
+      "styleHelp": {
+        "nordic": "Ljus och luftig: tunt typsnitt, små överrubriker, stora bilder och sektioner i huvudfärgen.",
+        "classic": "Tydliga rubriker, rundade knappar och vit bakgrund."
+      },
+      "styleDefaults": "Stilen har egna standardfärger och typsnitt. Färger och typsnitt du väljer själv behålls.",
+      "fromStyle": "Standard i stilen {style}",
+      "sampleEyebrow": "Bostäderna"
     },
     "editor": {
       "pageSelect": "Sida som redigeras",
@@ -1786,7 +1811,10 @@
         "privacyController": "Personuppgiftsansvarig",
         "orgNumber": "Organisationsnummer",
         "privacyEmail": "E-post för integritet",
-        "privacyExtra": "Mer om integritet"
+        "privacyExtra": "Mer om integritet",
+        "eyebrow": "Överrubrik",
+        "show_status": "Visa försäljningsstatus",
+        "menuButton": "Visa som knapp"
       },
       "help": {
         "richText": "Formatering: ## Rubrik, - punktlista, 1. numrerad lista, **fet**, *kursiv* och [länktext](https://…).",
@@ -1816,7 +1844,10 @@
         "brandLogo": "Visas överst på projektsidorna. Använd gärna PNG med genomskinlig bakgrund.",
         "privacyController": "Företaget som ansvarar för uppgifterna från intresseformuläret. Är fältet tomt används organisationens namn.",
         "privacyEmail": "Hit kan besökare skriva för insyn och radering. Är fältet tomt används e-posten till första kontaktpersonen.",
-        "privacyExtra": "Egen text längst ned på integritetssidan, till exempel om andra behandlingar. En tom rad ger nytt stycke."
+        "privacyExtra": "Egen text längst ned på integritetssidan, till exempel om andra behandlingar. En tom rad ger nytt stycke.",
+        "eyebrow": "Kort text ovanför rubriken, till exempel ”Bostäderna”. Visas med versaler.",
+        "showStatus": "Visar till exempel ”9 av 24 bostäder är sålda”. Uppdateras när status ändras.",
+        "menuButton": "Menyalternativet visas som en knapp, till exempel ”Anmäl intresse”."
       },
       "options": {
         "heroHeight": {
@@ -2087,7 +2118,8 @@
     },
     "progress": {
       "done": "Klar",
-      "upcoming": "Kommande"
+      "upcoming": "Kommande",
+      "now": "Nu"
     },
     "viewings": {
       "time": "Kl. {start}",
@@ -2210,6 +2242,11 @@
       "turnstile": "Intresseformuläret använder Cloudflare Turnstile för att stoppa spam. Turnstile kan läsa teknisk information om din webbläsare när du skickar formuläret.",
       "privacyLink": "Läs om hur personuppgifter behandlas",
       "tableCaption": "Kakor och lagring i webbläsaren på den här sidan"
+    },
+    "hero": {
+      "sold": "{sold, plural, one {# av {total} bostäder är såld} other {# av {total} bostäder är sålda}}",
+      "available": "{available, plural, one {# av {total} bostäder är ledig} other {# av {total} bostäder är lediga}}",
+      "allSold": "Alla bostäder är sålda"
     }
   },
   "leads": {

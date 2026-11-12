@@ -13,7 +13,17 @@ import {
 import { isSafeHref, parseRichText } from "@/features/site-builder/rich-text";
 import { pageHref, pageSlugSchema, parseNav, resolveLink, siteUrl, subdomainSchema } from "@/features/site-builder/site";
 import { buildTemplate, COMING_SOON_BLOCKS, expandToFull, FULL_BLOCKS, type TemplateContext } from "@/features/site-builder/templates";
-import { contrastRatio, DEFAULT_THEME, readableTextOn, resolveTheme } from "@/features/site-builder/theme";
+import {
+  contrastRatio,
+  DEFAULT_THEME,
+  mixColors,
+  primaryTextColor,
+  readableTextOn,
+  resolveTheme,
+  SITE_STYLES,
+  STYLE_DEFAULTS,
+  themeStyle,
+} from "@/features/site-builder/theme";
 
 const ctx: TemplateContext = {
   projectName: "Fjordparken",
@@ -93,7 +103,16 @@ describe("maler", () => {
     const selector = blocks.find((block) => block.type === "selector");
     expect(selector?.type === "selector" && selector.props.selector_id).toBe(ctx.selectorId);
     expect(template.nav.map((item) => item.label)).toEqual(["[navUnits]", "[navContact]"]);
+    // «Meld interesse» vises som en knapp i menyen.
+    expect(template.nav.map((item) => item.button ?? false)).toEqual([false, true]);
     expect(template.seo_defaults.description).toBe("24 leiligheter ved fjorden.");
+    // Hero i full høyde med salgsstatus, og overtitler over overskriftene.
+    const hero = blocks[0];
+    expect(hero?.type === "hero" && [hero.props.height, hero.props.align, hero.props.show_status]).toEqual(["full", "center", true]);
+    for (const block of blocks.filter((item) => item.type !== "hero")) {
+      expect("eyebrow" in block.props && block.props.eyebrow, block.type).toBeTruthy();
+    }
+    expect(blocksSchema.safeParse(blocks).success).toBe(true);
   });
 
   it("bygger ut «Kommer for salg» til full side uten å miste innhold", () => {
@@ -118,6 +137,42 @@ describe("tema", () => {
     const theme = resolveTheme({ primary: "#003366", heading_font: "lora" }, { primary: "#336699", button_style: "pill" });
     expect(theme).toEqual({ ...DEFAULT_THEME, primary: "#336699", heading_font: "lora", button_style: "pill" });
     expect(resolveTheme({ primary: "rød" }, null).primary).toBe(DEFAULT_THEME.primary);
+  });
+
+  it("bruker Nordisk når verken merkevaren eller siden har valgt stil", () => {
+    expect(DEFAULT_THEME.style).toBe("nordic");
+    expect(resolveTheme(null, null)).toEqual({ style: "nordic", ...STYLE_DEFAULTS.nordic });
+    expect(resolveTheme({ style: "ukjent" }, null).style).toBe("nordic");
+  });
+
+  it("henter standardverdiene fra stilen som gjelder, og beholder farger og skrift som er valgt", () => {
+    // Merkevaren har Nordisk og en egen hovedfarge. Siden bytter til Klassisk.
+    const theme = resolveTheme({ style: "nordic", primary: "#5F6B58" }, { style: "classic" });
+    expect(theme).toEqual({ ...STYLE_DEFAULTS.classic, style: "classic", primary: "#5F6B58" });
+    // Siden kan også gå andre veien.
+    expect(resolveTheme({ style: "classic" }, { style: "nordic" })).toEqual({ style: "nordic", ...STYLE_DEFAULTS.nordic });
+    expect(resolveTheme({ style: "classic", heading_font: "lora" }, null)).toMatchObject({ style: "classic", heading_font: "lora", body_font: "inter" });
+  });
+
+  it("har standardfarger med god kontrast i begge stilene", () => {
+    for (const style of SITE_STYLES) {
+      const theme = resolveTheme({ style }, null);
+      const variables = themeStyle(theme) as Record<string, string>;
+      // Brødtekst, hovedfargen som tekst og tekst på hovedfargen
+      expect(contrastRatio(theme.foreground, theme.background), style).toBeGreaterThanOrEqual(4.5);
+      expect(contrastRatio(variables["--site-primary-text"] ?? "", theme.background), style).toBeGreaterThanOrEqual(4.5);
+      expect(contrastRatio(variables["--site-primary-foreground"] ?? "", theme.primary), style).toBeGreaterThanOrEqual(4.5);
+      // Tekst på de dempede seksjonene
+      expect(contrastRatio(theme.foreground, variables["--site-tint"] ?? ""), style).toBeGreaterThanOrEqual(4.5);
+      expect(contrastRatio(variables["--site-primary-text"] ?? "", variables["--site-tint"] ?? ""), style).toBeGreaterThanOrEqual(4.5);
+    }
+  });
+
+  it("bruker tekstfargen i stedet for hovedfargen når hovedfargen er for lys som tekst", () => {
+    expect(primaryTextColor({ primary: "#5F6B58", background: "#F7F6F2", foreground: "#2B2B28" })).toBe("#5F6B58");
+    expect(primaryTextColor({ primary: "#C9D8C5", background: "#F7F6F2", foreground: "#2B2B28" })).toBe("#2B2B28");
+    expect(mixColors("#000000", "#FFFFFF", 0.5)).toBe("#808080");
+    expect(mixColors("#5F6B58", "#F7F6F2", 0)).toBe("#F7F6F2");
   });
 
   it("velger tekstfarge med god nok kontrast på knapper", () => {

@@ -100,6 +100,7 @@ export function LeadForm({
   projectName,
   locale,
   disabled = false,
+  variant = "default",
 }: {
   projectId: string;
   pageId: string | null;
@@ -113,6 +114,11 @@ export function LeadForm({
   locale: string;
   /** I forhåndsvisningen kan skjemaet ikke sendes. */
   disabled?: boolean;
+  /**
+   * inverted: skjemaet står på hovedfargen (interesseskjemaet i designstilen
+   * Nordisk). Knappen blir hvit, og feil og hjelpetekst får full kontrast.
+   */
+  variant?: "default" | "inverted";
 }) {
   const t = useTranslations("site.lead");
   const tValidation = useTranslations("validation");
@@ -190,10 +196,17 @@ export function LeadForm({
     });
   });
 
+  const inverted = variant === "inverted";
+
   if (sent) {
     return (
-      <div ref={successRef} tabIndex={-1} role="status" className="flex gap-3 rounded-[var(--site-radius)] border-2 border-[var(--site-primary)] p-6 outline-none">
-        <CheckCircle2Icon className="mt-0.5 size-6 shrink-0 text-[var(--site-primary)]" aria-hidden="true" />
+      <div
+        ref={successRef}
+        tabIndex={-1}
+        role="status"
+        className={cn("flex gap-3 rounded-[var(--site-radius)] border-2 p-6 outline-none", inverted ? "border-current" : "border-[var(--site-primary)]")}
+      >
+        <CheckCircle2Icon className={cn("mt-0.5 size-6 shrink-0", inverted ? "text-current" : "text-[var(--site-primary)]")} aria-hidden="true" />
         <div>
           <p className="site-heading text-xl font-semibold">{t("successTitle")}</p>
           <p className="mt-1">{t("successBody", { organization: organizationName })}</p>
@@ -202,8 +215,13 @@ export function LeadForm({
     );
   }
 
-  const inputClass =
-    "w-full rounded-[var(--site-radius)] border border-current/25 bg-white px-3 py-2.5 text-base text-neutral-900 outline-none focus-visible:border-[var(--site-primary)] focus-visible:ring-2 focus-visible:ring-[var(--site-primary)]/40 aria-invalid:border-red-600";
+  const inputClass = cn(
+    "w-full rounded-[var(--site-radius)] border border-current/25 bg-white px-3 py-2.5 text-base text-neutral-900 outline-none aria-invalid:border-red-600",
+    inverted
+      ? "border-transparent focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--site-primary)] aria-invalid:border-2"
+      : "focus-visible:border-[var(--site-primary)] focus-visible:ring-2 focus-visible:ring-[var(--site-primary)]/40",
+  );
+  const checkboxClass = cn("mt-1 size-5 shrink-0", inverted ? "accent-white" : "accent-[var(--site-primary)]");
   const field = (name: keyof FormValues) => ({
     id: `${id}-${name}`,
     "aria-invalid": Boolean(errors[name]),
@@ -211,7 +229,7 @@ export function LeadForm({
   });
   const errorText = (name: keyof FormValues) =>
     errors[name] ? (
-      <p id={`${id}-${name}-error`} className="mt-1 text-sm text-red-700">
+      <p id={`${id}-${name}-error`} className={cn("mt-1 text-sm", inverted ? "font-medium underline decoration-2 underline-offset-4" : "text-red-700")}>
         {message(errors[name]?.message)}
       </p>
     ) : null;
@@ -279,7 +297,7 @@ export function LeadForm({
           <label className="flex items-start gap-3">
             <input
               type="checkbox"
-              className="mt-1 size-5 shrink-0 accent-[var(--site-primary)]"
+              className={checkboxClass}
               aria-invalid={Boolean(errors.consentContact)}
               aria-describedby={errors.consentContact ? `${id}-consentContact-error` : undefined}
               {...form.register("consentContact")}
@@ -291,7 +309,7 @@ export function LeadForm({
           {errorText("consentContact")}
         </div>
         <label className="flex items-start gap-3">
-          <input type="checkbox" className="mt-1 size-5 shrink-0 accent-[var(--site-primary)]" {...form.register("consentSimilar")} />
+          <input type="checkbox" className={checkboxClass} {...form.register("consentSimilar")} />
           <span>{consent.similar}</span>
         </label>
       </fieldset>
@@ -301,16 +319,20 @@ export function LeadForm({
           type="submit"
           disabled={pending || disabled}
           className={cn(
-            "inline-flex items-center justify-center gap-2 rounded-[var(--site-radius)] bg-[var(--site-primary)] px-6 py-3 font-semibold text-[var(--site-primary-foreground)] transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--site-primary)] disabled:opacity-60",
+            "inline-flex items-center justify-center gap-2 rounded-[var(--site-radius)] px-6 py-3 font-semibold transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:opacity-60",
+            "nordic:px-8 nordic:py-4 nordic:text-xs nordic:font-medium nordic:tracking-[0.2em] nordic:uppercase",
+            inverted
+              ? "bg-[var(--site-primary-foreground)] text-[var(--site-primary)] focus-visible:outline-[var(--site-primary-foreground)]"
+              : "bg-[var(--site-primary)] text-[var(--site-primary-foreground)] focus-visible:outline-[var(--site-primary)]",
           )}
         >
           {pending ? <LoaderCircleIcon className="size-4 animate-spin" aria-hidden="true" /> : null}
           {buttonLabel || t("submit")}
         </button>
-        <p className="text-sm opacity-80">{t("required")}</p>
+        <p className={cn("text-sm", !inverted && "opacity-80")}>{t("required")}</p>
       </div>
       {disabled ? (
-        <p id={`${id}-disabled`} className="text-sm opacity-80">
+        <p id={`${id}-disabled`} className={cn("text-sm", !inverted && "opacity-80")}>
           {t("previewDisabled")}
         </p>
       ) : null}

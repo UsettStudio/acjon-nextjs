@@ -61,6 +61,7 @@ export function UnitList({
   onHoverUnit,
   onOpen,
   onToggleFavorite,
+  variant = "default",
 }: {
   units: PublicUnit[];
   statusColors: Record<UnitStatus, string>;
@@ -69,7 +70,11 @@ export function UnitList({
   onHoverUnit: (unitId: string | null) => void;
   onOpen: (unit: PublicUnit) => void;
   onToggleFavorite: (unitId: string) => void;
+  /** editorial: uten ramme, med små overskrifter og store enhetsnummer (Enhetsliste-blokken i designstilen Nordisk). */
+  variant?: "default" | "editorial";
 }) {
+  const editorial = variant === "editorial";
+  const cell = editorial ? "px-3 py-4" : "px-2 py-2";
   const t = useTranslations("publicSelector.list");
   const tStatus = useTranslations("unitStatus");
   const formatUnit = useUnitFormat();
@@ -91,10 +96,10 @@ export function UnitList({
   }
 
   return (
-    <div className="overflow-x-auto rounded-lg border">
-      <table className="w-full text-sm" data-testid="selector-unit-list">
+    <div className={cn("overflow-x-auto", editorial ? "border-y border-current/15" : "rounded-lg border")}>
+      <table className={cn("w-full", editorial ? "text-[0.9375rem]" : "text-sm")} data-testid="selector-unit-list">
         <caption className="sr-only">{t("caption")}</caption>
-        <thead className="bg-muted/60 text-left text-xs text-muted-foreground">
+        <thead className={cn("text-left", editorial ? "text-[0.6875rem] tracking-[0.18em] uppercase" : "bg-muted/60 text-xs text-muted-foreground")}>
           <tr>
             {columns.map((column) => {
               const active = sort.key === column.key;
@@ -102,7 +107,7 @@ export function UnitList({
                 <th
                   key={column.key}
                   scope="col"
-                  className={cn("px-2 py-2 font-medium", column.className)}
+                  className={cn(editorial ? "px-3 py-4 font-normal" : "px-2 py-2 font-medium", column.className)}
                   aria-sort={active ? (sort.direction === 1 ? "ascending" : "descending") : "none"}
                 >
                   <button
@@ -137,12 +142,16 @@ export function UnitList({
                 key={unit.id}
                 data-unit-number={unit.unit_number}
                 data-status={unit.status}
-                className={cn("cursor-pointer border-t transition-colors hover:bg-accent/60", highlightedUnitId === unit.id && "bg-accent")}
+                className={cn(
+                  "cursor-pointer border-t transition-colors",
+                  editorial ? "border-current/15 hover:bg-black/[0.03]" : "hover:bg-accent/60",
+                  highlightedUnitId === unit.id && "bg-accent",
+                )}
                 onPointerEnter={() => onHoverUnit(unit.id)}
                 onPointerLeave={() => onHoverUnit(null)}
                 onClick={() => onOpen(unit)}
               >
-                <th scope="row" className="px-2 py-2 text-left font-semibold">
+                <th scope="row" className={cn("text-left", editorial ? "px-3 py-4 text-xl font-light" : "px-2 py-2 font-semibold")}>
                   <button
                     type="button"
                     className="rounded outline-none hover:underline focus-visible:ring-[3px] focus-visible:ring-ring/50"
@@ -155,19 +164,19 @@ export function UnitList({
                   >
                     {unit.unit_number}
                   </button>
-                  <span className="block text-xs font-normal text-muted-foreground sm:hidden">{formatUnit.area(unit.bra_i)}</span>
+                  <span className={cn("block text-xs font-normal sm:hidden", !editorial && "text-muted-foreground")}>{formatUnit.area(unit.bra_i)}</span>
                 </th>
-                <td className="hidden px-2 py-2 tabular-nums sm:table-cell">{unit.floor ?? "–"}</td>
-                <td className="px-2 py-2 tabular-nums">{unit.rooms ?? "–"}</td>
-                <td className="hidden px-2 py-2 whitespace-nowrap tabular-nums sm:table-cell">{formatUnit.area(unit.bra_i)}</td>
-                <td className="px-2 py-2 whitespace-nowrap tabular-nums">
+                <td className={cn("hidden tabular-nums sm:table-cell", cell)}>{unit.floor ?? "–"}</td>
+                <td className={cn("tabular-nums", cell)}>{unit.rooms ?? "–"}</td>
+                <td className={cn("hidden whitespace-nowrap tabular-nums sm:table-cell", cell)}>{formatUnit.area(unit.bra_i)}</td>
+                <td className={cn("whitespace-nowrap tabular-nums", cell)}>
                   {formatUnit.price(unit)}
                   <span className="mt-0.5 flex items-center gap-1.5 text-xs sm:hidden">
                     <span className="size-2 rounded-full" style={{ backgroundColor: statusColors[unit.status] }} aria-hidden="true" />
                     {tStatus(unit.status)}
                   </span>
                 </td>
-                <td className="hidden px-2 py-2 sm:table-cell">
+                <td className={cn("hidden sm:table-cell", cell)}>
                   <span className="inline-flex items-center gap-1.5 whitespace-nowrap" data-testid="unit-status">
                     <span className="size-2.5 rounded-full" style={{ backgroundColor: statusColors[unit.status] }} aria-hidden="true" />
                     {tStatus(unit.status)}
@@ -178,7 +187,10 @@ export function UnitList({
                     type="button"
                     aria-pressed={favorite}
                     aria-label={favorite ? t("removeFavorite", { unit: unit.unit_number }) : t("addFavorite", { unit: unit.unit_number })}
-                    className="rounded p-1.5 text-muted-foreground outline-none hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                    className={cn(
+                      "rounded p-1.5 outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50",
+                      editorial ? "hover:opacity-70" : "text-muted-foreground hover:text-foreground",
+                    )}
                     onClick={(event) => {
                       event.stopPropagation();
                       onToggleFavorite(unit.id);

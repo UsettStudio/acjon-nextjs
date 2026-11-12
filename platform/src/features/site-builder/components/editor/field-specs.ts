@@ -50,12 +50,14 @@ export type FieldSpec = Common &
       }
   );
 
+const eyebrow: FieldSpec = { kind: "text", key: "eyebrow", max: 80, help: "eyebrow" };
 const heading: FieldSpec = { kind: "text", key: "heading", max: 200 };
 
 const notUsingProject = (values: Values) => values.use_project === false;
 
 export const BLOCK_FIELDS: Record<BlockType, FieldSpec[]> = {
   hero: [
+    eyebrow,
     { kind: "text", key: "title", label: "heroTitle", max: 200 },
     { kind: "textarea", key: "subtitle", max: 500, rows: 3 },
     { kind: "image", key: "image_asset_id", label: "backgroundImage", help: "heroImage" },
@@ -64,20 +66,24 @@ export const BLOCK_FIELDS: Record<BlockType, FieldSpec[]> = {
     { kind: "select", key: "align", options: "align", values: ["left", "center"] },
     { kind: "text", key: "cta_label", max: 80 },
     { kind: "link", key: "cta_link", when: (values) => typeof values.cta_label === "string" && values.cta_label.trim() !== "" },
+    { kind: "boolean", key: "show_status", help: "showStatus" },
   ],
-  text: [heading, { kind: "richtext", key: "body", max: 10000 }, { kind: "select", key: "width", options: "width", values: ["narrow", "wide"] }],
+  text: [eyebrow, heading, { kind: "richtext", key: "body", max: 10000 }, { kind: "select", key: "width", options: "width", values: ["narrow", "wide"] }],
   text_image: [
+    eyebrow,
     heading,
     { kind: "richtext", key: "body", max: 10000 },
     { kind: "image", key: "image_asset_id" },
     { kind: "select", key: "image_position", options: "imagePosition", values: ["left", "right"] },
   ],
   gallery: [
+    eyebrow,
     heading,
     { kind: "assets", key: "asset_ids", label: "images", assetKind: "image", max: 60 },
     { kind: "select", key: "columns", options: "columns", values: [2, 3, 4] },
   ],
   key_figures: [
+    eyebrow,
     heading,
     {
       kind: "list",
@@ -97,6 +103,7 @@ export const BLOCK_FIELDS: Record<BlockType, FieldSpec[]> = {
     },
   ],
   progress: [
+    eyebrow,
     heading,
     { kind: "boolean", key: "use_project", label: "useProjectMilestones", help: "useProjectMilestones" },
     {
@@ -116,14 +123,16 @@ export const BLOCK_FIELDS: Record<BlockType, FieldSpec[]> = {
     },
   ],
   selector: [
+    eyebrow,
     heading,
     { kind: "selector", key: "selector_id", help: "selector" },
     { kind: "selectorView", key: "entry_view_id", selectorKey: "selector_id", help: "entryView", when: (values) => Boolean(values.selector_id) },
     { kind: "boolean", key: "show_filters" },
     { kind: "boolean", key: "show_list" },
   ],
-  unit_list: [heading, { kind: "boolean", key: "show_filters" }, { kind: "boolean", key: "hide_sold" }],
+  unit_list: [eyebrow, heading, { kind: "boolean", key: "show_filters" }, { kind: "boolean", key: "hide_sold" }],
   map: [
+    eyebrow,
     heading,
     { kind: "boolean", key: "use_project_location", help: "useProjectLocation" },
     { kind: "number", key: "lat", min: -90, max: 90, step: 0.000001, when: (values) => values.use_project_location === false },
@@ -145,6 +154,7 @@ export const BLOCK_FIELDS: Record<BlockType, FieldSpec[]> = {
     },
   ],
   viewings: [
+    eyebrow,
     heading,
     { kind: "textarea", key: "intro", max: 1000, rows: 3 },
     {
@@ -164,6 +174,7 @@ export const BLOCK_FIELDS: Record<BlockType, FieldSpec[]> = {
     },
   ],
   contacts: [
+    eyebrow,
     heading,
     { kind: "boolean", key: "use_project", label: "useProjectContacts", help: "useProjectContacts" },
     {
@@ -185,18 +196,21 @@ export const BLOCK_FIELDS: Record<BlockType, FieldSpec[]> = {
     },
   ],
   lead_form: [
+    eyebrow,
     heading,
     { kind: "textarea", key: "intro", max: 1000, rows: 3 },
     { kind: "text", key: "button_label", max: 60, placeholder: "buttonLabel" },
     { kind: "boolean", key: "show_unit_select" },
   ],
-  documents: [heading, { kind: "assets", key: "asset_ids", label: "documents", assetKind: "document", max: 40, help: "documents" }],
+  documents: [eyebrow, heading, { kind: "assets", key: "asset_ids", label: "documents", assetKind: "document", max: 40, help: "documents" }],
   video: [
+    eyebrow,
     heading,
     { kind: "text", key: "url", label: "videoUrl", max: 2048, inputType: "url", help: "video", placeholder: "videoUrl" },
     { kind: "text", key: "caption", max: 300 },
   ],
   faq: [
+    eyebrow,
     heading,
     {
       kind: "list",
@@ -213,6 +227,7 @@ export const BLOCK_FIELDS: Record<BlockType, FieldSpec[]> = {
     },
   ],
   news: [
+    eyebrow,
     heading,
     {
       kind: "list",
@@ -238,6 +253,7 @@ export const BLOCK_FIELDS: Record<BlockType, FieldSpec[]> = {
     { kind: "select", key: "align", options: "align", values: ["left", "center", "right"] },
   ],
   embed: [
+    eyebrow,
     heading,
     { kind: "text", key: "url", label: "embedUrl", max: 2048, inputType: "url", help: "embed", placeholder: "embedUrl" },
     { kind: "text", key: "title", label: "embedTitle", max: 200, help: "embedTitle" },

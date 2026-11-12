@@ -21,17 +21,28 @@ export type TemplateText =
   | "leadHeading"
   | "leadIntro"
   | "leadButton"
+  | "keyFiguresEyebrow"
   | "keyFiguresHeading"
+  | "selectorEyebrow"
   | "selectorHeading"
+  | "unitsEyebrow"
   | "unitsHeading"
+  | "galleryEyebrow"
   | "galleryHeading"
+  | "progressEyebrow"
   | "progressHeading"
+  | "mapEyebrow"
   | "mapHeading"
+  | "viewingsEyebrow"
   | "viewingsHeading"
   | "viewingsIntro"
+  | "documentsEyebrow"
   | "documentsHeading"
+  | "faqEyebrow"
   | "faqHeading"
+  | "contactsEyebrow"
   | "contactsHeading"
+  | "leadEyebrow"
   | "navUnits"
   | "navContact";
 
@@ -71,19 +82,24 @@ export function templateBlock(type: BlockType, ctx: TemplateContext, ids: { lead
         subtitle: kind === "coming_soon" ? t("heroSubtitleComingSoon") : t("heroSubtitleFull"),
         cta_label: t("heroCta"),
         cta_link: { type: "block", block_id: ids.leadFormId },
+        height: "full",
+        align: "center",
+        // Salgsstatusen gir mening når boligene er lagt inn, altså i den fulle malen.
+        show_status: kind === "full",
       });
     case "text":
-      return createBlock("text", { heading: t("aboutHeading"), body: about });
+      return createBlock("text", { eyebrow: ctx.projectName, heading: t("aboutHeading"), body: about });
     case "text_image":
-      return createBlock("text_image", { heading: t("aboutHeading"), body: about });
+      return createBlock("text_image", { eyebrow: ctx.projectName, heading: t("aboutHeading"), body: about });
     case "lead_form":
       return createBlock(
         "lead_form",
-        { heading: t("leadHeading"), intro: t("leadIntro"), button_label: t("leadButton") },
+        { eyebrow: t("leadEyebrow"), heading: t("leadHeading"), intro: t("leadIntro"), button_label: t("leadButton") },
         ids.leadFormId,
       );
     case "key_figures":
       return createBlock("key_figures", {
+        eyebrow: t("keyFiguresEyebrow"),
         heading: t("keyFiguresHeading"),
         items: [
           { source: "units_total", value: "", label: "" },
@@ -93,23 +109,23 @@ export function templateBlock(type: BlockType, ctx: TemplateContext, ids: { lead
         ],
       });
     case "selector":
-      return createBlock("selector", { heading: t("selectorHeading"), selector_id: ctx.selectorId });
+      return createBlock("selector", { eyebrow: t("selectorEyebrow"), heading: t("selectorHeading"), selector_id: ctx.selectorId });
     case "unit_list":
-      return createBlock("unit_list", { heading: t("unitsHeading") });
+      return createBlock("unit_list", { eyebrow: t("unitsEyebrow"), heading: t("unitsHeading") });
     case "gallery":
-      return createBlock("gallery", { heading: t("galleryHeading") });
+      return createBlock("gallery", { eyebrow: t("galleryEyebrow"), heading: t("galleryHeading") });
     case "progress":
-      return createBlock("progress", { heading: t("progressHeading") });
+      return createBlock("progress", { eyebrow: t("progressEyebrow"), heading: t("progressHeading") });
     case "map":
-      return createBlock("map", { heading: t("mapHeading") });
+      return createBlock("map", { eyebrow: t("mapEyebrow"), heading: t("mapHeading") });
     case "viewings":
-      return createBlock("viewings", { heading: t("viewingsHeading"), intro: t("viewingsIntro") });
+      return createBlock("viewings", { eyebrow: t("viewingsEyebrow"), heading: t("viewingsHeading"), intro: t("viewingsIntro") });
     case "documents":
-      return createBlock("documents", { heading: t("documentsHeading") });
+      return createBlock("documents", { eyebrow: t("documentsEyebrow"), heading: t("documentsHeading") });
     case "faq":
-      return createBlock("faq", { heading: t("faqHeading") });
+      return createBlock("faq", { eyebrow: t("faqEyebrow"), heading: t("faqHeading") });
     case "contacts":
-      return createBlock("contacts", { heading: t("contactsHeading") });
+      return createBlock("contacts", { eyebrow: t("contactsEyebrow"), heading: t("contactsHeading") });
     default:
       return createBlock(type);
   }
@@ -140,7 +156,7 @@ export function buildTemplate(kind: TemplateKind, ctx: TemplateContext, homePage
     kind === "full"
       ? [
           ...(unitsBlock ? [{ id: "nav-boliger", label: ctx.t("navUnits"), link: { type: "block" as const, block_id: unitsBlock.id } }] : []),
-          { id: "nav-kontakt", label: ctx.t("navContact"), link: { type: "block" as const, block_id: leadFormId } },
+          { id: "nav-kontakt", label: ctx.t("navContact"), link: { type: "block" as const, block_id: leadFormId }, button: true },
         ]
       : [];
   const description = (ctx.description ?? "").replace(/\s+/g, " ").trim().slice(0, 160);

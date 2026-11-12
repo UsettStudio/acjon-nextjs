@@ -34,7 +34,7 @@ import {
   type SeoDefaults,
   type SiteFooter,
 } from "@/features/site-builder/site";
-import { resolveTheme, type ThemeOverrides } from "@/features/site-builder/theme";
+import type { ThemeOverrides } from "@/features/site-builder/theme";
 import { publicEnv } from "@/lib/env";
 
 /** Feil i en liste lagt under listens nøkkel, så FieldList finner dem. */
@@ -105,6 +105,7 @@ export function NavigationPanel({
         fields: [
           { kind: "text", key: "label", label: "menuLabel", max: 60 },
           { kind: "link", key: "link", required: true },
+          { kind: "boolean", key: "button", label: "menuButton", help: "menuButton" },
         ],
       },
     ],
@@ -183,7 +184,7 @@ export function ThemePanel({
       />
       <ThemeFields
         value={colors}
-        base={resolveTheme(brand, {})}
+        parent={brand}
         disabled={disabled}
         inheritLabel={t("fromBrand")}
         onChange={(next) => onChange(logo ? { ...next, logo_asset_id: logo } : next)}

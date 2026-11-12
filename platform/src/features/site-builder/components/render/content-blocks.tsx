@@ -4,11 +4,12 @@ import { CalendarDaysIcon, FileTextIcon, MailIcon, PhoneIcon, PlayIcon } from "l
 import { useFormatter, useTranslations } from "next-intl";
 import { useState } from "react";
 
-import { parseVideoUrl, type BlockOf, type BlockType } from "@/features/site-builder/blocks";
-import { BlockHeading, BlockSection, EditorHint, SiteImage, SiteLinkButton } from "@/features/site-builder/components/render/primitives";
+import { useLiveUnits } from "@/features/selector/components/public/use-public-units";
+import { isPriceHidden, type PublicUnit } from "@/features/selector/model";
+import { parseVideoUrl, type BlockOf, type BlockType, type KeyFigureSource } from "@/features/site-builder/blocks";
+import { BlockSection, BlockTitle, EditorHint, SiteImage, SiteLinkButton } from "@/features/site-builder/components/render/primitives";
 import { RichText } from "@/features/site-builder/rich-text";
 import { resolveLink, type SiteRenderData } from "@/features/site-builder/site";
-import { isPriceHidden } from "@/features/selector/model";
 import { cn } from "@/lib/utils";
 
 export type RenderBlockProps<T extends BlockType> = { block: BlockOf<T>; data: SiteRenderData; isFirst: boolean };
@@ -20,10 +21,50 @@ const editing = (data: SiteRenderData) => data.mode !== "published";
 // Hero
 // -----------------------------------------------------------------------------
 
+// -----------------------------------------------------------------------------
+// Salgsstatus i heroen: «9 av 24 boliger er solgt», oppdatert i sanntid
+// -----------------------------------------------------------------------------
+
+export type HeroStatus = { kind: "sold"; sold: number; total: number } | { kind: "available"; available: number; total: number } | { kind: "allSold" };
+
+export function heroStatus(units: readonly PublicUnit[]): HeroStatus | null {
+  const total = units.length;
+  if (total === 0) {
+    return null;
+  }
+  const sold = units.filter((unit) => unit.status === "sold").length;
+  if (sold === total) {
+    return { kind: "allSold" };
+  }
+  if (sold > 0) {
+    return { kind: "sold", sold, total };
+  }
+  return { kind: "available", available: units.filter((unit) => unit.status === "available").length, total };
+}
+
+/** Teksten om salgsstatus, eller null når heroen ikke skal vise den. Lytter på statusendringer på den publiserte siden. */
+export function useHeroStatusText(block: BlockOf<"hero">, data: SiteRenderData): string | null {
+  const t = useTranslations("site.hero");
+  const { units } = useLiveUnits(data.units, data.project.id, data.project.showPriceOnSold, block.props.show_status && data.mode === "published");
+  const status = block.props.show_status ? heroStatus(units) : null;
+  if (!status) {
+    return null;
+  }
+  switch (status.kind) {
+    case "allSold":
+      return t("allSold");
+    case "sold":
+      return t("sold", { sold: status.sold, total: status.total });
+    case "available":
+      return t("available", { available: status.available, total: status.total });
+  }
+}
+
 export function HeroBlock({ block, data, isFirst }: BlockProps<"hero">) {
   const { props } = block;
   const image = props.image_asset_id ? data.assets[props.image_asset_id] : undefined;
   const link = resolveLink(data, props.cta_link);
+  const status = useHeroStatusText(block, data);
   const Heading = isFirst ? "h1" : "h2";
   const headingId = `${block.id}-heading`;
   return (
@@ -49,10 +90,12 @@ export function HeroBlock({ block, data, isFirst }: BlockProps<"hero">) {
       ) : null}
       <div className={cn("mx-auto w-full max-w-6xl px-4 py-12 sm:px-6 sm:py-16", props.align === "center" && "text-center")}>
         <div className={cn("max-w-3xl", props.align === "center" && "mx-auto")}>
+          {props.eyebrow ? <p className="mb-3 text-sm font-semibold tracking-wide uppercase">{props.eyebrow}</p> : null}
           <Heading id={headingId} className="site-heading text-4xl font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl">
             {props.title || data.project.name}
           </Heading>
           {props.subtitle ? <p className="mt-4 text-lg text-pretty sm:text-xl">{props.subtitle}</p> : null}
+          {status ? <p className="mt-4 text-lg font-semibold sm:text-xl">{status}</p> : null}
           {props.cta_label && link ? (
             <SiteLinkButton href={link.href} external={link.external} variant="inverted" className="mt-8">
               {props.cta_label}
@@ -72,7 +115,7 @@ export function TextBlock({ block, data }: BlockProps<"text">) {
   const { props } = block;
   const tEditor = useTranslations("site.editor");
   const headingId = `${block.id}-heading`;
-  if (!props.heading && !props.body) {
+  if (!props.heading && !props.body && !props.eyebrow) {
     return editing(data) ? (
       <BlockSection id={block.id}>
         <EditorHint>{tEditor("emptyText")}</EditorHint>
@@ -82,8 +125,8 @@ export function TextBlock({ block, data }: BlockProps<"text">) {
   return (
     <BlockSection id={block.id} headingId={props.heading ? headingId : undefined}>
       <div className={cn(props.width === "narrow" ? "max-w-3xl" : "max-w-none")}>
-        {props.heading ? <BlockHeading id={headingId}>{props.heading}</BlockHeading> : null}
-        <RichText source={props.body} className="text-lg" />
+        <BlockTitle id={headingId} eyebrow={props.eyebrow} heading={props.heading} />
+        <RichText source={props.body} className={cn("text-lg", props.width === "wide" && "nordic:gap-x-14 md:nordic:columns-2")} />
       </div>
     </BlockSection>
   );
@@ -98,7 +141,7 @@ export function TextImageBlock({ block, data }: BlockProps<"text_image">) {
     <BlockSection id={block.id} headingId={props.heading ? headingId : undefined}>
       <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-12">
         <div className={cn(props.image_position === "left" && "lg:order-2")}>
-          {props.heading ? <BlockHeading id={headingId}>{props.heading}</BlockHeading> : null}
+          <BlockTitle id={headingId} eyebrow={props.eyebrow} heading={props.heading} />
           <RichText source={props.body} className="text-lg" />
         </div>
         {image ? (
@@ -129,7 +172,7 @@ export function GalleryBlock({ block, data }: BlockProps<"gallery">) {
   }
   return (
     <BlockSection id={block.id} headingId={props.heading ? headingId : undefined}>
-      {props.heading ? <BlockHeading id={headingId}>{props.heading}</BlockHeading> : null}
+      <BlockTitle id={headingId} eyebrow={props.eyebrow} heading={props.heading} />
       <ul
         className={cn(
           "grid grid-cols-1 gap-3 sm:grid-cols-2",
@@ -157,11 +200,12 @@ export function GalleryBlock({ block, data }: BlockProps<"gallery">) {
 // Nøkkeltall
 // -----------------------------------------------------------------------------
 
-export function KeyFiguresBlock({ block, data }: BlockProps<"key_figures">) {
+export type KeyFigureItem = { source: KeyFigureSource; value: string; label: string };
+
+/** Nøkkeltallene slik de vises: tall fra enhetene for de automatiske kildene, ellers teksten som er skrevet inn. */
+export function useKeyFigureItems(block: BlockOf<"key_figures">, data: SiteRenderData): KeyFigureItem[] {
   const t = useTranslations("site.keyFigures");
-  const tEditor = useTranslations("site.editor");
   const format = useFormatter();
-  const headingId = `${block.id}-heading`;
   const units = data.units;
   const number = (value: number) => format.number(value, { maximumFractionDigits: 1 });
   const range = (values: number[], unit = "") => {
@@ -172,34 +216,40 @@ export function KeyFiguresBlock({ block, data }: BlockProps<"key_figures">) {
     const max = Math.max(...values);
     return `${number(min)}${min === max ? "" : `–${number(max)}`}${unit}`;
   };
-  const items = block.props.items.flatMap((item) => {
+  return block.props.items.flatMap((item): KeyFigureItem[] => {
     switch (item.source) {
       case "custom":
-        return item.value || item.label ? [{ value: item.value, label: item.label }] : [];
+        return item.value || item.label ? [{ source: "custom", value: item.value, label: item.label }] : [];
       case "units_total":
-        return units.length > 0 ? [{ value: String(units.length), label: t("unitsTotal") }] : [];
+        return units.length > 0 ? [{ source: item.source, value: String(units.length), label: t("unitsTotal") }] : [];
       case "available": {
         const available = units.filter((unit) => unit.status === "available").length;
-        return units.length > 0 ? [{ value: String(available), label: t("available") }] : [];
+        return units.length > 0 ? [{ source: item.source, value: String(available), label: t("available") }] : [];
       }
       case "size_range": {
         const value = range(units.flatMap((unit) => (unit.bra_i === null ? [] : [unit.bra_i])), " m²");
-        return value ? [{ value, label: t("sizeRange") }] : [];
+        return value ? [{ source: item.source, value, label: t("sizeRange") }] : [];
       }
       case "rooms_range": {
         const value = range(units.flatMap((unit) => (unit.rooms === null ? [] : [unit.rooms])));
-        return value ? [{ value, label: t("roomsRange") }] : [];
+        return value ? [{ source: item.source, value, label: t("roomsRange") }] : [];
       }
       case "price_from": {
         const prices = units.flatMap((unit) =>
           unit.price === null || unit.price_hidden || isPriceHidden(unit.status, data.project.showPriceOnSold) ? [] : [unit.price],
         );
         return prices.length > 0
-          ? [{ value: format.number(Math.min(...prices), { style: "currency", currency: "NOK", maximumFractionDigits: 0 }), label: t("priceFrom") }]
+          ? [{ source: item.source, value: format.number(Math.min(...prices), { style: "currency", currency: "NOK", maximumFractionDigits: 0 }), label: t("priceFrom") }]
           : [];
       }
     }
   });
+}
+
+export function KeyFiguresBlock({ block, data }: BlockProps<"key_figures">) {
+  const tEditor = useTranslations("site.editor");
+  const headingId = `${block.id}-heading`;
+  const items = useKeyFigureItems(block, data);
   if (items.length === 0) {
     return editing(data) ? (
       <BlockSection id={block.id}>
@@ -209,7 +259,7 @@ export function KeyFiguresBlock({ block, data }: BlockProps<"key_figures">) {
   }
   return (
     <BlockSection id={block.id} headingId={block.props.heading ? headingId : undefined} tone="muted">
-      {block.props.heading ? <BlockHeading id={headingId}>{block.props.heading}</BlockHeading> : null}
+      <BlockTitle id={headingId} eyebrow={block.props.eyebrow} heading={block.props.heading} />
       <dl className="grid grid-cols-2 gap-6 sm:grid-cols-4">
         {items.map((item, index) => (
           <div key={index} className="flex flex-col-reverse">
@@ -226,20 +276,40 @@ export function KeyFiguresBlock({ block, data }: BlockProps<"key_figures">) {
 // Fremdrift
 // -----------------------------------------------------------------------------
 
-export function ProgressBlock({ block, data }: BlockProps<"progress">) {
+export type ProgressItem = {
+  /** Nøkkelen til milepælen i prosjektet (planning, sales_start …), eller null for egne punkter. */
+  key: string | null;
+  label: string;
+  text: string;
+  done: boolean;
+  /** Siste fullførte punkt: der prosjektet er nå. */
+  current: boolean;
+};
+
+const MILESTONE_KEYS = ["planning", "sales_start", "construction_start", "move_in"];
+
+/** Punktene i fremdriften: fra prosjektets milepæler eller fra blokken. Tomme punkter hoppes over. */
+export function useProgressItems(block: BlockOf<"progress">, data: SiteRenderData): ProgressItem[] {
   const t = useTranslations("site");
   const format = useFormatter();
-  const now = new Date(data.now);
-  const today = now.toISOString().slice(0, 10);
-  const headingId = `${block.id}-heading`;
+  const today = new Date(data.now).toISOString().slice(0, 10);
   const items = block.props.use_project
     ? data.project.milestones.map((milestone) => ({
-        label: milestone.label || (["planning", "sales_start", "construction_start", "move_in"].includes(milestone.key) ? t(`milestones.${milestone.key as "planning"}`) : ""),
+        key: milestone.key,
+        label: milestone.label || (MILESTONE_KEYS.includes(milestone.key) ? t(`milestones.${milestone.key as "planning"}`) : ""),
         text: milestone.text || (milestone.date ? format.dateTime(new Date(`${milestone.date}T12:00:00`), { dateStyle: "long" }) : ""),
         done: milestone.date !== null && milestone.date <= today,
       }))
-    : block.props.items;
+    : block.props.items.map((item) => ({ key: null, ...item }));
   const visible = items.filter((item) => item.label || item.text);
+  const currentIndex = visible.findLastIndex((item) => item.done);
+  return visible.map((item, index) => ({ ...item, current: index === currentIndex }));
+}
+
+export function ProgressBlock({ block, data }: BlockProps<"progress">) {
+  const t = useTranslations("site");
+  const headingId = `${block.id}-heading`;
+  const visible = useProgressItems(block, data);
   if (visible.length === 0) {
     return editing(data) ? (
       <BlockSection id={block.id}>
@@ -249,7 +319,7 @@ export function ProgressBlock({ block, data }: BlockProps<"progress">) {
   }
   return (
     <BlockSection id={block.id} headingId={block.props.heading ? headingId : undefined}>
-      {block.props.heading ? <BlockHeading id={headingId}>{block.props.heading}</BlockHeading> : null}
+      <BlockTitle id={headingId} eyebrow={block.props.eyebrow} heading={block.props.heading} />
       <ol className="grid gap-6 sm:grid-cols-2 lg:grid-flow-col lg:grid-cols-none lg:auto-cols-fr">
         {visible.map((item, index) => (
           <li key={index} className="relative border-t-4 pt-4" style={{ borderColor: item.done ? "var(--site-primary)" : "color-mix(in srgb, currentColor 20%, transparent)" }}>
@@ -283,7 +353,7 @@ export function ViewingsBlock({ block, data }: BlockProps<"viewings">) {
   }
   return (
     <BlockSection id={block.id} headingId={block.props.heading ? headingId : undefined}>
-      {block.props.heading ? <BlockHeading id={headingId}>{block.props.heading}</BlockHeading> : null}
+      <BlockTitle id={headingId} eyebrow={block.props.eyebrow} heading={block.props.heading} />
       {block.props.intro ? <p className="mb-6 max-w-3xl text-lg">{block.props.intro}</p> : null}
       {upcoming.length > 0 ? (
         <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -291,7 +361,7 @@ export function ViewingsBlock({ block, data }: BlockProps<"viewings">) {
             <li key={index} className="flex gap-3 rounded-[var(--site-radius)] border p-4" style={{ borderColor: "color-mix(in srgb, currentColor 15%, transparent)" }}>
               <CalendarDaysIcon className="mt-0.5 size-5 shrink-0 text-[var(--site-primary)]" aria-hidden="true" />
               <div>
-                <p className="font-semibold">{format.dateTime(new Date(`${item.date}T12:00:00`), { weekday: "long", day: "numeric", month: "long" })}</p>
+                <p className="font-semibold nordic:text-lg nordic:font-normal">{format.dateTime(new Date(`${item.date}T12:00:00`), { weekday: "long", day: "numeric", month: "long" })}</p>
                 <p>{item.end ? t("viewings.timeRange", { start: item.start, end: item.end }) : t("viewings.time", { start: item.start })}</p>
                 {item.note ? <p className="mt-1 text-sm opacity-80">{item.note}</p> : null}
               </div>
@@ -331,7 +401,7 @@ export function ContactsBlock({ block, data }: BlockProps<"contacts">) {
   }
   return (
     <BlockSection id={block.id} headingId={block.props.heading ? headingId : undefined} tone="muted">
-      {block.props.heading ? <BlockHeading id={headingId}>{block.props.heading}</BlockHeading> : null}
+      <BlockTitle id={headingId} eyebrow={block.props.eyebrow} heading={block.props.heading} />
       <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {visible.map((contact, index) => (
           <li key={index} className="flex gap-4">
@@ -343,8 +413,8 @@ export function ContactsBlock({ block, data }: BlockProps<"contacts">) {
               </span>
             )}
             <div className="grid content-start gap-1">
-              <p className="site-heading text-lg font-semibold">{contact.name}</p>
-              {contact.title ? <p className="opacity-80">{contact.title}</p> : null}
+              <p className="site-heading text-lg font-semibold nordic:text-xl nordic:font-light">{contact.name}</p>
+              {contact.title ? <p className="opacity-80 nordic:text-xs nordic:tracking-[0.2em] nordic:uppercase nordic:opacity-100">{contact.title}</p> : null}
               {contact.phone ? (
                 <a href={`tel:${contact.phone.replace(/\s/g, "")}`} className="inline-flex items-center gap-2 underline-offset-2 hover:underline">
                   <PhoneIcon className="size-4" aria-hidden="true" />
@@ -384,7 +454,7 @@ export function DocumentsBlock({ block, data }: BlockProps<"documents">) {
   }
   return (
     <BlockSection id={block.id} headingId={block.props.heading ? headingId : undefined}>
-      {block.props.heading ? <BlockHeading id={headingId}>{block.props.heading}</BlockHeading> : null}
+      <BlockTitle id={headingId} eyebrow={block.props.eyebrow} heading={block.props.heading} />
       <ul className="grid gap-2 sm:grid-cols-2">
         {documents.map((document) => (
           <li key={document.id}>
@@ -392,7 +462,7 @@ export function DocumentsBlock({ block, data }: BlockProps<"documents">) {
               href={document.url}
               target="_blank"
               rel="noreferrer"
-              className="flex items-center gap-3 rounded-[var(--site-radius)] border p-4 font-medium hover:bg-black/[0.03]"
+              className="flex items-center gap-3 rounded-[var(--site-radius)] border p-4 font-medium hover:bg-black/[0.03] nordic:gap-4 nordic:px-5 nordic:py-5 nordic:font-normal"
               style={{ borderColor: "color-mix(in srgb, currentColor 15%, transparent)" }}
             >
               <FileTextIcon className="size-6 shrink-0 text-[var(--site-primary)]" aria-hidden="true" />
@@ -426,7 +496,7 @@ export function VideoBlock({ block, data }: BlockProps<"video">) {
   const title = block.props.heading || block.props.caption || t("video.title");
   return (
     <BlockSection id={block.id} headingId={block.props.heading ? headingId : undefined}>
-      {block.props.heading ? <BlockHeading id={headingId}>{block.props.heading}</BlockHeading> : null}
+      <BlockTitle id={headingId} eyebrow={block.props.eyebrow} heading={block.props.heading} />
       <figure>
         <div className="relative aspect-video overflow-hidden rounded-[var(--site-radius)] bg-neutral-900">
           {playing ? (
@@ -476,13 +546,13 @@ export function FaqBlock({ block, data }: BlockProps<"faq">) {
   }
   return (
     <BlockSection id={block.id} headingId={block.props.heading ? headingId : undefined}>
-      {block.props.heading ? <BlockHeading id={headingId}>{block.props.heading}</BlockHeading> : null}
-      <div className="max-w-3xl divide-y border-y" style={{ borderColor: "color-mix(in srgb, currentColor 15%, transparent)" }}>
+      <BlockTitle id={headingId} eyebrow={block.props.eyebrow} heading={block.props.heading} />
+      <div className="max-w-3xl divide-y divide-current/15 border-y border-current/15">
         {items.map((item, index) => (
           <details key={index} className="group py-4">
-            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-lg font-semibold [&::-webkit-details-marker]:hidden">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-lg font-semibold nordic:py-2 nordic:text-xl nordic:font-light [&::-webkit-details-marker]:hidden">
               {item.question}
-              <span className="text-2xl leading-none transition-transform group-open:rotate-45" aria-hidden="true">
+              <span className="text-2xl leading-none font-light transition-transform group-open:rotate-45" aria-hidden="true">
                 +
               </span>
             </summary>
@@ -514,7 +584,7 @@ export function NewsBlock({ block, data }: BlockProps<"news">) {
   }
   return (
     <BlockSection id={block.id} headingId={block.props.heading ? headingId : undefined}>
-      {block.props.heading ? <BlockHeading id={headingId}>{block.props.heading}</BlockHeading> : null}
+      <BlockTitle id={headingId} eyebrow={block.props.eyebrow} heading={block.props.heading} />
       <ul className="grid gap-8 md:grid-cols-2">
         {items.map((item) => {
           const image = item.image_asset_id ? data.assets[item.image_asset_id] : undefined;
@@ -523,11 +593,11 @@ export function NewsBlock({ block, data }: BlockProps<"news">) {
               <article className="grid gap-3">
                 {image ? <SiteImage asset={image} sizes="(min-width: 768px) 36rem, 100vw" className="aspect-[16/9] w-full rounded-[var(--site-radius)] object-cover" /> : null}
                 {item.date ? (
-                  <p className="text-sm opacity-80">
+                  <p className="text-sm opacity-80 nordic:text-xs nordic:tracking-[0.2em] nordic:uppercase nordic:opacity-100">
                     <time dateTime={item.date}>{format.dateTime(new Date(`${item.date}T12:00:00`), { dateStyle: "long" })}</time>
                   </p>
                 ) : null}
-                <h3 className="site-heading text-xl font-semibold">{item.title}</h3>
+                <h3 className="site-heading text-xl font-semibold nordic:text-2xl nordic:font-light">{item.title}</h3>
                 <RichText source={item.body} />
               </article>
             </li>
@@ -547,15 +617,15 @@ export function ButtonBlock({ block, data }: BlockProps<"button">) {
   const link = resolveLink(data, block.props.link);
   if (!block.props.label || !link) {
     return editing(data) ? (
-      <BlockSection id={block.id} className="py-6 lg:py-8">
+      <BlockSection id={block.id} compact>
         <EditorHint>{t("emptyButton")}</EditorHint>
       </BlockSection>
     ) : null;
   }
   return (
-    <BlockSection id={block.id} className="py-6 lg:py-8">
+    <BlockSection id={block.id} compact>
       <div className={cn("flex", block.props.align === "center" && "justify-center", block.props.align === "right" && "justify-end")}>
-        <SiteLinkButton href={link.href} external={link.external} variant={block.props.style}>
+        <SiteLinkButton href={link.href} external={link.external} variant={block.props.style} arrow={block.props.style === "secondary"}>
           {block.props.label}
         </SiteLinkButton>
       </div>
@@ -579,7 +649,7 @@ export function EmbedBlock({ block, data }: BlockProps<"embed">) {
   }
   return (
     <BlockSection id={block.id} headingId={block.props.heading ? headingId : undefined}>
-      {block.props.heading ? <BlockHeading id={headingId}>{block.props.heading}</BlockHeading> : null}
+      <BlockTitle id={headingId} eyebrow={block.props.eyebrow} heading={block.props.heading} />
       <iframe
         src={block.props.url}
         title={block.props.title || block.props.heading || t("embed.fallbackTitle")}

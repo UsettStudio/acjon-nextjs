@@ -1520,17 +1520,28 @@
       "leadButton": "Send",
       "keyFiguresHeading": "Prosjektet i tall",
       "selectorHeading": "Finn din bolig",
-      "unitsHeading": "Boligene",
-      "galleryHeading": "Bilder",
-      "progressHeading": "Fremdrift",
-      "mapHeading": "Beliggenhet",
+      "unitsHeading": "Finn din bolig",
+      "galleryHeading": "Bilder fra prosjektet",
+      "progressHeading": "Fra salgsstart til innflytting",
+      "mapHeading": "Nærområdet",
       "viewingsHeading": "Visninger",
       "viewingsIntro": "Velkommen på visning. Meld interesse, så får du beskjed om nye visninger.",
       "documentsHeading": "Dokumenter og prospekt",
       "faqHeading": "Ofte stilte spørsmål",
-      "contactsHeading": "Kontakt",
+      "contactsHeading": "Spør oss om prosjektet",
       "navUnits": "Boliger",
-      "navContact": "Kontakt"
+      "navContact": "Meld interesse",
+      "keyFiguresEyebrow": "Fakta",
+      "selectorEyebrow": "Boligene",
+      "unitsEyebrow": "Boligene",
+      "galleryEyebrow": "Galleri",
+      "progressEyebrow": "Fremdrift",
+      "mapEyebrow": "Beliggenhet",
+      "viewingsEyebrow": "Kom og se",
+      "documentsEyebrow": "Til nedlasting",
+      "faqEyebrow": "Spørsmål og svar",
+      "contactsEyebrow": "Kontakt",
+      "leadEyebrow": "Interesse"
     },
     "pageTitle": "Prosjektside – {project}",
     "preview": {
@@ -1657,6 +1668,7 @@
       "buttonStyle": "Knappestil",
       "inheritOption": "Som standard ({value})",
       "fonts": {
+        "jost": "Jost",
         "inter": "Inter",
         "dm_sans": "DM Sans",
         "lora": "Lora",
@@ -1672,7 +1684,20 @@
       "sample": "Eksempel",
       "sampleHeading": "Nye boliger ved fjorden",
       "sampleText": "Slik ser tekst, overskrifter og knapper ut med disse valgene.",
-      "sampleButton": "Meld interesse"
+      "sampleButton": "Meld interesse",
+      "style": "Designstil",
+      "styleTitle": "Utseende",
+      "styles": {
+        "nordic": "Nordisk",
+        "classic": "Klassisk"
+      },
+      "styleHelp": {
+        "nordic": "Lys og luftig: tynn skrift, små overtitler, store bilder og seksjoner i hovedfargen.",
+        "classic": "Tydelige overskrifter, avrundede knapper og hvit bakgrunn."
+      },
+      "styleDefaults": "Stilen har egne standardfarger og skrift. Farger og skrift du velger selv, beholdes.",
+      "fromStyle": "Standard i stilen {style}",
+      "sampleEyebrow": "Boligene"
     },
     "editor": {
       "pageSelect": "Side som redigeres",
@@ -1786,7 +1811,10 @@
         "privacyController": "Behandlingsansvarlig",
         "orgNumber": "Organisasjonsnummer",
         "privacyEmail": "E-post for personvern",
-        "privacyExtra": "Mer om personvern"
+        "privacyExtra": "Mer om personvern",
+        "eyebrow": "Stikktittel",
+        "show_status": "Vis salgsstatus",
+        "menuButton": "Vis som knapp"
       },
       "help": {
         "richText": "Formatering: ## Overskrift, - punktliste, 1. nummerert liste, **fet**, *kursiv* og [lenketekst](https://…).",
@@ -1816,7 +1844,10 @@
         "brandLogo": "Vises øverst på prosjektsidene. Bruk gjerne PNG med gjennomsiktig bakgrunn.",
         "privacyController": "Firmaet som er ansvarlig for opplysningene fra interesseskjemaet. Står feltet tomt, brukes organisasjonens navn.",
         "privacyEmail": "Hit kan besøkende skrive for innsyn og sletting. Står feltet tomt, brukes e-posten til første kontaktperson.",
-        "privacyExtra": "Egen tekst nederst på personvernsiden, for eksempel om andre behandlinger. Tom linje gir nytt avsnitt."
+        "privacyExtra": "Egen tekst nederst på personvernsiden, for eksempel om andre behandlinger. Tom linje gir nytt avsnitt.",
+        "eyebrow": "Kort tekst over overskriften, for eksempel «Boligene». Vises med store bokstaver.",
+        "showStatus": "Viser for eksempel «9 av 24 boliger er solgt». Oppdateres når status endres.",
+        "menuButton": "Menypunktet vises som en knapp, for eksempel «Meld interesse»."
       },
       "options": {
         "heroHeight": {
@@ -2087,7 +2118,8 @@
     },
     "progress": {
       "done": "Fullført",
-      "upcoming": "Kommer"
+      "upcoming": "Kommer",
+      "now": "Nå"
     },
     "viewings": {
       "time": "Kl. {start}",
@@ -2210,6 +2242,11 @@
       "turnstile": "Interesseskjemaet bruker Cloudflare Turnstile for å stoppe spam. Turnstile kan lese teknisk informasjon om nettleseren din når du sender skjemaet.",
       "privacyLink": "Les om hvordan personopplysninger behandles",
       "tableCaption": "Informasjonskapsler og lagring i nettleseren på denne siden"
+    },
+    "hero": {
+      "sold": "{sold, plural, one {# av {total} boliger er solgt} other {# av {total} boliger er solgt}}",
+      "available": "{available, plural, one {# av {total} boliger er ledig} other {# av {total} boliger er ledige}}",
+      "allSold": "Alle boligene er solgt"
     }
   },
   "leads": {

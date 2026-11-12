@@ -1520,17 +1520,28 @@
       "leadButton": "Send",
       "keyFiguresHeading": "The project in numbers",
       "selectorHeading": "Find your home",
-      "unitsHeading": "The homes",
-      "galleryHeading": "Images",
-      "progressHeading": "Progress",
-      "mapHeading": "Location",
+      "unitsHeading": "Find your home",
+      "galleryHeading": "Images from the project",
+      "progressHeading": "From sales start to moving in",
+      "mapHeading": "The neighbourhood",
       "viewingsHeading": "Viewings",
       "viewingsIntro": "Welcome to a viewing. Register your interest to hear about new viewings.",
       "documentsHeading": "Documents and prospectus",
       "faqHeading": "Frequently asked questions",
-      "contactsHeading": "Contact",
+      "contactsHeading": "Ask us about the project",
       "navUnits": "Homes",
-      "navContact": "Contact"
+      "navContact": "Register interest",
+      "keyFiguresEyebrow": "Facts",
+      "selectorEyebrow": "The homes",
+      "unitsEyebrow": "The homes",
+      "galleryEyebrow": "Gallery",
+      "progressEyebrow": "Progress",
+      "mapEyebrow": "Location",
+      "viewingsEyebrow": "Come and see",
+      "documentsEyebrow": "Downloads",
+      "faqEyebrow": "Questions and answers",
+      "contactsEyebrow": "Contact",
+      "leadEyebrow": "Interest"
     },
     "pageTitle": "Project site – {project}",
     "preview": {
@@ -1657,6 +1668,7 @@
       "buttonStyle": "Button style",
       "inheritOption": "Default ({value})",
       "fonts": {
+        "jost": "Jost",
         "inter": "Inter",
         "dm_sans": "DM Sans",
         "lora": "Lora",
@@ -1672,7 +1684,20 @@
       "sample": "Example",
       "sampleHeading": "New homes by the fjord",
       "sampleText": "This is how text, headings and buttons look with these choices.",
-      "sampleButton": "Register interest"
+      "sampleButton": "Register interest",
+      "style": "Design style",
+      "styleTitle": "Look",
+      "styles": {
+        "nordic": "Nordic",
+        "classic": "Classic"
+      },
+      "styleHelp": {
+        "nordic": "Light and airy: thin type, small overlines, large images and sections in the main colour.",
+        "classic": "Clear headings, rounded buttons and a white background."
+      },
+      "styleDefaults": "Each style has its own default colours and fonts. Colours and fonts you choose yourself are kept.",
+      "fromStyle": "Default in the {style} style",
+      "sampleEyebrow": "The homes"
     },
     "editor": {
       "pageSelect": "Page being edited",
@@ -1786,7 +1811,10 @@
         "privacyController": "Data controller",
         "orgNumber": "Organization number",
         "privacyEmail": "Privacy email",
-        "privacyExtra": "More about privacy"
+        "privacyExtra": "More about privacy",
+        "eyebrow": "Overline",
+        "show_status": "Show sales status",
+        "menuButton": "Show as a button"
       },
       "help": {
         "richText": "Formatting: ## Heading, - bullet list, 1. numbered list, **bold**, *italic* and [link text](https://…).",
@@ -1816,7 +1844,10 @@
         "brandLogo": "Shown at the top of the project sites. A PNG with a transparent background works well.",
         "privacyController": "The company responsible for the information from the interest form. If left empty, the organization's name is used.",
         "privacyEmail": "Visitors can write here for access and deletion. If left empty, the email of the first contact person is used.",
-        "privacyExtra": "Your own text at the bottom of the privacy page, for example about other processing. A blank line starts a new paragraph."
+        "privacyExtra": "Your own text at the bottom of the privacy page, for example about other processing. A blank line starts a new paragraph.",
+        "eyebrow": "Short text above the heading, for example “The homes”. Shown in capitals.",
+        "showStatus": "Shows for example “9 of 24 homes sold”. Updated when a status changes.",
+        "menuButton": "The menu item is shown as a button, for example “Register interest”."
       },
       "options": {
         "heroHeight": {
@@ -2087,7 +2118,8 @@
     },
     "progress": {
       "done": "Completed",
-      "upcoming": "Upcoming"
+      "upcoming": "Upcoming",
+      "now": "Now"
     },
     "viewings": {
       "time": "At {start}",
@@ -2210,6 +2242,11 @@
       "turnstile": "The interest form uses Cloudflare Turnstile to stop spam. Turnstile can read technical information about your browser when you send the form.",
       "privacyLink": "Read how personal data is processed",
       "tableCaption": "Cookies and browser storage on this site"
+    },
+    "hero": {
+      "sold": "{sold, plural, one {# of {total} homes sold} other {# of {total} homes sold}}",
+      "available": "{available, plural, one {# of {total} homes available} other {# of {total} homes available}}",
+      "allSold": "All homes are sold"
     }
   },
   "leads": {

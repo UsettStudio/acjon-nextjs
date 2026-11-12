@@ -25,15 +25,20 @@ import {
   DEMO_FAQ,
   DEMO_LEADS,
   DEMO_ORGANIZATION,
+  DEMO_PLACES,
   DEMO_PROJECT,
   DEMO_STAGE,
   DEMO_STATUS_CHANGES,
   FACADE,
   FACADE_ALT,
+  INTERIOR_ALT,
+  LANDSCAPE_ALT,
   demoHotspots,
   demoUnits,
   demoViewings,
   facadeSvg,
+  interiorSvg,
+  landscapeSvg,
 } from "@/features/demo/fjordparken";
 import { CURRENT_CONSENT_VERSION } from "@/features/leads/consent";
 import { originalPath, variantPath } from "@/features/media/model";
@@ -144,14 +149,16 @@ async function createOrganization(client: Client): Promise<{ id: string; slug: s
   throw new DemoError("Fant ingen ledig adresse for organisasjonen");
 }
 
-/** Fasaden som PNG i full størrelse, og WebP-variantene appen lager ved opplasting. */
-async function uploadFacade(client: Client, organizationId: string, projectId: string): Promise<string> {
-  const png = await sharp(Buffer.from(facadeSvg())).png().toBuffer();
+type Illustration = { svg: string; filename: string; alt: string };
+
+/** En illustrasjon som PNG i full størrelse, og WebP-variantene appen lager ved opplasting. */
+async function uploadIllustration(client: Client, organizationId: string, projectId: string, image: Illustration): Promise<string> {
+  const png = await sharp(Buffer.from(image.svg)).png().toBuffer();
   const mime = "image/png";
   const assetId = randomUUID();
   const storage = client.storage.from("media");
   const path = originalPath(organizationId, assetId, mime);
-  check(await storage.upload(path, png, { contentType: mime, cacheControl: "31536000" }), "Opplasting av fasaden");
+  check(await storage.upload(path, png, { contentType: mime, cacheControl: "31536000" }), `Opplasting av ${image.filename}`);
   const processed = await processImage(png, mime);
   const variants = [];
   for (const variant of processed.variants) {
@@ -170,23 +177,30 @@ async function uploadFacade(client: Client, organizationId: string, projectId: s
       storage_path: path,
       mime,
       bytes: png.byteLength,
-      filename: "fjordparken-fasade.png",
-      alt_text: FACADE_ALT,
+      filename: image.filename,
+      alt_text: image.alt,
       width: processed.width,
       height: processed.height,
       variants: json(variants),
       processing_status: "ready",
     }),
-    "Lagring av fasaden i mediebiblioteket",
+    `Lagring av ${image.filename} i mediebiblioteket`,
   );
   return assetId;
 }
 
-function siteBlocks(blocks: Block[], facadeId: string): Block[] {
+/** Bildene på prosjektsiden: hero-bildet og bildet ved «Om prosjektet». */
+type SiteImages = { heroId: string; aboutId: string };
+
+function siteBlocks(blocks: Block[], images: SiteImages): Block[] {
   return blocks.flatMap((block): Block[] => {
     switch (block.type) {
       case "hero":
-        return [{ ...block, props: { ...block.props, image_asset_id: facadeId } }];
+        return [{ ...block, props: { ...block.props, image_asset_id: images.heroId } }];
+      case "text_image":
+        return [{ ...block, props: { ...block.props, image_asset_id: images.aboutId } }];
+      case "map":
+        return [{ ...block, props: { ...block.props, places: DEMO_PLACES.map((place) => ({ ...place })) } }];
       case "viewings":
         return [{ ...block, props: { ...block.props, items: demoViewings(new Date()) } }];
       case "faq":
@@ -205,7 +219,7 @@ async function createSite(
   client: Client,
   project: { id: string; name: string; description: string },
   selectorId: string,
-  facadeId: string,
+  images: SiteImages,
 ): Promise<{ siteId: string; subdomain: string; homePageId: string }> {
   const messages = JSON.parse(readFileSync("messages/nb.json", "utf8")) as { siteBuilder: { templates: Record<TemplateText, string> } };
   const texts = messages.siteBuilder.templates;
@@ -215,7 +229,7 @@ async function createSite(
     selectorId,
     t: (key) => texts[key],
   });
-  const pages = template.pages.map((page) => ({ ...page, blocks: siteBlocks(page.blocks, facadeId) }));
+  const pages = template.pages.map((page) => ({ ...page, blocks: siteBlocks(page.blocks, images) }));
   for (const subdomain of ["fjordparken", "fjordparken-demo", `fjordparken-${randomUUID().slice(0, 6)}`]) {
     const result = await client.rpc("create_site", {
       p_project_id: project.id,
@@ -297,8 +311,24 @@ async function main() {
     }
   }
 
-  // Fasaden og boligvelgeren med en markering per leilighet
-  const facadeId = await uploadFacade(client, organization.id, project.id);
+  // Illustrasjonene i mediebiblioteket: fasaden til boligvelgeren, huset ved fjorden og en stue til prosjektsiden
+  const facadeId = await uploadIllustration(client, organization.id, project.id, {
+    svg: facadeSvg(),
+    filename: "fjordparken-fasade.png",
+    alt: FACADE_ALT,
+  });
+  const landscapeId = await uploadIllustration(client, organization.id, project.id, {
+    svg: landscapeSvg(),
+    filename: "fjordparken-ved-fjorden.png",
+    alt: LANDSCAPE_ALT,
+  });
+  const interiorId = await uploadIllustration(client, organization.id, project.id, {
+    svg: interiorSvg(),
+    filename: "fjordparken-stue.png",
+    alt: INTERIOR_ALT,
+  });
+
+  // Boligvelgeren med en markering per leilighet
   const selectorId = randomUUID();
   const viewId = randomUUID();
   check(
@@ -344,7 +374,7 @@ async function main() {
   must(await client.rpc("publish_selector", { p_selector_id: selectorId }), "Publisering av boligvelgeren");
 
   // Prosjektsiden fra malen «Full prosjektside», med personvernopplysninger, publisert
-  const site = await createSite(client, { id: project.id, ...DEMO_PROJECT }, selectorId, facadeId);
+  const site = await createSite(client, { id: project.id, ...DEMO_PROJECT }, selectorId, { heroId: landscapeId, aboutId: interiorId });
   check(
     await client
       .from("sites")

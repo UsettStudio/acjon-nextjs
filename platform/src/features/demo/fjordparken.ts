@@ -1,19 +1,19 @@
 /**
  * Demodata: organisasjonen «Demo Bolig AS» med prosjektet «Fjordparken», 24
- * leiligheter på fire etasjer, en fasade i SVG med ferdige markeringer og en
- * publisert prosjektside. Alt er oppdiktet. Skriptet scripts/demo.ts legger det
- * inn med de samme databasefunksjonene som appen.
+ * leiligheter på fire etasjer, illustrasjoner i SVG (fasaden med ferdige
+ * markeringer, huset ved fjorden og en stue) og en publisert prosjektside. Alt
+ * er oppdiktet. Skriptet scripts/demo.ts legger det inn med de samme
+ * databasefunksjonene som appen.
  */
 
 import type { UnitStatus } from "@/features/units/fields";
 
 export const DEMO_ORGANIZATION = { name: "Demo Bolig AS", slug: "demo-bolig" } as const;
 
+/** Merkevareprofilen: designstilen Nordisk med en dempet salviegrønn (hvit tekst får kontrast 5,6:1). */
 export const DEMO_BRAND = {
-  primary: "#1E4D5C",
-  heading_font: "lora",
-  body_font: "inter",
-  button_style: "rounded",
+  style: "nordic",
+  primary: "#5F6B58",
 } as const;
 
 export const DEMO_PROJECT = {
@@ -240,6 +240,213 @@ export function facadeSvg(): string {
 }
 
 export const FACADE_ALT = "Fasaden til Fjordparken: et hus med fire etasjer og seks leiligheter med balkong i hver etasje";
+
+// -----------------------------------------------------------------------------
+// Illustrasjon til «Om prosjektet»
+// -----------------------------------------------------------------------------
+
+export const LANDSCAPE = { width: 2400, height: 1600 } as const;
+
+function bush(x: number, y: number, r: number, fill: string): string {
+  return `<circle cx="${f(x)}" cy="${f(y)}" r="${f(r)}" fill="${fill}"/>`;
+}
+
+function roundTree(x: number, ground: number, crown: number): string {
+  return (
+    rect(x - 10, ground - crown * 1.6, 20, crown * 1.6, 'fill="#6b5a45"') +
+    bush(x, ground - crown * 1.9, crown, "#66775c") +
+    bush(x - crown * 0.55, ground - crown * 1.45, crown * 0.72, "#748669") +
+    bush(x + crown * 0.5, ground - crown * 1.5, crown * 0.6, "#6d7e62")
+  );
+}
+
+/**
+ * Plassholderen for et stemningsbilde: huset sett fra hagen, med fjorden, en
+ * lav sol og åsene bak. Flate farger i de samme dempede tonene som designstilen
+ * Nordisk, og ingen tekst i bildet.
+ */
+export function landscapeSvg(): string {
+  const { width, height } = LANDSCAPE;
+  const parts: string[] = [];
+  parts.push(
+    "<defs>" +
+      '<linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9dfd6"/><stop offset="1" stop-color="#f5efe2"/></linearGradient>' +
+      '<linearGradient id="water" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9caeae"/><stop offset="1" stop-color="#c8d3cd"/></linearGradient>' +
+      "</defs>",
+  );
+  parts.push(rect(0, 0, width, height, 'fill="url(#sky)"'));
+
+  // Lav sol over fjorden
+  parts.push(bush(1640, 600, 260, "#f2e4c4").replace("/>", ' fill-opacity="0.6"/>'));
+  parts.push(bush(1640, 600, 135, "#ecd5a6"));
+
+  // Åsene, lengst bak først
+  parts.push('<path d="M0 760 C 260 640 520 640 760 700 S 1220 600 1480 660 S 2000 720 2400 600 V 980 H 0 Z" fill="#bcc5b3"/>');
+  parts.push('<path d="M0 880 C 300 780 620 800 900 860 S 1500 800 1800 850 S 2200 860 2400 820 V 990 H 0 Z" fill="#9daa94"/>');
+
+  // Fjorden, med lyset fra solen i vannet
+  parts.push(rect(0, 950, width, 280, 'fill="url(#water)"'));
+  const glints: [number, number, number][] = [
+    [1520, 985, 240],
+    [1560, 1020, 170],
+    [1590, 1055, 110],
+    [1610, 1090, 70],
+    [260, 1010, 170],
+    [700, 1090, 230],
+    [1120, 1000, 150],
+    [2010, 1110, 210],
+    [1900, 1040, 120],
+  ];
+  for (const [x, y, length] of glints) {
+    parts.push(rect(x, y, length, 5, 'fill="#ffffff" fill-opacity="0.45"'));
+  }
+
+  // En seilbåt
+  parts.push('<path d="M1180 1070 H1320 L1296 1094 H1204 Z" fill="#59656c"/>');
+  parts.push('<path d="M1252 1064 V920 L1318 1058 Z" fill="#f8f5ee"/>');
+  parts.push('<path d="M1244 1064 V950 L1196 1058 Z" fill="#ebe4d6"/>');
+
+  // Hagen i forgrunnen og gangstien ned mot vannet
+  parts.push('<path d="M0 1190 C 500 1150 900 1200 1300 1180 S 2000 1150 2400 1170 V 1600 H 0 Z" fill="#7f8e73"/>');
+  parts.push('<path d="M1180 1600 C 1250 1430 1420 1300 1700 1200 L 1790 1206 C 1560 1320 1440 1450 1420 1600 Z" fill="#dcd2bf"/>');
+
+  // Huset til venstre: fire etasjer med tre leiligheter i hver, vinduer og balkonger
+  const house = { left: 0, right: 820, top: 330, ground: 1250 } as const;
+  const floorHeight = (house.ground - house.top) / FLOORS;
+  const unitWidth = (house.right - house.left) / 3;
+  parts.push(rect(house.left, house.top, house.right - house.left, house.ground - house.top, 'fill="#ebe4d8"'));
+  parts.push(rect(house.left - 20, house.top - 40, house.right - house.left + 40, 40, 'fill="#4a4f55"'));
+  for (let floor = 1; floor <= FLOORS; floor++) {
+    const bottom = house.ground - (floor - 1) * floorHeight;
+    const top = bottom - floorHeight;
+    if (floor < FLOORS) {
+      parts.push(rect(house.left, top - 6, house.right - house.left, 12, 'fill="#d4cab9"'));
+    }
+    for (let position = 0; position < 3; position++) {
+      const left = house.left + position * unitWidth;
+      const windowTop = top + 34;
+      const windowHeight = floorHeight - 110;
+      parts.push(rect(left + unitWidth * 0.12, windowTop, unitWidth * 0.3, windowHeight, 'fill="#8db1c7" stroke="#ffffff" stroke-width="6"'));
+      parts.push(rect(left + unitWidth * 0.56, windowTop, unitWidth * 0.3, windowHeight + 50, 'fill="#7fa6be" stroke="#ffffff" stroke-width="6"'));
+      parts.push(rect(left + unitWidth * 0.06, bottom - 70, unitWidth * 0.88, 56, 'fill="#bcd6e6" fill-opacity="0.75" stroke="#5f7b8a" stroke-width="4"'));
+      parts.push(rect(left + unitWidth * 0.04, bottom - 16, unitWidth * 0.92, 12, 'fill="#9aa3a8"'));
+    }
+  }
+
+  // Busker langs huset og trær i hagen
+  for (let x = 30; x < house.right + 40; x += 95) {
+    parts.push(bush(x, house.ground + 10, 58, x % 190 === 30 ? "#6d7e62" : "#748669"));
+  }
+  parts.push(roundTree(1010, 1230, 95));
+  parts.push(roundTree(2160, 1240, 150));
+  parts.push(roundTree(1960, 1225, 85));
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">${parts.join("")}</svg>`;
+}
+
+export const LANDSCAPE_ALT = "Illustrasjon av Fjordparken sett fra hagen, med fjorden og åsene i bakgrunnen";
+
+export const INTERIOR = { width: 2400, height: 1600 } as const;
+
+/**
+ * Plassholderen for et interiørbilde: en stue med et stort vindu mot fjorden,
+ * sofa, lampe og planter. Samme toner som de andre illustrasjonene, uten tekst.
+ */
+export function interiorSvg(): string {
+  const { width, height } = INTERIOR;
+  const floor = 1250;
+  const win = { left: 320, right: 1460, top: 200, bottom: 1150 } as const;
+  const parts: string[] = [];
+  parts.push(
+    "<defs>" +
+      '<linearGradient id="view" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d6ddd5"/><stop offset="1" stop-color="#f3ecdf"/></linearGradient>' +
+      '<linearGradient id="light" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fffaf0" stop-opacity="0.55"/><stop offset="1" stop-color="#fffaf0" stop-opacity="0"/></linearGradient>' +
+      "</defs>",
+  );
+  // Vegg og gulv med bord
+  parts.push(rect(0, 0, width, floor, 'fill="#eee8dd"'));
+  parts.push(rect(0, floor, width, height - floor, 'fill="#cbb99e"'));
+  for (let y = floor + 70; y < height; y += 80) {
+    parts.push(rect(0, y, width, 3, 'fill="#bba98c"'));
+  }
+  parts.push(rect(0, floor - 18, width, 18, 'fill="#e2d9ca"'));
+
+  // Utsikten gjennom vinduet: himmel, åser og fjord
+  parts.push(rect(win.left, win.top, win.right - win.left, win.bottom - win.top, 'fill="url(#view)"'));
+  parts.push(bush(1180, 520, 90, "#ecd5a6"));
+  parts.push(
+    `<path d="M${win.left} 700 C 560 610 760 640 960 680 S 1300 620 ${win.right} 640 V 860 H ${win.left} Z" fill="#bcc5b3"/>`,
+  );
+  parts.push(`<path d="M${win.left} 790 C 640 730 900 770 1120 790 S 1380 760 ${win.right} 780 V 880 H ${win.left} Z" fill="#9daa94"/>`);
+  parts.push(rect(win.left, 850, win.right - win.left, win.bottom - 850, 'fill="#a9b9b7"'));
+  for (const [x, y, length] of [
+    [1080, 900, 180],
+    [1110, 940, 110],
+    [520, 980, 160],
+    [820, 1060, 200],
+  ] as const) {
+    parts.push(rect(x, y, length, 5, 'fill="#ffffff" fill-opacity="0.5"'));
+  }
+  // Vinduskarm og sprosser
+  parts.push(rect(win.left - 26, win.top - 26, win.right - win.left + 52, 26, 'fill="#5c605a"'));
+  parts.push(rect(win.left - 26, win.bottom, win.right - win.left + 52, 30, 'fill="#5c605a"'));
+  parts.push(rect(win.left - 26, win.top, 26, win.bottom - win.top, 'fill="#5c605a"'));
+  parts.push(rect(win.right, win.top, 26, win.bottom - win.top, 'fill="#5c605a"'));
+  parts.push(rect((win.left + win.right) / 2 - 10, win.top, 20, win.bottom - win.top, 'fill="#5c605a"'));
+  // Lyset fra vinduet på gulvet
+  parts.push(`<path d="M${win.left} ${floor} L${win.right} ${floor} L1900 ${height} L560 ${height} Z" fill="url(#light)"/>`);
+
+  // Gardin
+  parts.push(rect(150, 140, 150, floor - 140, 'fill="#ddd3c3"'));
+  for (const x of [185, 225, 265]) {
+    parts.push(rect(x, 140, 4, floor - 140, 'fill="#cdc2b0"'));
+  }
+  parts.push(rect(110, 120, 1420, 16, 'fill="#8c8478"'));
+
+  // Teppe, sofa og bord
+  parts.push(`<ellipse cx="1820" cy="1420" rx="560" ry="110" fill="#e4dacb"/>`);
+  parts.push('<rect x="1500" y="880" width="760" height="230" rx="36" fill="#6f7f63"/>');
+  parts.push('<rect x="1460" y="1020" width="840" height="200" rx="40" fill="#7f8e73"/>');
+  parts.push('<rect x="1540" y="990" width="330" height="90" rx="30" fill="#8b9a7f"/>');
+  parts.push('<rect x="1890" y="990" width="330" height="90" rx="30" fill="#8b9a7f"/>');
+  parts.push('<rect x="1600" y="920" width="150" height="120" rx="24" fill="#d8cdb8"/>');
+  parts.push(rect(1500, 1220, 22, 50, 'fill="#6b5a45"'));
+  parts.push(rect(2238, 1220, 22, 50, 'fill="#6b5a45"'));
+  parts.push('<ellipse cx="1820" cy="1330" rx="230" ry="40" fill="#b59f7b"/>');
+  parts.push(rect(1700, 1330, 16, 90, 'fill="#8c7a5e"'));
+  parts.push(rect(1924, 1330, 16, 90, 'fill="#8c7a5e"'));
+
+  // Bilde på veggen og en lampe i taket
+  parts.push(rect(1700, 380, 380, 300, 'fill="#f7f3ea" stroke="#5c605a" stroke-width="14"'));
+  parts.push('<path d="M1720 640 C 1800 560 1880 580 1960 610 S 2040 580 2060 600 V 662 H 1720 Z" fill="#9daa94"/>');
+  parts.push(bush(1990, 470, 40, "#ecd5a6"));
+  parts.push(rect(1887, 0, 6, 200, 'fill="#5c605a"'));
+  parts.push('<path d="M1800 290 Q 1890 170 1980 290 Z" fill="#5c605a"/>');
+
+  // Planter i krukke
+  parts.push('<path d="M1300 1250 L1320 1110 H1440 L1460 1250 Z" fill="#b59f7b"/>');
+  for (const [x, y, rx, ry, rotate] of [
+    [1350, 1010, 40, 120, -25],
+    [1410, 990, 40, 130, 20],
+    [1380, 960, 36, 140, 0],
+    [1330, 1060, 34, 90, -55],
+    [1440, 1060, 34, 90, 55],
+  ] as const) {
+    parts.push(`<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="#66775c" transform="rotate(${rotate} ${x} ${y})"/>`);
+  }
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">${parts.join("")}</svg>`;
+}
+
+export const INTERIOR_ALT = "Illustrasjon av en stue med stort vindu, sofa og planter, og utsikt mot fjorden";
+
+/** Nærområdet på kartet. Stedene er oppdiktet, som resten av demoen. */
+export const DEMO_PLACES = [
+  { name: "Strandtorget", category: "Tog og T-bane", distance: "6 min" },
+  { name: "Kaiveien", category: "Buss", distance: "2 min" },
+  { name: "Solsiden barnehage", category: "Barnehage", distance: "4 min" },
+  { name: "Fjordlia skole", category: "Barneskole", distance: "8 min" },
+  { name: "Nærbutikken", category: "Dagligvare", distance: "3 min" },
+  { name: "Badeplassen", category: "Strand og bad", distance: "5 min" },
+] as const;
 
 // -----------------------------------------------------------------------------
 // Innhold på prosjektsiden og leads

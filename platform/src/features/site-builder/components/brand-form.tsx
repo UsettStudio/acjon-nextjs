@@ -10,7 +10,7 @@ import { updateBrand } from "@/features/site-builder/actions";
 import type { FieldSpec } from "@/features/site-builder/components/editor/field-specs";
 import { FieldContextProvider, FieldList, type FieldContext } from "@/features/site-builder/components/editor/fields";
 import { ThemeFields } from "@/features/site-builder/components/editor/theme-fields";
-import { DEFAULT_THEME, themeSchema, type ThemeOverrides } from "@/features/site-builder/theme";
+import { themeSchema, type ThemeOverrides } from "@/features/site-builder/theme";
 
 const LOGO_FIELDS: FieldSpec[] = [{ kind: "image", key: "logoAssetId", label: "brandLogo", help: "brandLogo" }];
 
@@ -67,7 +67,7 @@ export function BrandForm({
           errors={{}}
           onChange={(values) => setLogo(typeof values.logoAssetId === "string" ? values.logoAssetId : null)}
         />
-        <ThemeFields value={theme} base={DEFAULT_THEME} onChange={setTheme} disabled={false} inheritLabel={t("default")} />
+        <ThemeFields value={theme} parent={{}} onChange={setTheme} disabled={false} inheritLabel={t("default")} />
         <div className="flex items-center gap-3">
           <Button type="submit" disabled={pending || !valid}>
             {pending ? tCommon("saving") : tCommon("save")}

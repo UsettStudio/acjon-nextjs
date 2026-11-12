@@ -73,9 +73,9 @@ platform/
     │   ├── units/                     ✔ felt og tolking, prisberegning, tabell, skjema, import/, eksport
     │   ├── media/                     ✔ opplasting, bildevarianter (sharp), bibliotek, filvelger
     │   ├── selector/                  ✔ geometri, angre, filtre, visningstre, editor/, public/, serverhandlinger
-    │   ├── site-builder/              ✔ blokker, maler, tema, rik tekst, SEO, editor/, render/, mellomlager
+    │   ├── site-builder/              ✔ blokker, maler, tema og designstiler, rik tekst, SEO, editor/, render/, mellomlager
     │   ├── leads/                     ✔ interesseskjema, samtykke, Turnstile, innsending, admin, CSV og innsyn per person
-    │   ├── demo/                      ✔ demodata for Fjordparken: leiligheter, fasade i SVG og markeringer
+    │   ├── demo/                      ✔ demodata for Fjordparken: leiligheter, illustrasjoner i SVG, markeringer og nærområdet
     │   ├── domains/                   ✔ vertsnavn, DNS over HTTPS, Vercel Domains API, sjekk og Innstillinger → Domener
 │   ├── billing/                   ✔ Stripe (Checkout, kundeportal, synk fra webhook), Innstillinger → Abonnement
 │   ├── launch/                    ✔ lansering med oppstartsavgift: Checkout, registrering av betalingen, siden Lansering
@@ -437,7 +437,9 @@ Publiserte prosjektsider (`sites/[site]/…`) lages som ferdige statiske sider p
   - Filteret kan brukes med tastatur.
   - Listen er et likeverdig alternativ til bildet.
 - **Fokus etter dialoger.** Radix gir fokus tilbake til `DialogTrigger`. Dialoger som åpnes fra kode, for eksempel enhetskortet, har ingen trigger. `useReturnFocus` i `DialogContent` og `AlertDialogContent` gir fokus tilbake til elementet som hadde fokus da dialogen åpnet.
-- **Kontrast over bilder.** Teksten i hero ligger over en mørk toning nederst, så kontrasten holder også over lyse bilder (minst 8:1 i demoen).
+- **Kontrast over bilder.** Teksten i hero ligger over en mørk toning, så kontrasten holder også over lyse bilder.
+  - Klassisk: toningen er mørkest nederst, der teksten står (minst 8:1 i demoen).
+  - Nordisk: en gradient som er mørkest øverst og nederst, og 35 % i midten, i tillegg til «Mørklegging av bildet» (standard 35 %). Med standardinnstillingen er bildet minst 58 % mørklagt bak teksten. Hvit tekst får da minst 5:1, også over et helt hvitt bilde.
 - **Ikke testet med en ekte skjermleser** (NVDA, VoiceOver). Det bør gjøres før lansering.
 
 ## 21. Innsyn og sletting for én person
@@ -478,3 +480,27 @@ Publiserte prosjektsider (`sites/[site]/…`) lages som ferdige statiske sider p
   4. Betalingen registreres med `complete_project_launch()` både når kunden kommer tilbake fra Checkout og fra webhooken. Funksjonen tåler å bli kalt flere ganger, og beløpet uten mva. må stemme med raden. Lanseringen logges i revisjonsloggen.
 - **Etter avtale.** Prosjekter med mer enn 199 enheter, demo og support lanseres med `waive_project_launch()` (service-rollen), med eller uten grense. Plattformadmin gjør det i Plattformadmin → organisasjonen, gjennom `platform_launch_project()`, som krever et notat om avtalen (fase 7). Det logges med notatet. Se [drift.md](drift.md).
 - **Hvem ser hva.** Eier og administrator ser betalingene (`project_launches`, RLS). Alle med tilgang til prosjektet ser om det er lansert.
+
+## 24. Designstiler på prosjektsider (fase 8)
+
+- **Stilen er en del av temaet** (`theme.style`: `nordic` eller `classic`). Den lagres som de andre temaverdiene: på merkevareprofilen (`organizations.brand`) og per prosjektside (`sites.theme`, publisert i `published_config`).
+- **Rekkefølgen** er prosjektsiden, så merkevareprofilen, så standard (`DEFAULT_STYLE = "nordic"`). Stilen avgjøres først. Deretter hentes hver farge, skrift og knappestil fra prosjektsiden, merkevareprofilen eller standardverdiene i stilen (`STYLE_DEFAULTS` i `src/features/site-builder/theme.ts`). Å bytte stil endrer derfor bare verdiene som ikke er valgt.
+- **Visningen:**
+  - Rotelementet `.site-root` får `data-site-style`.
+  - Tailwind-varianten `nordic:` (`@custom-variant` i `globals.css`) gjelder alt inne i en side med `data-site-style="nordic"`.
+  - De fleste blokkene er felles og får typografi og luft med `nordic:`-klasser.
+  - Hero, tekst og bilde, galleri, nøkkeltall og fremdrift har egne komponenter i Nordisk (`render/nordic-blocks.tsx`), valgt i `block-renderer.tsx`.
+  - Kart, interesseskjema, enhetsliste, meny og bunntekst har egne grener for Nordisk i sine komponenter.
+- **CSS-variabler fra temaet**, i tillegg til fargene:
+
+  | Variabel | Innhold |
+  |---|---|
+  | `--site-primary-text` | Hovedfargen når den har minst 4,5:1 mot bakgrunnen, ellers tekstfargen. Brukes til overtitler og lenker. |
+  | `--site-tint` | 8 % hovedfarge over bakgrunnen. Brukes på dempede seksjoner i Nordisk. |
+  | `--site-eyebrow` | Settes på seksjoner i hovedfargen, så overtitler får tekstfargen for hovedfargen. |
+
+- **Seksjoner** (`BlockSection`) har tre toner: vanlig, dempet og hovedfarge. I Nordisk er luften rundt vanlige seksjoner marg, så den slås sammen mellom to seksjoner. Seksjoner med farge har luften som padding.
+- **Menyen over bildet:** når første synlige blokk er en hero i Nordisk, er toppen `fixed` og gjennomsiktig. Den får bakgrunn etter 24 px rulling (`data-overlay` er `transparent` eller `solid`).
+- **Felt i blokkene:** `eyebrow` (overtittel) på alle blokker med overskrift, `show_status` i heroen, og `button` på menypunkter. Feltene er valgfrie, så lagrede blokker fra før fase 8 er fortsatt gyldige.
+- **Skrift:** Jost er lagt til ved siden av Inter, DM Sans, Lora og Playfair, og lastes med `next/font` fra egen server.
+- **Kontrast:** enhetstestene sjekker at standardfargene i begge stilene har minst 4,5:1 for tekst, hovedfarge som tekst, tekst på hovedfargen og tekst på dempede seksjoner. axe kontrollerer demoen i Nordisk og en side i Klassisk i E2E.

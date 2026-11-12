@@ -55,6 +55,8 @@ export const navItemSchema = z.object({
   id: z.string().min(1).max(64),
   label: z.string().trim().min(1, { error: "required" }).max(60, { error: "textTooLong" }),
   link: linkSchema,
+  /** Vises som en knapp i menyen, for eksempel «Meld interesse». */
+  button: z.boolean().optional(),
 });
 
 export type NavItem = z.infer<typeof navItemSchema>;
@@ -109,6 +111,11 @@ export type CookieSettings = z.output<typeof cookieSettingsSchema>;
 export function parseCookieSettings(value: unknown): CookieSettings {
   const parsed = cookieSettingsSchema.safeParse(value ?? {});
   return parsed.success ? parsed.data : cookieSettingsSchema.parse({});
+}
+
+/** Adressen til prosjektet på én linje, for eksempel «Fjordparken 1, 0150 Oslo». */
+export function projectAddress(project: Pick<SiteProject, "address" | "postalCode" | "city">): string {
+  return [project.address, [project.postalCode, project.city].filter(Boolean).join(" ")].filter(Boolean).join(", ");
 }
 
 export function parseNav(value: unknown): NavItem[] {

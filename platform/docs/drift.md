@@ -138,8 +138,8 @@ Kundenes API-nøkler og webhook-hemmeligheter byttes av kunden under Innstilling
 
 - `npm run demo` lager Demo Bolig AS med Fjordparken:
   - 24 leiligheter på fire etasjer
-  - fasade i SVG med markeringer
-  - publisert boligvelger og prosjektside
+  - illustrasjoner i SVG: fasaden med markeringer, huset ved fjorden og en stue
+  - publisert boligvelger og prosjektside i designstilen Nordisk, med steder i nærområdet
   - statusendringer og tre leads
 - Første gang trengs `DEMO_PASSWORD` for brukeren `demo@example.com`. Med `--email` får en bruker som finnes, organisasjonen. `--replace` lager den på nytt.
 - Skriptet trenger `SUPABASE_SECRET_KEY` for å logge inn som brukeren, slette en gammel demo og lansere prosjektet uten oppstartsavgift. Alt annet gjøres som brukeren, gjennom RLS.

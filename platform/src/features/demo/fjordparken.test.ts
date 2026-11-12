@@ -1,15 +1,23 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  DEMO_BRAND,
+  DEMO_PLACES,
   DEMO_STATUS_CHANGES,
   FACADE,
+  INTERIOR,
+  LANDSCAPE,
   demoHotspots,
   demoUnits,
   demoViewings,
   facadeSvg,
   hotspotRect,
+  interiorSvg,
+  landscapeSvg,
   unitBox,
 } from "@/features/demo/fjordparken";
+import { blockPropsSchemas } from "@/features/site-builder/blocks";
+import { themeSchema } from "@/features/site-builder/theme";
 import { UNIT_STATUSES } from "@/features/units/fields";
 
 describe("demodata for Fjordparken", () => {
@@ -85,12 +93,26 @@ describe("demodata for Fjordparken", () => {
     }
   });
 
-  it("lager en fasade i SVG med bildets mål og uten tekst", () => {
-    const svg = facadeSvg();
+  it.each([
+    ["fasaden", facadeSvg, FACADE],
+    ["huset ved fjorden", landscapeSvg, LANDSCAPE],
+    ["stuen", interiorSvg, INTERIOR],
+  ] as const)("lager %s i SVG med bildets mål og uten tekst", (_name, draw, size) => {
+    const svg = draw();
     expect(svg.startsWith("<svg ")).toBe(true);
-    expect(svg).toContain(`viewBox="0 0 ${FACADE.width} ${FACADE.height}"`);
+    expect(svg).toContain(`viewBox="0 0 ${size.width} ${size.height}"`);
     expect(svg).not.toContain("<text");
     expect(svg).not.toContain("<script");
+    expect(svg).not.toContain("NaN");
+  });
+
+  it("har steder i nærområdet som kartblokken godtar", () => {
+    const props = blockPropsSchemas.map.parse({ places: DEMO_PLACES.map((place) => ({ ...place })) });
+    expect(props.places).toHaveLength(DEMO_PLACES.length);
+  });
+
+  it("har en merkevareprofil i designstilen Nordisk", () => {
+    expect(themeSchema.parse(DEMO_BRAND).style).toBe("nordic");
   });
 
   it("legger visningene på de to neste søndagene", () => {

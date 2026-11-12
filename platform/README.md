@@ -22,6 +22,7 @@ Selvbetjent SaaS for boligutbyggere og eiendomsmeglere. Kunden setter selv opp p
 | 5 Kvalitet | Ferdig |
 | 6 Pakker og oppstartsavgift | Ferdig |
 | 7 Oppfølging | Ferdig |
+| 8 Designstil Nordisk | Ferdig |
 
 Fase 0 omfatter Next.js-appen, databasen med RLS, pålogging, organisasjoner, invitasjoner, brukeradministrasjon, plattformadmin, tester og CI.
 
@@ -53,7 +54,7 @@ Fase 3 omfatter:
 
 - Prosjektside-editor med forhåndsvisning i sanntid:
   - Alle 18 blokktyper og malene «Kommer for salg» og «Full prosjektside». En side kan bygges ut uten å begynne på nytt.
-  - Flere sider, meny og bunntekst, og tema fra merkevareprofilen.
+  - Flere sider, meny og bunntekst, og tema fra merkevareprofilen (designstilene Nordisk og Klassisk kom i fase 8).
   - Publisering, delt forhåndsvisningslenke og versjonshistorikk.
 - Publisert prosjektside på underdomene (`{underdomene}.[PLATTFORMDOMENE]`):
   - Enhetssiden `/bolig/{slug}`.
@@ -112,6 +113,13 @@ Fase 7 omfatter:
 - **Brukere** viser hvor mange plasser i pakken som er i bruk, og invitasjon er sperret når pakken er full.
 - **Prosjektlisten** viser prosjekter som ikke er lansert.
 - **Angre og gjør om i blokkeditoren:** knapper og Ctrl/Cmd+Z og Ctrl/Cmd+Shift+Z, med egen historikk per side.
+
+Fase 8 omfatter:
+
+- **Designstilen Nordisk** for prosjektsider, ny standard: lys og luftig, med tynn skrift (Jost), små overtitler, hero i full høyde med menyen over bildet, store bilder med ett avrundet hjørne og seksjoner i hovedfargen.
+- **Klassisk** (stilen fra fase 3) kan fortsatt velges i Tema → Designstil, på merkevareprofilen eller per prosjektside.
+- **Malene** har overtitler, salgsstatus i heroen («7 av 24 boliger er solgt») og «Meld interesse» som knapp i menyen.
+- **Demoen** har illustrasjoner av huset ved fjorden og en stue, og steder i nærområdet.
 
 ## Kom i gang lokalt
 

@@ -15,9 +15,10 @@ import { useLiveUnits } from "@/features/selector/components/public/use-public-u
 import { filterOptions, matchesFilters, parseFilters, writeFilters } from "@/features/selector/filters";
 import { FILTER_KEYS } from "@/features/selector/model";
 import type { RenderBlockProps } from "@/features/site-builder/components/render/content-blocks";
-import { BlockHeading, BlockSection, EditorHint } from "@/features/site-builder/components/render/primitives";
+import { BlockSection, BlockTitle, EditorHint } from "@/features/site-builder/components/render/primitives";
 import { unitHref } from "@/features/site-builder/site";
 import { imageSources, svgPoints } from "@/features/selector/components/hotspot-svg";
+import { cn } from "@/lib/utils";
 
 // -----------------------------------------------------------------------------
 // Boligvelger
@@ -38,11 +39,7 @@ export function SelectorBlock({ block, data, isFirst }: RenderBlockProps<"select
   }
   return (
     <BlockSection id={block.id} headingId={block.props.heading ? headingId : undefined} flushMobile>
-      {block.props.heading ? (
-        <div className="px-3 sm:px-0">
-          <BlockHeading id={headingId}>{block.props.heading}</BlockHeading>
-        </div>
-      ) : null}
+      <BlockTitle id={headingId} eyebrow={block.props.eyebrow} heading={block.props.heading} className="px-3 sm:px-0" />
       {data.mode === "editor" ? (
         <SelectorPreviewCard data={data} selectorId={selector.id} />
       ) : (
@@ -102,6 +99,7 @@ function SelectorPreviewCard({ data, selectorId }: { data: RenderBlockProps<"sel
 
 export function UnitListBlock({ block, data }: RenderBlockProps<"unit_list">) {
   const t = useTranslations("site.editor");
+  const nordic = data.theme.style === "nordic";
   const headingId = `${block.id}-heading`;
   const searchParams = useLocationSearch();
   const { units } = useLiveUnits(data.units, data.project.id, data.project.showPriceOnSold, data.mode === "published");
@@ -121,8 +119,9 @@ export function UnitListBlock({ block, data }: RenderBlockProps<"unit_list">) {
 
   return (
     <BlockSection id={block.id} headingId={block.props.heading ? headingId : undefined}>
-      {block.props.heading ? <BlockHeading id={headingId}>{block.props.heading}</BlockHeading> : null}
-      <div className="grid gap-4 text-neutral-900 [&_table]:bg-white">
+      <BlockTitle id={headingId} eyebrow={block.props.eyebrow} heading={block.props.heading} />
+      {/* Klassisk: hvit tabell, uansett bakgrunn. Nordisk: tabellen står rett på siden, uten ramme. */}
+      <div className={cn("grid gap-4", nordic ? "gap-8" : "text-neutral-900 [&_table]:bg-white")}>
         {block.props.show_filters ? (
           <FilterBar
             filters={filters}
@@ -147,6 +146,7 @@ export function UnitListBlock({ block, data }: RenderBlockProps<"unit_list">) {
             }
           }}
           onToggleFavorite={toggle}
+          variant={nordic ? "editorial" : "default"}
         />
       </div>
     </BlockSection>
@@ -160,27 +160,46 @@ export function UnitListBlock({ block, data }: RenderBlockProps<"unit_list">) {
 export function LeadFormBlock({ block, data }: RenderBlockProps<"lead_form">) {
   const headingId = `${block.id}-heading`;
   const t = useTranslations("site.lead");
+  const nordic = data.theme.style === "nordic";
   const units = data.units
     .filter((unit) => unit.status !== "sold")
     .map((unit) => ({ id: unit.id, label: unit.title ? `${unit.unit_number} – ${unit.title}` : unit.unit_number }));
+  const form = (
+    <LeadForm
+      projectId={data.project.id}
+      pageId={data.page?.id ?? null}
+      units={units}
+      defaultUnitId={null}
+      showUnitSelect={block.props.show_unit_select}
+      buttonLabel={block.props.button_label}
+      source="site"
+      organizationName={data.organization.name}
+      projectName={data.project.name}
+      locale={data.organization.locale}
+      disabled={data.mode !== "published"}
+      variant={nordic ? "inverted" : "default"}
+    />
+  );
+  if (nordic) {
+    // Nordisk: et kort i hovedfargen med ett stort avrundet hjørne.
+    return (
+      <BlockSection id={block.id} headingId={headingId}>
+        <div className="rounded-tl-[4rem] bg-[var(--site-primary)] px-6 py-14 text-[var(--site-primary-foreground)] [--site-eyebrow:var(--site-primary-foreground)] sm:px-12 lg:rounded-tl-[9rem] lg:px-20 lg:py-20">
+          <div className="max-w-3xl">
+            <BlockTitle id={headingId} eyebrow={block.props.eyebrow} heading={block.props.heading || t("defaultHeading")} />
+            {block.props.intro ? <p className="mb-10 text-lg">{block.props.intro}</p> : null}
+            {form}
+          </div>
+        </div>
+      </BlockSection>
+    );
+  }
   return (
     <BlockSection id={block.id} headingId={headingId} tone="muted">
       <div className="mx-auto max-w-3xl">
-        <BlockHeading id={headingId}>{block.props.heading || t("defaultHeading")}</BlockHeading>
+        <BlockTitle id={headingId} eyebrow={block.props.eyebrow} heading={block.props.heading || t("defaultHeading")} />
         {block.props.intro ? <p className="mb-6 text-lg">{block.props.intro}</p> : null}
-        <LeadForm
-          projectId={data.project.id}
-          pageId={data.page?.id ?? null}
-          units={units}
-          defaultUnitId={null}
-          showUnitSelect={block.props.show_unit_select}
-          buttonLabel={block.props.button_label}
-          source="site"
-          organizationName={data.organization.name}
-          projectName={data.project.name}
-          locale={data.organization.locale}
-          disabled={data.mode !== "published"}
-        />
+        {form}
       </div>
     </BlockSection>
   );

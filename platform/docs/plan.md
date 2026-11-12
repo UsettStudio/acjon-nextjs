@@ -15,6 +15,7 @@ Hver fase avsluttes med grønne tester, typekontroll og lint, og en kort oppsumm
 | 5 Kvalitet | Ferdig, se oppsummeringen under fase 5 |
 | 6 Pakker og oppstartsavgift | Ferdig, se oppsummeringen under fase 6 |
 | 7 Oppfølging | Ferdig, se oppsummeringen under fase 7 |
+| 8 Designstil Nordisk | Ferdig, se oppsummeringen under fase 8 |
 
 ## Leveranse 1: datamodell og RLS (godkjent)
 
@@ -844,6 +845,62 @@ Alt i spesifikasjonen er bygget. Fase 7 tar det som sto igjen og ikke trenger ko
 - **Lansering etter avtale i plattformadmin** gjennom en egen databasefunksjon for plattformadmin, i stedet for service-nøkkelen. Det følger samme mønster som forlengelse av prøveperioden, og loggen viser hvem som gjorde det.
 - **Én tilstand for sidene og historikken** i blokkeditoren, oppdatert med rene funksjoner. Da passer historikken alltid til sidene, også i Reacts strenge modus.
 - **Ctrl/Cmd+Z i et felt i en blokk** angrer i editoren, ikke bare teksten i feltet. Feltene styres av editoren, så nettleserens egen angring virker dårlig der.
+
+## Fase 8: Designstil Nordisk
+
+Eieren ønsket prosjektsider i retning av konowsutsikt.no. Fase 8 lager en egen designstil i samme retning: lys, luftig og med store bilder. Design, tekst, bilder og kode er ikke hentet derfra.
+
+### Oppsummering av fase 8
+
+**Bygget:**
+
+- **Designstil i temaet** (`theme.style`): «Nordisk», som er ny standard, og «Klassisk», som er stilen fra fase 3.
+  - Stilen velges i Tema → Designstil, på merkevareprofilen eller per prosjektside.
+  - Hver stil har egne standardfarger og skrift. Farger og skrift som er valgt, beholdes når stilen byttes.
+  - Under hver farge står det om den kommer fra merkevareprofilen eller er standard i stilen.
+- **Nordisk:**
+  - Skriften Jost (selvhostet), salviegrønn hovedfarge (#5F6B58), sandfarget aksent og varm, lys bakgrunn.
+  - Hero i full høyde med menyen over bildet og en adresselinje nederst. Menyen får bakgrunn når siden rulles.
+  - Overtitler med store bokstaver, tynne overskrifter og firkantede knapper.
+  - Egne varianter av fem blokker:
+    - hero
+    - tekst og bilde: bildet går ut til kanten og har ett stort avrundet hjørne
+    - nøkkeltall: liste med ikoner
+    - fremdrift: tidslinje med ikoner og «Nå»
+    - galleri: første bilde i full bredde
+  - Kart, interesseskjema og bunntekst ser annerledes ut i Nordisk:
+    - kartet viser adressen stort og nærområdet med ikoner
+    - interesseskjemaet står i et kort i hovedfargen
+    - bunnteksten har prosjektnavn, adresse og kontaktpersoner i midten
+  - De andre blokkene får skriften og luften fra stilen.
+- **Blokkene** har fått feltet «Overtittel». Heroen kan vise salgsstatus («7 av 24 boliger er solgt», oppdatert i sanntid), og et menypunkt kan vises som knapp.
+- **Malene** har overtitler og nye overskrifter, og hero i full høyde med salgsstatus. «Meld interesse» står som knapp i menyen.
+- **Demoen** bruker Nordisk og har tre illustrasjoner i SVG (huset ved fjorden, en stue og fasaden i boligvelgeren) og seks steder i nærområdet.
+- **Rettet:**
+  - Tekst og bilde uten bilde viser bare teksten på den publiserte siden, ikke en tom flate.
+  - Skillelinjene i spørsmål og svar og i nærområdet hadde standardfargen fra admin.
+  - Den klassiske bunnteksten hadde gjennomsiktig tekst på hovedfargen. Med den grønne fargen kom kontrasten under 4,5:1. axe fant feilen.
+- **Tester:**
+
+  | Type | Antall | Nytt i fase 8 |
+  |---|---|---|
+  | pgTAP | 562 | Ingen endringer i databasen |
+  | Vitest | 340 | 8 nye: standardstilen, arv når stilen byttes, kontrast i standardfargene (også på dempede seksjoner), malene (overtitler, hero, menyknapp), illustrasjonene og stedene i demoen |
+  | Playwright | 26 | Ny: Nordisk på den publiserte siden (meny over bildet, salgsstatus, nærområdet), bytte til Klassisk i editoren og publisering, og axe på begge stilene og på Tema-fanen. axe-testene fra fase 5 sjekker nå demoen i Nordisk på desktop og mobil |
+
+**Gjenstår:**
+
+- **Ekte bilder.** Illustrasjonene i demoen er plassholdere. Stilen er laget for store fotografier.
+- **Kartet** vises ikke på skjermbildene fra utviklingsmiljøet, fordi Kartverket ikke kan nås derfra. I produksjon lastes kartet som før.
+- **Domenet** og **kontoene**, som før (se åpne spørsmål).
+
+**Valg i fase 8:**
+
+- **Nordisk er standard** for alle sider uten valgt stil, også sider som finnes. Det finnes ingen kunder ennå, så det gjelder bare testdata. Klassisk kan velges på merkevareprofilen og gjelder da alle prosjektsidene.
+- **Stilen styres med CSS:** `data-site-style` på rotelementet og Tailwind-varianten `nordic:`. Bare fem blokker har egne komponenter i Nordisk. Stilene deler data, felt og editor, så en side kan bytte stil uten at innholdet endres.
+- **Luften i Nordisk er marg** på vanlige seksjoner, så to seksjoner etter hverandre får én luke. Seksjoner med farge har luften inne i fargen.
+- **Hovedfargen brukes som tekst** bare når den har minst 4,5:1 mot bakgrunnen. Ellers brukes tekstfargen.
+- **Fremdriften står på en lys flate** i Nordisk, ikke på hovedfargen, så den ikke flyter sammen med kartet rett under.
 
 ## Valg som er godkjent
 

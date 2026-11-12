@@ -71,6 +71,7 @@ export type KeyFigureSource = (typeof KEY_FIGURE_SOURCES)[number];
 
 export const blockPropsSchemas = {
   hero: z.object({
+    eyebrow: text(80),
     title: text(200),
     subtitle: text(500),
     image_asset_id: optionalAssetId,
@@ -79,24 +80,30 @@ export const blockPropsSchemas = {
     align: z.enum(["left", "center"]).default("left"),
     cta_label: text(80),
     cta_link: optionalLink,
+    /** Viser for eksempel «9 av 24 boliger er solgt», oppdatert når status endres. */
+    show_status: z.boolean().default(false),
   }),
   text: z.object({
+    eyebrow: text(80),
     heading: text(200),
     body: text(10000),
     width: z.enum(["narrow", "wide"]).default("narrow"),
   }),
   text_image: z.object({
+    eyebrow: text(80),
     heading: text(200),
     body: text(10000),
     image_asset_id: optionalAssetId,
     image_position: z.enum(["left", "right"]).default("right"),
   }),
   gallery: z.object({
+    eyebrow: text(80),
     heading: text(200),
     asset_ids: z.array(assetId).max(60).default([]),
     columns: z.union([z.literal(2), z.literal(3), z.literal(4)]).default(3),
   }),
   key_figures: z.object({
+    eyebrow: text(80),
     heading: text(200),
     items: z
       .array(
@@ -110,6 +117,7 @@ export const blockPropsSchemas = {
       .default([]),
   }),
   progress: z.object({
+    eyebrow: text(80),
     heading: text(200),
     use_project: z.boolean().default(true),
     items: z
@@ -118,6 +126,7 @@ export const blockPropsSchemas = {
       .default([]),
   }),
   selector: z.object({
+    eyebrow: text(80),
     heading: text(200),
     selector_id: z.uuid({ error: "optionInvalid" }).nullable().default(null),
     entry_view_id: z.uuid({ error: "optionInvalid" }).nullable().default(null),
@@ -125,11 +134,13 @@ export const blockPropsSchemas = {
     show_list: z.boolean().default(true),
   }),
   unit_list: z.object({
+    eyebrow: text(80),
     heading: text(200),
     show_filters: z.boolean().default(true),
     hide_sold: z.boolean().default(false),
   }),
   map: z.object({
+    eyebrow: text(80),
     heading: text(200),
     use_project_location: z.boolean().default(true),
     lat: z.number().min(-90).max(90).nullable().default(null),
@@ -141,6 +152,7 @@ export const blockPropsSchemas = {
       .default([]),
   }),
   viewings: z.object({
+    eyebrow: text(80),
     heading: text(200),
     intro: text(1000),
     items: z
@@ -156,6 +168,7 @@ export const blockPropsSchemas = {
       .default([]),
   }),
   contacts: z.object({
+    eyebrow: text(80),
     heading: text(200),
     use_project: z.boolean().default(true),
     items: z
@@ -172,16 +185,19 @@ export const blockPropsSchemas = {
       .default([]),
   }),
   lead_form: z.object({
+    eyebrow: text(80),
     heading: text(200),
     intro: text(1000),
     button_label: text(60),
     show_unit_select: z.boolean().default(true),
   }),
   documents: z.object({
+    eyebrow: text(80),
     heading: text(200),
     asset_ids: z.array(assetId).max(40).default([]),
   }),
   video: z.object({
+    eyebrow: text(80),
     heading: text(200),
     url: z
       .string()
@@ -192,6 +208,7 @@ export const blockPropsSchemas = {
     caption: text(300),
   }),
   faq: z.object({
+    eyebrow: text(80),
     heading: text(200),
     items: z
       .array(z.object({ question: text(300), answer: text(3000) }))
@@ -199,6 +216,7 @@ export const blockPropsSchemas = {
       .default([]),
   }),
   news: z.object({
+    eyebrow: text(80),
     heading: text(200),
     items: z
       .array(
@@ -220,6 +238,7 @@ export const blockPropsSchemas = {
     align: z.enum(["left", "center", "right"]).default("center"),
   }),
   embed: z.object({
+    eyebrow: text(80),
     heading: text(200),
     url: httpsUrl,
     title: text(200),

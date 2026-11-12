@@ -3,6 +3,9 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Designstilen Nordisk på prosjektsidene: nordic:-klasser gjelder under rotelementet med data-site-style="nordic". */
+@custom-variant nordic (&:where([data-site-style="nordic"], [data-site-style="nordic"] *));
+
 @theme inline {
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --color-background: var(--background);
