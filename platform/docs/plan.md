@@ -8,8 +8,9 @@ Hver fase avsluttes med grønne tester, typekontroll og lint, og en kort oppsumm
 |---|---|
 | Datamodell og RLS | Godkjent |
 | 0 Grunnmur | Ferdig, se oppsummeringen under fase 0 |
-| 1 Prosjekter og enheter | Neste |
-| 2–5 | Ikke påbegynt |
+| 1 Prosjekter og enheter | Ferdig, se oppsummeringen under fase 1 |
+| 2 Boligvelger | Neste |
+| 3–5 | Ikke påbegynt |
 
 ## Leveranse 1: datamodell og RLS (godkjent)
 
@@ -133,6 +134,73 @@ Hver fase avsluttes med grønne tester, typekontroll og lint, og en kort oppsumm
 - **Tester:**
   - Enhetstester for prisberegning, importvalidering og norsk tallformat.
   - E2E: opprett prosjekt og importer 24 enheter.
+
+### Oppsummering av fase 1
+
+**Bygget:**
+
+- **Prosjekter:**
+  - Prosjektliste med fase, adresse og fordeling av status.
+  - Veiviser i fire steg: prosjekt, beliggenhet, fremdrift og kontakter, byggetrinn og bygg. Stegene etter det første er valgfrie.
+  - Adressesøk mot Kartverket fra nettleseren, med piltaster og skjermleserstøtte. Valgt adresse fyller ut postnummer, poststed, kommune og plassering.
+  - Kart (MapLibre med Kartverkets topografiske kart) med flyttbar nål. Koordinatene kan også skrives inn, for tastaturbrukere og nettlesere uten WebGL.
+  - Oversikt med antall enheter per status, andel solgt, siste statusendringer, fremdrift og kontaktpersoner.
+  - Innstillinger: generelt, beliggenhet, fremdrift, kontaktpersoner (kan hentes fra brukerne), byggetrinn med egen fase, bygg, rekkefølge og sletting med bekreftelse.
+- **Enhetstabell** (TanStack Table 9):
+  - Redigering i cellen med norsk tallformat. Enter eller F2 åpner, Escape avbryter.
+  - Sortering (A-2 før A-10), søk og filter på status, byggetrinn og bygg.
+  - Kolonnevelger som huskes per prosjekt.
+  - Flervalg, også med Shift. Masseendring av status med notat, pris (fast pris eller prosent med avrunding og forhåndsvisning), byggetrinn, bygg og synlighet, og sletting.
+  - Statuslogg per enhet. Status endres med ett klikk eller med notat.
+  - Sanntid: endringer fra kolleger vises uten ny lasting, med synlig indikator.
+  - Meglere kan bare endre status og pris.
+- **Enhetsskjema** med fanene Nøkkelinfo, Pris, Areal, Plantegninger og bilder, Dokumenter og Beskrivelse. Totalpris regnes ut mens du skriver. Faner med feil markeres. Statusloggen vises ved siden av.
+- **Mediebibliotek:**
+  - Opplasting rett fra nettleseren til Storage, med brukerens egne rettigheter.
+  - Serveren kontrollerer at innholdet er det filtypen sier, og lager WebP-varianter på 800, 1600 og 2400 px med sharp. Bildet roteres etter EXIF, og GPS-posisjon og annen metadata kommer ikke med i variantene.
+  - Alternativ tekst, søk, filter og sletting.
+  - Filvelger med opplasting, og rekkefølge med dra og slipp (også med tastatur).
+- **Import og eksport:**
+  - CSV (semikolon eller komma, UTF-8 eller Windows-1252) og Excel (XLSX). Overskriften finnes også under en tittelrad.
+  - Kolonnene kobles automatisk etter vanlige overskrifter på norsk, engelsk og svensk, og kan endres.
+  - Forhåndsvisning med feil per rad. Rader med feil kan hoppes over.
+  - Eksisterende enheter oppdateres på enhetsnummer. Byggetrinn og bygg opprettes etter navn.
+  - Alt lagres, eller ingenting. Statusendringer logges med kilde «import».
+  - Eksport til CSV som Excel åpner riktig, og som kan importeres igjen uten endringer.
+- **Database (migrasjon 0009):**
+  - `create_project`, `import_units`, `adjust_unit_prices` og `unit_status_counts`.
+  - Filstier er låst til filens egen mappe.
+  - Enhetens adresse følger enhetsnummeret når den er laget automatisk.
+  - Den som lastet opp en fil, kan slette den fra Storage.
+  - Statusloggen er koblet til profilen, så navnet vises.
+- **Tester:**
+
+  | Type | Antall | Nytt i fase 1 |
+  |---|---|---|
+  | pgTAP | 274 | 44 nye: opprettelse av prosjekt, import (roller, lesemodus, isolasjon, radnummer ved feil, alt eller ingenting), prisjustering, telling per status, filstier |
+  | Vitest | 122 | 50 nye: norske tall, prisberegning, felt og statusnavn, kolonnekobling, CSV og Excel-data, eksport og import tur-retur, Kartverket, bildevarianter |
+  | Playwright | 8 | 3 nye: veiviser med adressesøk, import av 24 enheter fra CSV og 24 fra Excel, redigering i cellen, status i sanntid i en annen fane, statuslogg, ny import som oppdaterer, eksport; enhetsskjema med plantegning fra mediebiblioteket; megler som bare kan endre status og pris |
+
+**Gjenstår (ikke del av fase 1):**
+
+- **Egne felt på enheter** (`custom_fields`): finnes i datamodellen, men har ikke skjema ennå. Kommer med enhetssiden i fase 2.
+- **Bilde av kontaktpersoner:** kommer med prosjektsiden i fase 3.
+- **Miniatyr av PDF:** sharp kan ikke lese PDF, så dokumenter vises med ikon.
+- **Content-Security-Policy (fase 5)** må tillate `ws.geonorge.no` og `cache.kartverket.no`, Supabase (også `wss:` for sanntid) og web-workeren til MapLibre.
+- **Svært store prosjekter:** tabellen viser alle enheter uten virtualisering. Det holder for noen hundre enheter. Importen tar inntil 2000 rader.
+
+**Valg i fase 1:**
+
+- **Adresser i admin:** prosjekter har slug (`/{org}/projects/{slug}`), enheter har id. Hjelpeteksten sier at gamle lenker slutter å virke hvis slugen endres.
+- **Bredere admin:** innholdet er inntil 1536 px bredt, fordi enhetstabellen har mange kolonner.
+- **Status:** endres alltid via `set_unit_status`, så den logges med kilde og notat. Andre felt lagres direkte. RLS og triggeren i databasen hindrer meglere i å endre noe annet enn pris og status.
+- **Import:** én databasefunksjon som lagrer alt eller ingenting og oppgir radnummer ved feil. En tom celle tømmer feltet, unntatt for status, type og «skjult», der tom betyr «behold».
+- **Prisendring i prosent:** rundes av til valgt beløp (standard nærmeste 1 000 kr). Enheter uten pris endres ikke.
+- **Opplasting i to steg med brukerens rettigheter.** Filstørrelsen kontrolleres mot det som ble oppgitt, og innholdet mot filtypen. Serveren trenger ikke service-nøkkelen.
+- **Kartverket brukes fra nettleseren.** Uten svar fylles adressen inn for hånd. Kan kartet ikke vises, kommer en melding i stedet.
+- **MapLibre lastes først når kartet vises.** Web-workeren kopieres til `public/vendor/` før `dev` og `build`.
+- **Sanntid i admin:** nettleseren gir sanntidsklienten innloggingen før den abonnerer. Ellers kobler den seg på som anonym, og RLS stopper alle hendelser.
+- **Supabase på serveren kaller `connection()` først.** Supabase sjekker tokenets utløp med `Date.now()`, og med Cache Components skal det skje per forespørsel, ikke under forhåndsrendering.
 
 ## Fase 2: Boligvelger
 

@@ -25,7 +25,7 @@ export async function AppHeader({ orgSlug, role }: { orgSlug?: string; role?: Me
   return (
     <header className="border-b bg-background">
       <SkipLink label={t("skipToContent")} />
-      <div className="mx-auto flex min-h-14 max-w-6xl flex-wrap items-center gap-x-4 gap-y-1 px-4 py-2">
+      <div className="mx-auto flex min-h-14 max-w-[96rem] flex-wrap items-center gap-x-4 gap-y-1 px-4 py-2">
         <OrganizationSwitcher
           current={current}
           organizations={organizations}
@@ -37,6 +37,8 @@ export async function AppHeader({ orgSlug, role }: { orgSlug?: string; role?: Me
               <NavLink href={`/${current.slug}`} exact>
                 {t("overview")}
               </NavLink>
+              <NavLink href={`/${current.slug}/projects`}>{t("projects")}</NavLink>
+              {can(role, "content.edit") ? <NavLink href={`/${current.slug}/media`}>{t("media")}</NavLink> : null}
               {can(role, "organization.update") ? (
                 <NavLink href={`/${current.slug}/settings`}>{t("settings")}</NavLink>
               ) : null}
@@ -59,7 +61,7 @@ export async function AppHeader({ orgSlug, role }: { orgSlug?: string; role?: Me
 export function AppHeaderSkeleton() {
   return (
     <header className="border-b bg-background">
-      <div className="mx-auto flex min-h-14 max-w-6xl items-center gap-4 px-4 py-2">
+      <div className="mx-auto flex min-h-14 max-w-[96rem] items-center gap-4 px-4 py-2">
         <div className="h-8 w-40 animate-pulse rounded-md bg-accent" />
         <div className="ml-auto size-8 animate-pulse rounded-full bg-accent" />
       </div>

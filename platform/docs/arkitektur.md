@@ -18,8 +18,8 @@ platform/
 ├── docs/                              ✔ arkitektur og plan
 ├── supabase/
 │   ├── config.toml                    ✔ lokal Supabase (CLI)
-│   ├── migrations/                    ✔ datamodell, RLS, funksjoner, lagring, sanntid, fase 0
-│   ├── tests/                         ✔ pgTAP: skjema, isolasjon, roller, status, publisering, fase 0
+│   ├── migrations/                    ✔ datamodell, RLS, funksjoner, lagring, sanntid, fase 0 og 1
+│   ├── tests/                         ✔ pgTAP: skjema, isolasjon, roller, status, publisering, fase 0 og 1
 │   └── templates/                     ✔ norske e-postmaler for Supabase Auth
 ├── package.json, tsconfig.json        ✔ TypeScript strict
 ├── next.config.ts                     ✔ Cache Components, sikkerhetshoder, next-intl, Sentry
@@ -29,7 +29,8 @@ platform/
 ├── vercel.json                        ✔ funksjoner i Stockholm (arn1)
 ├── .env.example                       ✔
 ├── messages/                          ✔ all tekst: nb.json (standard), en.json, sv.json
-├── e2e/                               ✔ Playwright (fase 0); flere akseptkriterier per fase
+├── e2e/                               ✔ Playwright (fase 0 og 1); flere akseptkriterier per fase
+├── scripts/copy-vendor.mjs            ✔ kopierer MapLibre sin web-worker til public/vendor/ før dev og build
 ├── test/                              ✔ tester på tvers av moduler (oversettelser)
 ├── scripts/seed-demo.ts               Demo Bolig AS / Fjordparken (fase 5)
 └── src/
@@ -43,25 +44,30 @@ platform/
     │   │   └── [org]/                 ✔ admin per organisasjon: app.[PLATTFORMDOMENE]/{org}/…
     │   │       ├── page.tsx           ✔ Oversikt
     │   │       ├── settings/          ✔ organisasjon og brukere; merkevare, domener, abonnement, API senere
-    │   │       ├── projects/          prosjekter, enheter, boligvelger, prosjektside (fase 1–3)
+    │   │       ├── projects/          ✔ liste, veiviser, oversikt, innstillinger, enheter, enhetsskjema, CSV-eksport
+│   │       │                          boligvelger og prosjektside (fase 2–3)
     │   │       ├── leads/             (fase 3)
-    │   │       └── media/             mediebibliotek (fase 1)
+    │   │       └── media/             ✔ mediebibliotek
     │   ├── sites/[site]/              publiserte prosjektsider med egen rotlayout (fase 3)
     │   ├── embed/selector/[id]/       iframe-reserve for innbygging (fase 4)
-    │   └── api/                       offentlig API, leads, bildebehandling, Stripe, cron (fase 1–4)
+    │   └── api/                       offentlig API, leads, Stripe, cron (fase 3–4). Bildebehandling skjer i serverhandlinger.
     ├── components/
     │   ├── ui/                        ✔ shadcn/ui
     │   ├── forms/                     ✔ felles skjemahjelpere
     │   └── admin/                     ✔ toppmeny, organisasjonsvelger, brukermeny
     ├── features/                      domenemoduler: Zod-skjema, serverhandlinger, spørringer, komponenter
     │   ├── auth/  organizations/  members/  invitations/  account/   ✔
-    │   └── projects/  units/  selector/  site-builder/  leads/  media/  billing/  domains/
+    │   ├── projects/                  ✔ veiviser, Kartverket, kart, fremdrift, kontakter, byggetrinn og bygg
+    │   ├── units/                     ✔ felt og tolking, prisberegning, tabell, skjema, import/, eksport
+    │   ├── media/                     ✔ opplasting, bildevarianter (sharp), bibliotek, filvelger
+    │   └── selector/  site-builder/  leads/  billing/  domains/
     ├── i18n/                          ✔ språkoppsett for next-intl
     ├── lib/
-    │   ├── supabase/                  ✔ klient for server og proxy, genererte typer
+    │   ├── supabase/                  ✔ klient for server, proxy og nettleser (opplasting og sanntid), genererte typer
+    │   ├── hooks/                     ✔ valg som huskes i nettleseren (kolonner i tabellen)
     │   ├── auth/                      ✔ datatilgangslag (DAL) og roller som speiler SQL
     │   ├── actions/                   ✔ felles svarformat og kontroller for serverhandlinger
-    │   ├── format/                    ✔ norsk format: 2 450 000 kr, 68 m²
+    │   ├── format/                    ✔ norsk format: 2 450 000 kr, 68 m², og tolking av norske tall
     │   ├── billing/                   ✔ prøveperiode og lesemodus
     │   ├── email/                     ✔ Resend og maler
     │   ├── navigation/, security/     ✔ trygge omdirigeringer, tokener
@@ -186,12 +192,17 @@ Testene i `005_publisering_og_offentlig_api.test.sql` kontrollerer dette.
 2. En trigger skriver `unit_status_events` med bruker, tidspunkt, kilde og notat. Deretter legger den inn en linje i revisjonsloggen og en webhook-leveranse, og kringkaster `{unit_id, status}` på den offentlige Realtime-kanalen `project:{id}:units`.
 3. Publiserte velgere, enhetslister og enhetssider abonnerer på kanalen og oppdaterer fargene uten ny lasting. Målt lokalt tok det 35 ms fra endring i databasen til en anonym klient mottok meldingen.
 4. Serverhandlingen tømmer Next.js-mellomlageret for prosjektet (cache-tagger), slik at neste sidevisning også viser riktig status.
-5. Admin (Status-modus og enhetstabellen) lytter på `units` med Postgres Changes. Der gjelder RLS.
+5. Admin (Status-modus og enhetstabellen) lytter på `units` med Postgres Changes. Der gjelder RLS. Nettleseren gir sanntidsklienten brukerens innlogging før den abonnerer; ellers kobler den seg på som anonym, og RLS stopper alle hendelser. Enhetstabellen viser om sanntid er aktiv. I ende-til-ende-testen vises en statusendring i en annen fane innen fem sekunder (målt lokalt: under ett sekund).
 
 ## 9. Filer og bilder
 
 - Bucket `media` tar JPG, PNG, WebP og PDF. Bilder kan være inntil 25 MB, dokumenter inntil 50 MB. Stiene har formen `{organization_id}/{asset_id}/…`. Storage-policyene tillater bare opplasting til egen organisasjons mappe.
-- Nettleseren laster opp direkte til Storage. Det omgår Vercel sin grense på 4,5 MB for forespørsler. Deretter lager serveren WebP-varianter på 800, 1600 og 2400 px med `sharp` og lagrer originalens størrelse.
+- Opplasting i to steg (`src/features/media/actions.ts`):
+  1. Serveren lager raden i `assets` med stien `{organization_id}/{asset_id}/original.{ext}`.
+  2. Nettleseren laster opp filen direkte til Storage med brukerens innlogging. Det omgår Vercel sin grense på 4,5 MB for forespørsler.
+  3. Serveren henter filen, kontrollerer at størrelsen er den som ble oppgitt og at innholdet er det filtypen sier, og lager WebP-varianter på 800, 1600 og 2400 px (aldri større enn originalen) med `sharp`. Originalens mål lagres etter EXIF-rotasjon. GPS-posisjon og annen metadata kommer ikke med i variantene.
+- Originalen og variantene ligger i samme mappe, og CHECK-regler sørger for at stiene i `assets` ikke kan peke andre steder.
+- Den som lastet opp en fil, kan slette den fra Storage (migrasjon 0009). Eier og administrator kan slette alt. Serveren trenger derfor ikke service-nøkkelen for filer.
 - Bucketen er offentlig for lesing, slik at bilder kan leveres raskt fra CDN. Stiene inneholder to tilfeldige uuid-er og kan ikke gjettes.
 - SVG-opplasting er ikke tillatt, fordi SVG-filer kan inneholde skript. Demofasaden tegnes som SVG og gjøres om til bilde i seed-skriptet.
 
@@ -230,6 +241,12 @@ Testene i `005_publisering_og_offentlig_api.test.sql` kontrollerer dette.
 | `get_invitation()` (fase 0) | Invitasjonssiden viser organisasjon og rolle før mottakeren har konto. Kan kalles av anon med tokenet. |
 | `set_project_access()` (fase 0) | Prosjekttilgang for en redaktør eller megler settes i én transaksjon, med RLS |
 | Reserverte organisasjonsadresser (fase 0) | Ord appen bruker selv, som `login` og `settings`, kan ikke bli navnet på en organisasjon |
+| `create_project()` (fase 1) | Prosjekt, byggetrinn og bygg opprettes i én transaksjon, med unik adresse |
+| `import_units()` (fase 1) | Import som lagrer alt eller ingenting, oppdaterer på enhetsnummer, oppretter byggetrinn og bygg etter navn og oppgir radnummer ved feil |
+| `adjust_unit_prices()` og `unit_status_counts()` (fase 1) | Prisendring i prosent med avrunding, og telling per status til prosjektlisten |
+| `unit_status_events.changed_by` → `profiles` (fase 1) | Navnet på den som endret status, i samme spørring |
+| Enhetens adresse følger enhetsnummeret (fase 1) | En adresse som er laget automatisk, endres med nummeret. En adresse satt for hånd beholdes. |
+| Filstier låst til filens mappe (fase 1) | Original og varianter må ligge under `{organization_id}/{asset_id}/` |
 
 ## 12. Supabase sin sikkerhetsrådgiver
 

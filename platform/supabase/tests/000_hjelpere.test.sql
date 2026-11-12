@@ -377,12 +377,12 @@ begin
   values (v_org, v_project, v_stage, 'Bygg A')
   returning id into v_building;
 
-  insert into public.assets (organization_id, project_id, storage_path, mime, width, height, bytes, alt_text, filename)
+  v_asset := gen_random_uuid();
+  insert into public.assets (id, organization_id, project_id, storage_path, mime, width, height, bytes, alt_text, filename)
   values (
-    v_org, v_project, v_org::text || '/' || gen_random_uuid()::text || '/original.jpg',
+    v_asset, v_org, v_project, v_org::text || '/' || v_asset::text || '/original.jpg',
     'image/jpeg', 2400, 1600, 123456, 'Fasade', 'fasade.jpg'
-  )
-  returning id into v_asset;
+  );
 
   insert into public.units (
     organization_id, project_id, stage_id, building_id, unit_number, floor, rooms, bedrooms, bra_i,

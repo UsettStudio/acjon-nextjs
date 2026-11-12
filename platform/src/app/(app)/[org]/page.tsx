@@ -90,6 +90,11 @@ export default async function DashboardPage({ params }: PageProps<"/[org]">) {
           <CardContent>
             <p className="text-2xl font-semibold">{t("projectCount", { count: stats.projects })}</p>
           </CardContent>
+          <CardFooter>
+            <Button asChild variant="outline" size="sm">
+              <Link href={`/${organization.slug}/projects`}>{t("openProjects")}</Link>
+            </Button>
+          </CardFooter>
         </Card>
       </div>
     </>

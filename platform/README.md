@@ -12,17 +12,19 @@ Produktnavn og plattformdomene er ikke bestemt ennå. «Boligplattform» er et a
 | Fase | Status |
 |---|---|
 | 0 Grunnmur | Ferdig |
-| 1 Prosjekter og enheter | Neste |
-| 2–5 | Ikke påbegynt |
+| 1 Prosjekter og enheter | Ferdig |
+| 2 Boligvelger | Neste |
+| 3–5 | Ikke påbegynt |
 
-Fase 0 omfatter:
+Fase 0 omfatter Next.js-appen, databasen med RLS, pålogging, organisasjoner, invitasjoner, brukeradministrasjon, plattformadmin, tester og CI.
 
-- Next.js-appen.
-- Databasen med RLS.
-- Pålogging.
-- Organisasjoner, invitasjoner og brukeradministrasjon.
-- Plattformadmin.
-- Tester og CI.
+Fase 1 omfatter:
+
+- Prosjektveiviser med adressesøk og kart fra Kartverket, fremdrift, kontaktpersoner, byggetrinn og bygg.
+- Enhetstabell med redigering i cellene, filter, kolonnevelger, masseendring, statuslogg og sanntid.
+- Enhetsskjema med faner.
+- Mediebibliotek med bildevarianter.
+- Import fra CSV og Excel, og eksport til CSV.
 
 ## Kom i gang lokalt
 
@@ -35,6 +37,10 @@ npm run db:start              # starter Postgres, Auth, Storage og Realtime og k
 cp .env.example .env.local    # fyll inn NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY fra `npx supabase status`
 npm run dev                   # http://localhost:3000
 ```
+
+`npm run dev` og `npm run build` kopierer først web-workeren til kartet (MapLibre) fra `node_modules` til `public/vendor/` (`scripts/copy-vendor.mjs`).
+
+Adressesøket og kartet bruker Kartverkets åpne tjenester (`ws.geonorge.no` og `cache.kartverket.no`) direkte fra nettleseren. De krever ingen nøkkel.
 
 Uten `RESEND_API_KEY` sendes ikke invitasjoner på e-post. Invitasjonslenken vises da i appen, så den kan deles direkte. E-post fra Supabase Auth (innloggingslenke, glemt passord) havner i Mailpit på http://127.0.0.1:54324. Lokalt kreves ikke bekreftelse av e-postadressen.
 
@@ -57,7 +63,7 @@ insert into public.platform_admins (user_id) select id from auth.users where ema
 | `npm run test:e2e` | Ende-til-ende-tester (Playwright). Krever `npm run build` og lokal Supabase. |
 | `npm run db:start` | Starter lokal Supabase |
 | `npm run db:reset` | Bygger databasen på nytt fra migrasjonene |
-| `npm run db:test` | Databasetester (pgTAP): RLS, isolasjon, roller, statuslogg og publisering |
+| `npm run db:test` | Databasetester (pgTAP): RLS, isolasjon, roller, statuslogg, publisering og import |
 | `npm run db:lint` | Statisk sjekk av alle databasefunksjoner |
 | `npm run db:types` | Genererer TypeScript-typer fra databasen |
 
@@ -87,6 +93,7 @@ Kontoene er ikke opprettet ennå. Slik skal de settes opp:
 | `src/components/` | shadcn/ui og felles admin-komponenter |
 | `messages/` | All tekst på bokmål, engelsk og svensk |
 | `supabase/migrations/` | Datamodell, RLS, funksjoner, lagring, sanntid og jobber |
-| `supabase/tests/` | pgTAP-tester (230 tester) |
+| `supabase/tests/` | pgTAP-tester (274 tester) |
 | `supabase/templates/` | Norske e-postmaler for Supabase Auth |
-| `e2e/` | Playwright-tester |
+| `e2e/` | Playwright-tester, med en Excel-fil for importtesten i `e2e/fixtures/` |
+| `scripts/` | Kopierer filer fra `node_modules` som nettleseren må hente direkte |

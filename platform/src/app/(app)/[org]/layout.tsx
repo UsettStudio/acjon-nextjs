@@ -21,7 +21,7 @@ export default function OrganizationLayout({ children, params }: LayoutProps<"/[
       <Suspense fallback={<AppHeaderSkeleton />}>
         <OrganizationHeader params={params} />
       </Suspense>
-      <main id="innhold" className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">
+      <main id="innhold" className="mx-auto w-full max-w-[96rem] flex-1 px-4 py-8">
         {children}
       </main>
     </div>

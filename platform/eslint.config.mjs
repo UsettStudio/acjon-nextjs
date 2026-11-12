@@ -22,5 +22,7 @@ export default defineConfig([
     "test-results/**",
     "next-env.d.ts",
     "src/lib/supabase/database.types.ts",
+    // Kopiert fra node_modules av scripts/copy-vendor.mjs.
+    "public/vendor/**",
   ]),
 ]);

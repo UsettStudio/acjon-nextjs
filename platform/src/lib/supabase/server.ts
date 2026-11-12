@@ -2,6 +2,7 @@ import "server-only";
 
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { connection } from "next/server";
 
 import { publicEnv } from "@/lib/env";
 import type { Database } from "@/lib/supabase/database.types";
@@ -12,6 +13,9 @@ import type { Database } from "@/lib/supabase/database.types";
  * Lag en ny klient per forespørsel.
  */
 export async function createClient() {
+  // Supabase sjekker tokenets utløp med Date.now(). Det skal skje per forespørsel,
+  // ikke mens Next.js forhåndsrenderer (Cache Components). connection() utsetter resten.
+  await connection();
   const cookieStore = await cookies();
   const env = publicEnv();
 
