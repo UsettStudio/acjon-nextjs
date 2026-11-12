@@ -7,6 +7,7 @@
 // 3. Kjører `lhci autorun` med lighthouserc.yml (mobil, krav til LCP og bilder).
 import { execFileSync, spawnSync } from "node:child_process";
 import { randomUUID } from "node:crypto";
+import { readdirSync, readFileSync } from "node:fs";
 import http from "node:http";
 
 import { chromium } from "@playwright/test";
@@ -53,4 +54,22 @@ const result = spawnSync("npx", ["lhci", "autorun", "--config=lighthouserc.yml",
   stdio: "inherit",
   env: { ...process.env, CHROME_PATH: process.env.CHROME_PATH || chromium.executablePath() },
 });
+
+// Median for hver side, så tallene står i loggen også når alle krav er oppfylt.
+const runs = new Map();
+for (const file of readdirSync(".lighthouseci").filter((name) => name.startsWith("lhr-") && name.endsWith(".json"))) {
+  const report = JSON.parse(readFileSync(`.lighthouseci/${file}`, "utf8"));
+  const values = runs.get(report.finalDisplayedUrl) ?? [];
+  values.push({
+    lcp: report.audits["largest-contentful-paint"].numericValue,
+    cls: report.audits["cumulative-layout-shift"].numericValue,
+  });
+  runs.set(report.finalDisplayedUrl, values);
+}
+const median = (values) => [...values].sort((a, b) => a - b)[Math.floor(values.length / 2)];
+for (const [url, values] of runs) {
+  const lcp = median(values.map((value) => value.lcp));
+  const cls = median(values.map((value) => value.cls));
+  console.info(`${new URL(url).pathname}: LCP ${(lcp / 1000).toFixed(2)} s, CLS ${cls.toFixed(3)} (median av ${values.length})`);
+}
 process.exit(result.status ?? 1);

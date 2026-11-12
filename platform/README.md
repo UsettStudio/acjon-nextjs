@@ -7,6 +7,7 @@ Produktnavn og plattformdomene er ikke bestemt ennå. «Boligplattform» er et a
 - [docs/arkitektur.md](docs/arkitektur.md) beskriver mappestruktur, datamodell, tilgangsmodell, offentlig API, publisering, sanntid og personvern.
 - [docs/plan.md](docs/plan.md) inneholder plan og status per fase.
 - [docs/api.md](docs/api.md) beskriver API-et, innbyggingen og webhooks.
+- [docs/drift.md](docs/drift.md) beskriver drift og personvern: underleverandører, utrulling, overvåking, sikkerhetskopi, nøkler, hendelser, innsyn og sletting.
 
 ## Status
 
@@ -17,7 +18,7 @@ Produktnavn og plattformdomene er ikke bestemt ennå. «Boligplattform» er et a
 | 2 Boligvelger | Ferdig |
 | 3 Prosjektside | Ferdig |
 | 4 Drift | Ferdig |
-| 5 Kvalitet | Neste |
+| 5 Kvalitet | Ferdig |
 
 Fase 0 omfatter Next.js-appen, databasen med RLS, pålogging, organisasjoner, invitasjoner, brukeradministrasjon, plattformadmin, tester og CI.
 
@@ -77,6 +78,22 @@ Fase 4 omfatter:
   - API-nøkler og API med nøkkel for prosjekter, enheter, statusendring og leads.
   - Webhooks med signatur etter Standard Webhooks, nye forsøk og logg over leveranser.
 
+Fase 5 omfatter:
+
+- **Prosjektoversikt:** verdi solgt, og en sjekkliste for oppstarten (enheter, bilde og markeringer, mal og publisering) til alt er gjort.
+- **Demodata:** `npm run demo` lager Demo Bolig AS med Fjordparken. Prosjektet har 24 leiligheter, en fasade med markeringer, publisert boligvelger og prosjektside, og leads.
+- **Universell utforming:**
+  - axe (WCAG 2.1 AA) i ende-til-ende-testene på publiserte sider og i admin.
+  - Tastaturtest av boligvelgeren.
+- **Ytelse:**
+  - Publiserte sider er statiske og mellomlagres.
+  - Lighthouse CI krever LCP under 2,5 s på mobil.
+- **Akseptkriteriene:** alle seks er ende-til-ende-tester.
+- **Personvern og drift:**
+  - Innsyn og sletting for én person.
+  - Helsesjekk på `/api/health`.
+  - Driftsrutiner i [docs/drift.md](docs/drift.md).
+
 ## Kom i gang lokalt
 
 Krever Node.js 22 og Docker. Supabase CLI følger med som utviklingsavhengighet.
@@ -104,6 +121,16 @@ Publiserte prosjektsider åpnes lokalt på `http://{underdomene}.localhost:3000`
 
 Uten Stripe-nøkler vises planene, men de kan ikke velges. Uten Vercel-token sjekkes egne domener bare med DNS over HTTPS. Ende-til-ende-testene starter en etterligning av Stripe og DNS (`e2e/support/fake-services.mjs`), så hele flyten testes uten kontoer.
 
+Demodata (Demo Bolig AS med Fjordparken) legges inn med en egen bruker. Passordet velger du selv, og det skrives ikke ut:
+
+```bash
+DEMO_PASSWORD=velg-et-passord npm run demo   # logg inn som demo@example.com
+npm run demo -- --email meg@firma.no          # eller gi en bruker som finnes, demoen
+npm run demo -- --replace                     # lag demoen på nytt
+```
+
+Prosjektsiden til demoen ligger på `http://fjordparken.localhost:3000`.
+
 En plattformadmin legges inn med SQL:
 
 ```sql
@@ -126,6 +153,8 @@ insert into public.platform_admins (user_id) select id from auth.users where ema
 | `npm run db:test` | Databasetester (pgTAP): RLS, isolasjon, roller, statuslogg, publisering, import, boligvelger, prosjektside og leads |
 | `npm run db:lint` | Statisk sjekk av alle databasefunksjoner |
 | `npm run db:types` | Genererer TypeScript-typer fra databasen |
+| `npm run demo` | Legger inn demodata (Demo Bolig AS med Fjordparken) |
+| `npm run lighthouse` | Lighthouse CI mot demosiden på mobil (appen må kjøre). Krav: LCP under 2,5 s, CLS, bildestørrelser og lat lasting. |
 
 CI (`.github/workflows/platform.yml`) kjører alt dette ved endringer i `platform/`.
 

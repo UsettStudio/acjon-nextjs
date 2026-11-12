@@ -4,7 +4,7 @@ import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 import { withSentryConfig } from "@sentry/nextjs/config";
 
-// Sikkerhetshoder for alle svar. En full Content-Security-Policy med nonce kommer i fase 5.
+// Sikkerhetshoder for alle svar. En full Content-Security-Policy med nonce er ikke lagt til (se docs/plan.md).
 const securityHeaders = [
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },

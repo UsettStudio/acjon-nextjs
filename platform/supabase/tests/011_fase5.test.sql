@@ -7,7 +7,7 @@ create extension if not exists pgtap with schema extensions;
 select tests.seed_organization('a');
 select tests.seed_organization('b');
 
-select plan(15);
+select plan(27);
 
 -- Prosjektet i organisasjon A har A-101 (ledig, 4 250 000), A-303 (ledig og
 -- skjult, 3 900 000) og A-302 (solgt, 6 950 000). To visninger har bilde, A-101
@@ -95,6 +95,94 @@ select is(
   'Anonyme får ikke kjøre prosjektoversikten'
 );
 select tests.logout();
+
+-- -----------------------------------------------------------------------------
+-- Personvern: innsyn og sletting for én person
+-- -----------------------------------------------------------------------------
+
+-- Leadet i testdataene (a-kari@example.test) har en kopi i webhook-loggen (lead.created).
+select ok(
+  exists (
+    select 1 from public.webhook_deliveries d
+    where d.event = 'lead.created' and d.payload -> 'data' ->> 'lead_id' = tests.id('a', 'lead')::text
+  ),
+  'Leadet har en kopi i webhook-loggen'
+);
+
+-- To leads til fra samme person, med store bokstaver og i et annet prosjekt, og en
+-- teller for rate limit med adressen i nøkkelen.
+insert into public.leads (organization_id, project_id, name, email, consent_contact, consent_text_version, source)
+values
+  (tests.id('a', 'org'), tests.id('a', 'project'), 'Kari Kjøper', 'A-KARI@EXAMPLE.TEST', true, 'v1', 'site'),
+  (tests.id('a', 'org'), tests.id('a', 'project_other'), 'Kari K.', 'a-kari@example.test', true, 'v1', 'site');
+select public.rate_limit_hit(tests.id('a', 'org'), 'lead:email:a-kari@example.test', 5, 3600);
+
+select tests.login_as(tests.id('a', 'agent'));
+select is(
+  tests.sqlstate_of(format($$ select public.erase_lead_person(%L, 'a-kari@example.test') $$, tests.id('a', 'org'))),
+  '42501',
+  'Megler kan ikke slette alt om en person'
+);
+select is(
+  tests.sqlstate_of(format($$ select public.log_person_export(%L, 1) $$, tests.id('a', 'org'))),
+  '42501',
+  'Megler kan ikke hente ut alt om en person'
+);
+select tests.logout();
+
+select tests.login_as(tests.id('b', 'owner'));
+select is(
+  tests.sqlstate_of(format($$ select public.erase_lead_person(%L, 'a-kari@example.test') $$, tests.id('a', 'org'))),
+  '42501',
+  'En annen organisasjon kan ikke slette personer i organisasjon A'
+);
+select tests.logout();
+
+-- Lesemodus (prøveperioden er ute): retten til sletting og innsyn gjelder uansett abonnement
+update public.organizations set trial_ends_at = now() - interval '1 day' where id = tests.id('a', 'org');
+select tests.login_as(tests.id('a', 'admin'));
+select is(
+  public.erase_lead_person(tests.id('a', 'org'), ' A-Kari@Example.test '),
+  3,
+  'Administrator sletter alle tre leadene fra personen, også i lesemodus'
+);
+select lives_ok(
+  format($$ select public.log_person_export(%L, 3) $$, tests.id('a', 'org')),
+  'Administrator kan logge innsyn'
+);
+select tests.logout();
+update public.organizations set trial_ends_at = now() + interval '30 days' where id = tests.id('a', 'org');
+
+select is(
+  (select count(*)::integer from public.leads where organization_id = tests.id('a', 'org') and lower(email) = 'a-kari@example.test'),
+  0,
+  'Ingen leads igjen fra personen'
+);
+select is(
+  (select count(*)::integer from public.webhook_deliveries
+   where event = 'lead.created' and lower(payload -> 'data' ->> 'email') = 'a-kari@example.test'),
+  0,
+  'Kopiene i webhook-loggen er slettet'
+);
+select is(
+  (select count(*)::integer from public.rate_limit_buckets where key = 'lead:email:a-kari@example.test'),
+  0,
+  'Telleren for rate limit med adressen er slettet'
+);
+select is(
+  (select count(*)::integer from public.audit_log where organization_id = tests.id('a', 'org') and action = 'lead.deleted'),
+  3,
+  'Hvert lead er logget som slettet'
+);
+select ok(
+  not exists (select 1 from public.audit_log where data::text ilike '%a-kari@example.test%'),
+  'Revisjonsloggen har ikke e-postadressen'
+);
+select is(
+  (select data from public.audit_log where organization_id = tests.id('a', 'org') and action = 'privacy.person_exported'),
+  '{"leads": 3}'::jsonb,
+  'Innsyn logges med antall leads, uten hvem det gjaldt'
+);
 
 -- -----------------------------------------------------------------------------
 -- Sletting av prosjekt og organisasjon (kaskader i revisjonsloggen)

@@ -1,6 +1,6 @@
 "use client";
 
-import { Trash2Icon } from "lucide-react";
+import { DownloadIcon, Trash2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useId, useState, useTransition } from "react";
@@ -149,12 +149,18 @@ export function LeadDetailForm({
       </form>
 
       {canDelete ? (
-        <section className="grid gap-3 rounded-md border border-destructive/40 p-4" aria-labelledby={`${id}-delete`}>
-          <h2 id={`${id}-delete`} className="font-semibold text-destructive">
-            {t("deleteTitle")}
+        <section className="grid gap-3 rounded-md border p-4" aria-labelledby={`${id}-privacy`}>
+          <h2 id={`${id}-privacy`} className="font-semibold">
+            {t("privacyTitle")}
           </h2>
-          <p className="text-sm text-muted-foreground">{t("deleteDescription")}</p>
+          <p className="text-sm text-muted-foreground">{t("privacyDescription")}</p>
           <div className="flex flex-wrap gap-2">
+            <Button asChild variant="outline">
+              <a href={`/${orgSlug}/leads/innsyn?email=${encodeURIComponent(email)}`} download>
+                <DownloadIcon aria-hidden="true" />
+                {t("exportPerson", { email })}
+              </a>
+            </Button>
             <Button type="button" variant="destructive" onClick={() => setConfirm("one")}>
               <Trash2Icon aria-hidden="true" />
               {t("delete")}

@@ -2236,14 +2236,15 @@
       "saved": "The enquiry has been updated.",
       "deleted": "The enquiry has been deleted.",
       "deletedAll": "{count, plural, one {# enquiry was deleted.} other {# enquiries were deleted.}}",
-      "deleteTitle": "Delete personal data",
-      "deleteDescription": "Use this when someone asks to be deleted. Deletion cannot be undone, and the log only records that something was deleted.",
       "delete": "Delete the enquiry",
       "deleteAll": "Delete all {count} from {email}",
       "deleteOneTitle": "Delete the enquiry?",
       "deleteOneDescription": "Name, contact details, message and consent are deleted permanently.",
       "deleteAllTitle": "Delete all enquiries from {email}?",
-      "deleteAllDescription": "{count, plural, one {# enquiry is deleted permanently.} other {# enquiries across all projects are deleted permanently.}}"
+      "deleteAllDescription": "{count, plural, one {# enquiry is deleted permanently.} other {# enquiries across all projects are deleted permanently.}}",
+      "privacyTitle": "Access and erasure",
+      "privacyDescription": "Use this when someone asks to see or delete their details. The access file contains everything stored about the person, including the internal note and the consent text. Deletion cannot be undone, and the log only shows that something was deleted.",
+      "exportPerson": "Download everything about {email}"
     },
     "csv": {
       "created_at": "Received",

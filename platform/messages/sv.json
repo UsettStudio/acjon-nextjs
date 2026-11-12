@@ -2236,14 +2236,15 @@
       "saved": "Förfrågan har uppdaterats.",
       "deleted": "Förfrågan har raderats.",
       "deletedAll": "{count, plural, one {# förfrågan har raderats.} other {# förfrågningar har raderats.}}",
-      "deleteTitle": "Radera personuppgifter",
-      "deleteDescription": "Använd detta när någon ber om att bli raderad. Raderingen kan inte ångras, och loggen visar bara att något raderades.",
       "delete": "Radera förfrågan",
       "deleteAll": "Radera alla {count} från {email}",
       "deleteOneTitle": "Radera förfrågan?",
       "deleteOneDescription": "Namn, kontaktuppgifter, meddelande och samtycke raderas permanent.",
       "deleteAllTitle": "Radera alla förfrågningar från {email}?",
-      "deleteAllDescription": "{count, plural, one {# förfrågan raderas permanent.} other {# förfrågningar i alla projekt raderas permanent.}}"
+      "deleteAllDescription": "{count, plural, one {# förfrågan raderas permanent.} other {# förfrågningar i alla projekt raderas permanent.}}",
+      "privacyTitle": "Registerutdrag och radering",
+      "privacyDescription": "Använd detta när någon begär registerutdrag eller radering av sina uppgifter. Utdraget är en fil med allt som har sparats om personen, även intern anteckning och samtyckestexten. Raderingen kan inte ångras, och loggen visar bara att något raderades.",
+      "exportPerson": "Ladda ner allt om {email}"
     },
     "csv": {
       "created_at": "Mottagen",

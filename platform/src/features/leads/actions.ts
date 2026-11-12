@@ -52,7 +52,8 @@ export async function deleteLead(organizationId: string, leadId: string): Promis
     if (!uuid.safeParse(organizationId).success || !uuid.safeParse(leadId).success) {
       return fail("invalidInput");
     }
-    await requireOrgCapability(organizationId, "leads.delete");
+    // Retten til sletting gjelder også når abonnementet er utløpt (lesemodus).
+    await requireOrgCapability(organizationId, "leads.delete", { allowReadOnly: true });
     const supabase = await createClient();
     const { error, count } = await supabase.from("leads").delete({ count: "exact" }).eq("id", leadId).eq("organization_id", organizationId);
     if (error) {
@@ -67,8 +68,9 @@ export async function deleteLead(organizationId: string, leadId: string): Promis
 }
 
 /**
- * Sletter alle henvendelser fra én e-postadresse i organisasjonen, for eksempel
- * når noen ber om å bli slettet (GDPR). Bare eier og administrator.
+ * Sletter alt om én e-postadresse i organisasjonen når noen ber om å bli slettet
+ * (GDPR): henvendelsene, kopiene i webhook-loggen og telleren for rate limit. Bare
+ * eier og administrator, også i lesemodus.
  */
 export async function deleteLeadsByEmail(organizationId: string, email: string): Promise<ActionResult<{ deleted: number }>> {
   return runAction(async () => {
@@ -76,17 +78,14 @@ export async function deleteLeadsByEmail(organizationId: string, email: string):
     if (!uuid.safeParse(organizationId).success || !address.success) {
       return fail("invalidInput");
     }
-    await requireOrgCapability(organizationId, "leads.delete");
+    // Retten til sletting gjelder også når abonnementet er utløpt (lesemodus).
+    await requireOrgCapability(organizationId, "leads.delete", { allowReadOnly: true });
     const supabase = await createClient();
-    const { error, count } = await supabase
-      .from("leads")
-      .delete({ count: "exact" })
-      .eq("organization_id", organizationId)
-      .ilike("email", address.data.replace(/[%_\\]/g, (match) => `\\${match}`));
+    const { data, error } = await supabase.rpc("erase_lead_person", { p_organization_id: organizationId, p_email: address.data });
     if (error) {
       throw error;
     }
     revalidatePath("/[org]/leads", "layout");
-    return ok({ deleted: count ?? 0 });
+    return ok({ deleted: data });
   });
 }

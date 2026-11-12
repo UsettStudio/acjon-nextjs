@@ -666,6 +666,9 @@ isOneToOne: false
               "kind": string,"locale": string,"organization_id": string,"organization_name": string,"organization_slug": string,"recipients": (string)[],"trial_ends_at": string
             }[]
                            },
+"erase_lead_person":
+{ Args: { "p_email": string,"p_organization_id": string }; Returns: number
+                           },
 "extend_trial":
 { Args: { "p_days": number,"p_organization_id": string }; Returns: string
                            },
@@ -704,6 +707,9 @@ isOneToOne: false
                            },
 "link_stripe_customer":
 { Args: { "p_customer_id": string,"p_organization_id": string }; Returns: string
+                           },
+"log_person_export":
+{ Args: { "p_leads": number,"p_organization_id": string }; Returns: undefined
                            },
 "mark_billing_notice":
 { Args: { "p_kind": string,"p_organization_id": string }; Returns: undefined

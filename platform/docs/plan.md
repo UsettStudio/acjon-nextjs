@@ -12,7 +12,7 @@ Hver fase avsluttes med grønne tester, typekontroll og lint, og en kort oppsumm
 | 2 Boligvelger | Ferdig, se oppsummeringen under fase 2 |
 | 3 Prosjektside | Ferdig, se oppsummeringen under fase 3 |
 | 4 Drift | Ferdig, se oppsummeringen under fase 4 |
-| 5 Kvalitet | Neste |
+| 5 Kvalitet | Ferdig, se oppsummeringen under fase 5 |
 
 ## Leveranse 1: datamodell og RLS (godkjent)
 
@@ -666,10 +666,76 @@ Hver fase avsluttes med grønne tester, typekontroll og lint, og en kort oppsumm
   - SVG-fasade med ferdige markeringer.
   - Publisert prosjektside.
 - **Drift og personvern:** GDPR-eksport per person og driftsrutiner.
-- **Forslag til resten fra tidligere faser** (må godkjennes):
-  - Sjekkliste for oppstart og «verdi solgt» på prosjektoversikten (modul 5 i spesifikasjonen).
-  - Egne felt i CSV-import og -eksport.
-  - Språk per bruker i admin.
+- **Forslag til resten fra tidligere faser:** sjekklisten for oppstart og «verdi solgt» ble godkjent og tatt med. Egne felt i CSV-import og -eksport og språk per bruker i admin ble ikke valgt, og er fortsatt utsatt.
+
+### Oppsummering av fase 5
+
+**Bygget:**
+
+- **Prosjektoversikt (modul 5):**
+  - «Verdi solgt»: summen av prisen på solgte enheter, med beskjed hvis noen solgte enheter mangler pris.
+  - Sjekkliste for oppstarten: organisasjon, prosjekt, enheter, bilde og markeringer («18 av 24 enheter markert»), mal og publisering, med lenke til neste steg. Den vises til alt er gjort.
+  - Tallene kommer fra `project_overview`, som følger RLS.
+- **Demodata** (`npm run demo`): Demo Bolig AS med Fjordparken.
+  - 24 leiligheter på fire etasjer.
+  - Fasade i SVG med én markering per leilighet.
+  - Publisert boligvelger og prosjektside fra malen «Full prosjektside», med visninger og ofte stilte spørsmål.
+  - To statusendringer og tre leads.
+  - Skriptet logger inn som brukeren og bruker de samme databasefunksjonene som appen.
+- **Universell utforming:**
+  - axe (WCAG 2.1 A og AA) i ende-til-ende-testene på alle publiserte sidetyper, på desktop og mobil og med samtykkebanneret, og på de viktigste sidene i admin. Ingen brudd.
+  - Tastaturtest av boligvelgeren, se under.
+- **Ytelse:**
+  - Publiserte sider er ferdige statiske sider per prosjektside og mellomlagres. Cache-taggene tømmes som før ved publisering og statusendring.
+  - HTML-en til demoens forside gikk fra 438 KB til 184 KB.
+  - Lighthouse CI (`npm run lighthouse`) i hver kjøring av CI, på mobil: median LCP 1,7–1,8 s, og krav til CLS, bildestørrelser og lat lasting.
+- **Alle seks akseptkriteriene som ende-til-ende-tester:**
+  - 1 i `fase3.spec.ts`, nå med sjekklisten.
+  - 2 og 3 i `fase2.spec.ts`.
+  - 4 i `fase4.spec.ts`.
+  - 5 i `fase3.spec.ts`.
+  - 6 i `fase5.spec.ts`: en innlogget bruker i organisasjon A prøver alle tabeller, skriving, databasefunksjoner og lagring i organisasjon B gjennom API-et. Ingen rader, ingen endringer.
+- **Personvern:**
+  - Innsyn for én person som JSON-fil: henvendelser med internt notat, samtykket med den eksakte teksten, og hvilke systemer kopier er sendt til. Uthentingen logges uten hvem det gjaldt.
+  - Sletting for én person tar nå også kopiene i webhook-loggen og telleren for rate limit.
+  - Begge deler virker i lesemodus.
+- **Drift:**
+  - Helsesjekk på `/api/health` for overvåking av oppetid.
+  - [drift.md](drift.md): underleverandører og regioner, utrulling, overvåking, planlagte jobber, sikkerhetskopi, nøkkelrotasjon, hendelser og brudd på personopplysningssikkerheten, og personvern i drift.
+- **Rettet fra tidligere faser:**
+  - **Sletting av prosjekt med enheter** (fase 1) stoppet på revisjonsloggen. AFTER-triggere i en kaskade kjører etter den ytre setningen, så kontrollen av triggerdybden fanget dem ikke. Nå kan også hele organisasjoner slettes.
+  - **Fokus etter dialoger** som åpnes fra kode, for eksempel enhetskortet (fase 2), gikk til body. Nå går det tilbake dit det var.
+  - **Teksten i hero** hadde for lav kontrast over lyse bilder (fase 3).
+  - **Tabellen på `/informasjonskapsler`** kunne ikke rulles med tastatur på mobil (fase 4).
+  - **Knappene for organisasjon og brukermeny** hadde et navn uten den synlige teksten, og lenkene i kartets kildehenvisning ble bare skilt fra teksten med farge.
+  - **Skriften for overskrifter** fra temaet ble ikke brukt på prosjektsidene (fase 3).
+  - **Sletting av leads (GDPR)** var stoppet i appen i lesemodus, selv om databasen tillot den.
+  - **All tekst i admin** fulgte med hver publiserte side.
+- **Tester:**
+
+  | Type | Antall | Nytt i fase 5 |
+  |---|---|---|
+  | pgTAP | 494 | 27 nye: prosjektoversikten (verdi, markerte enheter, publisering, isolasjon), sletting av prosjekt og organisasjon, og innsyn og sletting for én person (også i lesemodus, uten personopplysninger i loggen) |
+  | Vitest | 310 | 23 nye: prosjektoversikten og sjekklisten, demodata (24 leiligheter, markeringer uten overlapp, visninger) og innsynsfilen |
+  | Playwright | 23 | 7 nye: axe på publiserte sider (desktop og mobil) og i admin, tastaturtest av boligvelgeren, akseptkriterium 6, innsyn og sletting, og helsesjekken |
+  | Lighthouse CI | 3 sider | Forside, enhetsside og personvern på mobil, tre kjøringer hver |
+
+**Gjenstår:**
+
+- **Ikke testet med en ekte skjermleser** (NVDA eller VoiceOver) eller av personer som bruker hjelpemidler. Tastatur og ARIA er testet automatisk.
+- **Lighthouse sin simulering** og PageSpeed Insights viser LCP på 3,9–4,4 s for demosiden. De regner med alle skript som er bedt om før første tegning. Med ekte struping er LCP 1,7–1,8 s. Vil dere også ha simuleringen under 2,5 s, må JavaScript på sidene ned fra om lag 380 KB (gzip). Det største er React, Zod og oversettelsene.
+- **Kontoer og produksjon:** som før er ingenting testet mot ekte Stripe, Vercel, Resend, Sentry eller Supabase i skyen. Sikkerhetskopi av filer i Storage og overvåking av oppetid må settes opp når kontoene finnes (se drift.md).
+- **Utsatt fra før:** egne felt i CSV-import og -eksport, språk per bruker i admin, og angre og gjør om i blokkeditoren.
+- **Content-Security-Policy med nonce** er ikke lagt til. Sikkerhetshodene ellers er på plass. En nonce lages per forespørsel, og passer derfor ikke med de statiske publiserte sidene. For admin, som rendres per forespørsel, kan den legges til.
+
+**Valg i fase 5:**
+
+- **Statiske publiserte sider** med `ensureStatic = "navigation"` og en plassholder i `generateStaticParams`, i stedet for å strømme innholdet ved hvert besøk. Det gir raskere sider og billigere drift. Ferskheten styres av de samme cache-taggene som før. Første besøk på en ny prosjektside venter på at siden lages.
+- **Filtre fra adressen** brukes etter at siden er lastet. Den statiske siden viser alle boligene, så innholdet står i HTML-en for søkemotorer og for besøkende uten JavaScript.
+- **Lighthouse med struping i nettleseren** (DevTools) i stedet for Lighthouse sin simulering. Begrunnelsen står i `lighthouserc.yml` og drift.md.
+- **Demodata med et skript** som logger inn som en vanlig bruker, ikke med SQL. Da gjelder RLS og de samme databasefunksjonene som i appen, og skriptet går ikke i stykker når datamodellen endres.
+- **Innsyn inneholder internt notat.** Retten til innsyn gjelder alle opplysninger som er lagret om personen.
+- **Nye utviklingsavhengigheter:** `tsx` (skriptet), `@axe-core/playwright` (universell utforming) og `@lhci/cli` (Lighthouse CI). Alle er bare for utvikling og test, og ingenting i stacken er byttet ut.
 
 ## Valg som er godkjent
 

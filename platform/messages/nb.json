@@ -2236,14 +2236,15 @@
       "saved": "Henvendelsen er oppdatert.",
       "deleted": "Henvendelsen er slettet.",
       "deletedAll": "{count, plural, one {# henvendelse er slettet.} other {# henvendelser er slettet.}}",
-      "deleteTitle": "Slett personopplysninger",
-      "deleteDescription": "Bruk dette når noen ber om å bli slettet. Slettingen kan ikke angres, og loggen viser bare at noe ble slettet.",
       "delete": "Slett henvendelsen",
       "deleteAll": "Slett alle {count} fra {email}",
       "deleteOneTitle": "Slette henvendelsen?",
       "deleteOneDescription": "Navn, kontaktinformasjon, beskjed og samtykke slettes for godt.",
       "deleteAllTitle": "Slette alle henvendelser fra {email}?",
-      "deleteAllDescription": "{count, plural, one {# henvendelse slettes for godt.} other {# henvendelser i alle prosjekter slettes for godt.}}"
+      "deleteAllDescription": "{count, plural, one {# henvendelse slettes for godt.} other {# henvendelser i alle prosjekter slettes for godt.}}",
+      "privacyTitle": "Innsyn og sletting",
+      "privacyDescription": "Bruk dette når noen ber om innsyn i eller sletting av opplysningene sine. Innsynet er en fil med alt som er lagret om personen, også internt notat og samtykketeksten. Slettingen kan ikke angres, og loggen viser bare at noe ble slettet.",
+      "exportPerson": "Last ned alt om {email}"
     },
     "csv": {
       "created_at": "Mottatt",

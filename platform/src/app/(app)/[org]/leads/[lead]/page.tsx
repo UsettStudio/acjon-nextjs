@@ -103,7 +103,8 @@ export default async function LeadPage({ params }: PageProps<"/[org]/leads/[lead
                 initialStatus={lead.status}
                 initialNote={lead.internalNote}
                 canEdit={context.writable}
-                canDelete={context.writable && can(context.role, "leads.delete")}
+                // Sletting og innsyn (GDPR) er lov også i lesemodus.
+                canDelete={can(context.role, "leads.delete")}
               />
             </CardContent>
           </Card>

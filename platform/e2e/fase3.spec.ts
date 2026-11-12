@@ -188,6 +188,13 @@ test("akseptkriterium 1 til publisering: ny bruker importerer 24 enheter, marker
   await page.getByRole("button", { name: "Opprett prosjekt" }).click();
   await expect(page).toHaveURL(new RegExp(`/projects/fjordparken/units$`));
 
+  // Prosjektets oversikt viser fremdriften i oppstarten som sjekkliste
+  await page.getByRole("navigation", { name: "Prosjektmeny" }).getByRole("link", { name: "Oversikt" }).click();
+  const checklist = page.locator("[data-slot=card]").filter({ has: page.getByRole("heading", { name: "Kom i gang" }) });
+  await expect(checklist.getByText("2 av 6 steg er fullført.")).toBeVisible();
+  await expect(checklist.getByRole("link", { name: "Legg inn enheter" })).toBeVisible();
+  await page.getByRole("link", { name: "Enheter", exact: true }).click();
+
   // 24 enheter fra CSV
   await page.getByRole("button", { name: "Importer", exact: true }).first().click();
   const importDialog = page.getByRole("dialog", { name: "Importer enheter" });
@@ -290,6 +297,12 @@ test("akseptkriterium 1 til publisering: ny bruker importerer 24 enheter, marker
   expect(sitemap).toContain(siteAddress(subdomain, "/bolig/a-101"));
   const robots = await (await visitor.page.goto(siteAddress(subdomain, "/robots.txt")))?.text();
   expect(robots).toContain(`Sitemap: ${siteAddress(subdomain, "/sitemap.xml")}`);
+
+  // Alle stegene i oppstarten er gjort: sjekklisten er borte, og oversikten viser verdi solgt
+  await page.getByRole("navigation", { name: "Prosjektmeny" }).getByRole("link", { name: "Oversikt" }).click();
+  await expect(page.getByText("Verdi solgt")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Kom i gang" })).toHaveCount(0);
+  await page.getByRole("link", { name: "Prosjektside", exact: true }).click();
 
   // Versjonshistorikken har den publiserte versjonen
   await page.getByRole("button", { name: "Flere valg", exact: true }).click();

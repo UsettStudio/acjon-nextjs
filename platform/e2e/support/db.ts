@@ -27,6 +27,18 @@ export function serviceClient() {
   });
 }
 
+/** Klient som en innlogget bruker i appen: samme rettigheter som brukeren har (RLS). */
+export async function userClient(email: string, password: string) {
+  const client = createClient(env("NEXT_PUBLIC_SUPABASE_URL"), env("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY"), {
+    auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
+  });
+  const { error } = await client.auth.signInWithPassword({ email, password });
+  if (error) {
+    throw error;
+  }
+  return client;
+}
+
 /** Id-en til organisasjonen med adressen (slug). */
 export async function organizationId(slug: string): Promise<string> {
   const { data, error } = await serviceClient().from("organizations").select("id").eq("slug", slug).single();

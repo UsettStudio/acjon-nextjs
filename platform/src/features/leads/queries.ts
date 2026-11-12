@@ -2,6 +2,7 @@ import "server-only";
 
 import { searchTerm, type LeadFilters, LEADS_PAGE_SIZE } from "@/features/leads/filters";
 import type { LeadExportRow } from "@/features/leads/export";
+import { recipientHost, type PersonDelivery, type PersonLead } from "@/features/leads/person-export";
 import type { LeadStatus } from "@/features/leads/schemas";
 import { createClient } from "@/lib/supabase/server";
 
@@ -229,4 +230,63 @@ export async function getOrganizationLocale(organizationId: string): Promise<str
   const supabase = await createClient();
   const { data } = await supabase.from("organizations").select("locale").eq("id", organizationId).maybeSingle();
   return data?.locale ?? "nb";
+}
+
+const escapeLike = (value: string) => value.replace(/[%_\\]/g, (match) => `\\${match}`);
+
+/** Alle henvendelser fra én e-postadresse i organisasjonen, eldste først (innsyn). */
+export async function listPersonLeads(organizationId: string, email: string): Promise<PersonLead[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("leads")
+    .select(
+      "id, created_at, name, email, phone, message, status, source, unit_number, consent_contact, consent_similar_projects, consent_text_version, consented_at, utm, internal_note, project:projects!leads_project_id_organization_id_fkey(name), page:pages!leads_page_id_project_id_organization_id_fkey(title)",
+    )
+    .eq("organization_id", organizationId)
+    .ilike("email", escapeLike(email))
+    .order("created_at");
+  if (error) {
+    throw error;
+  }
+  return data.map((row) => ({
+    id: row.id,
+    createdAt: row.created_at,
+    projectName: row.project?.name ?? "",
+    unitNumber: row.unit_number,
+    pageTitle: row.page?.title ?? null,
+    name: row.name,
+    email: row.email,
+    phone: row.phone,
+    message: row.message,
+    status: row.status,
+    source: row.source,
+    utm: stringRecord(row.utm),
+    consentContact: row.consent_contact,
+    consentSimilar: row.consent_similar_projects,
+    consentVersion: row.consent_text_version,
+    consentedAt: row.consented_at,
+    internalNote: row.internal_note,
+  }));
+}
+
+/** Kopier av henvendelsene som er sendt med webhooks (loggen har de siste 30 dagene). */
+export async function listPersonDeliveries(organizationId: string, email: string): Promise<PersonDelivery[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("webhook_deliveries")
+    .select("created_at, delivered_at, status, webhook:webhooks(url)")
+    .eq("organization_id", organizationId)
+    .eq("event", "lead.created")
+    .eq("is_test", false)
+    .ilike("payload->data->>email", escapeLike(email))
+    .order("created_at");
+  if (error) {
+    throw error;
+  }
+  return data.map((row) => ({
+    createdAt: row.created_at,
+    deliveredAt: row.delivered_at,
+    status: row.status,
+    recipient: row.webhook ? recipientHost(row.webhook.url) : "",
+  }));
 }

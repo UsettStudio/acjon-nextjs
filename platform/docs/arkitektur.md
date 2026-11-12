@@ -15,11 +15,11 @@ Repoet inneholder i dag Usett-nettsiden (Next.js med Bootstrap, publisert på Ne
 ```
 platform/
 ├── README.md                          ✔ oppstart, kommandoer, miljøer
-├── docs/                              ✔ arkitektur, plan og API (api.md)
+├── docs/                              ✔ arkitektur, plan, API (api.md) og drift og personvern (drift.md)
 ├── supabase/
 │   ├── config.toml                    ✔ lokal Supabase (CLI)
-│   ├── migrations/                    ✔ datamodell, RLS, funksjoner, lagring, sanntid, fase 0–4
-│   ├── tests/                         ✔ pgTAP: skjema, isolasjon, roller, status, publisering, fase 0–4
+│   ├── migrations/                    ✔ datamodell, RLS, funksjoner, lagring, sanntid, fase 0–5
+│   ├── tests/                         ✔ pgTAP: skjema, isolasjon, roller, status, publisering, fase 0–5
 │   └── templates/                     ✔ norske e-postmaler for Supabase Auth
 ├── package.json, tsconfig.json        ✔ TypeScript strict
 ├── next.config.ts                     ✔ Cache Components, sikkerhetshoder, next-intl, Sentry
@@ -28,12 +28,15 @@ platform/
 ├── vercel.json                        ✔ funksjoner i Stockholm (arn1) og planlagte jobber (cron)
 ├── .env.example                       ✔
 ├── messages/                          ✔ all tekst: nb.json (standard), en.json, sv.json
-├── e2e/                               ✔ Playwright (fase 0–4): akseptkriterium 2 og 3 i fase2.spec.ts, 5 og 1 i fase3.spec.ts,
-│                                      4 i fase4.spec.ts. support/ etterligner Stripe og DNS over HTTPS.
+├── e2e/                               ✔ Playwright (fase 0–5): akseptkriterium 2 og 3 i fase2.spec.ts, 5 og 1 i fase3.spec.ts,
+│                                      4 i fase4.spec.ts, 6, universell utforming (axe) og personvern i fase5.spec.ts.
+│                                      support/ etterligner Stripe og DNS over HTTPS og lager demodata.
+├── lighthouserc.yml                   ✔ Lighthouse CI: LCP under 2,5 s på mobil, bilder i riktig størrelse og lat lasting
 ├── scripts/copy-vendor.mjs            ✔ kopierer MapLibre sin web-worker til public/vendor/ før dev og build
 ├── scripts/build-embed.mjs            ✔ bygger web-komponenten til public/embed/v1.js før dev og build
 ├── test/                              ✔ tester på tvers av moduler (oversettelser)
-├── scripts/seed-demo.ts               Demo Bolig AS / Fjordparken (fase 5)
+├── scripts/demo.ts                    ✔ demodata: Demo Bolig AS med Fjordparken (npm run demo)
+├── scripts/lighthouse.mjs             ✔ Lighthouse CI mot demosiden (npm run lighthouse)
 └── src/
     ├── proxy.ts                       ✔ fornyer sesjonen, krever innlogging, husker organisasjon, sender
     │                                  underdomener og egne domener til sites/, og videre til primærdomenet
@@ -49,27 +52,30 @@ platform/
     │   │       ├── settings/          ✔ organisasjon, brukere, merkevare, domener, abonnement og API
     │   │       ├── projects/          ✔ liste, veiviser, oversikt, innstillinger, enheter, enhetsskjema, CSV-eksport,
     │   │       │                      ✔ boligvelgere og editor (selectors/), prosjektside (site/), leads per prosjekt
-    │   │       ├── leads/             ✔ liste med filter, detalj, status og notat, CSV-eksport (export/)
+    │   │       ├── leads/             ✔ liste med filter, detalj, status og notat, CSV-eksport (export/), innsyn (innsyn/)
     │   │       └── media/             ✔ mediebibliotek
     │   ├── sites/[site]/              ✔ publiserte prosjektsider: sider, bolig/[slug], personvern, informasjonskapsler,
 │   │                              sitemap.xml, robots.txt
     │   ├── preview/[token]/           ✔ delt forhåndsvisning av utkastet (signert lenke)
     │   ├── site-preview/[siteId]/     ✔ forhåndsvisningen i editoren (iframe, krever innlogging)
     │   ├── embed/selector/[id]/       ✔ publisert boligvelger, preview/ (utkast for innloggede), bolig/[slug] (enhetsside)
-    │   └── api/                       ✔ public/v1 (åpent lese-API), v1 (API med nøkkel), stripe/webhook og cron/
-│                                  (webhooks, domener, varsler). Leads og bildebehandling er serverhandlinger.
+    │   └── api/                       ✔ public/v1 (åpent lese-API), v1 (API med nøkkel), stripe/webhook, cron/
+    │                                  (webhooks, domener, varsler) og health (helsesjekk). Leads og bildebehandling
+    │                                  er serverhandlinger.
     ├── components/
     │   ├── ui/                        ✔ shadcn/ui
     │   ├── forms/                     ✔ felles skjemahjelpere
     │   └── admin/                     ✔ toppmeny, organisasjonsvelger, brukermeny
     ├── features/                      domenemoduler: Zod-skjema, serverhandlinger, spørringer, komponenter
     │   ├── auth/  organizations/  members/  invitations/  account/   ✔
-    │   ├── projects/                  ✔ veiviser, Kartverket, kart, fremdrift, kontakter, byggetrinn og bygg
+    │   ├── projects/                  ✔ veiviser, Kartverket, kart, fremdrift, kontakter, byggetrinn og bygg,
+    │                                  oversikt med verdi solgt og sjekkliste for oppstarten
     │   ├── units/                     ✔ felt og tolking, prisberegning, tabell, skjema, import/, eksport
     │   ├── media/                     ✔ opplasting, bildevarianter (sharp), bibliotek, filvelger
     │   ├── selector/                  ✔ geometri, angre, filtre, visningstre, editor/, public/, serverhandlinger
     │   ├── site-builder/              ✔ blokker, maler, tema, rik tekst, SEO, editor/, render/, mellomlager
-    │   ├── leads/                     ✔ interesseskjema, samtykke, Turnstile, innsending, admin og CSV
+    │   ├── leads/                     ✔ interesseskjema, samtykke, Turnstile, innsending, admin, CSV og innsyn per person
+    │   ├── demo/                      ✔ demodata for Fjordparken: leiligheter, fasade i SVG og markeringer
     │   ├── domains/                   ✔ vertsnavn, DNS over HTTPS, Vercel Domains API, sjekk og Innstillinger → Domener
 │   ├── billing/                   ✔ Stripe (Checkout, kundeportal, synk fra webhook), Innstillinger → Abonnement
 │   ├── integrations/              ✔ API-nøkler, webhooks (utsending, signatur, SSRF-vern), Innstillinger → API
@@ -378,3 +384,76 @@ Testene i `005_publisering_og_offentlig_api.test.sql` kontrollerer dette.
 - **`anon_security_definer_function_executable`** og **`authenticated_security_definer_function_executable`.** Gjelder de offentlige lesefunksjonene og funksjonene for organisasjon, invitasjon, innlogging, publisering, primærdomene, testhendelser og nye forsøk for webhooks, og forlengelse av prøveperioden (plattformadmin). De er SECURITY DEFINER nettopp for at anon og brukere ikke skal trenge direkte tabelltilgang. Hver funksjon sjekker selv tilgang eller publiseringsstatus, og det er dekket av tester.
 - **`rls_enabled_no_policy`** på `rate_limit_buckets`. Tabellen brukes bare av service-rollen.
 - **`unused_index`.** Forventet i en tom database.
+
+## 18. Prosjektoversikt og oppstart
+
+- **`project_overview(prosjekt)`** gir i ett kall:
+  - antall og verdi per status (verdi er summen av `price`; omkostninger og fellesgjeld er ikke med),
+  - antall solgte enheter uten pris,
+  - visninger med bilde og markerte enheter,
+  - boligvelger og prosjektside, med publiseringsstatus.
+- Funksjonen kjører med rettighetene til brukeren (security invoker), så RLS gjelder for alt den teller. En bruker uten tilgang til prosjektet får bare nuller.
+- **Sjekklisten** følger oppstartsveiviseren i spesifikasjonen:
+  - opprett organisasjon og prosjekt, enheter, bilde og markeringer, mal, publisering.
+  - Publiseringen regnes som ferdig først når også boligvelgeren er publisert. En upublisert velger vises ikke på siden.
+  - Sjekklisten vises for dem som kan redigere innhold, til alt er gjort.
+
+## 19. Statiske publiserte sider
+
+Publiserte prosjektsider (`sites/[site]/…`) lages som ferdige statiske sider per prosjektside og mellomlagres:
+
+- **`ensureStatic = "navigation"`** og `generateStaticParams()` med plassholderen `-` (`PRERENDER_PLACEHOLDER`). Med Cache Components må ruten ha minst én kjent parameter.
+  - Første besøk på en prosjektside venter på den statiske siden. Senere besøk får den rett fra mellomlageret, med alt innhold i HTML-en.
+  - Bygget sjekker at sidene ikke leser forespørselen (cookies, hoder, søkeparametre) eller data som ikke er mellomlagret.
+- **Ferskhet.** Sidene bærer cache-taggene til dataene de bruker.
+  - Publisering, statusendring, import og nye domener tømmer taggene.
+  - Neste besøk får en fersk side. Status i åpne sider oppdateres i sanntid som før.
+  - Publisering og nye domener tømmer også en 404 som er lagret for adressen.
+- **Filtre i adressen** leses etter at siden er lastet (`useLocationSearch`), ikke med `useSearchParams`. Ellers ville boligvelgeren og enhetslisten bare blitt rendret i nettleseren. Den statiske siden viser alle boligene, og filteret brukes rett etter lasting.
+- **«I dag»** for visninger og fremdrift kommer fra en mellomlagret funksjon (`getPublishedNow`), ikke fra klokken under rendringen.
+- **Tekst til nettleseren.**
+  - Rotoppsettet sender bare tekstene til feilsiden.
+  - Admin og innlogging har egne leverandører med all tekst.
+  - Publiserte sider og innbyggingen får bare sine navnerom (`SiteIntlProvider`).
+  - Før dette fulgte all tekst i admin med hver publiserte side.
+- **Sanntid.** Supabase-klienten lastes først når sanntid kobles til (`loadPublicBrowserClient`), etter at siden er vist.
+- **Bilder.**
+  - Bildet øverst (hero) forhåndslastes, så nettleseren henter det før skriptene.
+  - Bildet i en boligvelger lenger ned lastes lat.
+  - Alle bilder har WebP-varianter (800, 1600 og 2400 piksler) med `srcset` og `sizes`.
+- **Måling** med Lighthouse CI på mobil, se [drift.md](drift.md#ytelse). Demosiden har median LCP på 1,7–1,8 s.
+
+## 20. Universell utforming
+
+- **Automatisk kontroll.** axe (WCAG 2.1 A og AA) kjører i ende-til-ende-testene på:
+  - prosjektsiden, enhetssiden, personvernsidene og innbyggingen, på desktop og mobil og med samtykkebanneret,
+  - de viktigste sidene i admin.
+- **Tastatur og skjermleser.** Testen går gjennom boligvelgeren:
+  - Hopp til innhold.
+  - Hver bolig er en lenke med enhet, status og nøkkelinfo i navnet. Status er tekst, ikke bare farge.
+  - Fokus viser verktøytipset. Enter åpner enhetskortet, og Escape lukker det og gir fokus tilbake.
+  - Filteret kan brukes med tastatur.
+  - Listen er et likeverdig alternativ til bildet.
+- **Fokus etter dialoger.** Radix gir fokus tilbake til `DialogTrigger`. Dialoger som åpnes fra kode, for eksempel enhetskortet, har ingen trigger. `useReturnFocus` i `DialogContent` og `AlertDialogContent` gir fokus tilbake til elementet som hadde fokus da dialogen åpnet.
+- **Kontrast over bilder.** Teksten i hero ligger over en mørk toning nederst, så kontrasten holder også over lyse bilder (minst 8:1 i demoen).
+- **Ikke testet med en ekte skjermleser** (NVDA, VoiceOver). Det bør gjøres før lansering.
+
+## 21. Innsyn og sletting for én person
+
+- **Innsyn** (`/[org]/leads/innsyn?email=…`, eier og administrator, også i lesemodus) gir en JSON-fil med:
+  - alle henvendelsene, også internt notat,
+  - samtykket med den eksakte teksten personen godtok (`consentTexts` for versjonen),
+  - hvilke systemer kopier er sendt til med webhooks.
+  - Uthentingen logges med antall henvendelser, ikke hvem det gjaldt (`log_person_export`).
+- **Sletting** (`erase_lead_person`) fjerner:
+  - henvendelsene fra e-postadressen,
+  - telleren for rate limit, som har adressen i nøkkelen.
+  - Hvert lead logges som slettet, uten personopplysninger.
+- **Kopiene i webhook-loggen.** Når et lead slettes, uansett hvordan, slettes kopiene i loggen også (triggeren `forget_deliveries`). En leveranse som ikke er sendt, sendes da aldri.
+- **Lesemodus.** Retten til innsyn og sletting gjelder uansett abonnement, både i databasen og i appen.
+
+## 22. Revisjonslogg ved sletting av prosjekt og organisasjon
+
+- Postgres kjører AFTER-triggere for rader i en kaskade først etter den ytre setningen, med `pg_trigger_depth() = 1`. Kontrollen av dybden i `audit_row_change` fanget dem derfor ikke.
+- Sletting av et prosjekt med enheter stoppet derfor på fremmednøkkelen i `audit_log`.
+- Nå kjennes kaskaden igjen på at organisasjonen eller prosjektet ikke finnes lenger. Sletting av prosjekt og organisasjon virker og er testet.
