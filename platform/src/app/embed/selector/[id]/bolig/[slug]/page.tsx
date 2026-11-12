@@ -5,6 +5,7 @@ import { Suspense } from "react";
 
 import { Skeleton } from "@/components/ui/skeleton";
 import { PublicUnitPage } from "@/features/selector/components/public/unit-page";
+import { selectorPublicPath } from "@/features/selector/paths";
 import { getSelectorUnit } from "@/features/selector/public-queries";
 
 export async function generateMetadata({ params }: PageProps<"/embed/selector/[id]/bolig/[slug]">): Promise<Metadata> {
@@ -19,7 +20,15 @@ async function UnitDetails({ params }: { params: PageProps<"/embed/selector/[id]
   if (!result) {
     notFound();
   }
-  return <PublicUnitPage selectorId={id} projectId={result.projectId} unit={result.unit} />;
+  const t = await getTranslations("publicSelector.unitPage");
+  return (
+    <PublicUnitPage
+      projectId={result.projectId}
+      unit={result.unit}
+      back={{ href: selectorPublicPath(id), label: t("back") }}
+      interest={{ pageId: null, source: "embed" }}
+    />
+  );
 }
 
 /** Enhetssiden i den publiserte velgeren. Viser bare publiserte data, aldri interne felt. */

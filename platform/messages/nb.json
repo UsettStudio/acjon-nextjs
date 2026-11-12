@@ -68,7 +68,19 @@
     "unitNumberTaken": "Enhetsnummeret finnes allerede i prosjektet.",
     "duplicateInFile": "Enhetsnummeret står flere ganger i filen.",
     "importRowInvalid": "Raden kunne ikke lagres. Sjekk verdiene.",
-    "colorInvalid": "Skriv fargen som heksadesimal, for eksempel #2E9E5B."
+    "colorInvalid": "Skriv fargen som heksadesimal, for eksempel #2E9E5B.",
+    "consentRequired": "Du må samtykke for at vi skal kunne kontakte deg.",
+    "timeInvalid": "Skriv klokkeslettet som TT:MM, for eksempel 13:00.",
+    "urlInvalid": "Skriv en full adresse som starter med https://.",
+    "httpsRequired": "Adressen må starte med https://.",
+    "videoInvalid": "Lim inn en lenke til en video på YouTube eller Vimeo.",
+    "subdomainFormat": "Bruk små bokstaver (a–z), tall og bindestrek. Høyst 63 tegn.",
+    "subdomainReserved": "Denne adressen er reservert. Velg en annen.",
+    "subdomainTaken": "Adressen er allerede i bruk. Velg en annen.",
+    "pageSlugFormat": "Bruk små bokstaver (a–z), tall og bindestrek. Høyst 80 tegn.",
+    "pageSlugReserved": "Denne sideadressen er reservert. Velg en annen.",
+    "pageSlugTaken": "En annen side har allerede denne adressen.",
+    "customFieldDuplicate": "Feltnavnet er allerede brukt på denne enheten."
   },
   "errors": {
     "unauthenticated": "Du må logge inn på nytt.",
@@ -164,7 +176,8 @@
     "userMenu": "Brukermeny",
     "account": "Min profil",
     "projects": "Prosjekter",
-    "media": "Mediebibliotek"
+    "media": "Mediebibliotek",
+    "leads": "Leads"
   },
   "dashboard": {
     "title": "Oversikt",
@@ -186,7 +199,8 @@
     "title": "Innstillinger",
     "tabs": {
       "organization": "Organisasjon",
-      "members": "Brukere"
+      "members": "Brukere",
+      "brand": "Merkevare"
     },
     "organization": {
       "title": "Organisasjon",
@@ -197,6 +211,13 @@
       "leadRetention": "Lagringstid for leads (dager)",
       "leadRetentionHelp": "Leads slettes automatisk når de er eldre enn dette. La feltet stå tomt for å beholde dem til de slettes manuelt.",
       "saved": "Organisasjonen er oppdatert."
+    },
+    "brand": {
+      "title": "Merkevareprofil",
+      "description": "Logo, farger, skrift og knappestil som alle prosjektsider bruker. Hver prosjektside kan overstyre profilen.",
+      "saved": "Merkevareprofilen er lagret. Publiserte prosjektsider oppdateres med en gang.",
+      "default": "Standard",
+      "saveHelp": "Gjelder publiserte prosjektsider med en gang."
     }
   },
   "members": {
@@ -295,6 +316,26 @@
       "expires": "Lenken virker til {date}.",
       "fallback": "Virker ikke knappen? Kopier denne lenken inn i nettleseren:",
       "ignore": "Venter du ikke denne invitasjonen, kan du se bort fra e-posten."
+    },
+    "lead": {
+      "notifySubject": "Ny interessent for {project}",
+      "notifySubjectUnit": "Ny interessent for {unit} i {project}",
+      "notifyHeading": "Ny henvendelse om {project}",
+      "notifyName": "Navn: {name}",
+      "notifyEmail": "E-post: {email}",
+      "notifyPhone": "Telefon: {phone}",
+      "notifyUnit": "Enhet: {unit}",
+      "notifyMessage": "Beskjed: {message}",
+      "notifyConsentSimilar": "Har også samtykket til å høre om lignende prosjekter.",
+      "notifyConsentContactOnly": "Har samtykket til å bli kontaktet om dette prosjektet.",
+      "notifyCta": "Åpne i admin",
+      "notifyFooter": "Du får denne e-posten fordi du er kontaktperson for prosjektet hos {organization}.",
+      "receiptSubject": "Vi har mottatt henvendelsen din om {project}",
+      "receiptHeading": "Takk, {name}!",
+      "receiptBody": "Vi har mottatt interessen din for {project}. {organization} tar kontakt med deg så snart som mulig.",
+      "receiptBodyUnit": "Vi har mottatt interessen din for {unit} i {project}. {organization} tar kontakt med deg så snart som mulig.",
+      "receiptPrivacy": "Opplysningene dine lagres hos {organization} og brukes bare til å følge opp henvendelsen. Svar på denne e-posten hvis du vil at de skal slettes.",
+      "receiptFooter": "Du får denne kvitteringen fordi noen sendte et interesseskjema med denne e-postadressen."
     }
   },
   "unitStatus": {
@@ -327,7 +368,9 @@
       "overview": "Oversikt",
       "units": "Enheter",
       "settings": "Innstillinger",
-      "selectors": "Boligvelger"
+      "selectors": "Boligvelger",
+      "site": "Prosjektside",
+      "leads": "Leads"
     },
     "list": {
       "title": "Prosjekter",
@@ -477,7 +520,13 @@
       "structure": "Byggetrinn og bygg",
       "dangerZone": "Slett prosjektet",
       "display": "Boligvelger og publiserte sider",
-      "displayHelp": "Statusfarger for dette prosjektet og om prisen vises på solgte enheter. Tomme felt bruker organisasjonens farger."
+      "displayHelp": "Statusfarger for dette prosjektet og om prisen vises på solgte enheter. Tomme felt bruker organisasjonens farger.",
+      "customFields": {
+        "title": "Egne felt på enhetssiden",
+        "help": "Egne felt er interne til du gjør dem offentlige. Offentlige felt vises på enhetssiden på prosjektsiden og i boligvelgeren.",
+        "legend": "Vis på enhetssiden",
+        "empty": "Ingen enheter har egne felt ennå. Legg dem til under Egne felt i enhetsskjemaet."
+      }
     },
     "delete": {
       "body": "Prosjektet slettes med alle enheter, statuslogg, boligvelger og prosjektside. Filene blir liggende i mediebiblioteket. Dette kan ikke angres.",
@@ -507,7 +556,11 @@
       "noContacts": "Ingen kontaktpersoner.",
       "structure": "Byggetrinn og bygg",
       "noStructure": "Prosjektet er ikke delt i byggetrinn eller bygg.",
-      "structureSummary": "{stages, plural, =0 {Ingen byggetrinn} one {# byggetrinn} other {# byggetrinn}} og {buildings, plural, =0 {ingen bygg} one {# bygg} other {# bygg}}."
+      "structureSummary": "{stages, plural, =0 {Ingen byggetrinn} one {# byggetrinn} other {# byggetrinn}} og {buildings, plural, =0 {ingen bygg} one {# bygg} other {# bygg}}.",
+      "recentLeads": "Siste leads",
+      "noLeads": "Ingen henvendelser ennå.",
+      "leadUnit": "om {unit}",
+      "openLeads": "Alle leads i prosjektet"
     }
   },
   "units": {
@@ -696,7 +749,8 @@
         "area": "Areal",
         "media": "Plantegninger og bilder",
         "documents": "Dokumenter",
-        "description": "Beskrivelse"
+        "description": "Beskrivelse",
+        "custom": "Egne felt"
       },
       "unitNumberHelp": "For eksempel A-101 eller H0201. Må være unikt i prosjektet.",
       "titleHelp": "Valgfritt navn som vises sammen med nummeret, for eksempel «Toppleilighet».",
@@ -715,6 +769,15 @@
         "gallery_asset_idsHelp": "Bildene vises i galleriet på enhetssiden i denne rekkefølgen.",
         "document_asset_ids": "Dokumenter",
         "document_asset_idsHelp": "PDF-er som salgsoppgave, leveransebeskrivelse og romskjema."
+      },
+      "custom": {
+        "help": "Opplysninger som ikke har eget felt, for eksempel takhøyde eller peis. Velg i prosjektinnstillingene hvilke som vises på enhetssiden.",
+        "empty": "Ingen egne felt på denne enheten.",
+        "key": "Navn",
+        "value": "Verdi",
+        "add": "Legg til felt",
+        "remove": "Fjern {name}",
+        "unnamed": "feltet"
       }
     },
     "import": {
@@ -1272,7 +1335,8 @@
       "comparing": "Sammenlignes",
       "compareFull": "Du kan sammenligne opptil tre boliger. Fjern en for å legge til en ny.",
       "locate": "Vis i bildet",
-      "previewNoUnitPage": "Boligsiden kan åpnes når boligvelgeren er publisert."
+      "previewNoUnitPage": "Boligsiden kan åpnes når boligvelgeren er publisert.",
+      "interest": "Meld interesse"
     },
     "compare": {
       "title": "Sammenlign boliger",
@@ -1294,7 +1358,730 @@
       "soldPrice": "Boligen er solgt.",
       "priceComing": "Pris kommer.",
       "contact": "Kontakt megler",
-      "liveStatus": "Status oppdateres fortløpende."
+      "liveStatus": "Status oppdateres fortløpende.",
+      "interestHeading": "Meld interesse",
+      "interestIntro": "Fyll ut skjemaet, så tar megleren kontakt med deg om {unit}."
+    }
+  },
+  "siteBuilder": {
+    "templates": {
+      "homeTitle": "Forside",
+      "heroSubtitleComingSoon": "Kommer for salg. Meld interesse, så hører du fra oss først.",
+      "heroSubtitleFull": "Nye boliger. Finn din i boligvelgeren.",
+      "heroCta": "Meld interesse",
+      "aboutHeading": "Om prosjektet",
+      "aboutBody": "Skriv kort om prosjektet: beliggenhet, boligene og hva som gjør dem spesielle.",
+      "leadHeading": "Meld interesse",
+      "leadIntro": "Legg igjen kontaktinformasjonen din, så hører du fra oss når det er nytt om prosjektet.",
+      "leadButton": "Send",
+      "keyFiguresHeading": "Prosjektet i tall",
+      "selectorHeading": "Finn din bolig",
+      "unitsHeading": "Boligene",
+      "galleryHeading": "Bilder",
+      "progressHeading": "Fremdrift",
+      "mapHeading": "Beliggenhet",
+      "viewingsHeading": "Visninger",
+      "viewingsIntro": "Velkommen på visning. Meld interesse, så får du beskjed om nye visninger.",
+      "documentsHeading": "Dokumenter og prospekt",
+      "faqHeading": "Ofte stilte spørsmål",
+      "contactsHeading": "Kontakt",
+      "navUnits": "Boliger",
+      "navContact": "Kontakt"
+    },
+    "pageTitle": "Prosjektside – {project}",
+    "preview": {
+      "pageTitle": "Forhåndsvisning av prosjektside",
+      "banner": "Forhåndsvisning av utkastet. Lenken virker til {expires}. Skjemaer kan ikke sendes herfra."
+    },
+    "errors": {
+      "subdomainTaken": "Adressen er allerede i bruk. Velg en annen.",
+      "pageSlugTaken": "En annen side har allerede denne adressen.",
+      "needsHome": "Prosjektsiden mangler forside. Velg en forside under Sider.",
+      "homePage": "Forsiden kan ikke slettes. Gjør en annen side til forside først.",
+      "selectorNotInProject": "En boligvelger-blokk viser en boligvelger fra et annet prosjekt. Velg en av prosjektets boligvelgere."
+    },
+    "blockTypes": {
+      "hero": {
+        "name": "Hero",
+        "description": "Stort toppbilde med tittel og knapp."
+      },
+      "text": {
+        "name": "Tekst",
+        "description": "Overskrift og tekst med enkel formatering."
+      },
+      "text_image": {
+        "name": "Tekst og bilde",
+        "description": "Tekst ved siden av et bilde."
+      },
+      "gallery": {
+        "name": "Bildegalleri",
+        "description": "Bilder i rutenett som kan forstørres."
+      },
+      "key_figures": {
+        "name": "Nøkkeltall",
+        "description": "Tall som antall boliger, størrelser og pris fra."
+      },
+      "progress": {
+        "name": "Fremdrift",
+        "description": "Milepæler fra salgsstart til innflytting."
+      },
+      "selector": {
+        "name": "Boligvelger",
+        "description": "Interaktiv boligvelger fra prosjektet."
+      },
+      "unit_list": {
+        "name": "Enhetsliste",
+        "description": "Tabell over boligene med filter og status."
+      },
+      "map": {
+        "name": "Kart og nærområde",
+        "description": "Kart med beliggenhet og steder i nærheten."
+      },
+      "viewings": {
+        "name": "Visninger",
+        "description": "Dato og tid for kommende visninger."
+      },
+      "contacts": {
+        "name": "Kontaktpersoner",
+        "description": "Meglere og kontaktpersoner med telefon og e-post."
+      },
+      "lead_form": {
+        "name": "Interesseskjema",
+        "description": "Skjema der besøkende melder interesse."
+      },
+      "documents": {
+        "name": "Dokumenter og prospekt",
+        "description": "PDF-er som prospekt og leveransebeskrivelse."
+      },
+      "video": {
+        "name": "Video",
+        "description": "Video fra YouTube eller Vimeo."
+      },
+      "faq": {
+        "name": "Ofte stilte spørsmål",
+        "description": "Spørsmål og svar som kan åpnes og lukkes."
+      },
+      "news": {
+        "name": "Nyheter",
+        "description": "Nyheter og oppdateringer om prosjektet."
+      },
+      "button": {
+        "name": "Knapp",
+        "description": "En knapp som lenker til en side, blokk eller adresse."
+      },
+      "embed": {
+        "name": "Innbygging",
+        "description": "Innhold fra en annen tjeneste, for eksempel en 3D-visning."
+      }
+    },
+    "create": {
+      "title": "Lag prosjektside",
+      "description": "Velg en mal å starte fra. Du kan endre alt etterpå, og siden er et utkast til du publiserer den.",
+      "template": "Mal",
+      "templates": {
+        "coming_soon": {
+          "name": "Kommer for salg",
+          "description": "En enkel side for å samle interessenter før salgsstart."
+        },
+        "full": {
+          "name": "Full prosjektside",
+          "description": "Alt om prosjektet: boligvelger, bilder, fremdrift, kart, dokumenter og kontakt."
+        }
+      },
+      "templateHelp": "En side som starter som «Kommer for salg», kan bygges ut til full prosjektside senere uten å begynne på nytt.",
+      "subdomain": "Adresse",
+      "subdomainHelp": "Små bokstaver (a–z), tall og bindestrek. Du kan endre adressen senere.",
+      "submit": "Lag prosjektside",
+      "created": "Prosjektsiden er laget som utkast.",
+      "emptyTitle": "Ingen prosjektside ennå",
+      "emptyReadOnly": "En redaktør eller administrator kan lage prosjektsiden."
+    },
+    "theme": {
+      "colorsTitle": "Farger",
+      "colors": {
+        "primary": "Hovedfarge",
+        "accent": "Aksentfarge",
+        "background": "Bakgrunn",
+        "foreground": "Tekst"
+      },
+      "colorPicker": "Velg {name}",
+      "reset": "Tilbakestill {name}",
+      "overridden": "Egen verdi",
+      "typographyTitle": "Skrift og knapper",
+      "headingFont": "Skrift for overskrifter",
+      "bodyFont": "Skrift for brødtekst",
+      "buttonStyle": "Knappestil",
+      "inheritOption": "Som standard ({value})",
+      "fonts": {
+        "inter": "Inter",
+        "dm_sans": "DM Sans",
+        "lora": "Lora",
+        "playfair": "Playfair Display"
+      },
+      "buttonStyles": {
+        "rounded": "Avrundet",
+        "pill": "Pille",
+        "square": "Firkantet"
+      },
+      "lowTextContrast": "Teksten har for lav kontrast mot bakgrunnen ({ratio}:1). Den bør være minst 4,5:1 for å være lett å lese.",
+      "lowPrimaryContrast": "Hovedfargen har lav kontrast mot bakgrunnen ({ratio}:1). Lenker og overskrifter kan bli vanskelige å se.",
+      "sample": "Eksempel",
+      "sampleHeading": "Nye boliger ved fjorden",
+      "sampleText": "Slik ser tekst, overskrifter og knapper ut med disse valgene.",
+      "sampleButton": "Meld interesse"
+    },
+    "editor": {
+      "pageSelect": "Side som redigeres",
+      "homePageOption": "{title} (forside)",
+      "tabs": {
+        "content": "Innhold",
+        "pages": "Sider",
+        "navigation": "Meny og bunntekst",
+        "theme": "Tema",
+        "settings": "Innstillinger"
+      },
+      "save": {
+        "saved": "Utkastet er lagret",
+        "pending": "Endringer venter",
+        "saving": "Lagrer …",
+        "invalid": "Ikke lagret: rett feltene som er markert",
+        "failed": "Kunne ikke lagre: {reason}",
+        "retry": "Prøv igjen"
+      },
+      "expand": {
+        "title": "Bygg ut til full prosjektside",
+        "description": "Legger til blokkene som mangler: {blocks}. Blokkene du har, beholdes som de er.",
+        "action": "Bygg ut siden",
+        "done": "{count, plural, =0 {Siden har allerede alle blokkene.} one {# blokk er lagt til.} other {# blokker er lagt til.}}"
+      },
+      "selectorNone": "Ingen boligvelger valgt",
+      "selectorUnpublished": "{name} (ikke publisert)",
+      "entryViewDefault": "Boligvelgerens startvisning",
+      "fields": {
+        "heading": "Overskrift",
+        "heroTitle": "Tittel",
+        "subtitle": "Undertekst",
+        "backgroundImage": "Bakgrunnsbilde",
+        "overlay": "Mørklegging av bildet",
+        "height": "Høyde",
+        "align": "Justering",
+        "cta_label": "Tekst på knappen",
+        "cta_link": "Knappen lenker til",
+        "body": "Tekst",
+        "width": "Bredde",
+        "image_asset_id": "Bilde",
+        "image_position": "Bildets plassering",
+        "images": "Bilder",
+        "columns": "Kolonner",
+        "figures": "Tall",
+        "source": "Hva skal vises",
+        "figureValue": "Tall eller verdi",
+        "figureLabel": "Beskrivelse",
+        "useProjectMilestones": "Bruk milepælene fra prosjektet",
+        "milestones": "Milepæler",
+        "milestoneLabel": "Milepæl",
+        "milestoneText": "Tidspunkt",
+        "milestoneDone": "Fullført",
+        "selector_id": "Boligvelger",
+        "entry_view_id": "Startvisning",
+        "show_filters": "Vis filter",
+        "show_list": "Vis liste over boligene",
+        "hide_sold": "Skjul solgte boliger",
+        "use_project_location": "Bruk prosjektets plassering",
+        "lat": "Breddegrad",
+        "lng": "Lengdegrad",
+        "zoom": "Zoomnivå",
+        "places": "Steder i nærheten",
+        "placeName": "Navn",
+        "placeCategory": "Kategori",
+        "placeDistance": "Avstand",
+        "intro": "Ingress",
+        "viewingItems": "Visninger",
+        "date": "Dato",
+        "start": "Fra kl.",
+        "end": "Til kl. (valgfritt)",
+        "note": "Merknad",
+        "useProjectContacts": "Bruk kontaktpersonene fra prosjektet",
+        "contactItems": "Kontaktpersoner",
+        "contactName": "Navn",
+        "contactTitle": "Tittel",
+        "phone": "Telefon",
+        "email": "E-post",
+        "portrait": "Portrett",
+        "button_label": "Tekst på knappen",
+        "show_unit_select": "La besøkende velge bolig i skjemaet",
+        "documents": "Dokumenter",
+        "videoUrl": "Lenke til videoen",
+        "caption": "Bildetekst",
+        "questions": "Spørsmål og svar",
+        "question": "Spørsmål",
+        "answer": "Svar",
+        "newsItems": "Nyheter",
+        "newsTitle": "Tittel",
+        "buttonText": "Tekst på knappen",
+        "link": "Lenker til",
+        "style": "Stil",
+        "embedUrl": "Adresse",
+        "embedTitle": "Beskrivelse",
+        "embedHeight": "Høyde",
+        "pageTitle": "Tittel",
+        "pageSlug": "Adresse",
+        "seoTitle": "Tittel i søkeresultater",
+        "seoDescription": "Beskrivelse i søkeresultater",
+        "shareImage": "Delingsbilde",
+        "menuItems": "Menypunkter",
+        "menuLabel": "Tekst i menyen",
+        "footerText": "Tekst i bunnteksten",
+        "footerContacts": "Vis kontaktpersonene i bunnteksten",
+        "footerLinks": "Lenker i bunnteksten",
+        "linkLabel": "Tekst",
+        "linkUrl": "Adresse",
+        "siteLogo": "Logo for denne prosjektsiden",
+        "siteDescription": "Beskrivelse",
+        "brandLogo": "Logo"
+      },
+      "help": {
+        "richText": "Formatering: ## Overskrift, - punktliste, 1. nummerert liste, **fet**, *kursiv* og [lenketekst](https://…).",
+        "heroImage": "Bruk et bredt bilde, gjerne 2400 piksler eller mer.",
+        "overlay": "Gjør bildet mørkere, så hvit tekst blir lettere å lese.",
+        "keyFigures": "Tall som hentes fra enhetene, oppdateres av seg selv når status og pris endres.",
+        "useProjectMilestones": "Milepælene redigeres i prosjektinnstillingene.",
+        "selector": "Bare prosjektets egne boligvelgere kan velges. Den vises på siden når den er publisert.",
+        "entryView": "Visningen besøkende ser først, for eksempel en fasade.",
+        "useProjectLocation": "Adressen og plasseringen redigeres i prosjektinnstillingene.",
+        "places": "For eksempel skole, butikk og kollektivtransport.",
+        "documents": "PDF-er fra mediebiblioteket. De åpnes i ny fane.",
+        "video": "YouTube eller Vimeo. Videoen lastes først når besøkende klikker.",
+        "news": "Nyeste først. Nyheter med dato vises sortert etter dato.",
+        "embed": "Adressen må starte med https://. Innholdet vises i en avgrenset ramme.",
+        "embedTitle": "Leses opp av skjermlesere, for eksempel «3D-visning av leilighet A-302».",
+        "pageSlug": "Vises i adressen etter domenet, for eksempel /beliggenhet.",
+        "seoTitle": "La stå tomt for å bruke sidens tittel.",
+        "seoDescription": "Kort tekst som vises i søkeresultater, helst under 160 tegn.",
+        "shareImage": "Vises når siden deles i sosiale medier. Uten eget bilde brukes hero-bildet.",
+        "menu": "Menyen vises øverst på alle sidene. Lenker til blokker peker til blokker på forsiden.",
+        "footerText": "For eksempel firmanavn, adresse og organisasjonsnummer.",
+        "siteLogo": "La stå tomt for å bruke organisasjonens logo.",
+        "siteDescription": "Brukes i søkeresultater for sider som ikke har sin egen beskrivelse.",
+        "siteShareImage": "Brukes når en side deles og verken siden eller hero-blokken har bilde.",
+        "useProjectContacts": "Kontaktpersonene redigeres i prosjektinnstillingene.",
+        "brandLogo": "Vises øverst på prosjektsidene. Bruk gjerne PNG med gjennomsiktig bakgrunn."
+      },
+      "options": {
+        "heroHeight": {
+          "medium": "Middels",
+          "large": "Stor",
+          "full": "Hele skjermen"
+        },
+        "align": {
+          "left": "Venstre",
+          "center": "Midtstilt",
+          "right": "Høyre"
+        },
+        "width": {
+          "narrow": "Smal (lettere å lese)",
+          "wide": "Bred"
+        },
+        "imagePosition": {
+          "left": "Bildet til venstre",
+          "right": "Bildet til høyre"
+        },
+        "columns": {
+          "2": "To",
+          "3": "Tre",
+          "4": "Fire"
+        },
+        "figureSource": {
+          "custom": "Egen tekst",
+          "units_total": "Antall boliger",
+          "available": "Ledige boliger",
+          "size_range": "Størrelser (BRA-i)",
+          "price_from": "Pris fra",
+          "rooms_range": "Antall rom"
+        },
+        "buttonStyle": {
+          "primary": "Fylt",
+          "secondary": "Kontur"
+        }
+      },
+      "placeholders": {
+        "milestoneText": "For eksempel våren 2027",
+        "placeCategory": "For eksempel Skole",
+        "placeDistance": "For eksempel 400 m",
+        "viewingNote": "For eksempel Påmelding ikke nødvendig",
+        "buttonLabel": "Send",
+        "videoUrl": "https://www.youtube.com/watch?v=…",
+        "embedUrl": "https://",
+        "linkUrl": "https://"
+      },
+      "image": {
+        "choose": "Velg bilde",
+        "change": "Bytt",
+        "remove": "Fjern {field}",
+        "pickerTitle": "Velg bilde: {field}",
+        "unknown": "Bildet finnes ikke i mediebiblioteket",
+        "missingAlt": "Mangler alternativ tekst"
+      },
+      "link": {
+        "type": "Type lenke",
+        "types": {
+          "none": "Ingen lenke",
+          "page": "Side",
+          "block": "Blokk",
+          "url": "Adresse"
+        },
+        "page": "Side",
+        "block": "Blokk",
+        "url": "Adresse",
+        "missingPage": "Velg side",
+        "missingBlock": "Velg blokk"
+      },
+      "list": {
+        "count": "{count} av {max}",
+        "empty": "Ingenting her ennå.",
+        "item": "Element {number}",
+        "hasErrors": "Har feil",
+        "moveUp": "Flytt {name} opp",
+        "moveDown": "Flytt {name} ned",
+        "remove": "Fjern {name}",
+        "addFigure": "Legg til tall",
+        "addMilestone": "Legg til milepæl",
+        "addPlace": "Legg til sted",
+        "addViewing": "Legg til visning",
+        "addContact": "Legg til kontaktperson",
+        "addQuestion": "Legg til spørsmål",
+        "addNews": "Legg til nyhet",
+        "addMenuItem": "Legg til menypunkt",
+        "addFooterLink": "Legg til lenke"
+      },
+      "blocks": {
+        "listLabel": "Blokker på siden",
+        "move": "Flytt {name}",
+        "hiddenBadge": "Skjult",
+        "hasErrors": "Har feil",
+        "show": "Vis {name}",
+        "hide": "Skjul {name}",
+        "actions": "Flere valg for {name}",
+        "duplicate": "Dupliser",
+        "delete": "Slett",
+        "empty": "Siden har ingen blokker ennå.",
+        "instructions": "Trykk mellomrom for å løfte blokken. Flytt med piltastene og trykk mellomrom for å slippe. Escape avbryter.",
+        "picked": "Løftet {name} på plass {position}.",
+        "over": "{name} flyttes til plass {position}.",
+        "dropped": "{name} er flyttet til plass {position}.",
+        "cancelled": "Flyttingen er avbrutt.",
+        "add": "Legg til blokk",
+        "addTitle": "Legg til blokk",
+        "addDescription": "Blokken legges inn etter den valgte blokken, eller nederst på siden.",
+        "back": "Alle blokker",
+        "hiddenNotice": "Blokken er skjult og vises ikke på den publiserte siden. Innholdet beholdes.",
+        "fixErrors": "Rett feltene som er markert. Utkastet lagres ikke før feilene er rettet.",
+        "deleted": "{name} er slettet.",
+        "undo": "Angre"
+      },
+      "pages": {
+        "intro": "Rekkefølgen her er også rekkefølgen i menyen når menypunktene lenker til sidene.",
+        "listLabel": "Sider",
+        "home": "Forside",
+        "moveUp": "Flytt {title} opp",
+        "moveDown": "Flytt {title} ned",
+        "actions": "Flere valg for {title}",
+        "edit": "Rediger innhold",
+        "settings": "Innstillinger og SEO",
+        "makeHome": "Gjør til forside",
+        "delete": "Slett side",
+        "add": "Ny side",
+        "newTitle": "Ny side",
+        "newDescription": "Siden starter tom. Legg til blokker etterpå.",
+        "settingsTitle": "Innstillinger for {title}",
+        "settingsDescription": "Tittel, adresse og hvordan siden vises i søkeresultater og når den deles.",
+        "create": "Lag side",
+        "created": "Siden er laget.",
+        "saved": "Siden er oppdatert.",
+        "homeSet": "{title} er nå forsiden.",
+        "deleted": "{title} er slettet.",
+        "deleteTitle": "Slette {title}?",
+        "deleteDescription": "Siden slettes med en gang, også fra den publiserte prosjektsiden. Lenker til siden slutter å virke.",
+        "cancel": "Avbryt"
+      },
+      "share": {
+        "title": "Del forhåndsvisning",
+        "description": "Alle med lenken kan se utkastet uten å logge inn. Lenken viser alltid det nyeste utkastet.",
+        "link": "Lenke til forhåndsvisningen",
+        "copied": "Lenken er kopiert.",
+        "expires": "Lenken virker til {time}.",
+        "creating": "Lager lenke …"
+      },
+      "versions": {
+        "title": "Versjoner av {title}",
+        "description": "Hver publisering lagrer en versjon. Gjenoppretting legger versjonen i utkastet, så du kan se over før du publiserer.",
+        "empty": "Siden er ikke publisert ennå.",
+        "version": "Versjon {version}",
+        "current": "Publisert nå",
+        "blocks": "{count, plural, one {# blokk} other {# blokker}}",
+        "restore": "Gjenopprett",
+        "restored": "Versjon {version} er lagt i utkastet.",
+        "confirmTitle": "Gjenopprette versjon {version}?",
+        "confirmDescription": "Utkastet for denne siden erstattes av versjonen. Den publiserte siden endres ikke før du publiserer."
+      },
+      "publish": {
+        "notPublished": "Ikke publisert",
+        "publishedAt": "Publisert {time}",
+        "unpublishedChanges": "Upubliserte endringer",
+        "publish": "Publiser",
+        "publishChanges": "Publiser endringer",
+        "isPublished": "Publisert",
+        "published": "Prosjektsiden er publisert.",
+        "saveFirst": "Utkastet må lagres før det kan publiseres. Rett feltene som er markert.",
+        "more": "Flere valg",
+        "open": "Åpne publisert side",
+        "share": "Del forhåndsvisning",
+        "versions": "Versjonshistorikk for siden",
+        "unpublish": "Avpubliser",
+        "unpublishTitle": "Avpublisere prosjektsiden?",
+        "unpublishDescription": "Siden blir utilgjengelig for besøkende med en gang. Utkastet og versjonene beholdes, og du kan publisere igjen senere.",
+        "unpublished": "Prosjektsiden er avpublisert.",
+        "cancel": "Avbryt"
+      },
+      "navigation": {
+        "menuTitle": "Meny",
+        "footerTitle": "Bunntekst"
+      },
+      "theme": {
+        "intro": "Farger, skrift og logo hentes fra merkevareprofilen. Endringer her gjelder bare denne prosjektsiden.",
+        "editBrand": "Endre merkevareprofilen",
+        "fromBrand": "Fra merkevareprofilen"
+      },
+      "settings": {
+        "addressTitle": "Adresse",
+        "subdomain": "Underdomene",
+        "subdomainHelp": "Endres med en gang, også for den publiserte siden. Gamle lenker slutter å virke.",
+        "addressSaved": "Adressen er endret.",
+        "seoTitle": "Søk og deling",
+        "seoIntro": "Standardverdier for sider som ikke har sine egne.",
+        "deleteTitle": "Slett prosjektsiden",
+        "deleteDescription": "Sletter alle sidene, versjonene og den publiserte siden. Leads beholdes.",
+        "delete": "Slett prosjektsiden",
+        "deleteConfirmTitle": "Slette prosjektsiden?",
+        "deleteConfirmDescription": "Alle sidene og versjonene slettes, og den publiserte siden forsvinner med en gang. Dette kan ikke angres.",
+        "deleted": "Prosjektsiden er slettet."
+      },
+      "preview": {
+        "device": "Skjermstørrelse",
+        "desktop": "Desktop",
+        "tablet": "Nettbrett",
+        "mobile": "Mobil",
+        "reload": "Last inn på nytt",
+        "hint": "Klikk på en blokk for å redigere den.",
+        "frameTitle": "Forhåndsvisning av siden"
+      }
+    }
+  },
+  "site": {
+    "shell": {
+      "skip": "Hopp til innhold",
+      "logoAlt": "{name}",
+      "nav": "Meny",
+      "openMenu": "Åpne meny",
+      "closeMenu": "Lukk meny",
+      "contact": "Kontakt",
+      "footerLinks": "Lenker"
+    },
+    "editor": {
+      "emptyText": "Tekstblokk uten innhold. Skriv overskrift og tekst i panelet.",
+      "missingImage": "Velg et bilde i panelet.",
+      "emptyGallery": "Bildegalleriet er tomt. Legg til bilder i panelet.",
+      "emptyKeyFigures": "Ingen nøkkeltall ennå. Legg til tall i panelet, eller importer enheter.",
+      "emptyProgress": "Ingen fremdrift ennå. Legg inn milepæler i prosjektet eller i panelet.",
+      "emptyViewings": "Ingen kommende visninger. Legg til visninger i panelet.",
+      "emptyContacts": "Ingen kontaktpersoner. Legg dem til i prosjektinnstillingene eller i panelet.",
+      "emptyDocuments": "Ingen dokumenter ennå. Legg til PDF-er i panelet.",
+      "emptyVideo": "Lim inn en lenke til YouTube eller Vimeo i panelet.",
+      "emptyFaq": "Ingen spørsmål ennå. Legg til spørsmål og svar i panelet.",
+      "emptyNews": "Ingen nyheter ennå. Legg til en nyhet i panelet.",
+      "emptyButton": "Skriv tekst på knappen og velg hvor den skal lenke.",
+      "emptyEmbed": "Lim inn adressen til det som skal bygges inn, for eksempel en 3D-visning.",
+      "emptySelector": "Velg hvilken boligvelger som skal vises.",
+      "selectorNotPublished": "Boligvelgeren vises når den er publisert.",
+      "selectorPreview": "Boligvelgeren er interaktiv i forhåndsvisningen og på den publiserte siden.",
+      "emptyUnits": "Prosjektet har ingen synlige enheter ennå.",
+      "emptyMap": "Prosjektet har ingen plassering. Legg den inn i prosjektinnstillingene eller i panelet."
+    },
+    "gallery": {
+      "open": "Åpne bildet {name}"
+    },
+    "keyFigures": {
+      "unitsTotal": "boliger",
+      "available": "ledige",
+      "sizeRange": "BRA-i",
+      "roomsRange": "rom",
+      "priceFrom": "pris fra"
+    },
+    "milestones": {
+      "planning": "Regulering og planlegging",
+      "sales_start": "Salgsstart",
+      "construction_start": "Byggestart",
+      "move_in": "Innflytting"
+    },
+    "progress": {
+      "done": "Fullført",
+      "upcoming": "Kommer"
+    },
+    "viewings": {
+      "time": "Kl. {start}",
+      "timeRange": "Kl. {start}–{end}",
+      "none": "Ingen visninger er satt opp ennå."
+    },
+    "contacts": {
+      "phone": "Telefon:",
+      "email": "E-post:"
+    },
+    "documents": {
+      "untitled": "Dokument",
+      "image": "Bilde"
+    },
+    "video": {
+      "title": "Video",
+      "play": "Spill av video fra {provider}",
+      "notice": "Videoen lastes fra {provider} først når du klikker."
+    },
+    "embed": {
+      "fallbackTitle": "Innebygd innhold"
+    },
+    "map": {
+      "label": "Kart over beliggenheten til {project}",
+      "openMap": "Åpne i kart",
+      "nearby": "I nærheten"
+    },
+    "lead": {
+      "defaultHeading": "Meld interesse",
+      "name": "Navn",
+      "email": "E-post",
+      "phone": "Telefon",
+      "unit": "Bolig",
+      "noUnit": "Ingen bestemt bolig",
+      "message": "Beskjed (valgfritt)",
+      "honeypot": "Nettsted (la stå tomt)",
+      "consentLegend": "Samtykke",
+      "submit": "Send",
+      "required": "Felt merket med * må fylles ut.",
+      "previewDisabled": "Skjemaet kan ikke sendes i forhåndsvisningen.",
+      "successTitle": "Takk for interessen!",
+      "successBody": "Vi har mottatt henvendelsen din. {organization} tar kontakt med deg, og du får en kvittering på e-post.",
+      "errors": {
+        "rateLimited": "Du har sendt flere henvendelser på kort tid. Vent litt og prøv igjen.",
+        "closed": "Prosjektet tar ikke imot henvendelser akkurat nå.",
+        "captcha": "Vi kunne ikke bekrefte at du ikke er en robot. Prøv igjen.",
+        "invalidInput": "Sjekk feltene som er markert.",
+        "unknown": "Noe gikk galt, og henvendelsen ble ikke sendt. Prøv igjen om litt."
+      }
+    },
+    "unit": {
+      "back": "Tilbake til {project}"
+    }
+  },
+  "leads": {
+    "title": "Leads",
+    "description": "Henvendelser fra interesseskjemaene på prosjektsidene og i boligvelgerne.",
+    "projectTitle": "Leads – {project}",
+    "statuses": {
+      "new": "Ny",
+      "contacted": "Kontaktet",
+      "closed": "Avsluttet"
+    },
+    "sources": {
+      "site": "Prosjektside",
+      "selector": "Boligvelger",
+      "unit_page": "Enhetsside",
+      "embed": "Innebygd boligvelger"
+    },
+    "table": {
+      "received": "Mottatt",
+      "name": "Navn",
+      "contact": "Kontakt",
+      "project": "Prosjekt",
+      "unit": "Enhet",
+      "source": "Kilde",
+      "status": "Status",
+      "noUnit": "Ingen"
+    },
+    "filters": {
+      "search": "Søk på navn, e-post, telefon eller enhet",
+      "status": "Status",
+      "allStatuses": "Alle statuser",
+      "project": "Prosjekt",
+      "allProjects": "Alle prosjekter",
+      "unit": "Enhet",
+      "allUnits": "Alle enheter",
+      "clear": "Fjern filter",
+      "export": "Eksporter CSV"
+    },
+    "list": {
+      "emptyTitle": "Ingen leads ennå",
+      "emptyHelp": "Henvendelser fra interesseskjemaene dukker opp her.",
+      "noMatches": "Ingen leads passer filtrene",
+      "noMatchesHelp": "Prøv å fjerne et filter eller søke på noe annet.",
+      "pagination": "Sider i listen",
+      "showing": "Viser {first}–{last} av {total}",
+      "previous": "Forrige",
+      "next": "Neste"
+    },
+    "detail": {
+      "pageTitle": "Lead – {name}",
+      "back": "Alle leads",
+      "received": "Mottatt {time}",
+      "contactTitle": "Kontaktinformasjon",
+      "message": "Beskjed",
+      "noMessage": "Ingen beskjed.",
+      "handlingTitle": "Oppfølging",
+      "interestTitle": "Henvendelsen",
+      "project": "Prosjekt",
+      "unit": "Enhet",
+      "noUnit": "Ingen bestemt enhet",
+      "source": "Kilde",
+      "campaign": "Kampanje",
+      "notified": "Varsling",
+      "notifiedAt": "E-post sendt til kontaktpersonene {time}",
+      "notNotified": "Ingen e-post er sendt.",
+      "consentTitle": "Samtykke",
+      "consentGiven": "Samtykke til kontakt gitt {time} med tekstversjon {version}:",
+      "similarYes": "Har også samtykket til å høre om lignende prosjekter:",
+      "similarNo": "Har ikke samtykket til å høre om lignende prosjekter.",
+      "status": "Status",
+      "note": "Internt notat",
+      "noteHelp": "Vises bare i admin, aldri for den som sendte henvendelsen.",
+      "saved": "Henvendelsen er oppdatert.",
+      "deleted": "Henvendelsen er slettet.",
+      "deletedAll": "{count, plural, one {# henvendelse er slettet.} other {# henvendelser er slettet.}}",
+      "deleteTitle": "Slett personopplysninger",
+      "deleteDescription": "Bruk dette når noen ber om å bli slettet. Slettingen kan ikke angres, og loggen viser bare at noe ble slettet.",
+      "delete": "Slett henvendelsen",
+      "deleteAll": "Slett alle {count} fra {email}",
+      "deleteOneTitle": "Slette henvendelsen?",
+      "deleteOneDescription": "Navn, kontaktinformasjon, beskjed og samtykke slettes for godt.",
+      "deleteAllTitle": "Slette alle henvendelser fra {email}?",
+      "deleteAllDescription": "{count, plural, one {# henvendelse slettes for godt.} other {# henvendelser i alle prosjekter slettes for godt.}}"
+    },
+    "csv": {
+      "created_at": "Mottatt",
+      "name": "Navn",
+      "email": "E-post",
+      "phone": "Telefon",
+      "project": "Prosjekt",
+      "unit": "Enhet",
+      "status": "Status",
+      "source": "Kilde",
+      "message": "Beskjed",
+      "consent_contact": "Samtykke til kontakt",
+      "consent_similar": "Samtykke til lignende prosjekter",
+      "consent_version": "Samtykketekst (versjon)",
+      "consented_at": "Samtykke gitt",
+      "utm_source": "utm_source",
+      "utm_medium": "utm_medium",
+      "utm_campaign": "utm_campaign",
+      "internal_note": "Internt notat",
+      "yes": "Ja",
+      "no": "Nei"
     }
   }
 }

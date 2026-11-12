@@ -19,7 +19,7 @@ async function PublishedSelector({ params }: { params: PageProps<"/embed/selecto
   if (!data) {
     notFound();
   }
-  return <PublicSelector data={data} />;
+  return <PublicSelector data={data} options={{ interest: true }} />;
 }
 
 /** Publisert boligvelger. Data hentes ved hver visning, så status alltid er fersk; sanntid tar endringene etterpå. */

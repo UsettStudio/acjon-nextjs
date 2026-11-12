@@ -1,6 +1,6 @@
 "use server";
 
-import { refresh } from "next/cache";
+import { refresh, updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
@@ -17,6 +17,7 @@ import {
   type LocationInput,
   type MilestoneInput,
 } from "@/features/projects/schemas";
+import { siteTags } from "@/features/site-builder/render-data";
 import { fail, ok, type ActionResult } from "@/lib/actions/result";
 import { ActionError, parseInput, postgresErrorCode, requireOrgCapability, runAction } from "@/lib/actions/server";
 import type { Database } from "@/lib/supabase/database.types";
@@ -88,6 +89,8 @@ async function updateProjectRow(
   if (error) {
     mapWriteError(error);
   }
+  // Navn, adresse, fremdrift og kontakter leses direkte på publiserte prosjektsider.
+  updateTag(siteTags.project(projectId));
   return data;
 }
 

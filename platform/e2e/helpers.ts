@@ -66,3 +66,18 @@ export async function latestEmail(address: string): Promise<{ subject: string; l
 export async function deleteEmails(address: string) {
   await fetch(`${MAILPIT_URL}/api/v1/search?query=${encodeURIComponent(`to:${address}`)}`, { method: "DELETE" });
 }
+
+/** Siste e-post til adressen i Mailpit, med emne og tekst. Venter til den kommer. */
+export async function emailTo(address: string): Promise<{ subject: string; text: string; html: string }> {
+  for (let attempt = 0; attempt < 60; attempt++) {
+    const search = await fetch(`${MAILPIT_URL}/api/v1/search?query=${encodeURIComponent(`to:${address}`)}&limit=1`);
+    const { messages } = (await search.json()) as { messages?: { ID: string; Subject: string }[] };
+    const message = messages?.[0];
+    if (message) {
+      const detail = (await (await fetch(`${MAILPIT_URL}/api/v1/message/${message.ID}`)).json()) as { HTML?: string; Text?: string };
+      return { subject: message.Subject, text: detail.Text ?? "", html: detail.HTML ?? "" };
+    }
+    await new Promise((resolve) => setTimeout(resolve, 250));
+  }
+  throw new Error(`Fant ingen e-post til ${address}`);
+}

@@ -68,7 +68,19 @@
     "unitNumberTaken": "Lägenhetsnumret finns redan i projektet.",
     "duplicateInFile": "Lägenhetsnumret förekommer flera gånger i filen.",
     "importRowInvalid": "Raden kunde inte sparas. Kontrollera värdena.",
-    "colorInvalid": "Skriv färgen som hexadecimal, till exempel #2E9E5B."
+    "colorInvalid": "Skriv färgen som hexadecimal, till exempel #2E9E5B.",
+    "consentRequired": "Du måste samtycka för att vi ska kunna kontakta dig.",
+    "timeInvalid": "Skriv klockslaget som TT:MM, till exempel 13:00.",
+    "urlInvalid": "Skriv en fullständig adress som börjar med https://.",
+    "httpsRequired": "Adressen måste börja med https://.",
+    "videoInvalid": "Klistra in en länk till en video på YouTube eller Vimeo.",
+    "subdomainFormat": "Använd små bokstäver (a–z), siffror och bindestreck. Högst 63 tecken.",
+    "subdomainReserved": "Den här adressen är reserverad. Välj en annan.",
+    "subdomainTaken": "Adressen används redan. Välj en annan.",
+    "pageSlugFormat": "Använd små bokstäver (a–z), siffror och bindestreck. Högst 80 tecken.",
+    "pageSlugReserved": "Den här sidadressen är reserverad. Välj en annan.",
+    "pageSlugTaken": "En annan sida har redan den här adressen.",
+    "customFieldDuplicate": "Fältnamnet används redan på den här bostaden."
   },
   "errors": {
     "unauthenticated": "Du måste logga in igen.",
@@ -164,7 +176,8 @@
     "userMenu": "Användarmeny",
     "account": "Min profil",
     "projects": "Projekt",
-    "media": "Mediebibliotek"
+    "media": "Mediebibliotek",
+    "leads": "Leads"
   },
   "dashboard": {
     "title": "Översikt",
@@ -186,7 +199,8 @@
     "title": "Inställningar",
     "tabs": {
       "organization": "Organisation",
-      "members": "Användare"
+      "members": "Användare",
+      "brand": "Varumärke"
     },
     "organization": {
       "title": "Organisation",
@@ -197,6 +211,13 @@
       "leadRetention": "Lagringstid för leads (dagar)",
       "leadRetentionHelp": "Leads raderas automatiskt när de är äldre än så här. Lämna fältet tomt för att behålla dem tills de raderas manuellt.",
       "saved": "Organisationen har uppdaterats."
+    },
+    "brand": {
+      "title": "Varumärkesprofil",
+      "description": "Logotyp, färger, typsnitt och knappstil som alla projektsidor använder. Varje projektsida kan åsidosätta profilen.",
+      "saved": "Varumärkesprofilen har sparats. Publicerade projektsidor uppdateras direkt.",
+      "default": "Standard",
+      "saveHelp": "Gäller publicerade projektsidor direkt."
     }
   },
   "members": {
@@ -295,6 +316,26 @@
       "expires": "Länken fungerar till {date}.",
       "fallback": "Fungerar inte knappen? Kopiera den här länken till webbläsaren:",
       "ignore": "Om du inte väntade dig den här inbjudan kan du bortse från e-postmeddelandet."
+    },
+    "lead": {
+      "notifySubject": "Ny intressent för {project}",
+      "notifySubjectUnit": "Ny intressent för {unit} i {project}",
+      "notifyHeading": "Ny förfrågan om {project}",
+      "notifyName": "Namn: {name}",
+      "notifyEmail": "E-post: {email}",
+      "notifyPhone": "Telefon: {phone}",
+      "notifyUnit": "Enhet: {unit}",
+      "notifyMessage": "Meddelande: {message}",
+      "notifyConsentSimilar": "Har också samtyckt till att höra om liknande projekt.",
+      "notifyConsentContactOnly": "Har samtyckt till att bli kontaktad om det här projektet.",
+      "notifyCta": "Öppna i admin",
+      "notifyFooter": "Du får det här mejlet eftersom du är kontaktperson för projektet hos {organization}.",
+      "receiptSubject": "Vi har tagit emot din förfrågan om {project}",
+      "receiptHeading": "Tack, {name}!",
+      "receiptBody": "Vi har tagit emot ditt intresse för {project}. {organization} kontaktar dig så snart som möjligt.",
+      "receiptBodyUnit": "Vi har tagit emot ditt intresse för {unit} i {project}. {organization} kontaktar dig så snart som möjligt.",
+      "receiptPrivacy": "Dina uppgifter sparas hos {organization} och används bara för att följa upp förfrågan. Svara på det här mejlet om du vill att de raderas.",
+      "receiptFooter": "Du får det här kvittot eftersom någon skickade ett intresseformulär med den här e-postadressen."
     }
   },
   "unitStatus": {
@@ -327,7 +368,9 @@
       "overview": "Översikt",
       "units": "Bostäder",
       "settings": "Inställningar",
-      "selectors": "Bostadsväljare"
+      "selectors": "Bostadsväljare",
+      "site": "Projektsida",
+      "leads": "Leads"
     },
     "list": {
       "title": "Projekt",
@@ -477,7 +520,13 @@
       "structure": "Etapper och byggnader",
       "dangerZone": "Radera projektet",
       "display": "Bostadsväljare och publicerade sidor",
-      "displayHelp": "Statusfärger för det här projektet och om priset visas på sålda enheter. Tomma fält använder organisationens färger."
+      "displayHelp": "Statusfärger för det här projektet och om priset visas på sålda enheter. Tomma fält använder organisationens färger.",
+      "customFields": {
+        "title": "Egna fält på bostadssidan",
+        "help": "Egna fält är interna tills du gör dem offentliga. Offentliga fält visas på bostadssidan på projektsidan och i bostadsväljaren.",
+        "legend": "Visa på bostadssidan",
+        "empty": "Inga bostäder har egna fält ännu. Lägg till dem under Egna fält i bostadsformuläret."
+      }
     },
     "delete": {
       "body": "Projektet raderas med alla bostäder, statuslogg, bostadsväljare och projektsida. Filerna ligger kvar i mediebiblioteket. Det går inte att ångra.",
@@ -507,7 +556,11 @@
       "noContacts": "Inga kontaktpersoner.",
       "structure": "Etapper och byggnader",
       "noStructure": "Projektet är inte indelat i etapper eller byggnader.",
-      "structureSummary": "{stages, plural, =0 {Inga etapper} one {# etapp} other {# etapper}} och {buildings, plural, =0 {inga byggnader} one {# byggnad} other {# byggnader}}."
+      "structureSummary": "{stages, plural, =0 {Inga etapper} one {# etapp} other {# etapper}} och {buildings, plural, =0 {inga byggnader} one {# byggnad} other {# byggnader}}.",
+      "recentLeads": "Senaste leads",
+      "noLeads": "Inga förfrågningar ännu.",
+      "leadUnit": "om {unit}",
+      "openLeads": "Alla leads i projektet"
     }
   },
   "units": {
@@ -696,7 +749,8 @@
         "area": "Area",
         "media": "Planritningar och bilder",
         "documents": "Dokument",
-        "description": "Beskrivning"
+        "description": "Beskrivning",
+        "custom": "Egna fält"
       },
       "unitNumberHelp": "Till exempel A-101 eller H0201. Måste vara unikt i projektet.",
       "titleHelp": "Valfritt namn som visas med numret, till exempel ”Takvåning”.",
@@ -715,6 +769,15 @@
         "gallery_asset_idsHelp": "Bilderna visas i galleriet på bostadssidan i den här ordningen.",
         "document_asset_ids": "Dokument",
         "document_asset_idsHelp": "PDF:er som prospekt, leveransbeskrivning och rumsbeskrivning."
+      },
+      "custom": {
+        "help": "Uppgifter som saknar eget fält, till exempel takhöjd eller öppen spis. Välj i projektinställningarna vilka som visas på bostadssidan.",
+        "empty": "Inga egna fält på den här bostaden.",
+        "key": "Namn",
+        "value": "Värde",
+        "add": "Lägg till fält",
+        "remove": "Ta bort {name}",
+        "unnamed": "fältet"
       }
     },
     "import": {
@@ -1272,7 +1335,8 @@
       "comparing": "Jämförs",
       "compareFull": "Du kan jämföra upp till tre bostäder. Ta bort en för att lägga till en ny.",
       "locate": "Visa i bilden",
-      "previewNoUnitPage": "Bostadssidan kan öppnas när bostadsväljaren är publicerad."
+      "previewNoUnitPage": "Bostadssidan kan öppnas när bostadsväljaren är publicerad.",
+      "interest": "Anmäl intresse"
     },
     "compare": {
       "title": "Jämför bostäder",
@@ -1294,7 +1358,730 @@
       "soldPrice": "Bostaden är såld.",
       "priceComing": "Pris kommer.",
       "contact": "Kontakta mäklaren",
-      "liveStatus": "Status uppdateras löpande."
+      "liveStatus": "Status uppdateras löpande.",
+      "interestHeading": "Anmäl intresse",
+      "interestIntro": "Fyll i formuläret så kontaktar mäklaren dig om {unit}."
+    }
+  },
+  "siteBuilder": {
+    "templates": {
+      "homeTitle": "Startsida",
+      "heroSubtitleComingSoon": "Kommer till försäljning. Anmäl intresse så hör du från oss först.",
+      "heroSubtitleFull": "Nya bostäder. Hitta din i bostadsväljaren.",
+      "heroCta": "Anmäl intresse",
+      "aboutHeading": "Om projektet",
+      "aboutBody": "Skriv kort om projektet: läget, bostäderna och vad som gör dem speciella.",
+      "leadHeading": "Anmäl intresse",
+      "leadIntro": "Lämna dina kontaktuppgifter så hör du från oss när det finns nyheter om projektet.",
+      "leadButton": "Skicka",
+      "keyFiguresHeading": "Projektet i siffror",
+      "selectorHeading": "Hitta din bostad",
+      "unitsHeading": "Bostäderna",
+      "galleryHeading": "Bilder",
+      "progressHeading": "Tidplan",
+      "mapHeading": "Läge",
+      "viewingsHeading": "Visningar",
+      "viewingsIntro": "Välkommen på visning. Anmäl intresse så får du besked om nya visningar.",
+      "documentsHeading": "Dokument och prospekt",
+      "faqHeading": "Vanliga frågor",
+      "contactsHeading": "Kontakt",
+      "navUnits": "Bostäder",
+      "navContact": "Kontakt"
+    },
+    "pageTitle": "Projektsida – {project}",
+    "preview": {
+      "pageTitle": "Förhandsvisning av projektsida",
+      "banner": "Förhandsvisning av utkastet. Länken fungerar till {expires}. Formulär kan inte skickas härifrån."
+    },
+    "errors": {
+      "subdomainTaken": "Adressen används redan. Välj en annan.",
+      "pageSlugTaken": "En annan sida har redan den här adressen.",
+      "needsHome": "Projektsidan saknar startsida. Välj en startsida under Sidor.",
+      "homePage": "Startsidan kan inte tas bort. Gör en annan sida till startsida först.",
+      "selectorNotInProject": "Ett bostadsväljarblock visar en bostadsväljare från ett annat projekt. Välj en av projektets bostadsväljare."
+    },
+    "blockTypes": {
+      "hero": {
+        "name": "Hero",
+        "description": "Stor toppbild med rubrik och knapp."
+      },
+      "text": {
+        "name": "Text",
+        "description": "Rubrik och text med enkel formatering."
+      },
+      "text_image": {
+        "name": "Text och bild",
+        "description": "Text bredvid en bild."
+      },
+      "gallery": {
+        "name": "Bildgalleri",
+        "description": "Bilder i rutnät som kan förstoras."
+      },
+      "key_figures": {
+        "name": "Nyckeltal",
+        "description": "Tal som antal bostäder, storlekar och pris från."
+      },
+      "progress": {
+        "name": "Tidplan",
+        "description": "Milstolpar från säljstart till inflyttning."
+      },
+      "selector": {
+        "name": "Bostadsväljare",
+        "description": "Interaktiv bostadsväljare från projektet."
+      },
+      "unit_list": {
+        "name": "Bostadslista",
+        "description": "Tabell över bostäderna med filter och status."
+      },
+      "map": {
+        "name": "Karta och närområde",
+        "description": "Karta med läge och platser i närheten."
+      },
+      "viewings": {
+        "name": "Visningar",
+        "description": "Datum och tid för kommande visningar."
+      },
+      "contacts": {
+        "name": "Kontaktpersoner",
+        "description": "Mäklare och kontaktpersoner med telefon och e-post."
+      },
+      "lead_form": {
+        "name": "Intresseformulär",
+        "description": "Formulär där besökare anmäler intresse."
+      },
+      "documents": {
+        "name": "Dokument och prospekt",
+        "description": "PDF:er som prospekt och byggbeskrivning."
+      },
+      "video": {
+        "name": "Video",
+        "description": "Video från YouTube eller Vimeo."
+      },
+      "faq": {
+        "name": "Vanliga frågor",
+        "description": "Frågor och svar som kan öppnas och stängas."
+      },
+      "news": {
+        "name": "Nyheter",
+        "description": "Nyheter och uppdateringar om projektet."
+      },
+      "button": {
+        "name": "Knapp",
+        "description": "En knapp som länkar till en sida, ett block eller en adress."
+      },
+      "embed": {
+        "name": "Inbäddning",
+        "description": "Innehåll från en annan tjänst, till exempel en 3D-visning."
+      }
+    },
+    "create": {
+      "title": "Skapa projektsida",
+      "description": "Välj en mall att börja med. Du kan ändra allt efteråt, och sidan är ett utkast tills du publicerar den.",
+      "template": "Mall",
+      "templates": {
+        "coming_soon": {
+          "name": "Kommer till försäljning",
+          "description": "En enkel sida för att samla intressenter före säljstart."
+        },
+        "full": {
+          "name": "Fullständig projektsida",
+          "description": "Allt om projektet: bostadsväljare, bilder, tidplan, karta, dokument och kontakt."
+        }
+      },
+      "templateHelp": "En sida som börjar som «Kommer till försäljning» kan byggas ut till en fullständig projektsida senare utan att börja om.",
+      "subdomain": "Adress",
+      "subdomainHelp": "Små bokstäver (a–z), siffror och bindestreck. Du kan ändra adressen senare.",
+      "submit": "Skapa projektsida",
+      "created": "Projektsidan har skapats som utkast.",
+      "emptyTitle": "Ingen projektsida ännu",
+      "emptyReadOnly": "En redaktör eller administratör kan skapa projektsidan."
+    },
+    "theme": {
+      "colorsTitle": "Färger",
+      "colors": {
+        "primary": "Huvudfärg",
+        "accent": "Accentfärg",
+        "background": "Bakgrund",
+        "foreground": "Text"
+      },
+      "colorPicker": "Välj {name}",
+      "reset": "Återställ {name}",
+      "overridden": "Eget värde",
+      "typographyTitle": "Typsnitt och knappar",
+      "headingFont": "Typsnitt för rubriker",
+      "bodyFont": "Typsnitt för brödtext",
+      "buttonStyle": "Knappstil",
+      "inheritOption": "Standard ({value})",
+      "fonts": {
+        "inter": "Inter",
+        "dm_sans": "DM Sans",
+        "lora": "Lora",
+        "playfair": "Playfair Display"
+      },
+      "buttonStyles": {
+        "rounded": "Rundad",
+        "pill": "Piller",
+        "square": "Fyrkantig"
+      },
+      "lowTextContrast": "Texten har för låg kontrast mot bakgrunden ({ratio}:1). Den bör vara minst 4,5:1 för att vara lätt att läsa.",
+      "lowPrimaryContrast": "Huvudfärgen har låg kontrast mot bakgrunden ({ratio}:1). Länkar och rubriker kan bli svåra att se.",
+      "sample": "Exempel",
+      "sampleHeading": "Nya bostäder vid fjorden",
+      "sampleText": "Så här ser text, rubriker och knappar ut med dessa val.",
+      "sampleButton": "Anmäl intresse"
+    },
+    "editor": {
+      "pageSelect": "Sida som redigeras",
+      "homePageOption": "{title} (startsida)",
+      "tabs": {
+        "content": "Innehåll",
+        "pages": "Sidor",
+        "navigation": "Meny och sidfot",
+        "theme": "Tema",
+        "settings": "Inställningar"
+      },
+      "save": {
+        "saved": "Utkastet är sparat",
+        "pending": "Ändringar väntar",
+        "saving": "Sparar …",
+        "invalid": "Inte sparat: rätta de markerade fälten",
+        "failed": "Kunde inte spara: {reason}",
+        "retry": "Försök igen"
+      },
+      "expand": {
+        "title": "Bygg ut till fullständig projektsida",
+        "description": "Lägger till blocken som saknas: {blocks}. Blocken du har behålls som de är.",
+        "action": "Bygg ut sidan",
+        "done": "{count, plural, =0 {Sidan har redan alla block.} one {# block har lagts till.} other {# block har lagts till.}}"
+      },
+      "selectorNone": "Ingen bostadsväljare vald",
+      "selectorUnpublished": "{name} (inte publicerad)",
+      "entryViewDefault": "Bostadsväljarens startvy",
+      "fields": {
+        "heading": "Rubrik",
+        "heroTitle": "Titel",
+        "subtitle": "Underrubrik",
+        "backgroundImage": "Bakgrundsbild",
+        "overlay": "Mörkläggning av bilden",
+        "height": "Höjd",
+        "align": "Justering",
+        "cta_label": "Text på knappen",
+        "cta_link": "Knappen länkar till",
+        "body": "Text",
+        "width": "Bredd",
+        "image_asset_id": "Bild",
+        "image_position": "Bildens placering",
+        "images": "Bilder",
+        "columns": "Kolumner",
+        "figures": "Tal",
+        "source": "Vad ska visas",
+        "figureValue": "Tal eller värde",
+        "figureLabel": "Beskrivning",
+        "useProjectMilestones": "Använd projektets milstolpar",
+        "milestones": "Milstolpar",
+        "milestoneLabel": "Milstolpe",
+        "milestoneText": "Tidpunkt",
+        "milestoneDone": "Klar",
+        "selector_id": "Bostadsväljare",
+        "entry_view_id": "Startvy",
+        "show_filters": "Visa filter",
+        "show_list": "Visa lista över bostäderna",
+        "hide_sold": "Dölj sålda bostäder",
+        "use_project_location": "Använd projektets läge",
+        "lat": "Latitud",
+        "lng": "Longitud",
+        "zoom": "Zoomnivå",
+        "places": "Platser i närheten",
+        "placeName": "Namn",
+        "placeCategory": "Kategori",
+        "placeDistance": "Avstånd",
+        "intro": "Ingress",
+        "viewingItems": "Visningar",
+        "date": "Datum",
+        "start": "Från kl.",
+        "end": "Till kl. (valfritt)",
+        "note": "Anmärkning",
+        "useProjectContacts": "Använd projektets kontaktpersoner",
+        "contactItems": "Kontaktpersoner",
+        "contactName": "Namn",
+        "contactTitle": "Titel",
+        "phone": "Telefon",
+        "email": "E-post",
+        "portrait": "Porträtt",
+        "button_label": "Text på knappen",
+        "show_unit_select": "Låt besökare välja bostad i formuläret",
+        "documents": "Dokument",
+        "videoUrl": "Länk till videon",
+        "caption": "Bildtext",
+        "questions": "Frågor och svar",
+        "question": "Fråga",
+        "answer": "Svar",
+        "newsItems": "Nyheter",
+        "newsTitle": "Titel",
+        "buttonText": "Text på knappen",
+        "link": "Länkar till",
+        "style": "Stil",
+        "embedUrl": "Adress",
+        "embedTitle": "Beskrivning",
+        "embedHeight": "Höjd",
+        "pageTitle": "Titel",
+        "pageSlug": "Adress",
+        "seoTitle": "Titel i sökresultat",
+        "seoDescription": "Beskrivning i sökresultat",
+        "shareImage": "Delningsbild",
+        "menuItems": "Menyval",
+        "menuLabel": "Text i menyn",
+        "footerText": "Text i sidfoten",
+        "footerContacts": "Visa kontaktpersonerna i sidfoten",
+        "footerLinks": "Länkar i sidfoten",
+        "linkLabel": "Text",
+        "linkUrl": "Adress",
+        "siteLogo": "Logotyp för den här projektsidan",
+        "siteDescription": "Beskrivning",
+        "brandLogo": "Logotyp"
+      },
+      "help": {
+        "richText": "Formatering: ## Rubrik, - punktlista, 1. numrerad lista, **fet**, *kursiv* och [länktext](https://…).",
+        "heroImage": "Använd en bred bild, gärna 2400 pixlar eller mer.",
+        "overlay": "Gör bilden mörkare så att vit text blir lättare att läsa.",
+        "keyFigures": "Tal som hämtas från bostäderna uppdateras automatiskt när status och pris ändras.",
+        "useProjectMilestones": "Milstolparna redigeras i projektinställningarna.",
+        "selector": "Bara projektets egna bostadsväljare kan väljas. Den visas på sidan när den är publicerad.",
+        "entryView": "Vyn som besökare ser först, till exempel en fasad.",
+        "useProjectLocation": "Adressen och läget redigeras i projektinställningarna.",
+        "places": "Till exempel skola, butik och kollektivtrafik.",
+        "documents": "PDF:er från mediebiblioteket. De öppnas i en ny flik.",
+        "video": "YouTube eller Vimeo. Videon laddas först när besökaren klickar.",
+        "news": "Nyaste först. Nyheter med datum sorteras efter datum.",
+        "embed": "Adressen måste börja med https://. Innehållet visas i en avgränsad ram.",
+        "embedTitle": "Läses upp av skärmläsare, till exempel «3D-visning av lägenhet A-302».",
+        "pageSlug": "Visas i adressen efter domänen, till exempel /lage.",
+        "seoTitle": "Lämna tomt för att använda sidans titel.",
+        "seoDescription": "Kort text som visas i sökresultat, helst under 160 tecken.",
+        "shareImage": "Visas när sidan delas i sociala medier. Utan egen bild används herobilden.",
+        "menu": "Menyn visas överst på alla sidor. Länkar till block pekar på block på startsidan.",
+        "footerText": "Till exempel företagsnamn, adress och organisationsnummer.",
+        "siteLogo": "Lämna tomt för att använda organisationens logotyp.",
+        "siteDescription": "Används i sökresultat för sidor som saknar egen beskrivning.",
+        "siteShareImage": "Används när en sida delas och varken sidan eller heroblocket har en bild.",
+        "useProjectContacts": "Kontaktpersonerna redigeras i projektinställningarna.",
+        "brandLogo": "Visas överst på projektsidorna. Använd gärna PNG med genomskinlig bakgrund."
+      },
+      "options": {
+        "heroHeight": {
+          "medium": "Mellan",
+          "large": "Stor",
+          "full": "Hela skärmen"
+        },
+        "align": {
+          "left": "Vänster",
+          "center": "Centrerad",
+          "right": "Höger"
+        },
+        "width": {
+          "narrow": "Smal (lättare att läsa)",
+          "wide": "Bred"
+        },
+        "imagePosition": {
+          "left": "Bilden till vänster",
+          "right": "Bilden till höger"
+        },
+        "columns": {
+          "2": "Två",
+          "3": "Tre",
+          "4": "Fyra"
+        },
+        "figureSource": {
+          "custom": "Egen text",
+          "units_total": "Antal bostäder",
+          "available": "Lediga bostäder",
+          "size_range": "Storlekar (boarea)",
+          "price_from": "Pris från",
+          "rooms_range": "Antal rum"
+        },
+        "buttonStyle": {
+          "primary": "Fylld",
+          "secondary": "Kontur"
+        }
+      },
+      "placeholders": {
+        "milestoneText": "Till exempel våren 2027",
+        "placeCategory": "Till exempel Skola",
+        "placeDistance": "Till exempel 400 m",
+        "viewingNote": "Till exempel Ingen anmälan behövs",
+        "buttonLabel": "Skicka",
+        "videoUrl": "https://www.youtube.com/watch?v=…",
+        "embedUrl": "https://",
+        "linkUrl": "https://"
+      },
+      "image": {
+        "choose": "Välj bild",
+        "change": "Byt",
+        "remove": "Ta bort {field}",
+        "pickerTitle": "Välj bild: {field}",
+        "unknown": "Bilden finns inte i mediebiblioteket",
+        "missingAlt": "Saknar alternativ text"
+      },
+      "link": {
+        "type": "Typ av länk",
+        "types": {
+          "none": "Ingen länk",
+          "page": "Sida",
+          "block": "Block",
+          "url": "Adress"
+        },
+        "page": "Sida",
+        "block": "Block",
+        "url": "Adress",
+        "missingPage": "Välj sida",
+        "missingBlock": "Välj block"
+      },
+      "list": {
+        "count": "{count} av {max}",
+        "empty": "Inget här ännu.",
+        "item": "Objekt {number}",
+        "hasErrors": "Har fel",
+        "moveUp": "Flytta upp {name}",
+        "moveDown": "Flytta ned {name}",
+        "remove": "Ta bort {name}",
+        "addFigure": "Lägg till tal",
+        "addMilestone": "Lägg till milstolpe",
+        "addPlace": "Lägg till plats",
+        "addViewing": "Lägg till visning",
+        "addContact": "Lägg till kontaktperson",
+        "addQuestion": "Lägg till fråga",
+        "addNews": "Lägg till nyhet",
+        "addMenuItem": "Lägg till menyval",
+        "addFooterLink": "Lägg till länk"
+      },
+      "blocks": {
+        "listLabel": "Block på sidan",
+        "move": "Flytta {name}",
+        "hiddenBadge": "Dold",
+        "hasErrors": "Har fel",
+        "show": "Visa {name}",
+        "hide": "Dölj {name}",
+        "actions": "Fler val för {name}",
+        "duplicate": "Duplicera",
+        "delete": "Ta bort",
+        "empty": "Sidan har inga block ännu.",
+        "instructions": "Tryck på mellanslag för att lyfta blocket. Flytta med piltangenterna och tryck på mellanslag för att släppa. Escape avbryter.",
+        "picked": "Lyfte {name} på plats {position}.",
+        "over": "{name} flyttas till plats {position}.",
+        "dropped": "{name} har flyttats till plats {position}.",
+        "cancelled": "Flytten avbröts.",
+        "add": "Lägg till block",
+        "addTitle": "Lägg till block",
+        "addDescription": "Blocket läggs in efter det valda blocket, eller längst ned på sidan.",
+        "back": "Alla block",
+        "hiddenNotice": "Blocket är dolt och visas inte på den publicerade sidan. Innehållet behålls.",
+        "fixErrors": "Rätta de markerade fälten. Utkastet sparas inte förrän felen är rättade.",
+        "deleted": "{name} har tagits bort.",
+        "undo": "Ångra"
+      },
+      "pages": {
+        "intro": "Ordningen här är också ordningen i menyn när menyvalen länkar till sidorna.",
+        "listLabel": "Sidor",
+        "home": "Startsida",
+        "moveUp": "Flytta upp {title}",
+        "moveDown": "Flytta ned {title}",
+        "actions": "Fler val för {title}",
+        "edit": "Redigera innehåll",
+        "settings": "Inställningar och SEO",
+        "makeHome": "Gör till startsida",
+        "delete": "Ta bort sida",
+        "add": "Ny sida",
+        "newTitle": "Ny sida",
+        "newDescription": "Sidan börjar tom. Lägg till block efteråt.",
+        "settingsTitle": "Inställningar för {title}",
+        "settingsDescription": "Titel, adress och hur sidan visas i sökresultat och när den delas.",
+        "create": "Skapa sida",
+        "created": "Sidan har skapats.",
+        "saved": "Sidan har uppdaterats.",
+        "homeSet": "{title} är nu startsida.",
+        "deleted": "{title} har tagits bort.",
+        "deleteTitle": "Ta bort {title}?",
+        "deleteDescription": "Sidan tas bort direkt, även från den publicerade projektsidan. Länkar till sidan slutar fungera.",
+        "cancel": "Avbryt"
+      },
+      "share": {
+        "title": "Dela förhandsvisning",
+        "description": "Alla med länken kan se utkastet utan att logga in. Länken visar alltid det senaste utkastet.",
+        "link": "Länk till förhandsvisningen",
+        "copied": "Länken har kopierats.",
+        "expires": "Länken fungerar till {time}.",
+        "creating": "Skapar länk …"
+      },
+      "versions": {
+        "title": "Versioner av {title}",
+        "description": "Varje publicering sparar en version. Återställning lägger versionen i utkastet så att du kan granska innan du publicerar.",
+        "empty": "Sidan har inte publicerats ännu.",
+        "version": "Version {version}",
+        "current": "Publicerad nu",
+        "blocks": "{count, plural, one {# block} other {# block}}",
+        "restore": "Återställ",
+        "restored": "Version {version} har lagts i utkastet.",
+        "confirmTitle": "Återställa version {version}?",
+        "confirmDescription": "Utkastet för den här sidan ersätts av versionen. Den publicerade sidan ändras inte förrän du publicerar."
+      },
+      "publish": {
+        "notPublished": "Inte publicerad",
+        "publishedAt": "Publicerad {time}",
+        "unpublishedChanges": "Opublicerade ändringar",
+        "publish": "Publicera",
+        "publishChanges": "Publicera ändringar",
+        "isPublished": "Publicerad",
+        "published": "Projektsidan har publicerats.",
+        "saveFirst": "Utkastet måste sparas innan det kan publiceras. Rätta de markerade fälten.",
+        "more": "Fler val",
+        "open": "Öppna publicerad sida",
+        "share": "Dela förhandsvisning",
+        "versions": "Versionshistorik för sidan",
+        "unpublish": "Avpublicera",
+        "unpublishTitle": "Avpublicera projektsidan?",
+        "unpublishDescription": "Sidan blir otillgänglig för besökare direkt. Utkastet och versionerna behålls, och du kan publicera igen senare.",
+        "unpublished": "Projektsidan har avpublicerats.",
+        "cancel": "Avbryt"
+      },
+      "navigation": {
+        "menuTitle": "Meny",
+        "footerTitle": "Sidfot"
+      },
+      "theme": {
+        "intro": "Färger, typsnitt och logotyp hämtas från varumärkesprofilen. Ändringar här gäller bara den här projektsidan.",
+        "editBrand": "Ändra varumärkesprofilen",
+        "fromBrand": "Från varumärkesprofilen"
+      },
+      "settings": {
+        "addressTitle": "Adress",
+        "subdomain": "Underdomän",
+        "subdomainHelp": "Ändras direkt, även för den publicerade sidan. Gamla länkar slutar fungera.",
+        "addressSaved": "Adressen har ändrats.",
+        "seoTitle": "Sök och delning",
+        "seoIntro": "Standardvärden för sidor som saknar egna.",
+        "deleteTitle": "Ta bort projektsidan",
+        "deleteDescription": "Tar bort alla sidor, versioner och den publicerade sidan. Leads behålls.",
+        "delete": "Ta bort projektsidan",
+        "deleteConfirmTitle": "Ta bort projektsidan?",
+        "deleteConfirmDescription": "Alla sidor och versioner tas bort, och den publicerade sidan försvinner direkt. Detta kan inte ångras.",
+        "deleted": "Projektsidan har tagits bort."
+      },
+      "preview": {
+        "device": "Skärmstorlek",
+        "desktop": "Dator",
+        "tablet": "Surfplatta",
+        "mobile": "Mobil",
+        "reload": "Ladda om",
+        "hint": "Klicka på ett block för att redigera det.",
+        "frameTitle": "Förhandsvisning av sidan"
+      }
+    }
+  },
+  "site": {
+    "shell": {
+      "skip": "Hoppa till innehållet",
+      "logoAlt": "{name}",
+      "nav": "Meny",
+      "openMenu": "Öppna menyn",
+      "closeMenu": "Stäng menyn",
+      "contact": "Kontakt",
+      "footerLinks": "Länkar"
+    },
+    "editor": {
+      "emptyText": "Textblock utan innehåll. Skriv rubrik och text i panelen.",
+      "missingImage": "Välj en bild i panelen.",
+      "emptyGallery": "Bildgalleriet är tomt. Lägg till bilder i panelen.",
+      "emptyKeyFigures": "Inga nyckeltal ännu. Lägg till siffror i panelen, eller importera enheter.",
+      "emptyProgress": "Ingen tidplan ännu. Lägg in milstolpar i projektet eller i panelen.",
+      "emptyViewings": "Inga kommande visningar. Lägg till visningar i panelen.",
+      "emptyContacts": "Inga kontaktpersoner. Lägg till dem i projektets inställningar eller i panelen.",
+      "emptyDocuments": "Inga dokument ännu. Lägg till PDF:er i panelen.",
+      "emptyVideo": "Klistra in en länk till YouTube eller Vimeo i panelen.",
+      "emptyFaq": "Inga frågor ännu. Lägg till frågor och svar i panelen.",
+      "emptyNews": "Inga nyheter ännu. Lägg till en nyhet i panelen.",
+      "emptyButton": "Skriv text på knappen och välj vart den ska länka.",
+      "emptyEmbed": "Klistra in adressen till det som ska bäddas in, till exempel en 3D-visning.",
+      "emptySelector": "Välj vilken bostadsväljare som ska visas.",
+      "selectorNotPublished": "Bostadsväljaren visas när den är publicerad.",
+      "selectorPreview": "Bostadsväljaren är interaktiv i förhandsvisningen och på den publicerade sidan.",
+      "emptyUnits": "Projektet har inga synliga enheter ännu.",
+      "emptyMap": "Projektet har ingen plats. Lägg in den i projektets inställningar eller i panelen."
+    },
+    "gallery": {
+      "open": "Öppna bilden {name}"
+    },
+    "keyFigures": {
+      "unitsTotal": "bostäder",
+      "available": "lediga",
+      "sizeRange": "BOA",
+      "roomsRange": "rum",
+      "priceFrom": "pris från"
+    },
+    "milestones": {
+      "planning": "Detaljplan och planering",
+      "sales_start": "Säljstart",
+      "construction_start": "Byggstart",
+      "move_in": "Inflyttning"
+    },
+    "progress": {
+      "done": "Klar",
+      "upcoming": "Kommande"
+    },
+    "viewings": {
+      "time": "Kl. {start}",
+      "timeRange": "Kl. {start}–{end}",
+      "none": "Inga visningar är inplanerade ännu."
+    },
+    "contacts": {
+      "phone": "Telefon:",
+      "email": "E-post:"
+    },
+    "documents": {
+      "untitled": "Dokument",
+      "image": "Bild"
+    },
+    "video": {
+      "title": "Video",
+      "play": "Spela upp video från {provider}",
+      "notice": "Videon laddas från {provider} först när du klickar."
+    },
+    "embed": {
+      "fallbackTitle": "Inbäddat innehåll"
+    },
+    "map": {
+      "label": "Karta över läget för {project}",
+      "openMap": "Öppna i karta",
+      "nearby": "I närheten"
+    },
+    "lead": {
+      "defaultHeading": "Anmäl intresse",
+      "name": "Namn",
+      "email": "E-post",
+      "phone": "Telefon",
+      "unit": "Bostad",
+      "noUnit": "Ingen särskild bostad",
+      "message": "Meddelande (valfritt)",
+      "honeypot": "Webbplats (lämna tomt)",
+      "consentLegend": "Samtycke",
+      "submit": "Skicka",
+      "required": "Fält märkta med * måste fyllas i.",
+      "previewDisabled": "Formuläret kan inte skickas i förhandsvisningen.",
+      "successTitle": "Tack för ditt intresse!",
+      "successBody": "Vi har tagit emot din förfrågan. {organization} kontaktar dig, och du får ett kvitto via e-post.",
+      "errors": {
+        "rateLimited": "Du har skickat flera förfrågningar på kort tid. Vänta en stund och försök igen.",
+        "closed": "Projektet tar inte emot förfrågningar just nu.",
+        "captcha": "Vi kunde inte bekräfta att du inte är en robot. Försök igen.",
+        "invalidInput": "Kontrollera de markerade fälten.",
+        "unknown": "Något gick fel och förfrågan skickades inte. Försök igen om en stund."
+      }
+    },
+    "unit": {
+      "back": "Tillbaka till {project}"
+    }
+  },
+  "leads": {
+    "title": "Leads",
+    "description": "Förfrågningar från intresseformulären på projektsidorna och i bostadsväljarna.",
+    "projectTitle": "Leads – {project}",
+    "statuses": {
+      "new": "Ny",
+      "contacted": "Kontaktad",
+      "closed": "Avslutad"
+    },
+    "sources": {
+      "site": "Projektsida",
+      "selector": "Bostadsväljare",
+      "unit_page": "Bostadssida",
+      "embed": "Inbäddad bostadsväljare"
+    },
+    "table": {
+      "received": "Mottagen",
+      "name": "Namn",
+      "contact": "Kontakt",
+      "project": "Projekt",
+      "unit": "Bostad",
+      "source": "Källa",
+      "status": "Status",
+      "noUnit": "Ingen"
+    },
+    "filters": {
+      "search": "Sök på namn, e-post, telefon eller bostad",
+      "status": "Status",
+      "allStatuses": "Alla statusar",
+      "project": "Projekt",
+      "allProjects": "Alla projekt",
+      "unit": "Bostad",
+      "allUnits": "Alla bostäder",
+      "clear": "Rensa filter",
+      "export": "Exportera CSV"
+    },
+    "list": {
+      "emptyTitle": "Inga leads ännu",
+      "emptyHelp": "Förfrågningar från intresseformulären visas här.",
+      "noMatches": "Inga leads matchar filtren",
+      "noMatchesHelp": "Försök ta bort ett filter eller söka på något annat.",
+      "pagination": "Sidor i listan",
+      "showing": "Visar {first}–{last} av {total}",
+      "previous": "Föregående",
+      "next": "Nästa"
+    },
+    "detail": {
+      "pageTitle": "Lead – {name}",
+      "back": "Alla leads",
+      "received": "Mottagen {time}",
+      "contactTitle": "Kontaktuppgifter",
+      "message": "Meddelande",
+      "noMessage": "Inget meddelande.",
+      "handlingTitle": "Uppföljning",
+      "interestTitle": "Förfrågan",
+      "project": "Projekt",
+      "unit": "Bostad",
+      "noUnit": "Ingen särskild bostad",
+      "source": "Källa",
+      "campaign": "Kampanj",
+      "notified": "Avisering",
+      "notifiedAt": "E-post skickad till kontaktpersonerna {time}",
+      "notNotified": "Ingen e-post har skickats.",
+      "consentTitle": "Samtycke",
+      "consentGiven": "Samtycke till kontakt gavs {time} med textversion {version}:",
+      "similarYes": "Har också samtyckt till att höra om liknande projekt:",
+      "similarNo": "Har inte samtyckt till att höra om liknande projekt.",
+      "status": "Status",
+      "note": "Intern anteckning",
+      "noteHelp": "Visas bara i admin, aldrig för den som skickade förfrågan.",
+      "saved": "Förfrågan har uppdaterats.",
+      "deleted": "Förfrågan har raderats.",
+      "deletedAll": "{count, plural, one {# förfrågan har raderats.} other {# förfrågningar har raderats.}}",
+      "deleteTitle": "Radera personuppgifter",
+      "deleteDescription": "Använd detta när någon ber om att bli raderad. Raderingen kan inte ångras, och loggen visar bara att något raderades.",
+      "delete": "Radera förfrågan",
+      "deleteAll": "Radera alla {count} från {email}",
+      "deleteOneTitle": "Radera förfrågan?",
+      "deleteOneDescription": "Namn, kontaktuppgifter, meddelande och samtycke raderas permanent.",
+      "deleteAllTitle": "Radera alla förfrågningar från {email}?",
+      "deleteAllDescription": "{count, plural, one {# förfrågan raderas permanent.} other {# förfrågningar i alla projekt raderas permanent.}}"
+    },
+    "csv": {
+      "created_at": "Mottagen",
+      "name": "Namn",
+      "email": "E-post",
+      "phone": "Telefon",
+      "project": "Projekt",
+      "unit": "Bostad",
+      "status": "Status",
+      "source": "Källa",
+      "message": "Meddelande",
+      "consent_contact": "Samtycke till kontakt",
+      "consent_similar": "Samtycke till liknande projekt",
+      "consent_version": "Samtyckestext (version)",
+      "consented_at": "Samtycke givet",
+      "utm_source": "utm_source",
+      "utm_medium": "utm_medium",
+      "utm_campaign": "utm_campaign",
+      "internal_note": "Intern anteckning",
+      "yes": "Ja",
+      "no": "Nej"
     }
   }
 }

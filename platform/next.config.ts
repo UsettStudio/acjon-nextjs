@@ -18,6 +18,12 @@ const noFramingHeaders = [
   { key: "Content-Security-Policy", value: "frame-ancestors 'none'" },
 ];
 
+// Forhåndsvisningen i prosjektsideeditoren vises i en iframe i admin, og bare der.
+const sameOriginFramingHeaders = [
+  { key: "X-Frame-Options", value: "SAMEORIGIN" },
+  { key: "Content-Security-Policy", value: "frame-ancestors 'self'" },
+];
+
 const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
@@ -36,7 +42,8 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       { source: "/:path*", headers: securityHeaders },
-      { source: "/((?!embed/).*)", headers: noFramingHeaders },
+      { source: "/((?!embed/|site-preview/).*)", headers: noFramingHeaders },
+      { source: "/site-preview/:path*", headers: sameOriginFramingHeaders },
     ];
   },
 };

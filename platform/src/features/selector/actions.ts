@@ -1,6 +1,6 @@
 "use server";
 
-import { refresh } from "next/cache";
+import { refresh, updateTag } from "next/cache";
 import { z } from "zod";
 
 import {
@@ -12,6 +12,7 @@ import {
   type SelectorSettings,
 } from "@/features/selector/model";
 import { toEditorView, VIEW_COLUMNS, type EditorView } from "@/features/selector/queries";
+import { siteTags } from "@/features/site-builder/render-data";
 import {
   selectorNameSchema as nameSchema,
   selectorSettingsInputSchema as settingsInputSchema,
@@ -230,6 +231,7 @@ export async function publishSelector(
       }
       return writeError(error);
     }
+    updateTag(siteTags.selector(selectorId));
     return ok(await readPublishState(supabase, selectorId));
   });
 }
@@ -245,6 +247,7 @@ export async function unpublishSelector(
     if (error) {
       return writeError(error);
     }
+    updateTag(siteTags.selector(selectorId));
     return ok(await readPublishState(supabase, selectorId));
   });
 }

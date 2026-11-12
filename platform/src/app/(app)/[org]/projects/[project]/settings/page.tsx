@@ -15,6 +15,8 @@ import { getProjectContext, getProjectStructure, listMemberOptions } from "@/fea
 import { StatusColorsForm } from "@/features/selector/components/status-colors-form";
 import { resolveStatusColors } from "@/features/selector/model";
 import { getDisplaySettings } from "@/features/selector/queries";
+import { PublicCustomFieldsForm } from "@/features/units/components/public-custom-fields-form";
+import { getPublicCustomFieldNames, listCustomFieldNames } from "@/features/units/queries";
 import { can } from "@/lib/auth/permissions";
 
 export async function generateMetadata({ params }: PageProps<"/[org]/projects/[project]/settings">): Promise<Metadata> {
@@ -31,11 +33,13 @@ export default async function ProjectSettingsPage({ params }: PageProps<"/[org]/
     notFound();
   }
   const { project } = context;
-  const [t, structure, members, display] = await Promise.all([
+  const [t, structure, members, display, customFieldNames, publicCustomFields] = await Promise.all([
     getTranslations("projects.settings"),
     getProjectStructure(project.id),
     listMemberOptions(context.organization.id),
     getDisplaySettings(context.organization.id, project.id),
+    listCustomFieldNames(project.id),
+    getPublicCustomFieldNames(project.id),
   ]);
   const disabled = !context.canEditContent;
   const common = { organizationId: context.organization.id, project, disabled };
@@ -115,6 +119,23 @@ export default async function ProjectSettingsPage({ params }: PageProps<"/[org]/
             initial={display.projectColors}
             inherited={resolveStatusColors(display.organizationColors, {})}
             showPriceOnSold={display.showPriceOnSold}
+            disabled={disabled}
+          />
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>
+            <h2>{t("customFields.title")}</h2>
+          </CardTitle>
+          <CardDescription>{t("customFields.help")}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <PublicCustomFieldsForm
+            organizationId={context.organization.id}
+            projectId={project.id}
+            names={customFieldNames}
+            initialPublic={publicCustomFields}
             disabled={disabled}
           />
         </CardContent>

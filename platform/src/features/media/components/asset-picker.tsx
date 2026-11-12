@@ -39,7 +39,7 @@ export function AssetPicker({
   open: boolean;
   onOpenChange: (open: boolean) => void;
   organizationId: string;
-  projectId: string;
+  projectId: string | null;
   kind: "image" | "document";
   title: string;
   alreadySelected: string[];

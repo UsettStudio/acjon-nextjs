@@ -13,6 +13,7 @@ async function SettingsTabs({ params }: { params: LayoutProps<"/[org]/settings">
         {t("organization")}
       </NavLink>
       <NavLink href={`/${org}/settings/members`}>{t("members")}</NavLink>
+      <NavLink href={`/${org}/settings/brand`}>{t("brand")}</NavLink>
     </nav>
   );
 }

@@ -4,6 +4,7 @@ import { getTranslations } from "next-intl/server";
 
 import { getProjectContext, getProjectStructure } from "@/features/projects/queries";
 import { UnitForm } from "@/features/units/components/unit-form";
+import { listCustomFieldNames } from "@/features/units/queries";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("units.form");
@@ -16,7 +17,7 @@ export default async function NewUnitPage({ params }: PageProps<"/[org]/projects
   if (!context.canEditContent) {
     notFound();
   }
-  const structure = await getProjectStructure(context.project.id);
+  const [structure, customFieldNames] = await Promise.all([getProjectStructure(context.project.id), listCustomFieldNames(context.project.id)]);
   return (
     <UnitForm
       organizationId={context.organization.id}
@@ -29,6 +30,7 @@ export default async function NewUnitPage({ params }: PageProps<"/[org]/projects
       assets={[]}
       canEditContent={context.canEditContent}
       canSell={context.canSell}
+      customFieldNames={customFieldNames}
     />
   );
 }

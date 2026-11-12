@@ -6,13 +6,14 @@ import { ArrowLeftIcon, FileTextIcon, MailIcon, PhoneIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useCallback, useRef, useState } from "react";
 
+import { LeadForm } from "@/features/leads/components/lead-form";
 import { imageSources } from "@/features/selector/components/hotspot-svg";
 import { StatusPill } from "@/features/selector/components/public/unit-card";
 import { usePublicUnitStatus } from "@/features/selector/components/public/use-public-units";
 import { useUnitFormat } from "@/features/selector/components/public/use-unit-format";
 import { isPriceHidden, parsePublicUnitDetail, type PublicAsset, type PublicUnitDetail } from "@/features/selector/model";
-import { selectorPublicPath } from "@/features/selector/paths";
 import { publicMediaUrl } from "@/features/media/model";
+import { publicCustomFields } from "@/features/units/custom-fields";
 import { calculateTotals } from "@/features/units/price";
 import { getPublicBrowserClient } from "@/lib/supabase/public-browser";
 
@@ -21,17 +22,20 @@ function Picture({ asset, alt, sizes, className }: { asset: PublicAsset; alt: st
   return <img src={sources.src} srcSet={sources.srcSet} sizes={sizes} alt={alt} className={className} loading="lazy" />;
 }
 
-/** Tilbake til velgeren. Kom kjøperen derfra, brukes nettleserens historikk, så filter og visning er som før. */
-function BackLink({ selectorId, label }: { selectorId: string; label: string }) {
-  const href = selectorPublicPath(selectorId);
+/**
+ * Tilbake til siden besøkeren kom fra. Kom besøkeren fra den samme siden,
+ * brukes nettleserens historikk, så filter og visning er som før.
+ */
+function BackLink({ href, label }: { href: string; label: string }) {
   return (
     <a
       href={href}
-      className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground hover:underline"
+      className="inline-flex items-center gap-1.5 text-sm opacity-80 hover:underline hover:opacity-100"
       onClick={(event) => {
         try {
           const referrer = document.referrer ? new URL(document.referrer) : null;
-          if (referrer && referrer.origin === window.location.origin && referrer.pathname === href && window.history.length > 1) {
+          const target = new URL(href, window.location.href);
+          if (referrer && referrer.origin === window.location.origin && referrer.pathname === target.pathname && window.history.length > 1) {
             event.preventDefault();
             window.history.back();
           }
@@ -46,7 +50,20 @@ function BackLink({ selectorId, label }: { selectorId: string; label: string }) 
   );
 }
 
-export function PublicUnitPage({ selectorId, projectId, unit: initial }: { selectorId: string; projectId: string; unit: PublicUnitDetail }) {
+export type UnitPageInterest = { pageId: string | null; source: "unit_page" | "embed" };
+
+export function PublicUnitPage({
+  projectId,
+  unit: initial,
+  back,
+  interest = null,
+}: {
+  projectId: string;
+  unit: PublicUnitDetail;
+  back: { href: string; label: string };
+  /** Interesseskjema forhåndsutfylt med enheten. Vises ikke på solgte enheter. */
+  interest?: UnitPageInterest | null;
+}) {
   const t = useTranslations("publicSelector.unitPage");
   const tFields = useTranslations("units.fields");
   const tTypes = useTranslations("units.types");
@@ -112,6 +129,8 @@ export function PublicUnitPage({ selectorId, projectId, unit: initial }: { selec
     ...(unit.storage ? [{ label: tFields("storage"), value: unit.storage }] : []),
     ...(unit.building ? [{ label: tFields("building"), value: unit.building.name }] : []),
     ...(unit.stage ? [{ label: tFields("stage"), value: unit.stage.name }] : []),
+    // Egne felt prosjektet har gjort offentlige.
+    ...publicCustomFields(unit.custom_fields),
   ];
 
   const priceRows: { label: string; value: string; strong?: boolean }[] = unit.price_hidden
@@ -130,7 +149,7 @@ export function PublicUnitPage({ selectorId, projectId, unit: initial }: { selec
 
   return (
     <article className="mx-auto grid w-full max-w-6xl gap-6 p-4 sm:p-6" data-live={live}>
-      <BackLink selectorId={selectorId} label={t("back")} />
+      <BackLink href={back.href} label={back.label} />
       <header className="grid gap-2">
         <p className="text-sm text-muted-foreground">
           {unit.project.name}
@@ -285,6 +304,26 @@ export function PublicUnitPage({ selectorId, projectId, unit: initial }: { selec
           {live === "live" ? <p className="text-xs text-muted-foreground">{t("liveStatus")}</p> : null}
         </aside>
       </div>
+      {interest && unit.status !== "sold" ? (
+        <section id="interesse" aria-labelledby="unit-interest" className="scroll-mt-24 rounded-lg border p-4 sm:p-6">
+          <h2 id="unit-interest" className="site-heading mb-2 text-xl font-semibold">
+            {t("interestHeading")}
+          </h2>
+          <p className="mb-4 opacity-80">{t("interestIntro", { unit: unit.unit_number })}</p>
+          <LeadForm
+            projectId={projectId}
+            pageId={interest.pageId}
+            units={[]}
+            defaultUnitId={unit.id}
+            showUnitSelect={false}
+            buttonLabel=""
+            source={interest.source}
+            organizationName={unit.organization.name}
+            projectName={unit.project.name}
+            locale={unit.organization.locale}
+          />
+        </section>
+      ) : null}
     </article>
   );
 }

@@ -11,6 +11,7 @@ const publicEnvSchema = z.object({
   platformDomain: z.string().min(1),
   productName: z.string().min(1),
   sentryDsn: z.string().optional(),
+  turnstileSiteKey: z.string().optional(),
 });
 
 export type PublicEnv = z.infer<typeof publicEnvSchema>;
@@ -25,6 +26,7 @@ export function publicEnv(): PublicEnv {
     platformDomain: process.env.NEXT_PUBLIC_PLATFORM_DOMAIN,
     productName: process.env.NEXT_PUBLIC_PRODUCT_NAME || "Boligplattform",
     sentryDsn: process.env.NEXT_PUBLIC_SENTRY_DSN || undefined,
+    turnstileSiteKey: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || undefined,
   });
   return cached;
 }

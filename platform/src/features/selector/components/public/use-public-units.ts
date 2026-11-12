@@ -14,6 +14,77 @@ const statusEventSchema = z.object({
   status: z.enum(UNIT_STATUSES),
 });
 
+type StatusListener = {
+  onStatus: (unitId: string, status: UnitStatus) => void;
+  onSubscribed?: () => void;
+  onState: (state: LiveState) => void;
+};
+
+type ChannelEntry = {
+  channel: ReturnType<ReturnType<typeof getPublicBrowserClient>["channel"]>;
+  listeners: Set<StatusListener>;
+  state: LiveState;
+};
+
+/**
+ * Én kanal per prosjekt, delt av alle som lytter på siden (for eksempel en
+ * Boligvelger- og en Enhetsliste-blokk). Supabase gir samme kanal for samme
+ * emne, så hver komponent kan ikke abonnere for seg.
+ */
+const channels = new Map<string, ChannelEntry>();
+
+function subscribeUnitStatus(projectId: string, listener: StatusListener): () => void {
+  let entry = channels.get(projectId);
+  if (!entry) {
+    const supabase = getPublicBrowserClient();
+    const created: ChannelEntry = { channel: supabase.channel(`project:${projectId}:units`), listeners: new Set(), state: "connecting" };
+    created.channel
+      .on("broadcast", { event: "unit_status" }, (message: { payload?: unknown }) => {
+        const parsed = statusEventSchema.safeParse(message.payload);
+        if (parsed.success) {
+          for (const item of created.listeners) {
+            item.onStatus(parsed.data.unit_id, parsed.data.status);
+          }
+        }
+      })
+      .subscribe((status) => {
+        if (status === "SUBSCRIBED") {
+          created.state = "live";
+          for (const item of created.listeners) {
+            item.onState("live");
+            item.onSubscribed?.();
+          }
+        } else if (status === "CHANNEL_ERROR" || status === "TIMED_OUT" || status === "CLOSED") {
+          created.state = "offline";
+          for (const item of created.listeners) {
+            item.onState("offline");
+          }
+        }
+      });
+    channels.set(projectId, created);
+    entry = created;
+  }
+  const current = entry;
+  current.listeners.add(listener);
+  // En som kommer til etter tilkoblingen, får tilstanden og én oppfriskning med en gang.
+  queueMicrotask(() => {
+    if (!current.listeners.has(listener)) {
+      return;
+    }
+    listener.onState(current.state);
+    if (current.state === "live") {
+      listener.onSubscribed?.();
+    }
+  });
+  return () => {
+    current.listeners.delete(listener);
+    if (current.listeners.size === 0) {
+      channels.delete(projectId);
+      void getPublicBrowserClient().removeChannel(current.channel);
+    }
+  };
+}
+
 /**
  * Lytter på den offentlige kanalen «project:{id}:units». Databasen sender
  * bare enhets-id og ny status når en enhet i et offentlig prosjekt endrer
@@ -35,26 +106,11 @@ export function usePublicUnitStatus(
     if (!enabled) {
       return;
     }
-    const supabase = getPublicBrowserClient();
-    const channel = supabase
-      .channel(`project:${projectId}:units`)
-      .on("broadcast", { event: "unit_status" }, (message: { payload?: unknown }) => {
-        const parsed = statusEventSchema.safeParse(message.payload);
-        if (parsed.success) {
-          handlersRef.current.onStatus(parsed.data.unit_id, parsed.data.status);
-        }
-      })
-      .subscribe((status) => {
-        if (status === "SUBSCRIBED") {
-          setState("live");
-          handlersRef.current.onSubscribed?.();
-        } else if (status === "CHANNEL_ERROR" || status === "TIMED_OUT" || status === "CLOSED") {
-          setState("offline");
-        }
-      });
-    return () => {
-      void supabase.removeChannel(channel);
-    };
+    return subscribeUnitStatus(projectId, {
+      onStatus: (unitId, status) => handlersRef.current.onStatus(unitId, status),
+      onSubscribed: () => handlersRef.current.onSubscribed?.(),
+      onState: setState,
+    });
   }, [projectId, enabled]);
 
   return enabled ? state : "disabled";

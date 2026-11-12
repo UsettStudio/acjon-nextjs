@@ -14,8 +14,9 @@ Produktnavn og plattformdomene er ikke bestemt ennå. «Boligplattform» er et a
 | 0 Grunnmur | Ferdig |
 | 1 Prosjekter og enheter | Ferdig |
 | 2 Boligvelger | Ferdig |
-| 3 Prosjektside | Neste |
-| 4–5 | Ikke påbegynt |
+| 3 Prosjektside | Ferdig |
+| 4 Drift | Neste |
+| 5 Kvalitet | Ikke påbegynt |
 
 Fase 0 omfatter Next.js-appen, databasen med RLS, pålogging, organisasjoner, invitasjoner, brukeradministrasjon, plattformadmin, tester og CI.
 
@@ -43,6 +44,20 @@ Fase 2 omfatter:
 - Enhetsside (`/embed/selector/{id}/bolig/{slug}`).
 - Statusfarger per organisasjon og prosjekt.
 
+Fase 3 omfatter:
+
+- Prosjektside-editor med forhåndsvisning i sanntid:
+  - Alle 18 blokktyper og malene «Kommer for salg» og «Full prosjektside». En side kan bygges ut uten å begynne på nytt.
+  - Flere sider, meny og bunntekst, og tema fra merkevareprofilen.
+  - Publisering, delt forhåndsvisningslenke og versjonshistorikk.
+- Publisert prosjektside på underdomene (`{underdomene}.[PLATTFORMDOMENE]`):
+  - Enhetssiden `/bolig/{slug}`.
+  - SEO, sitemap og robots.
+  - Mellomlager som tømmes ved publisering og statusendring.
+- Interesseskjema med samtykke, spamvern og e-post til kontaktpersonen og avsenderen.
+- Leads i admin: liste, filter, detalj, status, CSV-eksport og sletting.
+- Merkevareprofil og egne felt på enheter.
+
 ## Kom i gang lokalt
 
 Krever Node.js 22 og Docker. Supabase CLI følger med som utviklingsavhengighet.
@@ -51,7 +66,7 @@ Krever Node.js 22 og Docker. Supabase CLI følger med som utviklingsavhengighet.
 cd platform
 npm install
 npm run db:start              # starter Postgres, Auth, Storage og Realtime og kjører migrasjonene
-cp .env.example .env.local    # fyll inn NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY fra `npx supabase status`
+cp .env.example .env.local    # fyll inn PUBLISHABLE_KEY og SECRET_KEY fra `npx supabase status`
 npm run dev                   # http://localhost:3000
 ```
 
@@ -60,6 +75,10 @@ npm run dev                   # http://localhost:3000
 Adressesøket og kartet bruker Kartverkets åpne tjenester (`ws.geonorge.no` og `cache.kartverket.no`) direkte fra nettleseren. De krever ingen nøkkel.
 
 Uten `RESEND_API_KEY` sendes ikke invitasjoner på e-post. Invitasjonslenken vises da i appen, så den kan deles direkte. E-post fra Supabase Auth (innloggingslenke, glemt passord) havner i Mailpit på http://127.0.0.1:54324. Lokalt kreves ikke bekreftelse av e-postadressen.
+
+`SUPABASE_SECRET_KEY` (service-nøkkelen) brukes bare på serveren. Den trengs for interesseskjemaet og for signerte forhåndsvisningslenker. Lokalt settes `MAILPIT_URL=http://127.0.0.1:54324`, så varsler om leads og kvitteringer havner i Mailpit når `RESEND_API_KEY` mangler. Turnstile slås på med `NEXT_PUBLIC_TURNSTILE_SITE_KEY` og `TURNSTILE_SECRET_KEY`. Uten dem beskyttes skjemaet av honeypot og rate limit.
+
+Publiserte prosjektsider åpnes lokalt på `http://{underdomene}.localhost:3000` når `NEXT_PUBLIC_PLATFORM_DOMAIN=localhost:3000`. Chrome og Firefox sender `*.localhost` til maskinen selv.
 
 En plattformadmin legges inn med SQL:
 
@@ -80,7 +99,7 @@ insert into public.platform_admins (user_id) select id from auth.users where ema
 | `npm run test:e2e` | Ende-til-ende-tester (Playwright). Krever `npm run build` og lokal Supabase. |
 | `npm run db:start` | Starter lokal Supabase |
 | `npm run db:reset` | Bygger databasen på nytt fra migrasjonene |
-| `npm run db:test` | Databasetester (pgTAP): RLS, isolasjon, roller, statuslogg, publisering, import og boligvelger |
+| `npm run db:test` | Databasetester (pgTAP): RLS, isolasjon, roller, statuslogg, publisering, import, boligvelger, prosjektside og leads |
 | `npm run db:lint` | Statisk sjekk av alle databasefunksjoner |
 | `npm run db:types` | Genererer TypeScript-typer fra databasen |
 
@@ -104,13 +123,13 @@ Kontoene er ikke opprettet ennå. Slik skal de settes opp:
 
 | Mappe | Innhold |
 |---|---|
-| `src/app/` | Sider og ruter: `(auth)` for innlogging og invitasjon, `(app)/[org]` for admin per organisasjon, `(app)/(user)` for profil, ny organisasjon og plattformadmin, `embed/` for publisert boligvelger og enhetsside |
+| `src/app/` | Sider og ruter: `(auth)` for innlogging og invitasjon, `(app)/[org]` for admin per organisasjon, `(app)/(user)` for profil, ny organisasjon og plattformadmin, `sites/` for publiserte prosjektsider (skrevet om fra underdomenet), `preview/` for delt forhåndsvisning, `site-preview/` for forhåndsvisningen i editoren, `embed/` for publisert boligvelger og enhetsside |
 | `src/features/` | Domenemoduler med Zod-skjema, serverhandlinger, spørringer og komponenter |
 | `src/lib/` | Supabase-klienter, datatilgangslag (DAL), roller, tallformat, e-post og sikkerhet |
 | `src/components/` | shadcn/ui og felles admin-komponenter |
 | `messages/` | All tekst på bokmål, engelsk og svensk |
 | `supabase/migrations/` | Datamodell, RLS, funksjoner, lagring, sanntid og jobber |
-| `supabase/tests/` | pgTAP-tester (307 tester) |
+| `supabase/tests/` | pgTAP-tester (359 tester) |
 | `supabase/templates/` | Norske e-postmaler for Supabase Auth |
 | `e2e/` | Playwright-tester, med en Excel-fil for importtesten i `e2e/fixtures/`. Fasadebildet til boligvelgertestene lages med sharp. |
 | `scripts/` | Kopierer filer fra `node_modules` som nettleseren må hente direkte |

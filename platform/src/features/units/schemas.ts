@@ -9,6 +9,7 @@ import {
   type UnitFieldValues,
   type UnitType,
 } from "@/features/units/fields";
+import { customFieldsSchema } from "@/features/units/custom-fields";
 import { parseNorwegianNumber } from "@/lib/format/parse";
 
 /** Zod-felt som tolker verdien med samme regler som tabellen og importen. */
@@ -122,6 +123,7 @@ export const unitFormSchema = z.object({
   floor_plan_asset_ids: assetIds(20),
   gallery_asset_ids: assetIds(100),
   document_asset_ids: assetIds(50),
+  custom_fields: customFieldsSchema,
 });
 
 export const createUnitSchema = unitFormSchema.extend({

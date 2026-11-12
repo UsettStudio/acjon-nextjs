@@ -172,7 +172,7 @@ export function resolveStatusColors(organization: unknown, project: unknown): Re
 
 const variantSchema = z.object({ width: z.number(), height: z.number(), path: z.string() });
 
-const publicAssetSchema = z.object({
+export const publicAssetSchema = z.object({
   id: z.string(),
   path: z.string(),
   mime: z.string(),
@@ -371,6 +371,9 @@ const publicUnitDetailSchema = publicUnitSchema.extend({
   project: publicProjectSchema,
   contacts: parseList(publicContactSchema),
   status_colors: z.object({ organization: z.unknown(), project: z.unknown() }).catch({ organization: {}, project: {} }),
+  organization: z.object({ name: z.string(), locale: z.string().catch("nb") }).catch({ name: "", locale: "nb" }),
+  /** Bare felt prosjektet har gjort offentlige. Databasen filtrerer resten bort. */
+  custom_fields: z.record(z.string(), z.unknown()).catch({}),
 });
 
 export type PublicUnitDetail = Omit<z.infer<typeof publicUnitDetailSchema>, "status_colors"> & {

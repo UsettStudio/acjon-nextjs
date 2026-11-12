@@ -1,13 +1,16 @@
 import { NextResponse, type NextRequest } from "next/server";
 
 import { ORG_SLUG_PATTERN, RESERVED_ORG_SLUGS } from "@/features/organizations/slug";
+import { publicEnv } from "@/lib/env";
+import { classifyHost } from "@/lib/hosts";
 import { safeNextPath } from "@/lib/navigation/safe-redirect";
 import { updateSession } from "@/lib/supabase/proxy";
 
 /** Sider som kan vises uten innlogging. */
-const PUBLIC_EXACT = new Set(["/login", "/signup", "/forgot-password"]);
+const PUBLIC_EXACT = new Set(["/login", "/signup", "/forgot-password", "/robots.txt"]);
 // /embed/: publisert boligvelger og enhetssider. Forhåndsvisningen der sjekker innlogging selv.
-const PUBLIC_PREFIXES = ["/auth/", "/invite/", "/embed/"];
+// /preview/: delt forhåndsvisning av en prosjektside, med signert lenke som kontrolleres på siden.
+const PUBLIC_PREFIXES = ["/auth/", "/invite/", "/embed/", "/preview/"];
 /** Innloggingssider en innlogget bruker ikke trenger å se. */
 const GUEST_ONLY = new Set(["/login", "/signup", "/forgot-password"]);
 
@@ -28,8 +31,22 @@ function redirectWithCookies(url: URL, source: NextResponse): NextResponse {
  * innlogging. Hver side og serverhandling sjekker likevel tilgang selv.
  */
 export async function proxy(request: NextRequest) {
-  const { response, userId } = await updateSession(request);
   const { pathname, search } = request.nextUrl;
+  const env = publicEnv();
+  const host = classifyHost(request.headers.get("host") ?? "", env.appUrl, env.platformDomain);
+
+  // Publiserte prosjektsider: skrives om til app/sites/[site]. Ingen innlogging og ingen cookies.
+  if (host.kind === "site") {
+    const url = request.nextUrl.clone();
+    url.pathname = `/sites/${encodeURIComponent(host.key)}${pathname === "/" ? "" : pathname}`;
+    return NextResponse.rewrite(url);
+  }
+  // Prosjektsidene skal bare nås via eget vertsnavn, ikke som /sites/ på admin.
+  if (pathname === "/sites" || pathname.startsWith("/sites/")) {
+    return new NextResponse(null, { status: 404 });
+  }
+
+  const { response, userId } = await updateSession(request);
 
   if (!userId && !isPublicPath(pathname)) {
     const url = new URL("/login", request.url);
@@ -63,6 +80,6 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon\\.ico|icon\\.svg|robots\\.txt|.*\\.(?:svg|png|jpg|jpeg|gif|webp|avif|ico)$).*)",
+    "/((?!_next/static|_next/image|favicon\\.ico|icon\\.svg|.*\\.(?:svg|png|jpg|jpeg|gif|webp|avif|ico)$).*)",
   ],
 };

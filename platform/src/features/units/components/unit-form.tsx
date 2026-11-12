@@ -34,6 +34,8 @@ import {
   type UnitRow,
   type UnitStatus,
 } from "@/features/units/fields";
+import { CustomFieldsEditor } from "@/features/units/components/custom-fields-editor";
+import { customFieldsToInput } from "@/features/units/custom-fields";
 import { calculateTotals } from "@/features/units/price";
 import type { UnitListItem } from "@/features/units/queries";
 import { createUnitSchema, type UnitFormInput, type UnitFormOutput } from "@/features/units/schemas";
@@ -41,7 +43,7 @@ import type { CommonActionError } from "@/lib/actions/result";
 import { formatCurrency, formatNumber } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
-const TABS = ["key", "price", "area", "media", "documents", "description"] as const;
+const TABS = ["key", "price", "area", "media", "documents", "description", "custom"] as const;
 type Tab = (typeof TABS)[number];
 
 /** Feltene i hver fane, så fanen med feil kan vises når skjemaet sendes. */
@@ -69,6 +71,7 @@ const TAB_FIELDS: Record<Tab, (keyof UnitFormInput)[]> = {
   media: ["floor_plan_asset_ids", "gallery_asset_ids"],
   documents: ["document_asset_ids"],
   description: ["description"],
+  custom: ["custom_fields"],
 };
 
 const NONE = "__none__";
@@ -106,6 +109,7 @@ function defaultValues(unit: UnitRow | null): UnitFormInput {
     floor_plan_asset_ids: unit?.floor_plan_asset_ids ?? [],
     gallery_asset_ids: unit?.gallery_asset_ids ?? [],
     document_asset_ids: unit?.document_asset_ids ?? [],
+    custom_fields: customFieldsToInput(unit?.custom_fields),
   };
 }
 
@@ -124,6 +128,7 @@ export function UnitForm({
   assets,
   canEditContent,
   canSell,
+  customFieldNames = [],
 }: {
   organizationId: string;
   orgSlug: string;
@@ -135,6 +140,8 @@ export function UnitForm({
   assets: MediaAsset[];
   canEditContent: boolean;
   canSell: boolean;
+  /** Navn på egne felt som brukes i prosjektet, som forslag. */
+  customFieldNames?: string[];
 }) {
   const t = useTranslations("units.form");
   const tFields = useTranslations("units.fields");
@@ -190,7 +197,9 @@ export function UnitForm({
         } else {
           apply(result);
           const fields = Object.keys(result.fieldErrors ?? {});
-          const errorTab = TABS.find((candidate) => TAB_FIELDS[candidate].some((field) => fields.includes(field)));
+          const errorTab = TABS.find((candidate) =>
+            TAB_FIELDS[candidate].some((field) => fields.some((key) => key === field || key.startsWith(`${field}.`))),
+          );
           if (errorTab) {
             setTab(errorTab);
           }
@@ -520,6 +529,16 @@ export function UnitForm({
           <Field name="unit-description" label={tFields("description")} description={t("descriptionHelp")} error={error("description")}>
             {(field) => <Textarea {...field} rows={12} disabled={contentDisabled} {...form.register("description")} />}
           </Field>
+        </TabsContent>
+
+        <TabsContent value="custom" className="grid max-w-3xl gap-3">
+          <CustomFieldsEditor
+            control={form.control}
+            register={form.register}
+            errors={errors}
+            disabled={contentDisabled}
+            suggestions={customFieldNames}
+          />
         </TabsContent>
       </Tabs>
 

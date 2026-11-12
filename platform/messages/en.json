@@ -68,7 +68,19 @@
     "unitNumberTaken": "The unit number already exists in the project.",
     "duplicateInFile": "The unit number appears more than once in the file.",
     "importRowInvalid": "The row could not be saved. Check the values.",
-    "colorInvalid": "Enter the colour as hex, for example #2E9E5B."
+    "colorInvalid": "Enter the colour as hex, for example #2E9E5B.",
+    "consentRequired": "You must give consent for us to be able to contact you.",
+    "timeInvalid": "Enter the time as HH:MM, for example 13:00.",
+    "urlInvalid": "Enter a full address starting with https://.",
+    "httpsRequired": "The address must start with https://.",
+    "videoInvalid": "Paste a link to a video on YouTube or Vimeo.",
+    "subdomainFormat": "Use lowercase letters (a–z), numbers and hyphens. At most 63 characters.",
+    "subdomainReserved": "This address is reserved. Choose another.",
+    "subdomainTaken": "The address is already in use. Choose another.",
+    "pageSlugFormat": "Use lowercase letters (a–z), numbers and hyphens. At most 80 characters.",
+    "pageSlugReserved": "This page address is reserved. Choose another.",
+    "pageSlugTaken": "Another page already has this address.",
+    "customFieldDuplicate": "This field name is already used on this unit."
   },
   "errors": {
     "unauthenticated": "Please sign in again.",
@@ -164,7 +176,8 @@
     "userMenu": "User menu",
     "account": "My profile",
     "projects": "Projects",
-    "media": "Media library"
+    "media": "Media library",
+    "leads": "Leads"
   },
   "dashboard": {
     "title": "Overview",
@@ -186,7 +199,8 @@
     "title": "Settings",
     "tabs": {
       "organization": "Organisation",
-      "members": "Users"
+      "members": "Users",
+      "brand": "Brand"
     },
     "organization": {
       "title": "Organisation",
@@ -197,6 +211,13 @@
       "leadRetention": "Lead retention (days)",
       "leadRetentionHelp": "Leads are deleted automatically when they are older than this. Leave the field empty to keep them until they are deleted manually.",
       "saved": "The organisation has been updated."
+    },
+    "brand": {
+      "title": "Brand profile",
+      "description": "Logo, colours, fonts and button style used by every project site. Each project site can override the profile.",
+      "saved": "The brand profile has been saved. Published project sites update immediately.",
+      "default": "Default",
+      "saveHelp": "Applies to published project sites immediately."
     }
   },
   "members": {
@@ -295,6 +316,26 @@
       "expires": "The link works until {date}.",
       "fallback": "Button not working? Copy this link into your browser:",
       "ignore": "If you were not expecting this invitation, you can ignore this email."
+    },
+    "lead": {
+      "notifySubject": "New prospect for {project}",
+      "notifySubjectUnit": "New prospect for {unit} in {project}",
+      "notifyHeading": "New enquiry about {project}",
+      "notifyName": "Name: {name}",
+      "notifyEmail": "Email: {email}",
+      "notifyPhone": "Phone: {phone}",
+      "notifyUnit": "Unit: {unit}",
+      "notifyMessage": "Message: {message}",
+      "notifyConsentSimilar": "Has also agreed to hear about similar projects.",
+      "notifyConsentContactOnly": "Has agreed to be contacted about this project.",
+      "notifyCta": "Open in admin",
+      "notifyFooter": "You receive this email because you are a contact person for the project at {organization}.",
+      "receiptSubject": "We have received your enquiry about {project}",
+      "receiptHeading": "Thank you, {name}!",
+      "receiptBody": "We have received your interest in {project}. {organization} will contact you as soon as possible.",
+      "receiptBodyUnit": "We have received your interest in {unit} in {project}. {organization} will contact you as soon as possible.",
+      "receiptPrivacy": "Your details are stored by {organization} and used only to follow up your enquiry. Reply to this email if you want them deleted.",
+      "receiptFooter": "You receive this receipt because someone submitted an interest form with this email address."
     }
   },
   "unitStatus": {
@@ -327,7 +368,9 @@
       "overview": "Overview",
       "units": "Units",
       "settings": "Settings",
-      "selectors": "Unit selector"
+      "selectors": "Unit selector",
+      "site": "Project site",
+      "leads": "Leads"
     },
     "list": {
       "title": "Projects",
@@ -477,7 +520,13 @@
       "structure": "Stages and buildings",
       "dangerZone": "Delete project",
       "display": "Unit selector and published pages",
-      "displayHelp": "Status colours for this project and whether the price is shown on sold units. Empty fields use the organisation’s colours."
+      "displayHelp": "Status colours for this project and whether the price is shown on sold units. Empty fields use the organisation’s colours.",
+      "customFields": {
+        "title": "Custom fields on the unit page",
+        "help": "Custom fields stay internal until you make them public. Public fields appear on the unit page on the project site and in the unit selector.",
+        "legend": "Show on the unit page",
+        "empty": "No units have custom fields yet. Add them under Custom fields in the unit form."
+      }
     },
     "delete": {
       "body": "The project is deleted with all units, status log, unit selector and project site. Files stay in the media library. This cannot be undone.",
@@ -507,7 +556,11 @@
       "noContacts": "No contacts.",
       "structure": "Stages and buildings",
       "noStructure": "The project is not split into stages or buildings.",
-      "structureSummary": "{stages, plural, =0 {No stages} one {# stage} other {# stages}} and {buildings, plural, =0 {no buildings} one {# building} other {# buildings}}."
+      "structureSummary": "{stages, plural, =0 {No stages} one {# stage} other {# stages}} and {buildings, plural, =0 {no buildings} one {# building} other {# buildings}}.",
+      "recentLeads": "Latest leads",
+      "noLeads": "No enquiries yet.",
+      "leadUnit": "about {unit}",
+      "openLeads": "All leads in the project"
     }
   },
   "units": {
@@ -696,7 +749,8 @@
         "area": "Area",
         "media": "Floor plans and images",
         "documents": "Documents",
-        "description": "Description"
+        "description": "Description",
+        "custom": "Custom fields"
       },
       "unitNumberHelp": "For example A-101 or H0201. Must be unique in the project.",
       "titleHelp": "Optional name shown with the number, for example “Penthouse”.",
@@ -715,6 +769,15 @@
         "gallery_asset_idsHelp": "The images are shown in the gallery on the unit page in this order.",
         "document_asset_ids": "Documents",
         "document_asset_idsHelp": "PDFs such as sales prospectus, delivery description and room schedule."
+      },
+      "custom": {
+        "help": "Details without a field of their own, such as ceiling height or a fireplace. Choose in the project settings which ones appear on the unit page.",
+        "empty": "No custom fields on this unit.",
+        "key": "Name",
+        "value": "Value",
+        "add": "Add field",
+        "remove": "Remove {name}",
+        "unnamed": "the field"
       }
     },
     "import": {
@@ -1272,7 +1335,8 @@
       "comparing": "Comparing",
       "compareFull": "You can compare up to three homes. Remove one to add a new one.",
       "locate": "Show in image",
-      "previewNoUnitPage": "The home page can be opened when the unit selector is published."
+      "previewNoUnitPage": "The home page can be opened when the unit selector is published.",
+      "interest": "Register interest"
     },
     "compare": {
       "title": "Compare homes",
@@ -1294,7 +1358,730 @@
       "soldPrice": "The home is sold.",
       "priceComing": "Price coming.",
       "contact": "Contact the agent",
-      "liveStatus": "Status updates continuously."
+      "liveStatus": "Status updates continuously.",
+      "interestHeading": "Register interest",
+      "interestIntro": "Fill in the form and the agent will contact you about {unit}."
+    }
+  },
+  "siteBuilder": {
+    "templates": {
+      "homeTitle": "Home",
+      "heroSubtitleComingSoon": "Coming for sale. Register your interest and hear from us first.",
+      "heroSubtitleFull": "New homes. Find yours in the unit selector.",
+      "heroCta": "Register interest",
+      "aboutHeading": "About the project",
+      "aboutBody": "Write briefly about the project: the location, the homes and what makes them special.",
+      "leadHeading": "Register interest",
+      "leadIntro": "Leave your contact details and we will let you know when there is news about the project.",
+      "leadButton": "Send",
+      "keyFiguresHeading": "The project in numbers",
+      "selectorHeading": "Find your home",
+      "unitsHeading": "The homes",
+      "galleryHeading": "Images",
+      "progressHeading": "Progress",
+      "mapHeading": "Location",
+      "viewingsHeading": "Viewings",
+      "viewingsIntro": "Welcome to a viewing. Register your interest to hear about new viewings.",
+      "documentsHeading": "Documents and prospectus",
+      "faqHeading": "Frequently asked questions",
+      "contactsHeading": "Contact",
+      "navUnits": "Homes",
+      "navContact": "Contact"
+    },
+    "pageTitle": "Project site – {project}",
+    "preview": {
+      "pageTitle": "Project site preview",
+      "banner": "Preview of the draft. The link works until {expires}. Forms cannot be sent from here."
+    },
+    "errors": {
+      "subdomainTaken": "This address is already in use. Choose another.",
+      "pageSlugTaken": "Another page already uses this address.",
+      "needsHome": "The project site has no home page. Choose one under Pages.",
+      "homePage": "The home page cannot be deleted. Make another page the home page first.",
+      "selectorNotInProject": "A unit selector block shows a selector from another project. Choose one of this project's selectors."
+    },
+    "blockTypes": {
+      "hero": {
+        "name": "Hero",
+        "description": "Large top image with title and button."
+      },
+      "text": {
+        "name": "Text",
+        "description": "Heading and text with simple formatting."
+      },
+      "text_image": {
+        "name": "Text and image",
+        "description": "Text next to an image."
+      },
+      "gallery": {
+        "name": "Image gallery",
+        "description": "Images in a grid that can be enlarged."
+      },
+      "key_figures": {
+        "name": "Key figures",
+        "description": "Figures such as number of homes, sizes and price from."
+      },
+      "progress": {
+        "name": "Progress",
+        "description": "Milestones from sales start to move-in."
+      },
+      "selector": {
+        "name": "Unit selector",
+        "description": "Interactive unit selector from the project."
+      },
+      "unit_list": {
+        "name": "Unit list",
+        "description": "Table of the homes with filters and status."
+      },
+      "map": {
+        "name": "Map and area",
+        "description": "Map with location and nearby places."
+      },
+      "viewings": {
+        "name": "Viewings",
+        "description": "Date and time of upcoming viewings."
+      },
+      "contacts": {
+        "name": "Contacts",
+        "description": "Agents and contacts with phone and email."
+      },
+      "lead_form": {
+        "name": "Interest form",
+        "description": "Form where visitors register their interest."
+      },
+      "documents": {
+        "name": "Documents and prospectus",
+        "description": "PDFs such as the prospectus and specifications."
+      },
+      "video": {
+        "name": "Video",
+        "description": "Video from YouTube or Vimeo."
+      },
+      "faq": {
+        "name": "Frequently asked questions",
+        "description": "Questions and answers that open and close."
+      },
+      "news": {
+        "name": "News",
+        "description": "News and updates about the project."
+      },
+      "button": {
+        "name": "Button",
+        "description": "A button that links to a page, block or address."
+      },
+      "embed": {
+        "name": "Embed",
+        "description": "Content from another service, such as a 3D tour."
+      }
+    },
+    "create": {
+      "title": "Create project site",
+      "description": "Choose a template to start from. You can change everything later, and the site stays a draft until you publish it.",
+      "template": "Template",
+      "templates": {
+        "coming_soon": {
+          "name": "Coming soon",
+          "description": "A simple page to collect interested buyers before sales start."
+        },
+        "full": {
+          "name": "Full project site",
+          "description": "Everything about the project: unit selector, images, progress, map, documents and contact."
+        }
+      },
+      "templateHelp": "A site that starts as «Coming soon» can be expanded into a full project site later without starting over.",
+      "subdomain": "Address",
+      "subdomainHelp": "Lowercase letters (a–z), numbers and hyphens. You can change the address later.",
+      "submit": "Create project site",
+      "created": "The project site has been created as a draft.",
+      "emptyTitle": "No project site yet",
+      "emptyReadOnly": "An editor or administrator can create the project site."
+    },
+    "theme": {
+      "colorsTitle": "Colours",
+      "colors": {
+        "primary": "Primary colour",
+        "accent": "Accent colour",
+        "background": "Background",
+        "foreground": "Text"
+      },
+      "colorPicker": "Choose {name}",
+      "reset": "Reset {name}",
+      "overridden": "Custom value",
+      "typographyTitle": "Fonts and buttons",
+      "headingFont": "Heading font",
+      "bodyFont": "Body font",
+      "buttonStyle": "Button style",
+      "inheritOption": "Default ({value})",
+      "fonts": {
+        "inter": "Inter",
+        "dm_sans": "DM Sans",
+        "lora": "Lora",
+        "playfair": "Playfair Display"
+      },
+      "buttonStyles": {
+        "rounded": "Rounded",
+        "pill": "Pill",
+        "square": "Square"
+      },
+      "lowTextContrast": "The text has too little contrast against the background ({ratio}:1). It should be at least 4.5:1 to be easy to read.",
+      "lowPrimaryContrast": "The primary colour has low contrast against the background ({ratio}:1). Links and headings may be hard to see.",
+      "sample": "Example",
+      "sampleHeading": "New homes by the fjord",
+      "sampleText": "This is how text, headings and buttons look with these choices.",
+      "sampleButton": "Register interest"
+    },
+    "editor": {
+      "pageSelect": "Page being edited",
+      "homePageOption": "{title} (home page)",
+      "tabs": {
+        "content": "Content",
+        "pages": "Pages",
+        "navigation": "Menu and footer",
+        "theme": "Theme",
+        "settings": "Settings"
+      },
+      "save": {
+        "saved": "Draft saved",
+        "pending": "Changes pending",
+        "saving": "Saving …",
+        "invalid": "Not saved: fix the highlighted fields",
+        "failed": "Could not save: {reason}",
+        "retry": "Try again"
+      },
+      "expand": {
+        "title": "Expand to a full project site",
+        "description": "Adds the missing blocks: {blocks}. Your existing blocks are kept as they are.",
+        "action": "Expand the page",
+        "done": "{count, plural, =0 {The page already has all the blocks.} one {# block was added.} other {# blocks were added.}}"
+      },
+      "selectorNone": "No unit selector chosen",
+      "selectorUnpublished": "{name} (not published)",
+      "entryViewDefault": "The selector's start view",
+      "fields": {
+        "heading": "Heading",
+        "heroTitle": "Title",
+        "subtitle": "Subtitle",
+        "backgroundImage": "Background image",
+        "overlay": "Image darkening",
+        "height": "Height",
+        "align": "Alignment",
+        "cta_label": "Button text",
+        "cta_link": "The button links to",
+        "body": "Text",
+        "width": "Width",
+        "image_asset_id": "Image",
+        "image_position": "Image position",
+        "images": "Images",
+        "columns": "Columns",
+        "figures": "Figures",
+        "source": "What to show",
+        "figureValue": "Number or value",
+        "figureLabel": "Description",
+        "useProjectMilestones": "Use the project's milestones",
+        "milestones": "Milestones",
+        "milestoneLabel": "Milestone",
+        "milestoneText": "Timing",
+        "milestoneDone": "Completed",
+        "selector_id": "Unit selector",
+        "entry_view_id": "Start view",
+        "show_filters": "Show filters",
+        "show_list": "Show a list of the homes",
+        "hide_sold": "Hide sold homes",
+        "use_project_location": "Use the project's location",
+        "lat": "Latitude",
+        "lng": "Longitude",
+        "zoom": "Zoom level",
+        "places": "Nearby places",
+        "placeName": "Name",
+        "placeCategory": "Category",
+        "placeDistance": "Distance",
+        "intro": "Introduction",
+        "viewingItems": "Viewings",
+        "date": "Date",
+        "start": "From",
+        "end": "Until (optional)",
+        "note": "Note",
+        "useProjectContacts": "Use the project's contacts",
+        "contactItems": "Contacts",
+        "contactName": "Name",
+        "contactTitle": "Title",
+        "phone": "Phone",
+        "email": "Email",
+        "portrait": "Portrait",
+        "button_label": "Button text",
+        "show_unit_select": "Let visitors choose a home in the form",
+        "documents": "Documents",
+        "videoUrl": "Link to the video",
+        "caption": "Caption",
+        "questions": "Questions and answers",
+        "question": "Question",
+        "answer": "Answer",
+        "newsItems": "News",
+        "newsTitle": "Title",
+        "buttonText": "Button text",
+        "link": "Links to",
+        "style": "Style",
+        "embedUrl": "Address",
+        "embedTitle": "Description",
+        "embedHeight": "Height",
+        "pageTitle": "Title",
+        "pageSlug": "Address",
+        "seoTitle": "Title in search results",
+        "seoDescription": "Description in search results",
+        "shareImage": "Share image",
+        "menuItems": "Menu items",
+        "menuLabel": "Menu text",
+        "footerText": "Footer text",
+        "footerContacts": "Show the contacts in the footer",
+        "footerLinks": "Footer links",
+        "linkLabel": "Text",
+        "linkUrl": "Address",
+        "siteLogo": "Logo for this project site",
+        "siteDescription": "Description",
+        "brandLogo": "Logo"
+      },
+      "help": {
+        "richText": "Formatting: ## Heading, - bullet list, 1. numbered list, **bold**, *italic* and [link text](https://…).",
+        "heroImage": "Use a wide image, ideally 2400 pixels or more.",
+        "overlay": "Darkens the image so white text is easier to read.",
+        "keyFigures": "Figures taken from the units update automatically when status and price change.",
+        "useProjectMilestones": "The milestones are edited in the project settings.",
+        "selector": "Only this project's selectors can be chosen. It appears on the page once published.",
+        "entryView": "The view visitors see first, such as a facade.",
+        "useProjectLocation": "The address and location are edited in the project settings.",
+        "places": "For example schools, shops and public transport.",
+        "documents": "PDFs from the media library. They open in a new tab.",
+        "video": "YouTube or Vimeo. The video only loads when the visitor clicks.",
+        "news": "Newest first. News items with a date are sorted by date.",
+        "embed": "The address must start with https://. The content is shown in a restricted frame.",
+        "embedTitle": "Read out by screen readers, for example «3D tour of apartment A-302».",
+        "pageSlug": "Shown in the address after the domain, for example /location.",
+        "seoTitle": "Leave empty to use the page title.",
+        "seoDescription": "Short text shown in search results, preferably under 160 characters.",
+        "shareImage": "Shown when the page is shared on social media. Without one, the hero image is used.",
+        "menu": "The menu is shown at the top of every page. Links to blocks point to blocks on the home page.",
+        "footerText": "For example company name, address and organisation number.",
+        "siteLogo": "Leave empty to use the organisation's logo.",
+        "siteDescription": "Used in search results for pages without their own description.",
+        "siteShareImage": "Used when a page is shared and neither the page nor its hero block has an image.",
+        "useProjectContacts": "The contacts are edited in the project settings.",
+        "brandLogo": "Shown at the top of the project sites. A PNG with a transparent background works well."
+      },
+      "options": {
+        "heroHeight": {
+          "medium": "Medium",
+          "large": "Large",
+          "full": "Full screen"
+        },
+        "align": {
+          "left": "Left",
+          "center": "Centred",
+          "right": "Right"
+        },
+        "width": {
+          "narrow": "Narrow (easier to read)",
+          "wide": "Wide"
+        },
+        "imagePosition": {
+          "left": "Image on the left",
+          "right": "Image on the right"
+        },
+        "columns": {
+          "2": "Two",
+          "3": "Three",
+          "4": "Four"
+        },
+        "figureSource": {
+          "custom": "Custom text",
+          "units_total": "Number of homes",
+          "available": "Available homes",
+          "size_range": "Sizes (internal area)",
+          "price_from": "Price from",
+          "rooms_range": "Number of rooms"
+        },
+        "buttonStyle": {
+          "primary": "Filled",
+          "secondary": "Outline"
+        }
+      },
+      "placeholders": {
+        "milestoneText": "For example spring 2027",
+        "placeCategory": "For example School",
+        "placeDistance": "For example 400 m",
+        "viewingNote": "For example No registration needed",
+        "buttonLabel": "Send",
+        "videoUrl": "https://www.youtube.com/watch?v=…",
+        "embedUrl": "https://",
+        "linkUrl": "https://"
+      },
+      "image": {
+        "choose": "Choose image",
+        "change": "Change",
+        "remove": "Remove {field}",
+        "pickerTitle": "Choose image: {field}",
+        "unknown": "The image is not in the media library",
+        "missingAlt": "Missing alternative text"
+      },
+      "link": {
+        "type": "Link type",
+        "types": {
+          "none": "No link",
+          "page": "Page",
+          "block": "Block",
+          "url": "Address"
+        },
+        "page": "Page",
+        "block": "Block",
+        "url": "Address",
+        "missingPage": "Choose page",
+        "missingBlock": "Choose block"
+      },
+      "list": {
+        "count": "{count} of {max}",
+        "empty": "Nothing here yet.",
+        "item": "Item {number}",
+        "hasErrors": "Has errors",
+        "moveUp": "Move {name} up",
+        "moveDown": "Move {name} down",
+        "remove": "Remove {name}",
+        "addFigure": "Add figure",
+        "addMilestone": "Add milestone",
+        "addPlace": "Add place",
+        "addViewing": "Add viewing",
+        "addContact": "Add contact",
+        "addQuestion": "Add question",
+        "addNews": "Add news item",
+        "addMenuItem": "Add menu item",
+        "addFooterLink": "Add link"
+      },
+      "blocks": {
+        "listLabel": "Blocks on the page",
+        "move": "Move {name}",
+        "hiddenBadge": "Hidden",
+        "hasErrors": "Has errors",
+        "show": "Show {name}",
+        "hide": "Hide {name}",
+        "actions": "More options for {name}",
+        "duplicate": "Duplicate",
+        "delete": "Delete",
+        "empty": "The page has no blocks yet.",
+        "instructions": "Press space to lift the block. Move with the arrow keys and press space to drop it. Escape cancels.",
+        "picked": "Lifted {name} in position {position}.",
+        "over": "{name} moves to position {position}.",
+        "dropped": "{name} was moved to position {position}.",
+        "cancelled": "The move was cancelled.",
+        "add": "Add block",
+        "addTitle": "Add block",
+        "addDescription": "The block is added after the selected block, or at the bottom of the page.",
+        "back": "All blocks",
+        "hiddenNotice": "The block is hidden and not shown on the published site. Its content is kept.",
+        "fixErrors": "Fix the highlighted fields. The draft is not saved until they are fixed.",
+        "deleted": "{name} was deleted.",
+        "undo": "Undo"
+      },
+      "pages": {
+        "intro": "This order is also the menu order when menu items link to the pages.",
+        "listLabel": "Pages",
+        "home": "Home page",
+        "moveUp": "Move {title} up",
+        "moveDown": "Move {title} down",
+        "actions": "More options for {title}",
+        "edit": "Edit content",
+        "settings": "Settings and SEO",
+        "makeHome": "Make home page",
+        "delete": "Delete page",
+        "add": "New page",
+        "newTitle": "New page",
+        "newDescription": "The page starts empty. Add blocks afterwards.",
+        "settingsTitle": "Settings for {title}",
+        "settingsDescription": "Title, address and how the page appears in search results and when shared.",
+        "create": "Create page",
+        "created": "The page has been created.",
+        "saved": "The page has been updated.",
+        "homeSet": "{title} is now the home page.",
+        "deleted": "{title} was deleted.",
+        "deleteTitle": "Delete {title}?",
+        "deleteDescription": "The page is deleted immediately, including from the published project site. Links to it will stop working.",
+        "cancel": "Cancel"
+      },
+      "share": {
+        "title": "Share preview",
+        "description": "Anyone with the link can see the draft without signing in. The link always shows the latest draft.",
+        "link": "Link to the preview",
+        "copied": "The link has been copied.",
+        "expires": "The link works until {time}.",
+        "creating": "Creating link …"
+      },
+      "versions": {
+        "title": "Versions of {title}",
+        "description": "Every publication saves a version. Restoring puts the version into the draft so you can review it before publishing.",
+        "empty": "The page has not been published yet.",
+        "version": "Version {version}",
+        "current": "Currently published",
+        "blocks": "{count, plural, one {# block} other {# blocks}}",
+        "restore": "Restore",
+        "restored": "Version {version} has been put into the draft.",
+        "confirmTitle": "Restore version {version}?",
+        "confirmDescription": "The draft for this page is replaced by the version. The published site does not change until you publish."
+      },
+      "publish": {
+        "notPublished": "Not published",
+        "publishedAt": "Published {time}",
+        "unpublishedChanges": "Unpublished changes",
+        "publish": "Publish",
+        "publishChanges": "Publish changes",
+        "isPublished": "Published",
+        "published": "The project site has been published.",
+        "saveFirst": "The draft must be saved before it can be published. Fix the highlighted fields.",
+        "more": "More options",
+        "open": "Open published site",
+        "share": "Share preview",
+        "versions": "Version history for the page",
+        "unpublish": "Unpublish",
+        "unpublishTitle": "Unpublish the project site?",
+        "unpublishDescription": "The site becomes unavailable to visitors immediately. The draft and versions are kept, and you can publish again later.",
+        "unpublished": "The project site has been unpublished.",
+        "cancel": "Cancel"
+      },
+      "navigation": {
+        "menuTitle": "Menu",
+        "footerTitle": "Footer"
+      },
+      "theme": {
+        "intro": "Colours, fonts and logo come from the brand profile. Changes here only apply to this project site.",
+        "editBrand": "Edit the brand profile",
+        "fromBrand": "From the brand profile"
+      },
+      "settings": {
+        "addressTitle": "Address",
+        "subdomain": "Subdomain",
+        "subdomainHelp": "Changes immediately, including for the published site. Old links stop working.",
+        "addressSaved": "The address has been changed.",
+        "seoTitle": "Search and sharing",
+        "seoIntro": "Defaults for pages that do not have their own.",
+        "deleteTitle": "Delete the project site",
+        "deleteDescription": "Deletes all pages, versions and the published site. Leads are kept.",
+        "delete": "Delete the project site",
+        "deleteConfirmTitle": "Delete the project site?",
+        "deleteConfirmDescription": "All pages and versions are deleted, and the published site disappears immediately. This cannot be undone.",
+        "deleted": "The project site has been deleted."
+      },
+      "preview": {
+        "device": "Screen size",
+        "desktop": "Desktop",
+        "tablet": "Tablet",
+        "mobile": "Mobile",
+        "reload": "Reload",
+        "hint": "Click a block to edit it.",
+        "frameTitle": "Page preview"
+      }
+    }
+  },
+  "site": {
+    "shell": {
+      "skip": "Skip to content",
+      "logoAlt": "{name}",
+      "nav": "Menu",
+      "openMenu": "Open menu",
+      "closeMenu": "Close menu",
+      "contact": "Contact",
+      "footerLinks": "Links"
+    },
+    "editor": {
+      "emptyText": "Text block without content. Write a heading and text in the panel.",
+      "missingImage": "Choose an image in the panel.",
+      "emptyGallery": "The gallery is empty. Add images in the panel.",
+      "emptyKeyFigures": "No key figures yet. Add figures in the panel, or import units.",
+      "emptyProgress": "No progress yet. Add milestones in the project or in the panel.",
+      "emptyViewings": "No upcoming viewings. Add viewings in the panel.",
+      "emptyContacts": "No contact persons. Add them in the project settings or in the panel.",
+      "emptyDocuments": "No documents yet. Add PDFs in the panel.",
+      "emptyVideo": "Paste a link to YouTube or Vimeo in the panel.",
+      "emptyFaq": "No questions yet. Add questions and answers in the panel.",
+      "emptyNews": "No news yet. Add a news item in the panel.",
+      "emptyButton": "Write the button text and choose where it should link.",
+      "emptyEmbed": "Paste the address of what to embed, for example a 3D tour.",
+      "emptySelector": "Choose which unit selector to show.",
+      "selectorNotPublished": "The unit selector is shown when it is published.",
+      "selectorPreview": "The unit selector is interactive in the preview and on the published site.",
+      "emptyUnits": "The project has no visible units yet.",
+      "emptyMap": "The project has no location. Add it in the project settings or in the panel."
+    },
+    "gallery": {
+      "open": "Open the image {name}"
+    },
+    "keyFigures": {
+      "unitsTotal": "homes",
+      "available": "available",
+      "sizeRange": "internal area",
+      "roomsRange": "rooms",
+      "priceFrom": "price from"
+    },
+    "milestones": {
+      "planning": "Zoning and planning",
+      "sales_start": "Sales start",
+      "construction_start": "Construction start",
+      "move_in": "Move-in"
+    },
+    "progress": {
+      "done": "Completed",
+      "upcoming": "Upcoming"
+    },
+    "viewings": {
+      "time": "At {start}",
+      "timeRange": "{start}–{end}",
+      "none": "No viewings have been scheduled yet."
+    },
+    "contacts": {
+      "phone": "Phone:",
+      "email": "Email:"
+    },
+    "documents": {
+      "untitled": "Document",
+      "image": "Image"
+    },
+    "video": {
+      "title": "Video",
+      "play": "Play video from {provider}",
+      "notice": "The video loads from {provider} only when you click."
+    },
+    "embed": {
+      "fallbackTitle": "Embedded content"
+    },
+    "map": {
+      "label": "Map of the location of {project}",
+      "openMap": "Open in map",
+      "nearby": "Nearby"
+    },
+    "lead": {
+      "defaultHeading": "Register interest",
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "unit": "Home",
+      "noUnit": "No particular home",
+      "message": "Message (optional)",
+      "honeypot": "Website (leave empty)",
+      "consentLegend": "Consent",
+      "submit": "Send",
+      "required": "Fields marked with * are required.",
+      "previewDisabled": "The form cannot be sent in the preview.",
+      "successTitle": "Thank you for your interest!",
+      "successBody": "We have received your enquiry. {organization} will contact you, and you will receive a receipt by email.",
+      "errors": {
+        "rateLimited": "You have sent several enquiries in a short time. Wait a moment and try again.",
+        "closed": "The project is not accepting enquiries right now.",
+        "captcha": "We could not confirm that you are not a robot. Try again.",
+        "invalidInput": "Check the highlighted fields.",
+        "unknown": "Something went wrong and the enquiry was not sent. Try again shortly."
+      }
+    },
+    "unit": {
+      "back": "Back to {project}"
+    }
+  },
+  "leads": {
+    "title": "Leads",
+    "description": "Enquiries from the interest forms on the project sites and in the unit selectors.",
+    "projectTitle": "Leads – {project}",
+    "statuses": {
+      "new": "New",
+      "contacted": "Contacted",
+      "closed": "Closed"
+    },
+    "sources": {
+      "site": "Project site",
+      "selector": "Unit selector",
+      "unit_page": "Unit page",
+      "embed": "Embedded unit selector"
+    },
+    "table": {
+      "received": "Received",
+      "name": "Name",
+      "contact": "Contact",
+      "project": "Project",
+      "unit": "Unit",
+      "source": "Source",
+      "status": "Status",
+      "noUnit": "None"
+    },
+    "filters": {
+      "search": "Search by name, email, phone or unit",
+      "status": "Status",
+      "allStatuses": "All statuses",
+      "project": "Project",
+      "allProjects": "All projects",
+      "unit": "Unit",
+      "allUnits": "All units",
+      "clear": "Clear filters",
+      "export": "Export CSV"
+    },
+    "list": {
+      "emptyTitle": "No leads yet",
+      "emptyHelp": "Enquiries from the interest forms appear here.",
+      "noMatches": "No leads match the filters",
+      "noMatchesHelp": "Try removing a filter or searching for something else.",
+      "pagination": "List pages",
+      "showing": "Showing {first}–{last} of {total}",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "detail": {
+      "pageTitle": "Lead – {name}",
+      "back": "All leads",
+      "received": "Received {time}",
+      "contactTitle": "Contact details",
+      "message": "Message",
+      "noMessage": "No message.",
+      "handlingTitle": "Follow-up",
+      "interestTitle": "The enquiry",
+      "project": "Project",
+      "unit": "Unit",
+      "noUnit": "No specific unit",
+      "source": "Source",
+      "campaign": "Campaign",
+      "notified": "Notification",
+      "notifiedAt": "Email sent to the contacts {time}",
+      "notNotified": "No email has been sent.",
+      "consentTitle": "Consent",
+      "consentGiven": "Consent to contact given {time} with text version {version}:",
+      "similarYes": "Has also agreed to hear about similar projects:",
+      "similarNo": "Has not agreed to hear about similar projects.",
+      "status": "Status",
+      "note": "Internal note",
+      "noteHelp": "Only shown in admin, never to the person who sent the enquiry.",
+      "saved": "The enquiry has been updated.",
+      "deleted": "The enquiry has been deleted.",
+      "deletedAll": "{count, plural, one {# enquiry was deleted.} other {# enquiries were deleted.}}",
+      "deleteTitle": "Delete personal data",
+      "deleteDescription": "Use this when someone asks to be deleted. Deletion cannot be undone, and the log only records that something was deleted.",
+      "delete": "Delete the enquiry",
+      "deleteAll": "Delete all {count} from {email}",
+      "deleteOneTitle": "Delete the enquiry?",
+      "deleteOneDescription": "Name, contact details, message and consent are deleted permanently.",
+      "deleteAllTitle": "Delete all enquiries from {email}?",
+      "deleteAllDescription": "{count, plural, one {# enquiry is deleted permanently.} other {# enquiries across all projects are deleted permanently.}}"
+    },
+    "csv": {
+      "created_at": "Received",
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "project": "Project",
+      "unit": "Unit",
+      "status": "Status",
+      "source": "Source",
+      "message": "Message",
+      "consent_contact": "Consent to contact",
+      "consent_similar": "Consent to similar projects",
+      "consent_version": "Consent text (version)",
+      "consented_at": "Consent given",
+      "utm_source": "utm_source",
+      "utm_medium": "utm_medium",
+      "utm_campaign": "utm_campaign",
+      "internal_note": "Internal note",
+      "yes": "Yes",
+      "no": "No"
     }
   }
 }

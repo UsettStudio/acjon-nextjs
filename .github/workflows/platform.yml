@@ -69,12 +69,16 @@ jobs:
       - name: Miljøvariabler for appen
         run: |
           PUBLISHABLE_KEY=$(npx supabase status -o env | grep '^PUBLISHABLE_KEY=' | cut -d= -f2- | tr -d '"')
+          SECRET_KEY=$(npx supabase status -o env | grep '^SECRET_KEY=' | cut -d= -f2- | tr -d '"')
+          echo "::add-mask::${SECRET_KEY}"
           {
             echo "NEXT_PUBLIC_PRODUCT_NAME=Boligplattform"
             echo "NEXT_PUBLIC_PLATFORM_DOMAIN=localhost:3000"
             echo "NEXT_PUBLIC_APP_URL=http://localhost:3000"
             echo "NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321"
             echo "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=${PUBLISHABLE_KEY}"
+            echo "SUPABASE_SECRET_KEY=${SECRET_KEY}"
+            echo "MAILPIT_URL=http://127.0.0.1:54324"
           } > .env.local
 
       - run: npm run build

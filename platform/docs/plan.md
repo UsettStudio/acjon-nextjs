@@ -358,6 +358,147 @@ Hver fase avsluttes med grønne tester, typekontroll og lint, og en kort oppsumm
 - **Leads i admin:** liste, filter, detalj, status, CSV-eksport og sletting.
 - **E2E:** akseptkriterium 5, og akseptkriterium 1 frem til publisering på underdomene.
 
+### Oppsummering av fase 3
+
+**Bygget:**
+
+- **Prosjektside-editor** (`/{org}/projects/{prosjekt}/site`, fanen «Prosjektside»):
+  - **Start fra mal:**
+    - «Kommer for salg» (hero, kort tekst og interesseskjema) eller «Full prosjektside».
+    - «Bygg ut til full prosjektside» legger til blokkene som mangler og lar resten være som de er.
+    - Malteksten er på organisasjonens språk.
+  - **Blokker:**
+    - Legg til (alle 18 typer), dra i rekkefølge (også med tastatur), dupliser, skjul og vis, og slett med «Angre».
+    - En skjult blokk beholder innholdet og vises gjennomsiktig i editoren.
+  - **Skjema for alle 18 blokktyper:**
+    - Beskrevet som data og validert med det samme Zod-skjemaet som lagringen.
+    - Feil vises ved feltet, og utkastet lagres ikke før de er rettet.
+    - Bilder og dokumenter velges fra mediebiblioteket, der nye filer også kan lastes opp.
+    - Fremdrift, Kart og Kontaktpersoner bruker prosjektets data og kan overstyres i blokken.
+  - **Forhåndsvisning i sanntid:**
+    - Vises i en iframe, med valg mellom desktop, nettbrett og mobil.
+    - Editoren sender utkastet med `postMessage` ved hver endring, så rammen ikke lastes på nytt.
+    - Klikk på en blokk i forhåndsvisningen åpner skjemaet for blokken.
+  - **Sider:**
+    - Ny side, tittel og adresse.
+    - SEO-tittel og -beskrivelse, og delingsbilde.
+    - Rekkefølge, forside og sletting.
+  - **Meny og bunntekst** redigeres ett sted. Menypunkter lenker til sider, blokker på forsiden eller adresser.
+  - **Tema:**
+    - Logo, fire farger med kontrastvarsel, skrift for overskrifter og brødtekst, og knappestil.
+    - Arves fra merkevareprofilen og kan overstyres per prosjektside.
+  - **Innstillinger:** underdomene, standardverdier for SEO, og sletting.
+  - **Autolagring** 0,8 s etter siste endring, per side og for innstillingene. Varsel før siden lukkes med endringer som ikke er lagret.
+  - **Publisering:**
+    - Publiser, avpubliser og merket «Upubliserte endringer».
+    - Delt forhåndsvisning uten innlogging: signert lenke som virker i sju dager.
+    - Versjonshistorikk per side, med gjenoppretting til utkastet.
+- **Merkevareprofil** (`/{org}/settings/brand`): logo, farger, skrift og knappestil for alle prosjektsider. Endringer går ut på publiserte sider med en gang.
+- **Publisert prosjektside** på `{underdomene}.[PLATTFORMDOMENE]`:
+  - **Adresse:** `proxy.ts` skriver vertsnavnet om til `/sites/{nøkkel}`. Egne domener slås opp på samme måte og kobles til Vercel i fase 4.
+  - **Blokker:**
+    - Alle 18 blokker.
+    - Boligvelger-blokken bruker den publiserte velgeren fra fase 2, med filter, liste, kort og sanntid.
+    - Tomme blokker vises ikke for besøkende. I editoren vises de med et hint.
+  - **Enhetssiden** `/bolig/{slug}` ligger på prosjektsidens egen adresse.
+  - **Språk:** følger organisasjonen (bokmål, engelsk eller svensk), også `lang` på siden.
+  - **SEO:**
+    - Tittel, beskrivelse og kanonisk adresse.
+    - Open Graph med delingsbilde.
+    - Strukturerte data: ApartmentComplex, FAQPage, og Apartment med Offer.
+    - `sitemap.xml` og `robots.txt` per prosjektside.
+  - **Mellomlager med cache-tagger:** tømmes ved publisering og statusendring, og ved endring av enheter, prosjekt, boligvelger og merkevare. Testen for akseptkriterium 5 viser at en ny sidevisning har ny status med en gang.
+- **Interesseskjema** (blokken, enhetssiden og boligvelgeren):
+  - **Felt:** navn, e-post, telefon, beskjed og valgfri enhet.
+  - **Samtykke:** påkrevd til kontakt, valgfritt til lignende prosjekter. Lagres med tidspunkt og tekstversjon.
+  - **Spam:**
+    - Honeypot.
+    - Turnstile når nøklene er satt.
+    - Rate limit i databasen: 5 per 10 minutter per IP og 5 per time per e-post. IP-adressen lagres bare som hash.
+  - **Lagring:** serveren legger inn leadet med `submit_lead` og service-nøkkelen. Nøkkelen brukes bare på serveren.
+  - **E-post:**
+    - Varsel til kontaktpersonene som får varsel om leads. Har prosjektet ingen, får eiere og administratorer varselet.
+    - Kvittering til avsender.
+    - Resend i drift. Mailpit lokalt og i CI, så testene kan lese e-posten.
+- **Leads i admin:**
+  - Hovedmenyen «Leads», prosjektfanen «Leads» og «Siste leads» på prosjektoversikten.
+  - Liste med søk og filter på status, prosjekt og enhet. Filtrene ligger i adressen.
+  - **Detaljvisning:**
+    - Kontaktinformasjon og beskjed.
+    - Enhet, kilde, kampanje (UTM) og om varsel er sendt.
+    - Samtykketeksten slik avsenderen godtok den.
+  - Status (ny, kontaktet, avsluttet) og internt notat.
+  - CSV-eksport med de samme filtrene.
+  - Sletting av én henvendelse, eller alle fra samme e-postadresse (eier og administrator).
+- **Lovet fra fase 2:**
+  - «Meld interesse» i enhetskortet og på enhetssiden, med skjemaet forhåndsutfylt med enheten.
+  - Enhetssiden på prosjektsidens egen adresse.
+  - **Egne felt på enheter:**
+    - Fanen «Egne felt» i enhetsskjemaet.
+    - Valg av offentlige felt i prosjektinnstillingene.
+    - Visning på enhetssiden.
+  - Lenker fra boligvelgeren til andre prosjekter med publisert prosjektside.
+  - Organisasjonens språk på publiserte sider.
+- **Database (migrasjon `20261112230000_fase3_prosjektside_og_leads`):**
+  - `create_site`, `set_home_page`, `reorder_pages`, `restore_page_version` og `get_site_publish_state`.
+  - `set_public_custom_fields`.
+  - `submit_lead`, som bare service-rollen kan kjøre.
+  - `get_public_unit` sender også organisasjonens navn og språk.
+- **Tester:**
+
+  | Type | Antall | Nytt i fase 3 |
+  |---|---|---|
+  | pgTAP | 359 | 52 nye: prosjektside fra mal med sider, forside, meny og rekkefølge; reserverte og opptatte adresser; roller og andre organisasjoner; publiseringsstatus; gjenoppretting av versjoner med revisjonslogg; offentlige egne felt; og `submit_lead` (bare service-rollen, samtykke, prosjekter som ikke er publisert, skjulte enheter, enheter og sider utenfor prosjektet, rate limit og mottakere) |
+  | Vitest | 203 | 42 nye: blokker og maler, utbygging til full side, lenker, adresser, tema og kontrast, rik tekst, video, signerte tokener, vertsnavn, skjemaene for blokkene (også at alle tekster finnes), leadsfiltre og CSV, samtykketekster og egne felt |
+  | Playwright | 12 | 2 nye: akseptkriterium 5 og akseptkriterium 1 til publisering. Se under. |
+
+  - **Akseptkriterium 5:**
+    - En besøkende filtrerer på 3 rom og ledig, åpner A-302 og sender interesseskjemaet. Uten samtykke sendes ingenting.
+    - Leadet vises i admin med riktig enhet og samtykke.
+    - Kontaktpersonen får e-post, og avsenderen får kvittering.
+    - Testen dekker også status og notat, filter og CSV, egne felt på enhetssiden, og at en statusendring vises med en gang på en ny sidevisning.
+  - **Akseptkriterium 1 til publisering:**
+    - En ny bruker registrerer seg, oppretter prosjekt og importerer 24 enheter fra CSV.
+    - Brukeren laster opp fasadebildet, markerer alle 24 vinduene, kobler dem til hver sin enhet og publiserer velgeren.
+    - Brukeren velger malen «Full prosjektside», endrer tittelen og ser endringen i forhåndsvisningen.
+    - Den delte forhåndsvisningen virker uten innlogging.
+    - Den publiserte siden på underdomenet viser alle 24 enhetene i boligvelgeren, med SEO, sitemap, robots og versjonshistorikk.
+
+**Gjenstår (ikke del av fase 3):**
+
+- **Egne domener, Stripe, innbyggingsskriptet, samtykkebanner og sporing** kommer i fase 4, som planlagt.
+- **Webhook for `lead.created`:** hendelsen legges allerede i utboksen. Utsendingen kommer med integrasjonene i fase 4.
+- **Egne felt i import og eksport (CSV):** egne felt redigeres i enhetsskjemaet. Ukjente kolonner i importen blir ikke egne felt ennå.
+- **Språk per bruker i admin** er ikke gjort, selv om fase 0 sa at det skulle komme her.
+  - Spesifikasjonen krever bokmål som standard og tekst klar for engelsk og svensk. Det er oppfylt.
+  - Publiserte sider følger organisasjonens språk.
+  - Språk per bruker krever at admin-skallet rendres per bruker. Jeg foreslår å vurdere det i fase 5.
+- **Angre og gjør om i blokkeditoren** er ikke bygget, fordi spesifikasjonen ikke krever det for prosjektsiden. Sletting av en blokk kan angres, og publiserte versjoner kan gjenopprettes.
+
+**Valg i fase 3:**
+
+- **Én modell for blokker:** en blokk er `{id, type, hidden, props}`.
+  - Zod-skjemaene har standardverdier, så eldre blokker tåler nye felt.
+  - Ugyldige blokker hoppes over ved visning. Én feil stopper derfor aldri hele siden.
+- **Samme komponenter overalt:** de samme komponentene viser den publiserte siden, den delte forhåndsvisningen og forhåndsvisningen i editoren. Det som vises i editoren, er det som publiseres.
+- **Forhåndsvisningen i editoren er en iframe** på samme opprinnelse.
+  - Iframen gir riktige brytepunkter for mobil og nettbrett.
+  - Bare `/site-preview/` kan vises i en iframe, og bare fra admin (`frame-ancestors 'self'`).
+- **Forhåndsvisningslenken:**
+  - Lenken er signert med HMAC-SHA256. Nøkkelen avledes fra service-nøkkelen med HKDF, så det trengs ingen ny hemmelighet.
+  - Lenken virker i sju dager og viser alltid det nyeste utkastet.
+  - Siden har `noindex`, og skjemaer kan ikke sendes fra den.
+- **Tekst i blokkene er enkel markdown** (overskrifter, lister, fet, kursiv og lenker). Det rendres aldri HTML, og lenker kontrolleres.
+  - Innbygging krever https og vises i en avgrenset iframe (sandbox).
+  - Video lastes først når besøkende klikker (YouTube uten informasjonskapsler, Vimeo med `dnt`).
+- **Mellomlager:**
+  - Publiserte data mellomlagres i 5 minutter og tømmes med tagger når noe endres. Statusendringer går dessuten ut i sanntid som i fase 2.
+  - Sletting av en side og endring av underdomene gjelder publiserte sider med en gang.
+- **Leads:**
+  - Leads legges bare inn av serveren etter honeypot, Turnstile og rate limit.
+  - Samtykketekstene ligger i koden med versjon. Endres teksten, må versjonen endres, og gamle tekster beholdes. Detaljvisningen viser teksten slik avsenderen godtok den.
+- **Redaktører ser ikke leads.** Det følger rollemodellen fra fase 0: meglere, administratorer og eiere ser leads.
+
 ## Fase 4: Drift
 
 - **Domener:**

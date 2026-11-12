@@ -38,6 +38,7 @@ export async function AppHeader({ orgSlug, role }: { orgSlug?: string; role?: Me
                 {t("overview")}
               </NavLink>
               <NavLink href={`/${current.slug}/projects`}>{t("projects")}</NavLink>
+              {can(role, "leads.read") ? <NavLink href={`/${current.slug}/leads`}>{t("leads")}</NavLink> : null}
               {can(role, "content.edit") ? <NavLink href={`/${current.slug}/media`}>{t("media")}</NavLink> : null}
               {can(role, "organization.update") ? (
                 <NavLink href={`/${current.slug}/settings`}>{t("settings")}</NavLink>

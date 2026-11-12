@@ -92,7 +92,7 @@ export function AssetListField({
   label: string;
   description?: string;
   organizationId: string;
-  projectId: string;
+  projectId: string | null;
   kind: "image" | "document";
   value: MediaAsset[];
   onChange: (assets: MediaAsset[]) => void;

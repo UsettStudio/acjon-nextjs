@@ -3,6 +3,7 @@ import "server-only";
 import { cache } from "react";
 
 import type { StatusEvent } from "@/features/projects/queries";
+import { customFieldKeys } from "@/features/units/custom-fields";
 import type { UnitRow } from "@/features/units/fields";
 import { createClient } from "@/lib/supabase/server";
 
@@ -98,4 +99,25 @@ export async function listUnitStatusEvents(unitId: string, limit = 100): Promise
     changedBy: event.profile?.full_name || event.profile?.email || null,
     createdAt: event.created_at,
   }));
+}
+
+/** Navnene på egne felt som brukes på enhetene i prosjektet, sortert. */
+export async function listCustomFieldNames(projectId: string): Promise<string[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase.from("units").select("custom_fields").eq("project_id", projectId).neq("custom_fields", "{}").limit(5000);
+  if (error) {
+    throw error;
+  }
+  return customFieldKeys(data.map((row) => row.custom_fields));
+}
+
+/** Egne felt som vises på publiserte sider (projects.settings.public_custom_fields). */
+export async function getPublicCustomFieldNames(projectId: string): Promise<string[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase.from("projects").select("settings").eq("id", projectId).single();
+  if (error) {
+    throw error;
+  }
+  const settings = data.settings as { public_custom_fields?: unknown } | null;
+  return Array.isArray(settings?.public_custom_fields) ? settings.public_custom_fields.filter((key): key is string => typeof key === "string") : [];
 }

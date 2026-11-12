@@ -7,7 +7,7 @@ import { getAssetsByIds } from "@/features/media/assets";
 import { getProjectContext, getProjectStructure } from "@/features/projects/queries";
 import { UnitForm } from "@/features/units/components/unit-form";
 import { UnitStatusBadge } from "@/features/units/components/unit-status-badge";
-import { getUnit, listUnitStatusEvents } from "@/features/units/queries";
+import { getUnit, listCustomFieldNames, listUnitStatusEvents } from "@/features/units/queries";
 import { formatDateTime } from "@/lib/format";
 
 export async function generateMetadata({ params }: PageProps<"/[org]/projects/[project]/units/[unit]">): Promise<Metadata> {
@@ -24,7 +24,7 @@ export default async function UnitPage({ params }: PageProps<"/[org]/projects/[p
   if (!unit) {
     notFound();
   }
-  const [structure, assets, events, t, tSources] = await Promise.all([
+  const [structure, assets, events, t, tSources, customFieldNames] = await Promise.all([
     getProjectStructure(context.project.id),
     getAssetsByIds(context.organization.id, [
       ...unit.floor_plan_asset_ids,
@@ -34,6 +34,7 @@ export default async function UnitPage({ params }: PageProps<"/[org]/projects/[p
     listUnitStatusEvents(unit.id, 20),
     getTranslations("units.history"),
     getTranslations("units.sources"),
+    listCustomFieldNames(context.project.id),
   ]);
 
   return (
@@ -50,6 +51,7 @@ export default async function UnitPage({ params }: PageProps<"/[org]/projects/[p
         assets={assets}
         canEditContent={context.canEditContent}
         canSell={context.canSell}
+        customFieldNames={customFieldNames}
       />
       <Card className="h-fit">
         <CardHeader>

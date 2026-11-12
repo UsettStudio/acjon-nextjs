@@ -12,7 +12,10 @@ import {
   emptyStatusCounts,
   listRecentStatusEvents,
 } from "@/features/projects/queries";
+import { LeadStatusBadge } from "@/features/leads/components/lead-status-badge";
+import { listRecentLeads } from "@/features/leads/queries";
 import { StatusDistribution, UnitStatusBadge } from "@/features/units/components/unit-status-badge";
+import { can } from "@/lib/auth/permissions";
 import { UNIT_STATUSES } from "@/features/units/fields";
 import { formatDate, formatDateTime, formatNumber } from "@/lib/format";
 
@@ -26,13 +29,15 @@ export default async function ProjectOverviewPage({ params }: PageProps<"/[org]/
   const { org, project: slug } = await params;
   const context = await getProjectContext(org, slug);
   const { project } = context;
-  const [t, tMilestones, tSources, counts, structure, events] = await Promise.all([
+  const canReadLeads = can(context.role, "leads.read");
+  const [t, tMilestones, tSources, counts, structure, events, leads] = await Promise.all([
     getTranslations("projects.overview"),
     getTranslations("projects.milestones"),
     getTranslations("units.sources"),
     getStatusCounts([project.id]),
     getProjectStructure(project.id),
     listRecentStatusEvents(project.id, 10),
+    canReadLeads ? listRecentLeads(context.organization.id, project.id, 5) : Promise.resolve([]),
   ]);
   const projectCounts = counts.get(project.id) ?? emptyStatusCounts();
   const total = UNIT_STATUSES.reduce((sum, status) => sum + projectCounts[status], 0);
@@ -117,38 +122,73 @@ export default async function ProjectOverviewPage({ params }: PageProps<"/[org]/
         </CardContent>
       </Card>
 
-      <Card className="lg:col-span-2">
-        <CardHeader>
-          <CardTitle>
-            <h2>{t("recentChanges")}</h2>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {events.length === 0 ? (
-            <p className="text-sm text-muted-foreground">{t("noChanges")}</p>
-          ) : (
-            <ol className="grid gap-3">
-              {events.map((event) => (
-                <li key={event.id} className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
-                  <span className="font-medium">{event.unitNumber}</span>
-                  {event.fromStatus ? <UnitStatusBadge status={event.fromStatus} /> : null}
-                  <span aria-hidden="true">→</span>
-                  <span className="sr-only">{t("to")}</span>
-                  <UnitStatusBadge status={event.toStatus} />
-                  <span className="text-muted-foreground">
-                    {t("changedBy", {
-                      name: event.changedBy ?? t("system"),
-                      time: formatDateTime(event.createdAt),
-                      source: tSources(event.source as "admin"),
-                    })}
-                  </span>
-                  {event.note ? <span className="basis-full text-muted-foreground">«{event.note}»</span> : null}
-                </li>
-              ))}
-            </ol>
-          )}
-        </CardContent>
-      </Card>
+      <div className="grid content-start gap-6 lg:col-span-2">
+        <Card>
+          <CardHeader>
+            <CardTitle>
+              <h2>{t("recentChanges")}</h2>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {events.length === 0 ? (
+              <p className="text-sm text-muted-foreground">{t("noChanges")}</p>
+            ) : (
+              <ol className="grid gap-3">
+                {events.map((event) => (
+                  <li key={event.id} className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
+                    <span className="font-medium">{event.unitNumber}</span>
+                    {event.fromStatus ? <UnitStatusBadge status={event.fromStatus} /> : null}
+                    <span aria-hidden="true">→</span>
+                    <span className="sr-only">{t("to")}</span>
+                    <UnitStatusBadge status={event.toStatus} />
+                    <span className="text-muted-foreground">
+                      {t("changedBy", {
+                        name: event.changedBy ?? t("system"),
+                        time: formatDateTime(event.createdAt),
+                        source: tSources(event.source as "admin"),
+                      })}
+                    </span>
+                    {event.note ? <span className="basis-full text-muted-foreground">«{event.note}»</span> : null}
+                  </li>
+                ))}
+              </ol>
+            )}
+          </CardContent>
+        </Card>
+
+        {canReadLeads ? (
+          <Card>
+            <CardHeader>
+              <CardTitle>
+                <h2>{t("recentLeads")}</h2>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="grid gap-4">
+              {leads.length === 0 ? (
+                <p className="text-sm text-muted-foreground">{t("noLeads")}</p>
+              ) : (
+                <ol className="grid gap-3">
+                  {leads.map((lead) => (
+                    <li key={lead.id} className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
+                      <Link href={`/${org}/leads/${lead.id}`} className="font-medium hover:underline">
+                        {lead.name}
+                      </Link>
+                      {lead.unitNumber ? <span className="text-muted-foreground">{t("leadUnit", { unit: lead.unitNumber })}</span> : null}
+                      <span className="text-muted-foreground">{formatDateTime(lead.createdAt)}</span>
+                      <LeadStatusBadge status={lead.status} />
+                    </li>
+                  ))}
+                </ol>
+              )}
+              <div>
+                <Button asChild variant="outline">
+                  <Link href={`${base}/leads`}>{t("openLeads")}</Link>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        ) : null}
+      </div>
 
       <div className="grid content-start gap-6">
         <Card>

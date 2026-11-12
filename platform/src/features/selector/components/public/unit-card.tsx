@@ -2,7 +2,7 @@
 
 /* eslint-disable @next/next/no-img-element -- Plantegningen er en ferdig WebP-variant fra Storage. */
 
-import { ArrowRightIcon, HeartIcon, LocateFixedIcon, ScaleIcon } from "lucide-react";
+import { ArrowRightIcon, HeartIcon, LocateFixedIcon, MailIcon, ScaleIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
@@ -32,6 +32,7 @@ export function UnitCard({
   unit,
   statusColors,
   unitHref,
+  interestHref = null,
   favorite,
   comparing,
   compareFull,
@@ -45,6 +46,8 @@ export function UnitCard({
   statusColors: Record<UnitStatus, string>;
   /** null i forhåndsvisningen: enhetssiden finnes først når velgeren er publisert. */
   unitHref: ((unit: PublicUnit) => string) | null;
+  /** Interesseskjemaet for enheten. Uten denne vises ikke «Meld interesse». */
+  interestHref?: ((unit: PublicUnit) => string) | null;
   favorite: boolean;
   comparing: boolean;
   compareFull: boolean;
@@ -118,6 +121,14 @@ export function UnitCard({
                   <a href={unitHref(unit)} data-testid="unit-card-link">
                     {t("viewUnit")}
                     <ArrowRightIcon aria-hidden="true" />
+                  </a>
+                </Button>
+              ) : null}
+              {interestHref && unit.status !== "sold" ? (
+                <Button asChild variant="outline">
+                  <a href={interestHref(unit)} data-testid="unit-card-interest">
+                    <MailIcon aria-hidden="true" />
+                    {t("interest")}
                   </a>
                 </Button>
               ) : null}

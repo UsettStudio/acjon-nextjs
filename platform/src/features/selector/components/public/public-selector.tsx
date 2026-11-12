@@ -17,6 +17,7 @@ import { filterOptions, hasActiveFilters, matchesFilters, parseFilters, writeFil
 import { STATUS_ORDER, type PublicHotspot, type PublishedSelector, type PublicUnit } from "@/features/selector/model";
 import { selectorUnitPath } from "@/features/selector/paths";
 import { angleSiblings, flattenViews, viewPath } from "@/features/selector/views";
+import { siteUrl } from "@/features/site-builder/site";
 import { publicEnv } from "@/lib/env";
 import { cn } from "@/lib/utils";
 
@@ -38,7 +39,33 @@ function LiveIndicator({ state }: { state: LiveState }) {
   );
 }
 
-export function PublicSelector({ data, preview = false }: { data: PublishedSelector; preview?: boolean }) {
+export type PublicSelectorOptions = {
+  /** Vis filtre (standard: innstillingen i velgeren). */
+  showFilters?: boolean;
+  /** Vis enhetslisten (standard: innstillingen i velgeren). */
+  showList?: boolean;
+  /** Start i en annen visning enn velgerens startvisning. */
+  entryViewId?: string | null;
+  /**
+   * Start på adressen til enhetssidene: «{unitBasePath}/bolig/{slug}». Brukes på
+   * prosjektsiden. Uten den lenker velgeren til enhetssiden under seg selv.
+   */
+  unitBasePath?: string;
+  /** Vis «Meld interesse», som går til interesseskjemaet på enhetssiden. */
+  interest?: boolean;
+  /** Velgeren ligger på en prosjektside: ingen egen overskrift med prosjektnavn. */
+  embedded?: boolean;
+};
+
+export function PublicSelector({
+  data,
+  preview = false,
+  options = {},
+}: {
+  data: PublishedSelector;
+  preview?: boolean;
+  options?: PublicSelectorOptions;
+}) {
   const t = useTranslations("publicSelector");
   const tStatus = useTranslations("unitStatus");
   const searchParams = useSearchParams();
@@ -48,7 +75,8 @@ export function PublicSelector({ data, preview = false }: { data: PublishedSelec
   const [openUnitId, setOpenUnitId] = useState<string | null>(null);
   const [compare, setCompare] = useState<string[]>([]);
   const [compareOpen, setCompareOpen] = useState(false);
-  const listMode = data.settings.list;
+  const listMode = options.showList === false ? "hidden" : options.showList === true && data.settings.list === "hidden" ? "side" : data.settings.list;
+  const showFilters = options.showFilters ?? true;
   const [mobilePanel, setMobilePanel] = useState<"list" | "image">(listMode === "hidden" ? "image" : "list");
 
   const nodes = useMemo(
@@ -56,7 +84,8 @@ export function PublicSelector({ data, preview = false }: { data: PublishedSelec
     [data.views],
   );
   const viewsById = useMemo(() => new Map(data.views.map((view) => [view.id, view])), [data.views]);
-  const entryViewId = data.entryViewId && viewsById.has(data.entryViewId) ? data.entryViewId : (flattenViews(nodes)[0]?.view.id ?? null);
+  const preferredEntry = options.entryViewId && viewsById.has(options.entryViewId) ? options.entryViewId : data.entryViewId;
+  const entryViewId = preferredEntry && viewsById.has(preferredEntry) ? preferredEntry : (flattenViews(nodes)[0]?.view.id ?? null);
   const requested = searchParams.get(VIEW_PARAM);
   const activeView = (requested ? viewsById.get(requested) : undefined) ?? (entryViewId ? viewsById.get(entryViewId) : undefined) ?? null;
 
@@ -64,7 +93,7 @@ export function PublicSelector({ data, preview = false }: { data: PublishedSelec
   const filters = useMemo(() => parseFilters(new URLSearchParams(searchParams.toString())), [searchParams]);
   const filtered = units.filter((unit) => matchesFilters(unit, filters, data.settings.filters, favorites));
   const matching = hasActiveFilters(filters) ? new Set(filtered.map((unit) => unit.id)) : null;
-  const options = useMemo(() => filterOptions(units), [units]);
+  const filterChoices = useMemo(() => filterOptions(units), [units]);
 
   /** Visningene hver enhet er markert i, i treets rekkefølge. */
   const unitViews = useMemo(() => {
@@ -108,13 +137,14 @@ export function PublicSelector({ data, preview = false }: { data: PublishedSelec
     navigate(writeFilters(next, new URLSearchParams(searchParams.toString())), false);
   }
 
-  const unitHref = (unit: PublicUnit) => selectorUnitPath(data.id, unit.slug);
+  const unitHref = (unit: PublicUnit) =>
+    options.unitBasePath !== undefined ? `${options.unitBasePath}/bolig/${encodeURIComponent(unit.slug)}` : selectorUnitPath(data.id, unit.slug);
+  const interestHref = options.interest ? (unit: PublicUnit) => `${unitHref(unit)}#interesse` : null;
 
+  /** Prosjektsiden til et annet prosjekt. Databasen sender bare prosjekter med publisert prosjektside. */
   function projectUrl(project: PublishedSelector["linkedProjects"][number]): string | null {
-    if (project.hostname) {
-      return `https://${project.hostname}`;
-    }
-    return project.subdomain ? `https://${project.subdomain}.${publicEnv().platformDomain}` : null;
+    const env = publicEnv();
+    return project.hostname || project.subdomain ? siteUrl(project.subdomain ?? "", project.hostname, env.platformDomain, env.appUrl) : null;
   }
 
   function hrefFor(hotspot: PublicHotspot): { href: string; external: boolean } | null {
@@ -169,30 +199,38 @@ export function PublicSelector({ data, preview = false }: { data: PublishedSelec
   const address = [data.project.address, [data.project.postal_code, data.project.city].filter(Boolean).join(" ")].filter(Boolean).join(", ");
 
   return (
-    <div className="mx-auto grid w-full max-w-[110rem] gap-4 p-3 sm:p-6">
+    <div className={cn("mx-auto grid w-full gap-4", options.embedded ? "max-w-none" : "max-w-[110rem] p-3 sm:p-6")}>
       {preview ? (
         <p className="rounded-md border border-amber-500/50 bg-amber-50 px-3 py-2 text-sm text-amber-900 dark:bg-amber-950 dark:text-amber-100">
           {t("previewBanner")}
         </p>
       ) : null}
-      <header className="flex flex-wrap items-end justify-between gap-2">
-        <div>
-          <h1 className="text-xl font-semibold tracking-tight sm:text-2xl">{data.project.name}</h1>
-          {address ? <p className="text-sm text-muted-foreground">{address}</p> : null}
+      {options.embedded ? (
+        <div className="flex justify-end">
+          <LiveIndicator state={live} />
         </div>
-        <LiveIndicator state={live} />
-      </header>
+      ) : (
+        <header className="flex flex-wrap items-end justify-between gap-2">
+          <div>
+            <h1 className="text-xl font-semibold tracking-tight sm:text-2xl">{data.project.name}</h1>
+            {address ? <p className="text-sm text-muted-foreground">{address}</p> : null}
+          </div>
+          <LiveIndicator state={live} />
+        </header>
+      )}
 
+      {showFilters ? (
       <FilterBar
         filters={filters}
         enabled={data.settings.filters}
-        options={options}
+        options={filterChoices}
         statusColors={data.statusColors}
         favoritesCount={favorites.size}
         shown={filtered.length}
         total={units.length}
         onChange={updateFilters}
       />
+      ) : null}
 
       {listMode !== "hidden" ? (
         <div role="tablist" aria-label={t("panels")} className="flex gap-1 self-start rounded-md bg-muted p-1 lg:hidden">
@@ -356,6 +394,7 @@ export function PublicSelector({ data, preview = false }: { data: PublishedSelec
         unit={openUnit}
         statusColors={data.statusColors}
         unitHref={preview ? null : unitHref}
+        interestHref={preview ? null : interestHref}
         favorite={openUnit ? favorites.has(openUnit.id) : false}
         comparing={openUnit ? compare.includes(openUnit.id) : false}
         compareFull={compare.length >= MAX_COMPARE}

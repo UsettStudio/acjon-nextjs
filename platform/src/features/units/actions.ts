@@ -1,10 +1,11 @@
 "use server";
 
-import { refresh } from "next/cache";
+import { refresh, updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
 import type { StatusEvent } from "@/features/projects/queries";
+import { siteTags } from "@/features/site-builder/render-data";
 import {
   createUnitSchema,
   isSalesField,
@@ -51,6 +52,20 @@ function unitWriteError(error: unknown): ActionResult<never, UnitError> {
   throw error;
 }
 
+/**
+ * Statusendringer og andre endringer på enheter skal vises på publiserte
+ * prosjektsider med en gang. Tømmer mellomlageret for enhetene i prosjektene.
+ */
+async function purgePublishedUnits(supabase: Awaited<ReturnType<typeof createClient>>, unitIds: string[]) {
+  if (unitIds.length === 0) {
+    return;
+  }
+  const { data } = await supabase.from("units").select("project_id").in("id", unitIds.slice(0, 1000));
+  for (const projectId of new Set((data ?? []).map((row) => row.project_id))) {
+    updateTag(siteTags.units(projectId));
+  }
+}
+
 /** Endrer ett eller flere felt på én enhet (redigering i tabellen). Svarer med enheten slik den er lagret. */
 export async function updateUnitFields(
   organizationId: string,
@@ -77,6 +92,7 @@ export async function updateUnitFields(
     if (error) {
       return unitWriteError(error);
     }
+    await purgePublishedUnits(supabase, [data.id]);
     return ok(data);
   });
 }
@@ -110,6 +126,7 @@ export async function updateUnitsBulk(
     if (error) {
       return unitWriteError(error);
     }
+    await purgePublishedUnits(supabase, ids.data);
     if (data.length < new Set(ids.data).size) {
       return fail("partial");
     }
@@ -144,6 +161,7 @@ export async function changeUnitStatus(input: {
       }
       throw error;
     }
+    await purgePublishedUnits(supabase, parsed.data.unitIds);
     if (parsed.data.source === "form") {
       refresh();
     }
@@ -183,6 +201,7 @@ export async function adjustUnitPrices(input: {
     if (selectError) {
       throw selectError;
     }
+    await purgePublishedUnits(supabase, parsed.data.unitIds);
     return ok(data);
   });
 }
@@ -195,6 +214,7 @@ export async function deleteUnits(organizationId: string, unitIds: string[]): Pr
       return fail("invalidInput");
     }
     const supabase = await createClient();
+    const { data: projects } = await supabase.from("units").select("project_id").in("id", ids.data);
     const { error, count } = await supabase
       .from("units")
       .delete({ count: "exact" })
@@ -205,6 +225,9 @@ export async function deleteUnits(organizationId: string, unitIds: string[]): Pr
         return fail("forbidden");
       }
       throw error;
+    }
+    for (const projectId of new Set((projects ?? []).map((row) => row.project_id))) {
+      updateTag(siteTags.units(projectId));
     }
     return ok({ deleted: count ?? 0 });
   });
@@ -283,7 +306,35 @@ export async function saveUnit(params: {
     if (error) {
       return unitWriteError(error);
     }
+    updateTag(siteTags.units(params.projectId));
     refresh();
     return ok({ id: unitId });
+  });
+}
+
+/** Hvilke egne felt som vises på publiserte sider. Gjelder med en gang. */
+export async function updatePublicCustomFields(organizationId: string, projectId: string, keys: string[]): Promise<ActionResult> {
+  return runAction(async () => {
+    await requireOrgCapability(requireId(organizationId), "content.edit");
+    const parsed = z.array(z.string().trim().min(1).max(60)).max(30).safeParse(keys);
+    if (!parsed.success) {
+      return fail("invalidInput");
+    }
+    const supabase = await createClient();
+    const { error } = await supabase.rpc("set_public_custom_fields", { p_project_id: requireId(projectId), p_keys: [...new Set(parsed.data)] });
+    if (error) {
+      switch (postgresErrorCode(error)) {
+        case "42501":
+          return fail("forbidden");
+        case "22023":
+          return fail("invalidInput");
+        default:
+          throw error;
+      }
+    }
+    updateTag(siteTags.units(projectId));
+    updateTag(siteTags.project(projectId));
+    refresh();
+    return ok();
   });
 }

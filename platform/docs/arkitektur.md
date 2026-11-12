@@ -18,8 +18,8 @@ platform/
 ├── docs/                              ✔ arkitektur og plan
 ├── supabase/
 │   ├── config.toml                    ✔ lokal Supabase (CLI)
-│   ├── migrations/                    ✔ datamodell, RLS, funksjoner, lagring, sanntid, fase 0–2
-│   ├── tests/                         ✔ pgTAP: skjema, isolasjon, roller, status, publisering, fase 0–2
+│   ├── migrations/                    ✔ datamodell, RLS, funksjoner, lagring, sanntid, fase 0–3
+│   ├── tests/                         ✔ pgTAP: skjema, isolasjon, roller, status, publisering, fase 0–3
 │   └── templates/                     ✔ norske e-postmaler for Supabase Auth
 ├── package.json, tsconfig.json        ✔ TypeScript strict
 ├── next.config.ts                     ✔ Cache Components, sikkerhetshoder, next-intl, Sentry
@@ -29,12 +29,13 @@ platform/
 ├── vercel.json                        ✔ funksjoner i Stockholm (arn1)
 ├── .env.example                       ✔
 ├── messages/                          ✔ all tekst: nb.json (standard), en.json, sv.json
-├── e2e/                               ✔ Playwright (fase 0–2), akseptkriterium 2 og 3 i fase2.spec.ts
+├── e2e/                               ✔ Playwright (fase 0–3): akseptkriterium 2 og 3 i fase2.spec.ts, 5 og 1 i fase3.spec.ts
 ├── scripts/copy-vendor.mjs            ✔ kopierer MapLibre sin web-worker til public/vendor/ før dev og build
 ├── test/                              ✔ tester på tvers av moduler (oversettelser)
 ├── scripts/seed-demo.ts               Demo Bolig AS / Fjordparken (fase 5)
 └── src/
-    ├── proxy.ts                       ✔ fornyer sesjonen, krever innlogging, husker organisasjon
+    ├── proxy.ts                       ✔ fornyer sesjonen, krever innlogging, husker organisasjon, sender
+    │                                  underdomener og egne domener til sites/
     ├── app/
     │   ├── (auth)/                    ✔ login, signup, forgot-password, reset-password, invite/[token]
     │   ├── auth/confirm/              ✔ mål for lenker i e-post fra Supabase Auth
@@ -43,14 +44,16 @@ platform/
     │   │   ├── (user)/                ✔ onboarding, account, platform (plattformadmin)
     │   │   └── [org]/                 ✔ admin per organisasjon: app.[PLATTFORMDOMENE]/{org}/…
     │   │       ├── page.tsx           ✔ Oversikt
-    │   │       ├── settings/          ✔ organisasjon og brukere; merkevare, domener, abonnement, API senere
+    │   │       ├── settings/          ✔ organisasjon, brukere og merkevare; domener, abonnement og API i fase 4
     │   │       ├── projects/          ✔ liste, veiviser, oversikt, innstillinger, enheter, enhetsskjema, CSV-eksport,
-    │   │       │                      ✔ boligvelgere og editor (selectors/); prosjektside (fase 3)
-    │   │       ├── leads/             (fase 3)
+    │   │       │                      ✔ boligvelgere og editor (selectors/), prosjektside (site/), leads per prosjekt
+    │   │       ├── leads/             ✔ liste med filter, detalj, status og notat, CSV-eksport (export/)
     │   │       └── media/             ✔ mediebibliotek
-    │   ├── sites/[site]/              publiserte prosjektsider med egen rotlayout (fase 3)
+    │   ├── sites/[site]/              ✔ publiserte prosjektsider: sider, bolig/[slug], sitemap.xml, robots.txt
+    │   ├── preview/[token]/           ✔ delt forhåndsvisning av utkastet (signert lenke)
+    │   ├── site-preview/[siteId]/     ✔ forhåndsvisningen i editoren (iframe, krever innlogging)
     │   ├── embed/selector/[id]/       ✔ publisert boligvelger, preview/ (utkast for innloggede), bolig/[slug] (enhetsside)
-    │   └── api/                       offentlig API, leads, Stripe, cron (fase 3–4). Bildebehandling skjer i serverhandlinger.
+    │   └── api/                       offentlig API, Stripe og cron (fase 4). Leads og bildebehandling er serverhandlinger.
     ├── components/
     │   ├── ui/                        ✔ shadcn/ui
     │   ├── forms/                     ✔ felles skjemahjelpere
@@ -61,7 +64,9 @@ platform/
     │   ├── units/                     ✔ felt og tolking, prisberegning, tabell, skjema, import/, eksport
     │   ├── media/                     ✔ opplasting, bildevarianter (sharp), bibliotek, filvelger
     │   ├── selector/                  ✔ geometri, angre, filtre, visningstre, editor/, public/, serverhandlinger
-    │   └── site-builder/  leads/  billing/  domains/
+    │   ├── site-builder/              ✔ blokker, maler, tema, rik tekst, SEO, editor/, render/, mellomlager
+    │   ├── leads/                     ✔ interesseskjema, samtykke, Turnstile, innsending, admin og CSV
+    │   └── billing/  domains/         (fase 4)
     ├── i18n/                          ✔ språkoppsett for next-intl
     ├── lib/
     │   ├── supabase/                  ✔ klient for server, proxy og nettleser (opplasting og sanntid), anonym klient for
@@ -73,7 +78,7 @@ platform/
     │   ├── billing/                   ✔ prøveperiode og lesemodus
     │   ├── email/                     ✔ Resend og maler
     │   ├── navigation/, security/     ✔ trygge omdirigeringer, tokener
-    │   └── cache/                     cache-tagger og revalidering (fase 3–5)
+    │   └── hosts.ts                   ✔ vertsnavn: admin, underdomene eller eget domene
     └── embed/                         web-komponenten (fase 4)
 ```
 
@@ -172,6 +177,7 @@ Slik håndheves det:
 | `get_public_unit(project_id, slug)` | enhetssiden `/bolig/{slug}` |
 | `resolve_site(hostname, subdomain)` | vertsnavn → publisert prosjektside, meny, tema, sider |
 | `get_published_page(site_id, slug)` | publisert side |
+| `submit_lead(lead, ip_hash)` | nytt lead fra interesseskjemaet. Bare service-rollen kan kjøre den, og serveren kaller den først etter honeypot og Turnstile. Funksjonen sjekker at prosjektet er publisert og at enheten er synlig, holder rate limit, og svarer med mottakerne av varselet. |
 | `get_public_assets(site_id, asset_ids)` | filer brukt i blokkene |
 
 Funksjonene sikrer at:
@@ -187,14 +193,31 @@ Testene i `005_publisering_og_offentlig_api.test.sql` kontrollerer dette.
 
 - **Boligvelger.** Editoren skriver direkte i `selector_views` og `hotspots` (utkast). `publish_selector()` lagrer et øyeblikksbilde i `selectors.published_snapshot`. Kjøpere ser bare øyeblikksbildet. Status og enhetsdata hentes alltid live fra `units`. Derfor går statusendringer ut umiddelbart, mens nye former og koblinger venter til neste publisering. `get_selector_preview()` viser utkastet slik kjøpere vil se det.
 - **Prosjektside.** `pages.draft_blocks` er utkastet. `publish_site()` kopierer meny, bunntekst, tema, SEO-standarder og samtykkeinnstillinger til `sites.published_config`. Hver side som er endret, kopieres til `published_blocks`. Skjulte blokker beholder innholdet i utkastet, men publiseres ikke. Hver publisert endring blir en ny rad i `page_versions`, som kan gjenopprettes til utkastet.
-- **Forhåndsvisningslenker** til prosjektsiden er signerte tokener med utløp (HMAC). De kontrolleres i Next.js (fase 3).
+- **Forhåndsvisningslenker** til prosjektsiden:
+  - Tokenet er signert med HMAC-SHA256 og inneholder id-en til prosjektsiden og utløpet, som er sju dager etter at lenken ble laget.
+  - Nøkkelen avledes fra service-nøkkelen med HKDF og et eget formål, så den ikke kan brukes til noe annet.
+  - `/preview/{token}` kontrollerer signaturen og leser deretter utkastet på serveren. Siden har `noindex`, og skjemaer kan ikke sendes fra den.
+- **Forhåndsvisningen i editoren** er `/site-preview/{site_id}` i en iframe:
+  - Den krever innlogging og leser utkastet med brukerens rettigheter (RLS).
+  - Editoren sender endringer med `postMessage` (`site-preview:update`), og rammen svarer med `ready`, `select` og `navigate`. Begge sider sjekker opprinnelsen.
+  - Bare denne ruten kan vises i en iframe, og bare fra admin (`frame-ancestors 'self'`).
+- **Én visningskode.** Den publiserte siden, den delte forhåndsvisningen og editoren bruker de samme komponentene (`features/site-builder/components/render`). De skiller seg bare i modus: `published`, `preview` eller `editor`.
 
 ## 8. Sanntid og mellomlager (akseptkriterium 2)
 
 1. Status endres via `set_unit_status()` fra tabellen, enhetsskjemaet eller Status-modus, med valgfritt notat. Direkte oppdateringer logges også.
 2. En trigger skriver `unit_status_events` med bruker, tidspunkt, kilde og notat. Deretter legger den inn en linje i revisjonsloggen og en webhook-leveranse, og kringkaster `{unit_id, status}` på den offentlige Realtime-kanalen `project:{id}:units`.
 3. Publiserte velgere, enhetslister og enhetssider abonnerer på kanalen og oppdaterer fargene uten ny lasting. Målt lokalt tok det 35 ms fra endring i databasen til en anonym klient mottok meldingen. Rett etter tilkobling (også ny tilkobling) hentes enhetene én gang med `get_public_units`, så en endring mellom sidevisning og tilkobling ikke går tapt. Blir en enhet solgt og prisen skal skjules, fjernes prisen også i nettleseren med en gang.
-4. Publiserte sider leser data ved hver visning med en anonym klient (`src/lib/supabase/public.ts`, bare den publiserbare nøkkelen), så neste sidevisning alltid viser riktig status. Mellomlager med cache-tagger vurderes i fase 5.
+4. Publiserte prosjektsider rendres på serveren og mellomlagres med `"use cache"` og cache-tagger. Dataene leses med en anonym klient som bare har den publiserbare nøkkelen.
+   - **Tagger:** `site:{id}`, `site-key:{underdomene eller vertsnavn}`, `project:{id}`, `project:{id}:units` og `selector:{id}`.
+   - **Tømmes ved:**
+     - publisering og avpublisering,
+     - sletting av sider og endring av underdomene,
+     - endring av status, pris og andre enhetsfelt (tabell, skjema, Status-modus, masseendring og sletting),
+     - endring av prosjekt, egne felt, boligvelger og merkevare.
+   - **Levetid:** innholdet regnes som ferskt i 60 s, fornyes etter 5 minutter og kastes etter en time. Taggene gjør at endringer vises med en gang, uansett levetid.
+   - Ende-til-ende-testen for akseptkriterium 5 kontrollerer at HTML-en fra serveren viser ny status rett etter en endring.
+   - Boligvelgeren under `/embed/` leser fortsatt ferske data ved hver visning.
 5. Admin (Status-modus og enhetstabellen) lytter på `units` med Postgres Changes. Der gjelder RLS. Nettleseren gir sanntidsklienten brukerens innlogging før den abonnerer; ellers kobler den seg på som anonym, og RLS stopper alle hendelser. Enhetstabellen viser om sanntid er aktiv. I ende-til-ende-testen vises en statusendring i en annen fane innen fem sekunder (målt lokalt: under ett sekund).
 
 ## 9. Filer og bilder
@@ -216,9 +239,9 @@ Testene i `005_publisering_og_offentlig_api.test.sql` kontrollerer dette.
 - **Forberedt for senere synk.** `unit_status_events` er en egen hendelseslogg, og `external_id` og `source` finnes på enheter, unike per kilde og prosjekt.
 - **GDPR.**
   - Alle data ligger i EU.
-  - Leads kan slettes og eksporteres.
+  - Leads kan slettes én og én, eller alle fra samme e-postadresse når noen ber om å bli slettet. De kan eksporteres til CSV med filter, for eksempel på e-postadressen.
   - `organizations.lead_retention_days` styrer lagringstiden. En nattlig pg_cron-jobb sletter eldre leads.
-  - Samtykke lagres med tidspunkt og tekstversjon.
+  - Samtykke lagres med tidspunkt og tekstversjon. Tekstene ligger i `features/leads/consent.ts` med versjon, og detaljvisningen viser teksten slik avsenderen godtok den.
   - Rate limiting lagrer bare en hash, aldri IP-adressen.
 
 ## 11. Tillegg til spesifikasjonen
