@@ -15,7 +15,7 @@ import { isPriceHidden, parsePublicUnitDetail, type PublicAsset, type PublicUnit
 import { publicMediaUrl } from "@/features/media/model";
 import { publicCustomFields } from "@/features/units/custom-fields";
 import { calculateTotals } from "@/features/units/price";
-import { getPublicBrowserClient } from "@/lib/supabase/public-browser";
+import { loadPublicBrowserClient } from "@/lib/supabase/public-browser";
 
 function Picture({ asset, alt, sizes, className }: { asset: PublicAsset; alt: string; sizes: string; className?: string }) {
   const sources = imageSources(asset);
@@ -76,7 +76,8 @@ export function PublicUnitPage({
   const reload = useCallback(async () => {
     for (let attempt = 0; attempt < 5; attempt++) {
       const before = eventCount.current;
-      const { data, error } = await getPublicBrowserClient().rpc("get_public_unit", { p_project_id: projectId, p_slug: initial.slug });
+      const supabase = await loadPublicBrowserClient();
+      const { data, error } = await supabase.rpc("get_public_unit", { p_project_id: projectId, p_slug: initial.slug });
       if (error) {
         return;
       }

@@ -89,9 +89,23 @@ jobs:
       - name: Ende-til-ende-tester
         run: npm run test:e2e
 
+      - name: Ytelse på mobil (Lighthouse CI)
+        run: |
+          npm run start -- -p 3000 > /tmp/next-start.log 2>&1 &
+          for i in $(seq 1 60); do curl -sf -o /dev/null http://localhost:3000/login && break; sleep 1; done
+          npm run lighthouse
+
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: playwright-report
           path: platform/playwright-report
+          retention-days: 7
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: lighthouse
+          path: platform/.lighthouseci
+          include-hidden-files: true
           retention-days: 7

@@ -1,0 +1,47 @@
+# Lighthouse CI for publiserte prosjektsider (fase 5). Kjøres med `npm run lighthouse`,
+# som lager demodataene (Fjordparken) og sender inn adressene. Se docs/drift.md.
+#
+# Krav fra spesifikasjonen: LCP under 2,5 sekunder på mobil, bilder i riktig størrelse
+# og lat lasting.
+#
+# Måling: Lighthouse sin mobilprofil (Moto G Power-skjerm, treg 4G og fire ganger
+# tregere CPU), tre kjøringer og medianen. Strupingen gjøres i nettleseren
+# (throttlingMethod: devtools), så sidene lastes slik en mobil faktisk laster dem.
+# Standardmetoden (simulate) beregner tidene i etterkant ut fra en rask måling, og
+# regner da med alle skript som er bedt om før første tegning, også de som lastes
+# asynkront og ikke stopper tegningen. For disse sidene ga den om lag dobbelt så høy
+# LCP som målt med struping.
+ci:
+  collect:
+    numberOfRuns: 3
+    settings:
+      throttlingMethod: devtools
+      onlyCategories:
+        - performance
+      chromeFlags: "--headless=new --no-sandbox"
+  assert:
+    assertions:
+      largest-contentful-paint:
+        - error
+        - maxNumericValue: 2500
+          aggregationMethod: median-run
+      cumulative-layout-shift:
+        - error
+        - maxNumericValue: 0.1
+          aggregationMethod: median-run
+      # Bilder i riktig størrelse, lat lasting av bilder utenfor skjermen, og WebP
+      uses-responsive-images:
+        - error
+        - maxLength: 0
+      offscreen-images:
+        - error
+        - maxLength: 0
+      modern-image-formats:
+        - error
+        - maxLength: 0
+      unsized-images:
+        - error
+        - maxLength: 0
+  upload:
+    target: filesystem
+    outputDir: .lighthouseci

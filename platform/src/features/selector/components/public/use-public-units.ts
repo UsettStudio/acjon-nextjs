@@ -5,7 +5,8 @@ import { z } from "zod";
 
 import { isPriceHidden, parsePublicUnits, type PublicUnit } from "@/features/selector/model";
 import { UNIT_STATUSES, type UnitStatus } from "@/features/units/fields";
-import { getPublicBrowserClient } from "@/lib/supabase/public-browser";
+import { loadPublicBrowserClient } from "@/lib/supabase/public-browser";
+import type { RealtimeChannel } from "@supabase/supabase-js";
 
 export type LiveState = "connecting" | "live" | "offline" | "disabled";
 
@@ -21,7 +22,8 @@ type StatusListener = {
 };
 
 type ChannelEntry = {
-  channel: ReturnType<ReturnType<typeof getPublicBrowserClient>["channel"]>;
+  /** Kanalen kobles opp når Supabase-biblioteket er lastet. */
+  channel: Promise<RealtimeChannel>;
   listeners: Set<StatusListener>;
   state: LiveState;
 };
@@ -36,31 +38,11 @@ const channels = new Map<string, ChannelEntry>();
 function subscribeUnitStatus(projectId: string, listener: StatusListener): () => void {
   let entry = channels.get(projectId);
   if (!entry) {
-    const supabase = getPublicBrowserClient();
-    const created: ChannelEntry = { channel: supabase.channel(`project:${projectId}:units`), listeners: new Set(), state: "connecting" };
-    created.channel
-      .on("broadcast", { event: "unit_status" }, (message: { payload?: unknown }) => {
-        const parsed = statusEventSchema.safeParse(message.payload);
-        if (parsed.success) {
-          for (const item of created.listeners) {
-            item.onStatus(parsed.data.unit_id, parsed.data.status);
-          }
-        }
-      })
-      .subscribe((status) => {
-        if (status === "SUBSCRIBED") {
-          created.state = "live";
-          for (const item of created.listeners) {
-            item.onState("live");
-            item.onSubscribed?.();
-          }
-        } else if (status === "CHANNEL_ERROR" || status === "TIMED_OUT" || status === "CLOSED") {
-          created.state = "offline";
-          for (const item of created.listeners) {
-            item.onState("offline");
-          }
-        }
-      });
+    const created: ChannelEntry = {
+      channel: loadPublicBrowserClient().then((supabase) => openChannel(supabase.channel(`project:${projectId}:units`), created)),
+      listeners: new Set(),
+      state: "connecting",
+    };
     channels.set(projectId, created);
     entry = created;
   }
@@ -80,9 +62,36 @@ function subscribeUnitStatus(projectId: string, listener: StatusListener): () =>
     current.listeners.delete(listener);
     if (current.listeners.size === 0) {
       channels.delete(projectId);
-      void getPublicBrowserClient().removeChannel(current.channel);
+      void Promise.all([loadPublicBrowserClient(), current.channel]).then(([supabase, channel]) => supabase.removeChannel(channel));
     }
   };
+}
+
+/** Lytter etter statusendringer i kanalen og gir beskjed til alle som lytter på prosjektet. */
+function openChannel(channel: RealtimeChannel, created: ChannelEntry): RealtimeChannel {
+  return channel
+    .on("broadcast", { event: "unit_status" }, (message: { payload?: unknown }) => {
+      const parsed = statusEventSchema.safeParse(message.payload);
+      if (parsed.success) {
+        for (const item of created.listeners) {
+          item.onStatus(parsed.data.unit_id, parsed.data.status);
+        }
+      }
+    })
+    .subscribe((status) => {
+      if (status === "SUBSCRIBED") {
+        created.state = "live";
+        for (const item of created.listeners) {
+          item.onState("live");
+          item.onSubscribed?.();
+        }
+      } else if (status === "CHANNEL_ERROR" || status === "TIMED_OUT" || status === "CLOSED") {
+        created.state = "offline";
+        for (const item of created.listeners) {
+          item.onState("offline");
+        }
+      }
+    });
 }
 
 /**
@@ -139,7 +148,8 @@ export function useLiveUnits(
     }
     refetchTimer.current = setTimeout(async function fetchUnits() {
       const before = eventCount.current;
-      const { data, error } = await getPublicBrowserClient().rpc("get_public_units", { p_project_id: projectId });
+      const supabase = await loadPublicBrowserClient();
+      const { data, error } = await supabase.rpc("get_public_units", { p_project_id: projectId });
       if (error) {
         return;
       }

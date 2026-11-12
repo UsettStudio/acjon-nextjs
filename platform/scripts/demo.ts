@@ -129,8 +129,9 @@ async function removeOrganization(admin: Client, organizationId: string): Promis
 }
 
 async function createOrganization(client: Client): Promise<{ id: string; slug: string }> {
-  for (let attempt = 1; attempt <= 20; attempt++) {
-    const slug = attempt === 1 ? DEMO_ORGANIZATION.slug : `${DEMO_ORGANIZATION.slug}-${attempt}`;
+  // Først «demo-bolig», deretter med tilfeldig endelse hvis adressen er i bruk.
+  for (let attempt = 1; attempt <= 6; attempt++) {
+    const slug = attempt === 1 ? DEMO_ORGANIZATION.slug : `${DEMO_ORGANIZATION.slug}-${randomUUID().slice(0, 6)}`;
     const result = await client.rpc("create_organization", { p_name: DEMO_ORGANIZATION.name, p_slug: slug });
     if (!result.error) {
       return { id: result.data, slug };

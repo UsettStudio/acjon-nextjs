@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
 
 import { SitePageBlocks } from "@/features/site-builder/components/render/site-page";
 import { SiteShell } from "@/features/site-builder/components/render/site-shell";
 import { SiteIntlProvider } from "@/features/site-builder/components/site-intl";
-import { SiteSkeleton } from "@/features/site-builder/components/site-skeleton";
 import { siteFontVariables } from "@/features/site-builder/fonts";
+import { PRERENDER_PLACEHOLDER } from "@/features/site-builder/site";
 import { getPublishedPage, getPublishedRenderData, getPublishedSite } from "@/features/site-builder/render-data";
 import { jsonLd, pageMetadata, pageStructuredData } from "@/features/site-builder/seo";
 
@@ -27,6 +26,11 @@ async function loadPage(params: Params) {
     return null;
   }
   return { site, data: await getPublishedRenderData(site, page) };
+}
+
+/** Se PRERENDER_PLACEHOLDER: siden blir statisk per prosjektside etter første besøk. */
+export async function generateStaticParams(): Promise<Awaited<PageProps<"/sites/[site]/[[...slug]]">["params"]>[]> {
+  return [{ site: PRERENDER_PLACEHOLDER, slug: [PRERENDER_PLACEHOLDER] }];
 }
 
 export async function generateMetadata({ params }: PageProps<"/sites/[site]/[[...slug]]">): Promise<Metadata> {
@@ -52,11 +56,13 @@ async function SitePageContent({ params }: { params: Params }) {
   );
 }
 
-/** Publisert prosjektside. Dataene mellomlagres og tømmes ved publisering og statusendring. */
+/**
+ * Publisert prosjektside. Siden lages som en ferdig statisk side per prosjektside og mellomlagres. Første
+ * besøk venter på den, senere besøk får den rett fra mellomlageret, med alt innhold
+ * i HTML-en. Mellomlageret tømmes ved publisering og statusendring (cache-tagger).
+ */
+export const ensureStatic = "navigation";
+
 export default function PublishedSitePage({ params }: PageProps<"/sites/[site]/[[...slug]]">) {
-  return (
-    <Suspense fallback={<SiteSkeleton />}>
-      <SitePageContent params={params} />
-    </Suspense>
-  );
+  return <SitePageContent params={params} />;
 }

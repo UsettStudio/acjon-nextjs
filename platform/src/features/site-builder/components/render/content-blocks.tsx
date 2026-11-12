@@ -1,7 +1,7 @@
 "use client";
 
 import { CalendarDaysIcon, FileTextIcon, MailIcon, PhoneIcon, PlayIcon } from "lucide-react";
-import { useFormatter, useNow, useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import { useState } from "react";
 
 import { parseVideoUrl, type BlockOf, type BlockType } from "@/features/site-builder/blocks";
@@ -229,7 +229,7 @@ export function KeyFiguresBlock({ block, data }: BlockProps<"key_figures">) {
 export function ProgressBlock({ block, data }: BlockProps<"progress">) {
   const t = useTranslations("site");
   const format = useFormatter();
-  const now = useNow();
+  const now = new Date(data.now);
   const today = now.toISOString().slice(0, 10);
   const headingId = `${block.id}-heading`;
   const items = block.props.use_project
@@ -270,7 +270,7 @@ export function ProgressBlock({ block, data }: BlockProps<"progress">) {
 export function ViewingsBlock({ block, data }: BlockProps<"viewings">) {
   const t = useTranslations("site");
   const format = useFormatter();
-  const now = useNow();
+  const now = new Date(data.now);
   const today = now.toISOString().slice(0, 10);
   const headingId = `${block.id}-heading`;
   const upcoming = block.props.items.filter((item) => item.date >= today).sort((a, b) => `${a.date}${a.start}`.localeCompare(`${b.date}${b.start}`));

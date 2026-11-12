@@ -2,7 +2,6 @@
 
 /* eslint-disable @next/next/no-img-element -- Første visning i boligvelgeren, ferdig WebP fra Storage. */
 
-import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 
@@ -11,6 +10,7 @@ import { FilterBar } from "@/features/selector/components/public/filter-bar";
 import { PublicSelector } from "@/features/selector/components/public/public-selector";
 import { UnitList } from "@/features/selector/components/public/unit-list";
 import { useFavorites } from "@/features/selector/components/public/use-favorites";
+import { setLocationSearch, useLocationSearch } from "@/features/selector/components/public/use-location-search";
 import { useLiveUnits } from "@/features/selector/components/public/use-public-units";
 import { filterOptions, matchesFilters, parseFilters, writeFilters } from "@/features/selector/filters";
 import { FILTER_KEYS } from "@/features/selector/model";
@@ -23,7 +23,7 @@ import { imageSources, svgPoints } from "@/features/selector/components/hotspot-
 // Boligvelger
 // -----------------------------------------------------------------------------
 
-export function SelectorBlock({ block, data }: RenderBlockProps<"selector">) {
+export function SelectorBlock({ block, data, isFirst }: RenderBlockProps<"selector">) {
   const t = useTranslations("site.editor");
   const headingId = `${block.id}-heading`;
   const selector = block.props.selector_id ? data.selectors[block.props.selector_id] : undefined;
@@ -57,6 +57,7 @@ export function SelectorBlock({ block, data }: RenderBlockProps<"selector">) {
               entryViewId: block.props.entry_view_id,
               unitBasePath: data.basePath,
               interest: true,
+              lazyImage: !isFirst,
             }}
           />
         </div>
@@ -102,7 +103,7 @@ function SelectorPreviewCard({ data, selectorId }: { data: RenderBlockProps<"sel
 export function UnitListBlock({ block, data }: RenderBlockProps<"unit_list">) {
   const t = useTranslations("site.editor");
   const headingId = `${block.id}-heading`;
-  const searchParams = useSearchParams();
+  const searchParams = useLocationSearch();
   const { units } = useLiveUnits(data.units, data.project.id, data.project.showPriceOnSold, data.mode === "published");
   const { favorites, toggle } = useFavorites(data.project.id);
   const filters = useMemo(() => parseFilters(new URLSearchParams(searchParams.toString())), [searchParams]);
@@ -131,10 +132,7 @@ export function UnitListBlock({ block, data }: RenderBlockProps<"unit_list">) {
             favoritesCount={favorites.size}
             shown={filtered.length}
             total={visibleUnits.length}
-            onChange={(next) => {
-              const query = writeFilters(next, new URLSearchParams(searchParams.toString())).toString();
-              window.history.replaceState(null, "", `${window.location.pathname}${query ? `?${query}` : ""}${window.location.hash}`);
-            }}
+            onChange={(next) => setLocationSearch(writeFilters(next, new URLSearchParams(searchParams.toString())), "replace")}
           />
         ) : null}
         <UnitList

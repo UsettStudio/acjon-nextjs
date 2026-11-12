@@ -25,6 +25,14 @@ export const RESERVED_PAGE_SLUGS = new Set([
 ]);
 
 /** De genererte sidene om personvern på hver prosjektside (reserverte sideadresser). */
+/**
+ * Plassholder for generateStaticParams på de publiserte sidene. Med Cache Components
+ * må ruten ha minst én kjent parameter. Da lager Next en ferdig statisk side for hver
+ * prosjektside etter første besøk, i stedet for å strømme innholdet ved hvert besøk.
+ * «-» kan aldri være et underdomene eller en enhetsadresse, så plassholderen gir 404.
+ */
+export const PRERENDER_PLACEHOLDER = "-";
+
 export const SITE_PRIVACY_PATH = "/personvern";
 export const SITE_COOKIES_PATH = "/informasjonskapsler";
 
@@ -190,6 +198,11 @@ export type SiteRenderData = {
   selectors: Record<string, PublishedSelector>;
   tracking: SiteTracking;
   privacy: SitePrivacy;
+  /**
+   * Tidspunktet blokker med datoer (visninger og fremdrift) regner ut fra, som ISO-tid.
+   * På publiserte sider følger det mellomlageret, så siden kan lagres som statisk side.
+   */
+  now: string;
 };
 
 /** Adressen til en side på prosjektsiden, med basePath for forhåndsvisning. */

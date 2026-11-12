@@ -1,7 +1,6 @@
 "use client";
 
 import { ChevronLeftIcon, ChevronRightIcon, ScaleIcon, XIcon } from "lucide-react";
-import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 
@@ -10,6 +9,7 @@ import { CompareDialog, MAX_COMPARE } from "@/features/selector/components/publi
 import { FilterBar } from "@/features/selector/components/public/filter-bar";
 import { SelectorStage, type HotspotAction } from "@/features/selector/components/public/selector-stage";
 import { UnitCard } from "@/features/selector/components/public/unit-card";
+import { setLocationSearch, useLocationSearch } from "@/features/selector/components/public/use-location-search";
 import { UnitList } from "@/features/selector/components/public/unit-list";
 import { useFavorites } from "@/features/selector/components/public/use-favorites";
 import { useLiveUnits, type LiveState } from "@/features/selector/components/public/use-public-units";
@@ -55,6 +55,8 @@ export type PublicSelectorOptions = {
   interest?: boolean;
   /** Velgeren ligger på en prosjektside: ingen egen overskrift med prosjektnavn. */
   embedded?: boolean;
+  /** Velgeren står lenger ned på siden: bildet lastes først når det nærmer seg skjermen. */
+  lazyImage?: boolean;
 };
 
 export function PublicSelector({
@@ -68,7 +70,7 @@ export function PublicSelector({
 }) {
   const t = useTranslations("publicSelector");
   const tStatus = useTranslations("unitStatus");
-  const searchParams = useSearchParams();
+  const searchParams = useLocationSearch();
   const { units, live } = useLiveUnits(data.units, data.project.id, data.project.show_price_on_sold, !preview);
   const { favorites, toggle: toggleFavorite } = useFavorites(data.project.id);
   const [hovered, setHovered] = useState<string | null>(null);
@@ -112,13 +114,7 @@ export function PublicSelector({
   }, [nodes]);
 
   function navigate(params: URLSearchParams, push: boolean) {
-    const query = params.toString();
-    const url = `${window.location.pathname}${query ? `?${query}` : ""}`;
-    if (push) {
-      window.history.pushState(null, "", url);
-    } else {
-      window.history.replaceState(null, "", url);
-    }
+    setLocationSearch(params, push ? "push" : "replace");
   }
 
   function goToView(viewId: string) {
@@ -339,6 +335,7 @@ export function PublicSelector({
               viewSummary={viewSummary}
               onHoverUnit={setHovered}
               onAction={onAction}
+              lazyImage={options.lazyImage}
             />
           ) : (
             <p className="rounded-lg border border-dashed p-8 text-center text-sm text-muted-foreground">{t("noViews")}</p>

@@ -1,13 +1,12 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { Suspense } from "react";
 
 import { PublicUnitPage } from "@/features/selector/components/public/unit-page";
 import { SiteShell } from "@/features/site-builder/components/render/site-shell";
 import { SiteIntlProvider } from "@/features/site-builder/components/site-intl";
-import { SiteSkeleton } from "@/features/site-builder/components/site-skeleton";
 import { siteFontVariables } from "@/features/site-builder/fonts";
+import { PRERENDER_PLACEHOLDER } from "@/features/site-builder/site";
 import { getPublishedRenderData, getPublishedSite, getPublishedUnit } from "@/features/site-builder/render-data";
 import { jsonLd, unitMetadata, unitStructuredData } from "@/features/site-builder/seo";
 import { isLocale } from "@/i18n/config";
@@ -26,6 +25,11 @@ async function loadUnit(params: Params) {
   }
   const data = await getPublishedRenderData(site, null);
   return { site, unit, data };
+}
+
+/** Se PRERENDER_PLACEHOLDER: siden blir statisk per prosjektside etter første besøk. */
+export async function generateStaticParams(): Promise<Awaited<PageProps<"/sites/[site]/bolig/[slug]">["params"]>[]> {
+  return [{ site: PRERENDER_PLACEHOLDER, slug: PRERENDER_PLACEHOLDER }];
 }
 
 export async function generateMetadata({ params }: PageProps<"/sites/[site]/bolig/[slug]">): Promise<Metadata> {
@@ -61,11 +65,14 @@ async function UnitContent({ params }: { params: Params }) {
   );
 }
 
-/** Enhetssiden på prosjektsiden: /bolig/{slug}. Status oppdateres i sanntid. */
+/**
+ * Enhetssiden på prosjektsiden: /bolig/{slug}. Status oppdateres i sanntid.
+ * Siden lages som en ferdig statisk side per prosjektside og mellomlagres. Første
+ * besøk venter på den, senere besøk får den rett fra mellomlageret, med alt innhold
+ * i HTML-en. Mellomlageret tømmes ved publisering og statusendring (cache-tagger).
+ */
+export const ensureStatic = "navigation";
+
 export default function SiteUnitPage({ params }: PageProps<"/sites/[site]/bolig/[slug]">) {
-  return (
-    <Suspense fallback={<SiteSkeleton />}>
-      <UnitContent params={params} />
-    </Suspense>
-  );
+  return <UnitContent params={params} />;
 }

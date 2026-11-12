@@ -44,6 +44,7 @@ export function SelectorStage({
   onHoverUnit,
   onAction,
   maxHeight = "78svh",
+  lazyImage = false,
 }: {
   view: PublicView;
   unitsById: ReadonlyMap<string, PublicUnit>;
@@ -59,6 +60,8 @@ export function SelectorStage({
   onHoverUnit: (unitId: string | null) => void;
   onAction: (action: HotspotAction) => void;
   maxHeight?: string;
+  /** Last bildet først når det nærmer seg skjermen (velgeren står lenger ned på en prosjektside). */
+  lazyImage?: boolean;
 }) {
   const t = useTranslations("publicSelector.stage");
   const tStatus = useTranslations("unitStatus");
@@ -258,6 +261,7 @@ export function SelectorStage({
             sizes={`min(100vw, calc(${maxHeight} * ${(width / height).toFixed(4)}))`}
             alt={view.asset.alt ?? view.name}
             draggable={false}
+            loading={lazyImage ? "lazy" : undefined}
             className="absolute inset-0 size-full"
             data-testid="selector-image"
           />

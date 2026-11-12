@@ -140,6 +140,18 @@ async function getPublishedSelectorCached(selectorId: string): Promise<Published
   return selector;
 }
 
+/**
+ * Tidspunktet blokker med datoer regner ut fra. Det mellomlagres som resten av
+ * siden, så siden kan bli statisk. «I dag» er da høyst så gammelt som mellomlageret
+ * (se PUBLISHED_CACHE), og det holder for visninger og fremdrift, som gjelder hele dager.
+ */
+async function getPublishedNow(siteId: string): Promise<string> {
+  "use cache";
+  cacheLife(PUBLISHED_CACHE);
+  cacheTag(siteTags.site(siteId));
+  return new Date().toISOString();
+}
+
 function selectorIdsIn(blocks: Block[]): string[] {
   return [...new Set(blocks.flatMap((block) => (block.type === "selector" && block.props.selector_id ? [block.props.selector_id] : [])))];
 }
@@ -156,10 +168,11 @@ export async function getPublishedRenderData(
 ): Promise<SiteRenderData> {
   const blocks = page?.blocks ?? [];
   const logoId = themeLogoId(site.themeOverrides);
-  const [assets, units, selectors] = await Promise.all([
+  const [assets, units, selectors, now] = await Promise.all([
     getPublishedAssets(site.id, assetIdsFor(blocks, [logoId, page?.ogAssetId ?? null, site.seoDefaults.og_asset_id])),
     getPublishedUnits(site.project.id),
     Promise.all(selectorIdsIn(blocks).map((id) => getPublishedSelectorCached(id))),
+    getPublishedNow(site.id),
   ]);
   const env = publicEnv();
   return {
@@ -181,6 +194,7 @@ export async function getPublishedRenderData(
     selectors: Object.fromEntries(selectors.flatMap((selector) => (selector ? [[selector.id, selector]] : []))),
     tracking: site.tracking,
     privacy: site.privacy,
+    now,
   };
 }
 
@@ -372,6 +386,7 @@ export async function loadDraftSite(client: Client, siteId: string): Promise<Dra
     // Utkastet laster aldri sporing.
     tracking: NO_TRACKING,
     privacy: { ...parseCookieSettings(site.cookie_settings), leadRetentionDays: organization.lead_retention_days },
+    now: new Date().toISOString(),
   };
 }
 
