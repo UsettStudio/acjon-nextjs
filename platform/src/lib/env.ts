@@ -16,6 +16,14 @@ const publicEnvSchema = z.object({
 
 export type PublicEnv = z.infer<typeof publicEnvSchema>;
 
+/** Arbeidsnavnet, når NEXT_PUBLIC_PRODUCT_NAME ikke er satt. */
+export const DEFAULT_PRODUCT_NAME = "excip";
+
+/** Bare produktnavnet, uten å kreve de andre variablene (for eksempel i webhook-utsendingen). */
+export function productName(): string {
+  return process.env.NEXT_PUBLIC_PRODUCT_NAME || DEFAULT_PRODUCT_NAME;
+}
+
 let cached: PublicEnv | undefined;
 
 export function publicEnv(): PublicEnv {
@@ -24,7 +32,7 @@ export function publicEnv(): PublicEnv {
     supabasePublishableKey: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
     appUrl: process.env.NEXT_PUBLIC_APP_URL,
     platformDomain: process.env.NEXT_PUBLIC_PLATFORM_DOMAIN,
-    productName: process.env.NEXT_PUBLIC_PRODUCT_NAME || "Boligplattform",
+    productName: productName(),
     sentryDsn: process.env.NEXT_PUBLIC_SENTRY_DSN || undefined,
     turnstileSiteKey: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || undefined,
   });

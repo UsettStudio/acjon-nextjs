@@ -81,10 +81,13 @@ function AddDomainDialog({
   organizationId,
   sites,
   disabled,
+  domainLimit,
 }: {
   organizationId: string;
   sites: DomainSite[];
   disabled: boolean;
+  /** Egne domener per prosjektside i pakken. */
+  domainLimit: number;
 }) {
   const t = useTranslations("domains.add");
   const tCommon = useTranslations("common");
@@ -94,7 +97,7 @@ function AddDomainDialog({
   const defaults = { siteId: sites.length === 1 ? (sites[0]?.id ?? "") : "", hostname: "" };
   const form = useForm<AddDomainInput>({ resolver: zodResolver(addDomainSchema), defaultValues: defaults });
   const { formError, setFormError, apply } = useActionErrors(form, (code) =>
-    code === "domainExists" ? t("exists") : code === "domainLimit" ? t("limit") : undefined,
+    code === "domainExists" ? t("exists") : code === "domainLimit" ? t("limit", { count: domainLimit }) : undefined,
   );
   const { errors } = form.formState;
 
@@ -416,12 +419,15 @@ export function DomainSettings({
   platformDomain,
   vercelConnected,
   readOnly,
+  domainLimit,
 }: {
   organizationId: string;
   sites: DomainSite[];
   platformDomain: string;
   vercelConnected: boolean;
   readOnly: boolean;
+  /** Egne domener per prosjektside i pakken (lib/billing/plans.ts). */
+  domainLimit: number;
 }) {
   const t = useTranslations("domains");
   const router = useRouter();
@@ -441,8 +447,9 @@ export function DomainSettings({
         <div className="grid max-w-3xl gap-1.5">
           <h2 className="text-lg font-semibold">{t("title")}</h2>
           <p className="text-sm text-muted-foreground">{t("description")}</p>
+          <p className="text-sm text-muted-foreground">{t("planLimit", { count: domainLimit })}</p>
         </div>
-        <AddDomainDialog organizationId={organizationId} sites={sites} disabled={readOnly} />
+        <AddDomainDialog organizationId={organizationId} sites={sites} disabled={readOnly} domainLimit={domainLimit} />
       </div>
 
       {vercelConnected ? null : (

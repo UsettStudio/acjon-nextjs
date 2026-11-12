@@ -5,6 +5,8 @@ import { getTranslations } from "next-intl/server";
 import { getProjectContext } from "@/features/projects/queries";
 import { SelectorEditor } from "@/features/selector/components/editor/selector-editor";
 import { getSelectorEditorData } from "@/features/selector/queries";
+import { can } from "@/lib/auth/permissions";
+import { planAllows } from "@/lib/billing/plans";
 
 export async function generateMetadata({ params }: PageProps<"/[org]/projects/[project]/selectors/[selector]">): Promise<Metadata> {
   const { org, project, selector } = await params;
@@ -33,6 +35,11 @@ export default async function SelectorEditorPage({ params }: PageProps<"/[org]/p
       data={data}
       canEdit={context.canEditContent}
       canSell={context.canSell}
+      embed={{
+        allowed: planAllows(context.organization.plan, "embed"),
+        plan: context.organization.plan,
+        billingHref: can(context.role, "organization.billing") ? `/${org}/settings/billing` : null,
+      }}
     />
   );
 }

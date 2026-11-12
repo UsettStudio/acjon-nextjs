@@ -9,6 +9,8 @@ Plattformen har fire måter å koble andre systemer til på:
 | [API med nøkkel](#api-med-nøkkel) | Meglersystemer, CRM og andre servere | API-nøkkel fra Innstillinger → API |
 | [Webhooks](#webhooks) | Systemer som skal varsles om endringer | Settes opp under Innstillinger → API |
 
+Alle fire er med i pakkene Pro og Partner (og i prøveperioden), ikke i Prosjektside. Se [arkitektur.md](arkitektur.md), avsnitt 13.
+
 Adressene under bruker `https://app.[PLATTFORMDOMENE]`. Alle svar er JSON. Beløp er hele kroner. Areal er m² med én desimal.
 
 ## Offentlig lese-API
@@ -21,13 +23,13 @@ Gir bare publiserte data, og aldri interne felt: notater, logger, leads, ekstern
 | `GET /api/public/v1/projects/{id}/units` | Synlige enheter i et prosjekt med publisert prosjektside eller boligvelger |
 | `GET /api/public/v1/projects/{id}/units/{slug}` | Én enhet med plantegninger, bilder, dokumenter og offentlige egne felt |
 
-Feil har formen `{ "error": { "code": "not_found", "message": "…" } }`, med status 400 eller 404.
+Feil har formen `{ "error": { "code": "not_found", "message": "…" } }`, med status 400 eller 404. Er prosjektet i pakken Prosjektside, er svaret 403 med `plan_required`.
 
 Solgte enheter har `price_hidden: true` og ingen pris når prosjektet skjuler prisen på solgte enheter.
 
 ## Innbygging
 
-Koden hentes i boligvelgeren under **Flere valg → Bygg inn på nettsted …**:
+Koden hentes i boligvelgeren under **Flere valg → Bygg inn på nettsted …**. I pakken Prosjektside vises en lenke til den publiserte velgeren i stedet for velgeren når den er bygd inn på et annet nettsted.
 
 ```html
 <script src="https://app.[PLATTFORMDOMENE]/embed/v1.js" async></script>
@@ -109,6 +111,7 @@ Vellykkede svar har formen `{ "data": … }`. Feil har formen `{ "error": { "cod
 | 401 | `unauthorized` | Nøkkelen mangler, er ugyldig, utløpt eller trukket tilbake |
 | 403 | `forbidden` | Nøkkelen mangler tilgangen |
 | 403 | `read_only` | Organisasjonen er i lesemodus (abonnementet er utløpt). Lesing virker fortsatt. |
+| 403 | `plan_required` | Pakken til organisasjonen har ikke API-et (Prosjektside). Nøklene virker igjen etter bytte til Pro eller Partner. |
 | 404 | `not_found` | Prosjektet eller enheten finnes ikke i organisasjonen |
 | 429 | `rate_limited` | Over 600 kall i minuttet |
 

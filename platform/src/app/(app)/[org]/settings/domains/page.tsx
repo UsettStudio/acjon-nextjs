@@ -7,6 +7,7 @@ import { DomainSettings } from "@/features/domains/components/domain-settings";
 import { listDomainSites } from "@/features/domains/queries";
 import { getOrgContext } from "@/lib/auth/dal";
 import { can } from "@/lib/auth/permissions";
+import { planLimits } from "@/lib/billing/plans";
 import { publicEnv } from "@/lib/env";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -29,6 +30,7 @@ export default async function DomainsPage({ params }: PageProps<"/[org]/settings
       platformDomain={publicEnv().platformDomain}
       vercelConnected={vercelDomains() !== null}
       readOnly={!context.writable}
+      domainLimit={planLimits(context.organization.plan).domainsPerSite}
     />
   );
 }

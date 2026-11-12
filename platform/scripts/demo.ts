@@ -7,8 +7,9 @@
  *
  * Leser NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY og SUPABASE_SECRET_KEY fra
  * miljøet eller .env.local. Service-nøkkelen brukes bare til å finne eller lage brukeren og logge inn
- * som den, til å slette en gammel demo (organisasjoner kan ikke slettes i appen) og til leadene, som
- * legges inn slik interesseskjemaet gjør. Alt annet gjøres som brukeren, gjennom RLS og de samme
+ * som den, til å slette en gammel demo (organisasjoner kan ikke slettes i appen), til å lansere
+ * prosjektet uten oppstartsavgift (som en avtale) og til leadene, som legges inn slik
+ * interesseskjemaet gjør. Alt annet gjøres som brukeren, gjennom RLS og de samme
  * databasefunksjonene som appen bruker. Skriptet skriver aldri ut nøkler eller passord.
  */
 import { randomUUID } from "node:crypto";
@@ -337,6 +338,9 @@ async function main() {
     label: null,
   }));
   must(await client.rpc("save_view_hotspots", { p_view_id: viewId, p_hotspots: json(hotspots) }), "Lagring av markeringene");
+
+  // Et prosjekt publiseres først når det er lansert. Demoen lanseres uten oppstartsavgift, som en avtale.
+  check(await admin.rpc("waive_project_launch", { p_project_id: project.id, p_note: "Demodata" }), "Lansering av prosjektet");
   must(await client.rpc("publish_selector", { p_selector_id: selectorId }), "Publisering av boligvelgeren");
 
   // Prosjektsiden fra malen «Full prosjektside», med personvernopplysninger, publisert

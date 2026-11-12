@@ -229,6 +229,10 @@ export async function publishSelector(
       if (postgresErrorCode(error) === "23514") {
         return fail("needsView");
       }
+      // Prosjektet er ikke lansert (oppstartsavgiften er ikke betalt).
+      if (postgresErrorCode(error) === "P0402") {
+        throw new ActionError("launchRequired");
+      }
       return writeError(error);
     }
     updateTag(siteTags.selector(selectorId));

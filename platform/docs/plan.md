@@ -13,6 +13,7 @@ Hver fase avsluttes med grønne tester, typekontroll og lint, og en kort oppsumm
 | 3 Prosjektside | Ferdig, se oppsummeringen under fase 3 |
 | 4 Drift | Ferdig, se oppsummeringen under fase 4 |
 | 5 Kvalitet | Ferdig, se oppsummeringen under fase 5 |
+| 6 Pakker og oppstartsavgift | Ferdig, se oppsummeringen under fase 6 |
 
 ## Leveranse 1: datamodell og RLS (godkjent)
 
@@ -737,6 +738,73 @@ Hver fase avsluttes med grønne tester, typekontroll og lint, og en kort oppsumm
 - **Innsyn inneholder internt notat.** Retten til innsyn gjelder alle opplysninger som er lagret om personen.
 - **Nye utviklingsavhengigheter:** `tsx` (skriptet), `@axe-core/playwright` (universell utforming) og `@lhci/cli` (Lighthouse CI). Alle er bare for utvikling og test, og ingenting i stacken er byttet ut.
 
+## Fase 6: Pakker og oppstartsavgift
+
+Bestilt 12.11.: produktet heter **excip** inntil videre (navn og domene er ikke bestemt), og pakkene og prisene skal være de samme som hos propti.no, men noe lavere. Kontoene opprettes av eieren.
+
+Propti hadde 12.11.: tre månedspakker (Prosjektside 990, Pro 2 490 og Partner 4 490 kr uten mva., 3–6 måneders binding) og en oppstartsavgift per prosjekt etter antall enheter (7 900–54 900 kr, over 199 enheter etter avtale). Modellen ble valgt med disse spørsmålene:
+
+- **Prismodell:** som Propti, med pakker etter funksjoner og oppstartsavgift per prosjekt, i stedet for planer etter antall aktive prosjekter. Erstatter linjen om abonnement i spesifikasjonen.
+- **Bindingstid:** ingen.
+
+### Oppsummering av fase 6
+
+**Bygget:**
+
+- **Pakkene** (omtrent 10 % under Propti, kroner per måned uten mva.):
+
+  | | Prosjektside | Pro | Partner |
+  |---|---|---|---|
+  | Pris | 890 | 2 190 | 3 990 |
+  | Brukere | 3 | 10 | ingen grense |
+  | Egne domener per prosjektside | 1 | 10 | 10 |
+  | API, webhooks og innbygging | | ja | ja |
+  | Oppsett, opplæring og prioritert support | | | ja |
+
+  - Prøveperioden (30 dager uten kort) har det samme som Pro.
+  - Grensene håndheves i databasen og vises i admin: invitasjoner, domener, API-nøkler, webhooks, det åpne lese-API-et og innbygging på andre nettsteder.
+  - Det som finnes, beholdes etter bytte til en mindre pakke, men det kan ikke legges til mer.
+  - Grensen for aktive prosjekter er fjernet.
+- **Oppstartsavgift og lansering:**
+
+  | Enheter | 1–9 | 10–19 | 20–39 | 40–69 | 70–99 | 100–149 | 150–199 | 200+ |
+  |---|---|---|---|---|---|---|---|---|
+  | Pris | 6 900 | 11 900 | 15 900 | 21 900 | 26 900 | 35 900 | 49 900 | avtale |
+
+  - Et prosjekt kan ikke publiseres før det er lansert.
+  - Ny side **Lansering** i prosjektmenyen: nivå, betaling i Stripe Checkout, betalinger og utvidelse.
+  - Avgiften dekker et nivå. Flere enheter krever utvidelse, der forskjellen mellom nivåene betales.
+  - Sjekklisten på prosjektoversikten har fått steget «Lanser prosjektet».
+  - Publisering uten lansering gir beskjed med snarvei til Lansering.
+  - Lansering etter avtale (mer enn 199 enheter, demo, support) med `waive_project_launch()`.
+- **Abonnementssiden** viser pakkene med innhold og pris fra Stripe, prislisten for oppstart og vilkårene.
+- **Navnet excip** i appen, e-postavsenderen, TXT-posten for egne domener (`_excip`, kan endres med `DOMAIN_TXT_PREFIX`) og User-Agent for webhooks. Navnet settes med `NEXT_PUBLIC_PRODUCT_NAME`.
+- **Sjekkliste for kontoene** i [kontoer.md](kontoer.md): regioner, produkter og priser i Stripe, kundeportal, webhook og alle miljøvariablene.
+- **Tester:**
+
+  | Type | Antall | Nytt i fase 6 |
+  |---|---|---|
+  | pgTAP | 553 | 65 nye i `012_fase6`: grenser per pakke, API og webhooks etter bytte av pakke, innbygging, lansering før publisering, betaling (feil økt, feil beløp, flere registreringer), utvidelse, frafall, tak på enheter og hvem som ser betalingene. De 13 testene for grensen for aktive prosjekter er erstattet. |
+  | Vitest | 327 | 17 nye: nivåene og prisberegningen for oppstart, pakkene og webhooken for oppstartsavgiften |
+  | Playwright | 24 | Ny: publisering stoppes, pakke og oppstartsavgift i Checkout, publisering, og sperrene i Prosjektside. Testen for abonnement bruker de nye pakkene. Lansering og abonnement er med i axe-testen. |
+
+**Gjenstår:**
+
+- **Ikke testet mot ekte Stripe.** Flyten er testet med etterligningen. Når kontoen finnes, bør hele flyten gås gjennom i testmodus (se kontoer.md).
+- **Partner** sine tjenester (oppsett, opplæring og prioritert support) leveres utenfor appen. Proptis Pro og Partner har også tilvalg, BankID-signering, salgsprospekt, meldinger til kjøpere og 360°-visning. Ingen av delene finnes i excip.
+- **Lansering etter avtale** gjøres med SQL (drift.md). Det finnes ingen knapp for det i plattformadmin.
+- **Avgift ved flere enheter enn betalt** sperrer nye enheter til forskjellen er betalt. Skjulte enheter teller med. Bare enheter som slettes, frigjør plass.
+
+**Valg i fase 6:**
+
+- **Pakkene som Propti, med innhold excip har.** Prosjektside har prosjektside, boligvelger, leads og sporing. Pro har i tillegg integrasjonene (API, webhooks, innbygging) og flere brukere og domener. Partner har ingen grense for brukere, og tjenester fra oss.
+- **Grensene per organisasjon**, ikke per prosjekt som hos Propti, fordi brukere og domener hører til organisasjonen i excip.
+- **Prisene** er omtrent 10 % under Propti, rundet til priser som slutter på 90 eller 900.
+- **Månedsprisene i Stripe, oppstartsavgiften i koden.** Avgiften regnes ut fra antall enheter og forskjellen mellom nivåer. Det krever ett produkt i Stripe og ingen priser. Beløpet kontrolleres når betalingen registreres.
+- **Betalingen registreres to steder** (retur fra Checkout og webhook), så prosjektet er lansert med en gang kunden kommer tilbake.
+- **Innbygging sperres bare på andre nettsteder.** Lenken til den publiserte velgeren og prosjektsiden virker i alle pakkene.
+- **Interne navn er beholdt:** pakkenavnet i `package.json`, `project_id` i Supabase, prefikset `bpk_` på API-nøkler og web-komponenten `<boligvelger-embed>`. De vises ikke for kunder (nøkkelprefikset vises, men gamle nøkler ville sluttet å virke). De kan endres når navnet er bestemt.
+
 ## Valg som er godkjent
 
 1. **Plassering:** plattformen ligger i `platform/` i dette repoet. Nettsiden røres ikke.
@@ -774,7 +842,10 @@ Hver fase avsluttes med grønne tester, typekontroll og lint, og en kort oppsumm
 
 Spørsmålene under er ikke besvart ennå. Standardvalgene i parentes brukes inntil videre.
 
-1. **Navn og domene:** hva er `[PRODUKTNAVN]` og `[PLATTFORMDOMENE]`? Domenet trengs til underdomener (fase 4) og e-postavsender. (Arbeidsnavnet «Boligplattform», satt med miljøvariabler.)
+1. **Domene:** hva er `[PLATTFORMDOMENE]`? Det trengs til underdomener, e-postavsender og kontoene. (Lokalt `localhost:3000`, satt med miljøvariabler.) Navnet er besvart: arbeidsnavnet er excip.
 2. **Repo:** er det greit at plattformen ligger i `platform/` i dette repoet, eller ønsker dere et eget repo? (`platform/` i dette repoet.)
-3. **Abonnement:** hvilke planer skal finnes (antall aktive prosjekter og pris per måned)? Hva teller som aktivt prosjekt? (Aktive prosjekter er de i fasene «Kommer for salg», «I salg» og «Utsolgt». Planene er Start, Vekst og Proff med 1, 5 og 15 aktive prosjekter, og prøveperioden har plass til 3. Prisene settes i Stripe.)
-4. **Kontoer:** hvem oppretter Supabase, Vercel, Stripe, Resend, Cloudflare Turnstile og Sentry, og når? (Alt utvikles og testes lokalt til kontoene finnes. Oppsettet står i README.)
+
+Besvart:
+
+- **Abonnement** (12.11.): pakkene og prisene følger Propti, omtrent 10 % lavere, med oppstartsavgift per prosjekt og uten bindingstid. Se fase 6.
+- **Kontoer** (12.11.): eieren oppretter dem. Sjekklisten står i [kontoer.md](kontoer.md).

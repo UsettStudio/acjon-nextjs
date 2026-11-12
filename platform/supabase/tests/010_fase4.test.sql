@@ -1,5 +1,5 @@
 -- =============================================================================
--- Fase 4: planer og aktive prosjekter, Stripe, varsler, prøveperiode, egne
+-- Fase 4: pakker, Stripe, varsler, prøveperiode, egne
 -- domener, sporingskoder, API med nøkkel og webhooks
 -- =============================================================================
 begin;
@@ -8,101 +8,35 @@ create extension if not exists pgtap with schema extensions;
 select tests.seed_organization('a');
 select tests.seed_organization('b');
 
-select plan(108);
+select plan(98);
 
 -- -----------------------------------------------------------------------------
--- Planer: grense for aktive prosjekter
+-- Pakker: antall prosjekter er ikke begrenset
 -- -----------------------------------------------------------------------------
-
-select results_eq(
-  $$ select app.plan_project_limit(p) from unnest(array['trial', 'start', 'growth', 'pro', 'enterprise']) as p $$,
-  $$ values (3), (1), (5), (15), (null::integer) $$,
-  'Grensene per plan: prøveperiode 3, Start 1, Vekst 5, Proff 15, Enterprise ingen'
-);
-
--- Organisasjon A er i prøveperioden og har ett aktivt prosjekt (i salg) og ett utkast.
-select tests.login_as(tests.id('a', 'admin'));
-select is(
-  tests.sqlstate_of(format(
-    $$ insert into public.projects (organization_id, name, slug, phase) values (%L, 'To', 'to', 'for_sale') $$,
-    tests.id('a', 'org'))),
-  '00000',
-  'Prøveperioden: prosjekt nummer to kan være aktivt'
-);
-select is(
-  tests.sqlstate_of(format(
-    $$ insert into public.projects (organization_id, name, slug, phase) values (%L, 'Tre', 'tre', 'coming_soon') $$,
-    tests.id('a', 'org'))),
-  '00000',
-  'Prøveperioden: prosjekt nummer tre kan være aktivt'
-);
-select is(
-  tests.sqlstate_of(format(
-    $$ insert into public.projects (organization_id, name, slug, phase) values (%L, 'Fire', 'fire', 'sold_out') $$,
-    tests.id('a', 'org'))),
-  'P0402',
-  'Prøveperioden: et fjerde aktivt prosjekt avvises'
-);
-select is(
-  tests.sqlstate_of(format(
-    $$ insert into public.projects (organization_id, name, slug, phase) values (%L, 'Utkast', 'utkast', 'draft') $$,
-    tests.id('a', 'org'))),
-  '00000',
-  'Utkast teller ikke'
-);
-select is(
-  tests.sqlstate_of(format($$ update public.projects set phase = 'for_sale' where id = %L $$, tests.id('a', 'project_other'))),
-  'P0402',
-  'Et utkast kan ikke settes i salg når planen er full'
-);
-select is(
-  tests.sqlstate_of(format($$ update public.projects set phase = 'sold_out' where id = %L $$, tests.id('a', 'project'))),
-  '00000',
-  'Et aktivt prosjekt kan bytte mellom aktive faser når planen er full'
-);
-select is(
-  tests.sqlstate_of(format(
-    $$ update public.projects set phase = 'archived' where organization_id = %L and slug = 'tre' $$, tests.id('a', 'org'))),
-  '00000',
-  'Et prosjekt kan arkiveres'
-);
-select is(
-  tests.sqlstate_of(format($$ update public.projects set phase = 'for_sale' where id = %L $$, tests.id('a', 'project_other'))),
-  '00000',
-  'Arkiverte prosjekter teller ikke, så et nytt kan bli aktivt'
-);
-select tests.logout();
-
-update public.organizations set plan = 'enterprise' where id = tests.id('a', 'org');
-select tests.login_as(tests.id('a', 'admin'));
-select is(
-  tests.sqlstate_of(format(
-    $$ insert into public.projects (organization_id, name, slug, phase) values (%L, 'Fem', 'fem', 'for_sale') $$,
-    tests.id('a', 'org'))),
-  '00000',
-  'Enterprise har ingen grense'
-);
-select tests.logout();
+-- Grensen for aktive prosjekter fra fase 4 er erstattet av oppstartsavgiften per
+-- prosjekt i fase 6 (se 012_fase6.test.sql).
 
 update public.organizations set plan = 'start' where id = tests.id('a', 'org');
 select tests.login_as(tests.id('a', 'admin'));
 select is(
-  tests.affected_rows(format($$ update public.projects set name = 'Nytt navn' where id = %L $$, tests.id('a', 'project'))),
-  '1',
-  'Etter bytte til en mindre plan kan aktive prosjekter fortsatt endres'
-);
-select is(
-  tests.sqlstate_of(format($$ update public.projects set phase = 'coming_soon' where organization_id = %L and slug = 'utkast' $$,
+  tests.sqlstate_of(format(
+    $$ insert into public.projects (organization_id, name, slug, phase)
+       select %L, 'Aktivt ' || n, 'aktivt-' || n, 'for_sale' from generate_series(1, 4) as n $$,
     tests.id('a', 'org'))),
-  'P0402',
-  'Men ingen nye prosjekter kan bli aktive før planen har plass'
+  '00000',
+  'Prosjektside (start): flere prosjekter kan være i salg samtidig'
 );
 select tests.logout();
 
 select is(
   tests.sqlstate_of(format($$ update public.organizations set plan = 'gull' where id = %L $$, tests.id('a', 'org'))),
   '23514',
-  'Ukjente planer avvises'
+  'Ukjente pakker avvises'
+);
+select is(
+  tests.sqlstate_of(format($$ update public.organizations set plan = 'growth' where id = %L $$, tests.id('a', 'org'))),
+  '23514',
+  'Vekst (growth) finnes ikke lenger'
 );
 
 -- -----------------------------------------------------------------------------
@@ -136,26 +70,26 @@ select is(
 );
 
 select is(
-  public.apply_stripe_subscription('cus_A1', 'sub_A1', 'active', 'growth', null, now() + interval '30 days', false, now()),
+  public.apply_stripe_subscription('cus_A1', 'sub_A1', 'active', 'pro', null, now() + interval '30 days', false, now()),
   tests.id('a', 'org'),
   'Abonnementet lagres på organisasjonen som har kunden'
 );
 select results_eq(
   format($$ select subscription_status::text, plan, stripe_subscription_id, billing_notices
             from public.organizations where id = %L $$, tests.id('a', 'org')),
-  $$ values ('active', 'growth', 'sub_A1', '{}'::jsonb) $$,
+  $$ values ('active', 'pro', 'sub_A1', '{}'::jsonb) $$,
   'Status, plan og abonnement er satt, og varslene er nullstilt'
 );
 select ok(
   exists (
     select 1 from public.audit_log
     where organization_id = tests.id('a', 'org') and action = 'organization.subscription_changed'
-      and data ->> 'plan' = 'growth' and data ->> 'previous_plan' = 'start' and actor_type = 'system'
+      and data ->> 'plan' = 'pro' and data ->> 'previous_plan' = 'start' and actor_type = 'system'
   ),
   'Endringen står i revisjonsloggen'
 );
 select is(
-  public.apply_stripe_subscription('cus_A1', 'sub_A1', 'canceled', 'growth', null, null, false, now() - interval '1 hour'),
+  public.apply_stripe_subscription('cus_A1', 'sub_A1', 'canceled', 'pro', null, null, false, now() - interval '1 hour'),
   null,
   'En eldre tilstand som kommer sent, ignoreres'
 );
@@ -186,7 +120,7 @@ select is(
 );
 
 -- Avsluttet abonnement gir lesemodus. Databasen stopper da alle endringer.
-select public.apply_stripe_subscription('cus_A1', 'sub_A1', 'canceled', 'growth', null, null, false, now());
+select public.apply_stripe_subscription('cus_A1', 'sub_A1', 'canceled', 'pro', null, null, false, now());
 select tests.logout();
 select tests.login_as(tests.id('a', 'admin'));
 select is(
@@ -197,7 +131,7 @@ select is(
 select tests.logout();
 
 select set_config('role', 'service_role', true);
-select public.apply_stripe_subscription('cus_A1', 'sub_A1', 'active', 'growth', null, now() + interval '30 days', true, now());
+select public.apply_stripe_subscription('cus_A1', 'sub_A1', 'active', 'pro', null, now() + interval '30 days', true, now());
 select is(
   (select cancel_at_period_end from public.organizations where id = tests.id('a', 'org')),
   true,
@@ -251,7 +185,7 @@ select is(
   '22023',
   'Ukjente varsler avvises'
 );
-select public.apply_stripe_subscription('cus_A1', 'sub_A1', 'trialing', 'growth', now() + interval '3 days', null, false, now());
+select public.apply_stripe_subscription('cus_A1', 'sub_A1', 'trialing', 'pro', now() + interval '3 days', null, false, now());
 select is_empty(
   format($$ select 1 from public.due_billing_notices() where organization_id = %L $$, tests.id('a', 'org')),
   'Ingen varsler om prøveperioden når et abonnement i Stripe tar over'

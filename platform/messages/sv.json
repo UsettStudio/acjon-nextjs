@@ -100,7 +100,10 @@
     "invalidInput": "Kontrollera de markerade fälten.",
     "rateLimited": "För många försök. Vänta en stund och försök igen.",
     "unknown": "Något gick fel. Försök igen om en stund.",
-    "planLimit": "Planen har inte plats för fler aktiva projekt. Välj ett större abonnemang, eller sätt ett annat projekt till Färdigställt eller Arkiverat."
+    "planLimit": "Paketet har inte plats för fler. Välj ett större paket under Inställningar → Abonnemang.",
+    "planFeature": "Funktionen ingår inte i paketet. Den ingår i Pro och Partner.",
+    "launchRequired": "Projektet måste lanseras innan det kan publiceras. Startavgiften betalas under Lansering.",
+    "unitLimit": "Startavgiften täcker inte fler enheter i projektet. Utöka lanseringen under Lansering."
   },
   "auth": {
     "email": "E-post",
@@ -163,7 +166,8 @@
     "accepted": "Inbjudan har redan accepterats.",
     "goToOrganization": "Gå till {organization}",
     "emailNotConfirmed": "Bekräfta din e-postadress innan du accepterar inbjudan.",
-    "signupHint": "Du är inbjuden till {organization}. Skapa ett konto med e-postadressen som inbjudan skickades till."
+    "signupHint": "Du är inbjuden till {organization}. Skapa ett konto med e-postadressen som inbjudan skickades till.",
+    "organizationFull": "Organisationen har inte plats för fler användare i sitt paket. Be den som bjöd in dig att byta paket."
   },
   "onboarding": {
     "title": "Skapa organisation",
@@ -410,7 +414,8 @@
       "settings": "Inställningar",
       "selectors": "Bostadsväljare",
       "site": "Projektsida",
-      "leads": "Leads"
+      "leads": "Leads",
+      "launch": "Lansering"
     },
     "list": {
       "title": "Projekt",
@@ -628,7 +633,8 @@
         "units": "Lägg in eller importera bostäder",
         "selector": "Ladda upp en bild och markera bostäderna",
         "template": "Välj mall för projektsidan",
-        "publish": "Publicera"
+        "publish": "Publicera",
+        "launch": "Lansera projektet"
       },
       "notes": {
         "units": "{count, plural, one {# bostad} other {# bostäder}}",
@@ -642,7 +648,8 @@
         "selector": "Öppna bostadsväljaren",
         "template": "Skapa projektsidan",
         "publish": "Publicera projektsidan",
-        "publishSelector": "Publicera bostadsväljaren"
+        "publishSelector": "Publicera bostadsväljaren",
+        "launch": "Betala startavgift"
       }
     }
   },
@@ -1462,6 +1469,10 @@
       "liveStatus": "Status uppdateras löpande.",
       "interestHeading": "Anmäl intresse",
       "interestIntro": "Fyll i formuläret så kontaktar mäklaren dig om {unit}."
+    },
+    "embedGate": {
+      "unavailable": "Bostadsväljaren kan inte visas här.",
+      "open": "Öppna bostadsväljaren"
     }
   },
   "siteBuilder": {
@@ -2338,13 +2349,14 @@
       "added": "Domänen har lagts till. Lägg in DNS-posterna som visas under domänen.",
       "addedVerified": "Domänen har lagts till och bekräftats.",
       "exists": "Domänen har redan lagts till på den här projektsidan.",
-      "limit": "En projektsida kan ha upp till tio egna domäner."
-    }
+      "limit": "Paketet har plats för {count, plural, one {en egen domän} other {# egna domäner}} per projektsida."
+    },
+    "planLimit": "Paketet har plats för {count, plural, one {en egen domän} other {# egna domäner}} per projektsida."
   },
   "billing": {
     "title": "Abonnemang",
-    "description": "Planen styr hur många projekt som kan vara aktiva samtidigt. Betalning, fakturor och uppsägning hanteras av Stripe.",
-    "plan": "Plan",
+    "description": "Paketet styr funktionerna och hur många användare och domäner ni kan ha. Betalning, fakturor och uppsägning hanteras av Stripe.",
+    "plan": "Paket",
     "status": "Status",
     "trialUntil": "Provperioden varar till {date} ({days, plural, one {# dag kvar} other {# dagar kvar}}).",
     "trialEnded": "Provperioden är slut.",
@@ -2354,21 +2366,16 @@
     "pastDue": "Betalningen misslyckades. Uppdatera betalningssättet i kundportalen.",
     "ended": "Abonnemanget är avslutat.",
     "readOnlyHelp": "Organisationen är i läsläge. Ni kan se allt men inte göra ändringar. Publicerade projektsidor och bostadsväljare är fortfarande uppe, och nya leads kommer fortfarande in.",
-    "usage": "{used} av {limit} aktiva projekt används.",
-    "usageUnlimited": "{used} aktiva projekt. Planen har ingen gräns.",
-    "usageLabel": "Aktiva projekt",
-    "usageHelp": "Aktiva projekt är projekt i faserna Kommer till salu, Till salu och Slutsålt. Utkast, färdigställda och arkiverade projekt räknas inte.",
     "portal": "Hantera abonnemang",
-    "plansTitle": "Planer",
-    "plansHelp": "Alla planer har alla funktioner. Priserna är per månad, och du kan byta plan eller säga upp när som helst.",
+    "plansTitle": "Paket",
+    "plansHelp": "Priserna är per månad och utan moms. Ni kan byta paket eller säga upp när som helst.",
     "priceInCheckout": "Pris i Stripe",
-    "projectLimit": "{count, plural, one {Ett aktivt projekt} other {Upp till # aktiva projekt}}",
     "currentPlan": "Nuvarande plan",
     "changeInPortal": "Byt i kundportalen",
     "choose": "Välj {plan}",
-    "enterprise": "Behöver ni fler än 15 aktiva projekt? Kontakta oss:",
-    "enterpriseNoContact": "Behöver ni fler än 15 aktiva projekt kan vi göra ett eget avtal.",
-    "notConfigured": "Betalning är inte konfigurerad i den här miljön, så planerna kan inte väljas här.",
+    "enterprise": "Behöver ni ett eget avtal, till exempel för projekt med fler än 199 enheter? Kontakta oss:",
+    "enterpriseNoContact": "Behöver ni ett eget avtal, till exempel för projekt med fler än 199 enheter, kan vi ordna det.",
+    "notConfigured": "Betalning är inte konfigurerad i den här miljön, så paketen kan inte väljas här.",
     "checkoutPending": "Tack! Betalningen är registrerad. Det kan ta några sekunder innan abonnemanget visas här.",
     "checkoutDone": "Tack! Abonnemanget är aktivt.",
     "checkoutCanceled": "Betalningen avbröts. Inget har ändrats.",
@@ -2383,16 +2390,16 @@
         "name": "Provperiod"
       },
       "start": {
-        "name": "Start",
-        "description": "För byggherrar med ett projekt till salu."
-      },
-      "growth": {
-        "name": "Tillväxt",
-        "description": "För byggherrar med flera projekt till salu samtidigt."
+        "name": "Projektsida",
+        "description": "För att få ut projektet på nätet, snabbt och snyggt."
       },
       "pro": {
-        "name": "Proffs",
-        "description": "För mäklare och byggherrar med många projekt."
+        "name": "Pro",
+        "description": "För byggherrar och mäklare som kopplar på egna system."
+      },
+      "partner": {
+        "name": "Partner",
+        "description": "Vi sätter upp projektet och följer upp er."
       },
       "enterprise": {
         "name": "Enterprise"
@@ -2400,7 +2407,7 @@
     },
     "errors": {
       "billingUnavailable": "Betalning är inte konfigurerad i den här miljön.",
-      "subscriptionExists": "Organisationen har redan ett abonnemang. Byt plan i kundportalen.",
+      "subscriptionExists": "Organisationen har redan ett abonnemang. Byt paket i kundportalen.",
       "noCustomer": "Organisationen har inte valt abonnemang ännu."
     },
     "banner": {
@@ -2408,9 +2415,40 @@
       "trialEnded": "Provperioden är slut, så organisationen är i läsläge. Publicerade sidor är fortfarande uppe.",
       "ended": "Abonnemanget är avslutat, så organisationen är i läsläge. Publicerade sidor är fortfarande uppe.",
       "pastDue": "Betalningen för abonnemanget misslyckades. Uppdatera betalningssättet, annars går organisationen över i läsläge.",
-      "choosePlan": "Välj abonnemang",
+      "choosePlan": "Välj paket",
       "updatePayment": "Uppdatera betalning",
       "contactOwner": "Kontakta ägaren av organisationen."
+    },
+    "trialHelp": "Provperioden har allt i Pro, så ni kan bygga och förhandsgranska projekten. För att publicera väljer ni ett paket och betalar startavgiften för projektet.",
+    "terms": "Ingen bindningstid. Abonnemanget kan sägas upp när som helst och upphör vid periodens slut.",
+    "features": {
+      "inherits": "Allt i {plan}, plus:",
+      "site": "Projektsida med mallar, egna sidor och egen design",
+      "selector": "Bostadsväljare och en egen sida för varje enhet",
+      "leads": "Intresseformulär och leads med samtycke",
+      "tracking": "Spårning med samtycke: Google Analytics, Tag Manager och Meta Pixel",
+      "domains": "{count, plural, one {En egen domän} other {Upp till # egna domäner}} per projektsida",
+      "members": "Upp till {count} användare",
+      "membersUnlimited": "Obegränsat antal användare",
+      "api": "API och webhooks till mäklarsystem och CRM",
+      "embed": "Bostadsväljaren inbäddad på egen webbplats",
+      "onboarding": "Vi sätter upp projektet och utbildar er",
+      "prioritySupport": "Prioriterad support"
+    },
+    "launch": {
+      "title": "Startavgift per projekt",
+      "description": "Betalas en gång innan projektet publiceras första gången. Priset beror på antalet enheter och är detsamma i alla paket.",
+      "units": "Enheter",
+      "price": "Pris",
+      "range": "{min}–{max} enheter",
+      "over": "Fler än {units} enheter",
+      "byAgreement": "Enligt avtal"
+    },
+    "notice": {
+      "integrations": "Paketet {plan} har inte API, webhooks eller inbäddning. Det ingår i Pro och Partner. Befintliga nycklar och webhooks fungerar inte förrän ni byter paket.",
+      "embed": "Paketet {plan} har inte inbäddning på egen webbplats. Det ingår i Pro och Partner. Bostadsväljaren visas fortfarande på projektsidan.",
+      "upgrade": "Byt paket",
+      "askOwner": "Ägaren av organisationen kan byta paket."
     }
   },
   "integrations": {
@@ -2524,6 +2562,60 @@
         "publicUnits": "Bostäderna i ett publicerat projekt."
       },
       "webhooksSignature": "Webhooks signeras enligt Standard Webhooks. Använd ett bibliotek för Standard Webhooks, eller beräkna HMAC-SHA256 med hemligheten av värdena i webhook-id och webhook-timestamp och innehållet, åtskilda med punkt."
+    }
+  },
+  "launch": {
+    "title": "Lansering",
+    "pageTitle": "Lansering – {name}",
+    "description": "Projektet kan publiceras när startavgiften är betald. Avgiften betalas en gång och beror på antalet enheter.",
+    "vatNote": "Alla priser är utan moms.",
+    "notLaunched": "Inte lanserat",
+    "launched": "Lanserat",
+    "launchedOn": "Lanserat {date}.",
+    "units": "{count, plural, =0 {Projektet har inga enheter än.} one {Projektet har en enhet.} other {Projektet har # enheter.}}",
+    "covers": "Avgiften täcker upp till {limit} enheter.",
+    "unlimited": "Avgiften täcker alla enheter (avtal).",
+    "chooseTier": "Välj nivå",
+    "chooseTierHelp": "Nivån måste täcka enheterna i projektet. Ska ni lägga in fler enheter senare kan ni välja en högre nivå nu.",
+    "tierOption": "Upp till {units} enheter",
+    "tierRange": "{min}–{max} enheter",
+    "upgradeTitle": "Utöka",
+    "upgradeHelp": "Projektet kan inte ha fler enheter än avgiften täcker. Välj en högre nivå och betala mellanskillnaden.",
+    "topTier": "Projektet har den högsta nivån. Kontakta oss för fler enheter.",
+    "contact": "Projekt med fler än {units} enheter lanseras enligt avtal.",
+    "pay": "Betala {amount} och lansera",
+    "payUpgrade": "Betala {amount} och utöka",
+    "ownerOnly": "Bara ägaren av organisationen kan betala startavgiften.",
+    "choosePlanFirst": "Välj ett paket innan projektet lanseras.",
+    "choosePlan": "Välj paket",
+    "notConfigured": "Betalning är inte konfigurerad i den här miljön.",
+    "checkoutDone": "Tack! Startavgiften är betald.",
+    "checkoutPending": "Tack! Betalningen är registrerad. Det kan ta en stund innan den visas här.",
+    "checkoutCanceled": "Betalningen avbröts. Inget har ändrats.",
+    "goToLaunch": "Gå till lansering",
+    "historyTitle": "Betalningar",
+    "historyEmpty": "Inga betalningar än.",
+    "history": {
+      "date": "Datum",
+      "kind": "Vad",
+      "level": "Nivå",
+      "amount": "Belopp utan moms"
+    },
+    "kinds": {
+      "launch": "Lansering",
+      "upgrade": "Utökning",
+      "waiver": "Enligt avtal"
+    },
+    "levelUnlimited": "Ingen gräns",
+    "checkout": {
+      "launchDescription": "Startavgift för {project}: upp till {units} enheter",
+      "upgradeDescription": "Utökning för {project}: upp till {units} enheter"
+    },
+    "errors": {
+      "billingUnavailable": "Betalning är inte konfigurerad i den här miljön.",
+      "choosePlanFirst": "Välj ett paket under Inställningar → Abonnemang innan projektet lanseras.",
+      "contactUs": "Projektet har fler enheter än nivåerna täcker. Kontakta oss för ett avtal.",
+      "tierUnavailable": "Nivån kan inte väljas just nu. Ladda om sidan och försök igen."
     }
   }
 }

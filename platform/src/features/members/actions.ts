@@ -111,6 +111,9 @@ export async function inviteMember(
           return fail("invalidInput", { projectIds: "required" });
         case "42501":
           return fail("forbidden");
+        // Pakken har ikke plass til flere brukere (app.limit_members).
+        case "P0413":
+          return fail("planLimit");
         default:
           throw error;
       }
@@ -143,6 +146,10 @@ export async function resendInvitation(
     if (error) {
       if (postgresErrorCode(error) === "42501") {
         return fail("forbidden");
+      }
+      // En utløpt invitasjon tar en plass igjen, og pakken er full.
+      if (postgresErrorCode(error) === "P0413") {
+        return fail("planLimit");
       }
       throw error;
     }

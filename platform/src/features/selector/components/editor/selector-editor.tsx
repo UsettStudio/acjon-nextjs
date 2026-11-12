@@ -49,6 +49,7 @@ import type { EditorUnit, EditorView, SelectorEditorData } from "@/features/sele
 import { flattenViews } from "@/features/selector/views";
 import type { UnitStatus } from "@/features/units/fields";
 import { useUnitsRealtime } from "@/features/units/use-units-realtime";
+import type { Plan } from "@/lib/billing/plans";
 import { cn } from "@/lib/utils";
 
 const NO_HOTSPOTS: EditorHotspot[] = [];
@@ -127,6 +128,7 @@ export function SelectorEditor({
   data,
   canEdit,
   canSell,
+  embed,
 }: {
   organizationId: string;
   orgSlug: string;
@@ -136,6 +138,8 @@ export function SelectorEditor({
   data: SelectorEditorData;
   canEdit: boolean;
   canSell: boolean;
+  /** Innbygging i pakken: koden vises bare når den er med. */
+  embed: { allowed: boolean; plan: Plan; billingHref: string | null };
 }) {
   const t = useTranslations("selector.editor");
   const tErrors = useTranslations("errors");
@@ -541,6 +545,7 @@ export function SelectorEditor({
           organizationId={organizationId}
           selectorId={selectorId}
           projectName={projectName}
+          embed={embed}
           publish={publish}
           settings={settings}
           canEdit={canEdit}

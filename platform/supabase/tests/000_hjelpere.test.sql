@@ -481,6 +481,9 @@ begin
 
   perform public.rate_limit_hit(v_org, 'lead:testhash', 5, 60);
 
+  -- Prosjektet må være lansert før det publiseres (fase 6). Frafall uten grense.
+  perform public.waive_project_launch(v_project, null, 'Testdata');
+
   -- Publisering, statusendring og innlogging som eier: gir page_versions,
   -- unit_status_events, audit_log og webhook_deliveries.
   perform tests.login_as(v_owner);

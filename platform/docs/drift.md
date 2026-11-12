@@ -1,6 +1,6 @@
 # Drift og personvern
 
-Rutiner for å drifte plattformen. Oppsettet av kontoene står i [README](../README.md), og arkitekturen i [arkitektur.md](arkitektur.md).
+Rutiner for å drifte plattformen. Oppsettet av kontoene står i [kontoer.md](kontoer.md), og arkitekturen i [arkitektur.md](arkitektur.md).
 
 ## Tjenester og regioner
 
@@ -11,7 +11,7 @@ All kundedata lagres i EU. Avtale om databehandling (DPA) inngås med alle under
 | Supabase | Database, innlogging, filer og sanntid | Stockholm (`eu-north-1`) | Alt: brukere, leads, logger |
 | Vercel | App og publiserte sider | Funksjoner i Stockholm (`arn1`), CDN globalt | Bare i forespørsler underveis |
 | Resend | E-post (invitasjoner, leads, varsler) | EU | Mottaker og innhold i e-posten |
-| Stripe | Abonnement og betaling | Avtale med Stripe Payments Europe (Irland). Data kan behandles utenfor EU etter EUs standardavtaler | Kundens kontaktperson og betaling |
+| Stripe | Abonnement (pakkene) og oppstartsavgift per prosjekt | Avtale med Stripe Payments Europe (Irland). Data kan behandles utenfor EU etter EUs standardavtaler | Kundens kontaktperson og betaling |
 | Sentry | Feilsporing | EU | Ingen: brukerinfo, cookies, hoder og innhold sendes ikke |
 | Cloudflare Turnstile | Robotvern på interesseskjemaet | Globalt | IP-adresse ved innsending |
 | Kartverket | Adressesøk og kart | Norge | Ingen |
@@ -40,6 +40,22 @@ All kundedata lagres i EU. Avtale om databehandling (DPA) inngås med alle under
 | Planlagte jobber | Vercel Cron-loggen og Sentry | Feil i en jobb |
 | Database | Supabase: CPU, minne, tilkoblinger og trege spørringer | Over 80 % i 10 minutter |
 | Ytelse | Lighthouse CI i hver kjøring av CI (LCP under 2,5 s på mobil) | CI feiler |
+
+## Pakker og oppstartsavgift
+
+- **Månedsprisene** for pakkene endres i Stripe. Nye priser får nye id-er: legg dem inn i `STRIPE_PRICE_START`, `STRIPE_PRICE_PRO` og `STRIPE_PRICE_PARTNER`, og i kundeportalen. Abonnementer på gamle priser fortsetter til kunden bytter.
+- **Oppstartsavgiften** står i `src/lib/billing/launch.ts` og endres med en ny utrulling. Endringen gjelder nye lanseringer og utvidelser, ikke det som er betalt.
+- **Lansering etter avtale** (prosjekter med mer enn 199 enheter, eller annen avtale). Kjør i SQL-editoren i Supabase, med id-en til prosjektet:
+
+  ```sql
+  -- Ingen grense for antall enheter:
+  select public.waive_project_launch('{prosjekt-id}', null, 'Avtale 2026-11: Fjordbyen, 260 enheter');
+  -- Eller en grense:
+  select public.waive_project_launch('{prosjekt-id}', 300, 'Avtale 2026-11: Fjordbyen, inntil 300 enheter');
+  ```
+
+  Det står i revisjonsloggen med notatet. Avgiften etter avtalen faktureres i Stripe for seg (faktura uten abonnement).
+- **Betaling som ikke er registrert.** Webhooken og returen fra Checkout registrerer betalingen. Står et prosjekt som ikke lansert etter betalt Checkout, se etter feil i Sentry (`stripe_event`) og send hendelsen på nytt fra Stripe (Developers → Events → Resend). Beløpet uten mva. må være det samme som da betalingen ble gjort klar, ellers avvises den.
 
 ## Planlagte jobber
 
@@ -130,7 +146,7 @@ Kundenes API-nøkler og webhook-hemmeligheter byttes av kunden under Innstilling
   - publisert boligvelger og prosjektside
   - statusendringer og tre leads
 - Første gang trengs `DEMO_PASSWORD` for brukeren `demo@example.com`. Med `--email` får en bruker som finnes, organisasjonen. `--replace` lager den på nytt.
-- Skriptet trenger `SUPABASE_SECRET_KEY` for å logge inn som brukeren og slette en gammel demo. Alt annet gjøres som brukeren, gjennom RLS.
+- Skriptet trenger `SUPABASE_SECRET_KEY` for å logge inn som brukeren, slette en gammel demo og lansere prosjektet uten oppstartsavgift. Alt annet gjøres som brukeren, gjennom RLS.
 - Skriptet skriver aldri ut nøkler eller passord.
 
 ## Ytelse

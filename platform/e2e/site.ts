@@ -1,6 +1,7 @@
 import { expect, type Page } from "@playwright/test";
 
 import { field } from "./helpers";
+import { waiveLaunchForPage } from "./support/launch";
 
 export const port = Number(process.env.E2E_PORT ?? 3000);
 
@@ -19,7 +20,9 @@ export async function createAndPublishSite(page: Page, orgSlug: string, template
   await expect(page.getByRole("list", { name: "Blokker på siden" })).toBeVisible();
 }
 
+/** Publiserer prosjektsiden. Prosjektet lanseres først uten avgift (oppsett, se support/launch.ts). */
 export async function publish(page: Page) {
+  await waiveLaunchForPage(page);
   await expect(page.getByText("Utkastet er lagret")).toBeVisible({ timeout: 10_000 });
   await page.getByRole("button", { name: /^Publiser/ }).click();
   await expect(page.getByText("Prosjektsiden er publisert.")).toBeVisible();

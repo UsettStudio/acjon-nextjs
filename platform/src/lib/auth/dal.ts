@@ -4,6 +4,7 @@ import { cache } from "react";
 import { notFound, redirect } from "next/navigation";
 
 import { isMemberRole, type MemberRole } from "@/lib/auth/permissions";
+import { isPlan, type Plan } from "@/lib/billing/plans";
 import { subscriptionAllowsWrites, type SubscriptionStatus } from "@/lib/billing/subscription";
 import { createClient } from "@/lib/supabase/server";
 
@@ -46,6 +47,8 @@ export type OrganizationSummary = {
   trialEndsAt: string | null;
   /** Organisasjonen har et abonnement i Stripe (ikke bare prøveperioden). */
   hasSubscription: boolean;
+  /** Pakken som styrer grensene og funksjonene (se lib/billing/plans.ts). */
+  plan: Plan;
 };
 
 export type Membership = {
@@ -61,7 +64,7 @@ export const getMemberships = cache(async (): Promise<Membership[]> => {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("memberships")
-    .select("role, organization:organizations(id, name, slug, subscription_status, trial_ends_at, stripe_subscription_id)")
+    .select("role, organization:organizations(id, name, slug, plan, subscription_status, trial_ends_at, stripe_subscription_id)")
     .eq("user_id", user.id)
     .order("created_at");
   if (error) {
@@ -81,6 +84,8 @@ export const getMemberships = cache(async (): Promise<Membership[]> => {
           subscriptionStatus: row.organization.subscription_status,
           trialEndsAt: row.organization.trial_ends_at,
           hasSubscription: row.organization.stripe_subscription_id !== null,
+          // En ukjent pakke gir de strengeste grensene, som i databasen.
+          plan: isPlan(row.organization.plan) ? row.organization.plan : "start",
         },
       },
     ];

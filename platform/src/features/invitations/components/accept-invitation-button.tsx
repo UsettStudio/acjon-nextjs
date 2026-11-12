@@ -24,7 +24,9 @@ export function AcceptInvitationButton({ token }: { token: string }) {
             ? t("invalid")
             : result.error === "wrongAccount"
               ? t("emailNotConfirmed")
-              : tErrors(result.error as CommonActionError),
+              : result.error === "organizationFull"
+                ? t("organizationFull")
+                : tErrors(result.error as CommonActionError),
         );
       }
     });

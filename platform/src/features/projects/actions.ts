@@ -40,9 +40,6 @@ function mapWriteError(error: unknown): never {
       throw new ActionError("forbidden");
     case "PGRST116":
       throw new ActionError("notFound");
-    // Planen har ikke plass til flere aktive prosjekter (app.enforce_project_limit).
-    case "P0402":
-      throw new ActionError("planLimit");
     default:
       throw error;
   }

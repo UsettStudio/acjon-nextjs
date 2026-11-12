@@ -56,6 +56,8 @@ export function apiErrorFromDatabase(error: unknown): Response {
       return apiError(400, "invalid_request", error instanceof Object && "message" in error ? String(error.message) : "Ugyldig forespørsel.");
     case "25006":
       return apiError(403, "read_only", "Organisasjonen er i lesemodus fordi abonnementet er utløpt.");
+    case "P0403":
+      return apiError(403, "plan_required", "API-et er ikke med i pakken til organisasjonen. Det er med i Pro og Partner.");
     default:
       console.error(error);
       Sentry.captureException(error);

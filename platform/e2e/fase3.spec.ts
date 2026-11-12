@@ -3,6 +3,7 @@ import { expect, test, type Page } from "@playwright/test";
 import { anonymousPage, buildSelector, facadeImage, IMAGE_HEIGHT, IMAGE_WIDTH, pointIn, setUpProject } from "./boligvelger";
 import { createOrganization, emailTo, field, signUp, uniqueId } from "./helpers";
 import { createAndPublishSite, publish, siteAddress } from "./site";
+import { waiveLaunchForPage } from "./support/launch";
 
 /** Legger til en kontaktperson som får varsel om leads. */
 async function addLeadContact(page: Page, orgSlug: string, email: string) {
@@ -191,7 +192,7 @@ test("akseptkriterium 1 til publisering: ny bruker importerer 24 enheter, marker
   // Prosjektets oversikt viser fremdriften i oppstarten som sjekkliste
   await page.getByRole("navigation", { name: "Prosjektmeny" }).getByRole("link", { name: "Oversikt" }).click();
   const checklist = page.locator("[data-slot=card]").filter({ has: page.getByRole("heading", { name: "Kom i gang" }) });
-  await expect(checklist.getByText("2 av 6 steg er fullført.")).toBeVisible();
+  await expect(checklist.getByText("2 av 7 steg er fullført.")).toBeVisible();
   await expect(checklist.getByRole("link", { name: "Legg inn enheter" })).toBeVisible();
   await page.getByRole("link", { name: "Enheter", exact: true }).click();
 
@@ -249,6 +250,8 @@ test("akseptkriterium 1 til publisering: ny bruker importerer 24 enheter, marker
   }
   await expect(page.getByText("24 av 24 enheter markert")).toBeVisible();
   await expect(page.getByText("Alle endringer er lagret")).toBeVisible({ timeout: 15_000 });
+  // Lanseringen med oppstartsavgift testes i fase6.spec.ts. Her lanseres prosjektet uten avgift.
+  await waiveLaunchForPage(page);
   await page.getByRole("button", { name: "Publiser", exact: true }).click();
   await expect(page.getByText("Boligvelgeren er publisert.")).toBeVisible();
 

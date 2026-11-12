@@ -7,7 +7,9 @@ import { CopyButton } from "@/components/admin/copy-button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { PlanFeatureNotice } from "@/features/billing/components/plan-feature-notice";
 import { iframeSnippet, webComponentSnippet, type EmbedListOption } from "@/features/selector/embed-code";
+import type { Plan } from "@/lib/billing/plans";
 
 function CodeBlock({ code, label }: { code: string; label: string }) {
   return (
@@ -31,11 +33,14 @@ export function EmbedDialog({
   onOpenChange,
   selectorId,
   projectName,
+  embed,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   selectorId: string;
   projectName: string;
+  /** Om pakken har innbygging og det offentlige lese-API-et (Pro og Partner). */
+  embed: { allowed: boolean; plan: Plan; billingHref: string | null };
 }) {
   const t = useTranslations("selector.embed");
   const tCommon = useTranslations("common");
@@ -54,7 +59,8 @@ export function EmbedDialog({
           <DialogTitle>{t("title")}</DialogTitle>
           <DialogDescription>{t("description")}</DialogDescription>
         </DialogHeader>
-        <div className="grid gap-5">
+        {embed.allowed ? null : <PlanFeatureNotice kind="embed" plan={embed.plan} billingHref={embed.billingHref} />}
+        <div className="grid gap-5" hidden={!embed.allowed}>
           <div className="flex flex-wrap gap-x-6 gap-y-3">
             <Label className="flex items-center gap-2 font-normal">
               <input type="checkbox" className="size-4" checked={showFilters} onChange={(event) => setShowFilters(event.target.checked)} />

@@ -27,11 +27,22 @@ export function publicJson(data: unknown): Response {
   });
 }
 
-export function publicError(status: 400 | 404 | 500, code: string, message: string): Response {
+export function publicError(status: 400 | 403 | 404 | 500, code: string, message: string): Response {
   return Response.json(
     { error: { code, message } },
-    { status, headers: { ...COMMON_HEADERS, "Cache-Control": status === 404 ? "public, max-age=0, s-maxage=10" : "no-store" } },
+    {
+      status,
+      headers: {
+        ...COMMON_HEADERS,
+        "Cache-Control": status === 404 || status === 403 ? "public, max-age=0, s-maxage=10" : "no-store",
+      },
+    },
   );
+}
+
+/** Pakken til prosjektet har ikke det offentlige lese-API-et (bare Pro, Partner og prøveperioden). */
+export function publicPlanRequired(): Response {
+  return publicError(403, "plan_required", "Det offentlige API-et er ikke med i pakken til dette prosjektet.");
 }
 
 export function publicPreflight(): Response {

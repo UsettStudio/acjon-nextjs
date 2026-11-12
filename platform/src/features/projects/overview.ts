@@ -18,6 +18,8 @@ export type ProjectOverview = {
   markedUnits: number;
   selector: { id: string; published: boolean } | null;
   site: { id: string; published: boolean } | null;
+  /** Oppstartsavgiften er betalt eller frafalt, så prosjektet kan publiseres. */
+  launched: boolean;
 };
 
 const target = z.object({ id: z.uuid(), published: z.boolean() }).nullable();
@@ -35,6 +37,7 @@ const overviewSchema = z.object({
   marked_units: z.number().int().nonnegative(),
   selector: target,
   site: target,
+  launch: z.object({ launched_at: z.string().nullable(), unit_limit: z.number().int().nullable() }).nullable(),
 });
 
 export function parseProjectOverview(data: unknown): ProjectOverview {
@@ -58,10 +61,11 @@ export function parseProjectOverview(data: unknown): ProjectOverview {
     markedUnits: parsed.marked_units,
     selector: parsed.selector,
     site: parsed.site,
+    launched: parsed.launch?.launched_at != null,
   };
 }
 
-export const ONBOARDING_STEPS = ["organization", "project", "units", "selector", "template", "publish"] as const;
+export const ONBOARDING_STEPS = ["organization", "project", "units", "selector", "template", "launch", "publish"] as const;
 export type OnboardingStepKey = (typeof ONBOARDING_STEPS)[number];
 
 export type OnboardingStep = {
@@ -80,7 +84,7 @@ export type OnboardingStep = {
 /**
  * Sjekklisten fra oppstartsveiviseren i spesifikasjonen: opprett organisasjon,
  * opprett prosjekt, legg inn eller importer enheter, last opp bilde og marker,
- * velg mal og publiser.
+ * velg mal, lanser (betal oppstartsavgiften) og publiser.
  *
  * Publiseringen er ferdig når prosjektsiden er publisert, og boligvelgeren også
  * er det hvis prosjektet har en. En upublisert boligvelger vises ikke på siden.
@@ -109,6 +113,7 @@ export function onboardingSteps(overview: ProjectOverview, projectPath: string):
           : null,
     },
     { key: "template", done: site !== null, href: `${projectPath}/site`, note: null },
+    { key: "launch", done: overview.launched, href: `${projectPath}/launch`, note: null },
     {
       key: "publish",
       done: sitePublished && selectorReady,

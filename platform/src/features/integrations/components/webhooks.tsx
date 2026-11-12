@@ -408,11 +408,14 @@ export function WebhooksSection({
   webhooks,
   projects,
   readOnly,
+  canCreate,
 }: {
   organizationId: string;
   webhooks: WebhookItem[];
   projects: { id: string; name: string }[];
   readOnly: boolean;
+  /** Pakken har webhooks. Webhooks som finnes, kan endres og slettes uansett. */
+  canCreate: boolean;
 }) {
   const t = useTranslations("integrations.webhooks");
   const [creating, setCreating] = useState(false);
@@ -425,7 +428,7 @@ export function WebhooksSection({
           </h2>
           <p className="text-sm text-muted-foreground">{t("description")}</p>
         </div>
-        <Button disabled={readOnly} onClick={() => setCreating(true)}>
+        <Button disabled={readOnly || !canCreate} onClick={() => setCreating(true)}>
           <PlusIcon aria-hidden="true" />
           {t("create")}
         </Button>

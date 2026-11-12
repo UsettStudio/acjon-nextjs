@@ -2,7 +2,7 @@ import "server-only";
 
 import Stripe from "stripe";
 
-import { isPurchasablePlan, type Plan, type PurchasablePlan } from "@/lib/billing/plans";
+import { PURCHASABLE_PLANS, isPurchasablePlan, type Plan, type PurchasablePlan } from "@/lib/billing/plans";
 import { serverEnv } from "@/lib/env.server";
 
 /**
@@ -42,12 +42,12 @@ export function priceIdFor(plan: PurchasablePlan): string | undefined {
 }
 
 /**
- * Planen til en Stripe-pris. Prisene i miljøvariablene gjelder først. Andre
+ * Pakken til en Stripe-pris. Prisene i miljøvariablene gjelder først. Andre
  * priser kan merkes med metadata «plan» i Stripe (for eksempel enterprise).
  */
 export function planForPrice(priceId: string, metadataPlan?: string | null): Exclude<Plan, "trial"> | null {
   const prices = serverEnv().stripePrices;
-  for (const plan of ["start", "growth", "pro"] as const) {
+  for (const plan of PURCHASABLE_PLANS) {
     if (prices[plan] === priceId) {
       return plan;
     }

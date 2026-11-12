@@ -3,11 +3,12 @@
 //
 //   /dns-query        DNS over HTTPS (JSON-formatet til Cloudflare). Postene settes
 //                     av testene med POST /_control/dns.
-//   /v1/...           Den delen av Stripe sitt API appen bruker: kunder, Checkout,
-//                     abonnementer, kundeportal og priser.
-//   /checkout/{id}    En enkel betalingsside. «Betal» lager abonnementet, sender
-//                     en signert webhook til appen slik Stripe gjør, og sender
-//                     nettleseren tilbake til appen.
+//   /v1/...           Den delen av Stripe sitt API appen bruker: kunder, Checkout
+//                     (abonnement og engangsbetaling), abonnementer, kundeportal og priser.
+//   /checkout/{id}    En enkel betalingsside. «Betal» lager abonnementet eller
+//                     registrerer betalingen (oppstartsavgiften), sender en signert
+//                     webhook til appen slik Stripe gjør, og sender nettleseren
+//                     tilbake til appen.
 //
 // Bare for tester. Ingen data lagres utenfor minnet.
 import { createHmac, randomUUID } from "node:crypto";
@@ -24,9 +25,9 @@ const customers = new Map();
 const sessions = new Map();
 const subscriptions = new Map();
 const PRICES = {
-  price_e2e_start: { amount: 49000, plan: "start" },
-  price_e2e_growth: { amount: 149000, plan: "growth" },
-  price_e2e_pro: { amount: 390000, plan: "pro" },
+  price_e2e_start: { amount: 89000, plan: "start" },
+  price_e2e_pro: { amount: 219000, plan: "pro" },
+  price_e2e_partner: { amount: 399000, plan: "partner" },
 };
 
 function json(response, status, body) {
@@ -52,6 +53,35 @@ function priceObject(id) {
   return price
     ? { id, object: "price", unit_amount: price.amount, currency: "nok", recurring: { interval: "month" }, metadata: {} }
     : null;
+}
+
+/** Feltene i skjemaet med et prefiks, for eksempel metadata[kind] → { kind }. */
+function formObject(form, prefix) {
+  const result = {};
+  for (const [key, value] of form.entries()) {
+    const match = new RegExp(`^${prefix.replace(/[[\]]/g, "\\$&")}\\[([^\\]]+)\\]$`).exec(key);
+    if (match) {
+      result[match[1]] = value;
+    }
+  }
+  return result;
+}
+
+function sessionObject(session) {
+  return {
+    id: session.id,
+    object: "checkout.session",
+    mode: session.mode,
+    customer: session.customer,
+    client_reference_id: session.clientReferenceId,
+    metadata: session.metadata,
+    payment_status: session.paid ? "paid" : "unpaid",
+    status: session.paid ? "complete" : "open",
+    amount_subtotal: session.amount,
+    amount_total: session.amount,
+    payment_intent: session.paymentIntent,
+    subscription: session.subscription ?? null,
+  };
 }
 
 function subscriptionObject(subscription) {
@@ -129,16 +159,31 @@ const server = createServer(async (request, response) => {
       if (path === "/v1/checkout/sessions" && request.method === "POST") {
         const id = `cs_e2e${randomUUID().replaceAll("-", "").slice(0, 16)}`;
         const trialEnd = form.get("subscription_data[trial_end]");
+        const mode = form.get("mode") ?? "subscription";
+        const amount = form.get("line_items[0][price_data][unit_amount]");
         sessions.set(id, {
           id,
+          mode,
           customer: form.get("customer"),
           price: form.get("line_items[0][price]"),
+          amount: amount ? Number(amount) : null,
+          product: form.get("line_items[0][price_data][product]"),
+          metadata: formObject(form, "metadata"),
           successUrl: form.get("success_url"),
           cancelUrl: form.get("cancel_url"),
           clientReferenceId: form.get("client_reference_id"),
           trialEnd: trialEnd ? Number(trialEnd) : null,
+          paid: false,
+          paymentIntent: null,
         });
-        return json(response, 200, { id, object: "checkout.session", mode: "subscription", url: `${base}/checkout/${id}` });
+        return json(response, 200, { ...sessionObject(sessions.get(id)), url: `${base}/checkout/${id}` });
+      }
+      const sessionMatch = /^\/v1\/checkout\/sessions\/([^/]+)$/.exec(path);
+      if (sessionMatch && request.method === "GET") {
+        const session = sessions.get(sessionMatch[1]);
+        return session
+          ? json(response, 200, sessionObject(session))
+          : json(response, 404, { error: { type: "invalid_request_error", message: "No such checkout.session" } });
       }
       const subscriptionMatch = /^\/v1\/subscriptions\/([^/]+)$/.exec(path);
       if (subscriptionMatch && request.method === "GET") {
@@ -167,11 +212,19 @@ const server = createServer(async (request, response) => {
         return json(response, 404, { error: "Ukjent økt" });
       }
       if (!checkoutMatch[2]) {
-        const plan = PRICES[session.price]?.plan ?? "ukjent";
+        const what = session.mode === "payment" ? `Beløp: ${session.amount / 100} kr` : `Plan: ${PRICES[session.price]?.plan ?? "ukjent"}`;
         return html(
           response,
-          `<h1>Betaling (test)</h1><p>Plan: ${plan}</p><form method="post" action="/checkout/${session.id}/pay"><button>Betal</button></form><a href="${session.cancelUrl}">Avbryt</a>`,
+          `<h1>Betaling (test)</h1><p>${what}</p><form method="post" action="/checkout/${session.id}/pay"><button>Betal</button></form><a href="${session.cancelUrl}">Avbryt</a>`,
         );
+      }
+      const successUrl = session.successUrl.replace("{CHECKOUT_SESSION_ID}", session.id);
+      if (session.mode === "payment") {
+        session.paid = true;
+        session.paymentIntent = `pi_e2e${randomUUID().replaceAll("-", "").slice(0, 16)}`;
+        await sendWebhook("checkout.session.completed", sessionObject(session));
+        response.writeHead(303, { location: successUrl });
+        return response.end();
       }
       const id = `sub_e2e${randomUUID().replaceAll("-", "").slice(0, 16)}`;
       const now = Math.floor(Date.now() / 1000);
@@ -184,15 +237,10 @@ const server = createServer(async (request, response) => {
         cancelAtPeriodEnd: false,
         periodEnd: session.trialEnd ?? now + 30 * 86400,
       });
-      await sendWebhook("checkout.session.completed", {
-        id: session.id,
-        object: "checkout.session",
-        mode: "subscription",
-        customer: session.customer,
-        subscription: id,
-        client_reference_id: session.clientReferenceId,
-      });
-      response.writeHead(303, { location: session.successUrl });
+      session.paid = true;
+      session.subscription = id;
+      await sendWebhook("checkout.session.completed", sessionObject(session));
+      response.writeHead(303, { location: successUrl });
       return response.end();
     }
     if (path === "/portal") {

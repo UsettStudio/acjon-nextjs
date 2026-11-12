@@ -1,13 +1,14 @@
-# Boligplattform
+# excip
 
 Selvbetjent SaaS for boligutbyggere og eiendomsmeglere. Kunden setter selv opp prosjekter og enheter, en interaktiv boligvelger og en prosjektside, og endrer status som oppdateres overalt med en gang.
 
-Produktnavn og plattformdomene er ikke bestemt ennå. «Boligplattform» er et arbeidsnavn og settes med miljøvariabler.
+«excip» er et arbeidsnavn, og plattformdomenet er ikke bestemt ennå. Begge settes med miljøvariabler.
 
 - [docs/arkitektur.md](docs/arkitektur.md) beskriver mappestruktur, datamodell, tilgangsmodell, offentlig API, publisering, sanntid og personvern.
 - [docs/plan.md](docs/plan.md) inneholder plan og status per fase.
 - [docs/api.md](docs/api.md) beskriver API-et, innbyggingen og webhooks.
 - [docs/drift.md](docs/drift.md) beskriver drift og personvern: underleverandører, utrulling, overvåking, sikkerhetskopi, nøkler, hendelser, innsyn og sletting.
+- [docs/kontoer.md](docs/kontoer.md) er sjekklisten for kontoene: Supabase, Vercel, Resend, Stripe, Sentry og Turnstile, med regioner og miljøvariabler.
 
 ## Status
 
@@ -19,6 +20,7 @@ Produktnavn og plattformdomene er ikke bestemt ennå. «Boligplattform» er et a
 | 3 Prosjektside | Ferdig |
 | 4 Drift | Ferdig |
 | 5 Kvalitet | Ferdig |
+| 6 Pakker og oppstartsavgift | Ferdig |
 
 Fase 0 omfatter Next.js-appen, databasen med RLS, pålogging, organisasjoner, invitasjoner, brukeradministrasjon, plattformadmin, tester og CI.
 
@@ -67,7 +69,7 @@ Fase 4 omfatter:
   - Automatisk bekreftelse og primærdomene. Vercel lager sertifikatet.
   - Underdomenet og andre domener sender besøkende til primærdomenet.
 - **Abonnement med Stripe** (Innstillinger → Abonnement):
-  - 30 dagers prøveperiode uten kort, og planer etter antall aktive prosjekter.
+  - 30 dagers prøveperiode uten kort. Planene etter antall aktive prosjekter er erstattet av pakker i fase 6.
   - Checkout, kundeportal og webhook.
   - Lesemodus med bannere og varsel på e-post. Publiserte sider tas aldri ned.
 - **Innbygging:** web-komponenten `<boligvelger-embed>` med iframe som reserve, og et offentlig lese-API med CORS.
@@ -94,6 +96,15 @@ Fase 5 omfatter:
   - Helsesjekk på `/api/health`.
   - Driftsrutiner i [docs/drift.md](docs/drift.md).
 
+Fase 6 omfatter:
+
+- **Pakker** (Innstillinger → Abonnement), kroner per måned uten mva. og uten bindingstid:
+  - Prosjektside (890): prosjektside, boligvelger, leads og sporing. 3 brukere og ett eget domene per prosjektside.
+  - Pro (2 190): i tillegg API, webhooks og innbygging på egen nettside. 10 brukere og 10 domener per prosjektside.
+  - Partner (3 990): i tillegg ubegrenset antall brukere, oppsett, opplæring og prioritert support.
+- **Oppstartsavgift per prosjekt** (prosjektmenyen → Lansering): betales én gang før prosjektet publiseres, etter antall enheter (6 900–49 900 kr, over 199 enheter etter avtale). Utvidelse til et høyere nivå koster forskjellen.
+- **Navnet excip** og sjekklisten for kontoene i [docs/kontoer.md](docs/kontoer.md).
+
 ## Kom i gang lokalt
 
 Krever Node.js 22 og Docker. Supabase CLI følger med som utviklingsavhengighet.
@@ -119,7 +130,7 @@ Uten `RESEND_API_KEY` sendes ikke invitasjoner på e-post. Invitasjonslenken vis
 
 Publiserte prosjektsider åpnes lokalt på `http://{underdomene}.localhost:3000` når `NEXT_PUBLIC_PLATFORM_DOMAIN=localhost:3000`. Chrome og Firefox sender `*.localhost` til maskinen selv.
 
-Uten Stripe-nøkler vises planene, men de kan ikke velges. Uten Vercel-token sjekkes egne domener bare med DNS over HTTPS. Ende-til-ende-testene starter en etterligning av Stripe og DNS (`e2e/support/fake-services.mjs`), så hele flyten testes uten kontoer.
+Uten Stripe-nøkler vises pakkene, men de kan ikke velges, og prosjekter kan ikke lanseres med betaling (bare med `waive_project_launch()`, se [docs/drift.md](docs/drift.md)). Uten Vercel-token sjekkes egne domener bare med DNS over HTTPS. Ende-til-ende-testene starter en etterligning av Stripe og DNS (`e2e/support/fake-services.mjs`), så hele flyten testes uten kontoer.
 
 Demodata (Demo Bolig AS med Fjordparken) legges inn med en egen bruker. Passordet velger du selv, og det skrives ikke ut:
 
@@ -160,26 +171,13 @@ CI (`.github/workflows/platform.yml`) kjører alt dette ved endringer i `platfor
 
 ## Miljøer og oppsett av kontoer
 
-Kontoene er ikke opprettet ennå. Slik skal de settes opp:
+Kontoene opprettes av eieren. Sjekklisten med regioner, produkter og priser i Stripe, og alle miljøvariablene, står i [docs/kontoer.md](docs/kontoer.md). Kort fortalt:
 
-1. **Supabase.** Opprett to prosjekter, staging og produksjon, i region Stockholm (`eu-north-1`). Kjør migrasjonene med `npx supabase link` og `npx supabase db push`. Under Auth:
-   - Sett Site URL til `https://app.[PLATTFORMDOMENE]`.
-   - Legg `https://app.[PLATTFORMDOMENE]/**` til som redirect-URL.
-   - Slå på e-postbekreftelse og sett minste passordlengde til 10.
-   - Send e-post via Resend SMTP.
-   - Lim inn de norske e-postmalene fra `supabase/templates/`. Lenkene går til `/auth/confirm` med `token_hash`, slik at de virker uansett hvilken nettleser de åpnes i. Lokalt brukes malene automatisk (`config.toml`).
-2. **Vercel.** Opprett et prosjekt med Root Directory `platform`. Funksjonene kjører i Stockholm (`arn1`, se `vercel.json`). Miljøvariablene står i `.env.example`.
-   - Legg til `app.[PLATTFORMDOMENE]` og wildcard-domenet `*.[PLATTFORMDOMENE]`. Wildcard krever at domenet bruker Vercel sine navnetjenere.
-   - Lag et API-token med tilgang til prosjektet, og sett `VERCEL_API_TOKEN`, `VERCEL_PROJECT_ID` og eventuelt `VERCEL_TEAM_ID`. Da legges kundenes egne domener til i prosjektet automatisk.
-   - Sett `CRON_SECRET`. De planlagte jobbene i `vercel.json` sender webhooks hvert minutt, sjekker domener hvert femte minutt og sender varsler om prøveperioden daglig. Jobben hvert minutt krever Vercel Pro.
-3. **Resend.** Bekreft avsenderdomenet og sett `RESEND_API_KEY` og `EMAIL_FROM`.
-4. **Stripe.**
-   - Lag ett produkt med tre månedspriser (Start, Vekst og Proff), og sett `STRIPE_PRICE_START`, `STRIPE_PRICE_GROWTH` og `STRIPE_PRICE_PRO`.
-   - Sett `STRIPE_SECRET_KEY`.
-   - Lag en webhook til `https://app.[PLATTFORMDOMENE]/api/stripe/webhook` med hendelsene `checkout.session.completed`, `customer.subscription.*` og `invoice.paid`, `invoice.payment_failed` og `invoice.payment_action_required`. Sett `STRIPE_WEBHOOK_SECRET`.
-   - Sett opp kundeportalen med de tre prisene, så kunden kan bytte plan og si opp der.
-   - Med Stripe Tax: sett `STRIPE_AUTOMATIC_TAX=true`, så mva. legges til i Checkout.
-5. **Sentry.** Opprett et prosjekt i EU-regionen og sett `NEXT_PUBLIC_SENTRY_DSN`, samt `SENTRY_ORG`, `SENTRY_PROJECT` og `SENTRY_AUTH_TOKEN` for kildekart. Personopplysninger, cookies, hoder og forespørselsinnhold sendes ikke.
+1. **Supabase:** staging og produksjon i Stockholm (`eu-north-1`), migrasjonene med `npx supabase db push`, og Auth med e-postmalene fra `supabase/templates/`.
+2. **Vercel:** Root Directory `platform`, funksjonene i Stockholm (`arn1`), wildcard-domene og API-token for kundenes egne domener.
+3. **Resend:** avsenderdomenet i EU.
+4. **Stripe:** tre månedspriser (Prosjektside, Pro og Partner), produktet «Oppstart per prosjekt», kundeportalen og webhooken.
+5. **Sentry** i EU-regionen, og **Cloudflare Turnstile** for interesseskjemaet.
 
 ## Innhold
 
@@ -191,7 +189,7 @@ Kontoene er ikke opprettet ennå. Slik skal de settes opp:
 | `src/components/` | shadcn/ui og felles admin-komponenter |
 | `messages/` | All tekst på bokmål, engelsk og svensk |
 | `supabase/migrations/` | Datamodell, RLS, funksjoner, lagring, sanntid og jobber |
-| `supabase/tests/` | pgTAP-tester (467 tester) |
+| `supabase/tests/` | pgTAP-tester (553 tester) |
 | `supabase/templates/` | Norske e-postmaler for Supabase Auth |
 | `src/embed/` | Web-komponenten for innbygging, bygget til `public/embed/v1.js` |
 | `e2e/` | Playwright-tester, med en Excel-fil for importtesten i `e2e/fixtures/`. Fasadebildet til boligvelgertestene lages med sharp. `e2e/support/` har etterligningen av Stripe og DNS. |

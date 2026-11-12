@@ -2,7 +2,7 @@
 
 import { CheckIcon, CircleAlertIcon, CircleCheckIcon, CreditCardIcon, LoaderCircleIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
 
@@ -10,11 +10,13 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { openBillingPortal, startCheckout } from "@/features/billing/actions";
 import type { BillingOverview } from "@/features/billing/queries";
-import { PROJECT_LIMITS, PURCHASABLE_PLANS, type PurchasablePlan } from "@/lib/billing/plans";
+import { LAUNCH_MAX_SELF_SERVE_UNITS, LAUNCH_TIERS } from "@/lib/billing/launch";
+import { PLAN_LIMITS, PURCHASABLE_PLANS, type PurchasablePlan } from "@/lib/billing/plans";
 import { trialDaysLeft } from "@/lib/billing/subscription";
-import { formatDate } from "@/lib/format";
+import { formatCurrency, formatDate, type FormatLocale } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
 export type PlanPriceLabel = { amount: string; interval: "day" | "week" | "month" | "year" | null } | null;
@@ -28,28 +30,96 @@ function useBillingErrors() {
       : tErrors(code as "unknown");
 }
 
-function UsageMeter({ used, limit }: { used: number; limit: number | null }) {
-  const t = useTranslations("billing");
-  const share = limit ? Math.min(100, Math.round((used / limit) * 100)) : 0;
+type FeatureItem =
+  | { key: "site" | "selector" | "leads" | "tracking" | "api" | "embed" | "membersUnlimited" | "onboarding" | "prioritySupport" }
+  | { key: "domains" | "members"; count: number };
+
+/**
+ * Hva hver pakke har, i rekkefølgen kunden leser det. Grensene hentes fra
+ * PLAN_LIMITS, så teksten alltid stemmer med det databasen håndhever.
+ */
+const PLAN_FEATURES: Record<PurchasablePlan, { inherits: PurchasablePlan | null; items: FeatureItem[] }> = {
+  start: {
+    inherits: null,
+    items: [
+      { key: "site" },
+      { key: "selector" },
+      { key: "leads" },
+      { key: "tracking" },
+      { key: "domains", count: PLAN_LIMITS.start.domainsPerSite },
+      { key: "members", count: PLAN_LIMITS.start.members ?? 0 },
+    ],
+  },
+  pro: {
+    inherits: "start",
+    items: [
+      { key: "api" },
+      { key: "embed" },
+      { key: "domains", count: PLAN_LIMITS.pro.domainsPerSite },
+      { key: "members", count: PLAN_LIMITS.pro.members ?? 0 },
+    ],
+  },
+  partner: {
+    inherits: "pro",
+    items: [{ key: "membersUnlimited" }, { key: "onboarding" }, { key: "prioritySupport" }],
+  },
+};
+
+function PlanFeatures({ plan }: { plan: PurchasablePlan }) {
+  const t = useTranslations("billing.features");
+  const tPlans = useTranslations("billing.plans");
+  const { inherits, items } = PLAN_FEATURES[plan];
   return (
     <div className="grid gap-2">
-      <p className="text-sm">
-        {limit === null ? t("usageUnlimited", { used }) : t("usage", { used, limit })}
-      </p>
-      {limit !== null ? (
-        <div
-          role="progressbar"
-          aria-label={t("usageLabel")}
-          aria-valuemin={0}
-          aria-valuemax={limit}
-          aria-valuenow={Math.min(used, limit)}
-          className="h-2 w-full max-w-md overflow-hidden rounded-full bg-muted"
-        >
-          <div className={cn("h-full rounded-full", used >= limit ? "bg-amber-500" : "bg-primary")} style={{ width: `${share}%` }} />
-        </div>
-      ) : null}
-      <p className="text-sm text-muted-foreground">{t("usageHelp")}</p>
+      {inherits ? <p className="text-sm font-medium">{t("inherits", { plan: tPlans(`${inherits}.name`) })}</p> : null}
+      <ul className="grid gap-2">
+        {items.map((item) => (
+          <li key={item.key} className="flex items-start gap-2 text-sm">
+            <CheckIcon className="mt-0.5 size-4 shrink-0 text-emerald-600" aria-hidden="true" />
+            {"count" in item ? t(item.key, { count: item.count }) : t(item.key)}
+          </li>
+        ))}
+      </ul>
     </div>
+  );
+}
+
+/** Oppstartsavgiften per prosjekt, etter antall enheter (lib/billing/launch.ts). */
+function LaunchPrices() {
+  const t = useTranslations("billing.launch");
+  const locale = useLocale() as FormatLocale;
+  return (
+    <section aria-labelledby="oppstart" className="grid gap-4">
+      <div className="grid gap-1">
+        <h2 id="oppstart" className="text-lg font-semibold">
+          {t("title")}
+        </h2>
+        <p className="text-sm text-muted-foreground">{t("description")}</p>
+      </div>
+      <div className="max-w-xl rounded-lg border">
+        <Table>
+          <TableCaption className="sr-only">{t("title")}</TableCaption>
+          <TableHeader>
+            <TableRow>
+              <TableHead>{t("units")}</TableHead>
+              <TableHead className="text-right">{t("price")}</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {LAUNCH_TIERS.map((tier) => (
+              <TableRow key={tier.maxUnits}>
+                <TableCell>{t("range", { min: tier.minUnits, max: tier.maxUnits })}</TableCell>
+                <TableCell className="text-right tabular-nums">{formatCurrency(tier.amount, locale)}</TableCell>
+              </TableRow>
+            ))}
+            <TableRow>
+              <TableCell>{t("over", { units: LAUNCH_MAX_SELF_SERVE_UNITS })}</TableCell>
+              <TableCell className="text-right">{t("byAgreement")}</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </div>
+    </section>
   );
 }
 
@@ -171,7 +241,7 @@ export function BillingSettings({
               <AlertDescription>{t("readOnlyHelp")}</AlertDescription>
             </Alert>
           )}
-          <UsageMeter used={overview.activeProjects} limit={overview.limit} />
+          {overview.plan === "trial" ? <p className="text-sm text-muted-foreground">{t("trialHelp")}</p> : null}
         </CardContent>
         {overview.hasCustomer ? (
           <CardFooter>
@@ -195,11 +265,10 @@ export function BillingSettings({
           </h2>
           <p className="text-sm text-muted-foreground">{t("plansHelp")}</p>
         </div>
-        <ul className="grid gap-4 md:grid-cols-3">
+        <ul className="grid gap-4 lg:grid-cols-3">
           {PURCHASABLE_PLANS.map((plan) => {
             const price = prices[plan];
             const current = overview.hasSubscription && overview.plan === plan;
-            const limit = PROJECT_LIMITS[plan] ?? 0;
             return (
               <li key={plan}>
                 <Card className={cn("h-full", current && "border-primary ring-1 ring-primary")} data-plan={plan}>
@@ -209,14 +278,11 @@ export function BillingSettings({
                     </CardTitle>
                     <CardDescription>{tPlans(`${plan}.description`)}</CardDescription>
                   </CardHeader>
-                  <CardContent className="grid gap-3">
+                  <CardContent className="grid gap-4">
                     <p className="text-2xl font-semibold tabular-nums">
                       {price ? (price.interval ? t(`perInterval.${price.interval}`, { amount: price.amount }) : price.amount) : t("priceInCheckout")}
                     </p>
-                    <p className="flex items-center gap-2 text-sm">
-                      <CheckIcon className="size-4 text-emerald-600" aria-hidden="true" />
-                      {t("projectLimit", { count: limit })}
-                    </p>
+                    <PlanFeatures plan={plan} />
                   </CardContent>
                   <CardFooter>
                     {current ? (
@@ -247,19 +313,23 @@ export function BillingSettings({
             );
           })}
         </ul>
-        <p className="text-sm text-muted-foreground">
-          {supportEmail ? (
-            <>
-              {t("enterprise")}{" "}
-              <a className="underline underline-offset-4" href={`mailto:${supportEmail}`}>
-                {supportEmail}
-              </a>
-            </>
-          ) : (
-            t("enterpriseNoContact")
-          )}
-        </p>
+        <p className="text-sm text-muted-foreground">{t("terms")}</p>
       </section>
+
+      <LaunchPrices />
+
+      <p className="text-sm text-muted-foreground">
+        {supportEmail ? (
+          <>
+            {t("enterprise")}{" "}
+            <a className="underline underline-offset-4" href={`mailto:${supportEmail}`}>
+              {supportEmail}
+            </a>
+          </>
+        ) : (
+          t("enterpriseNoContact")
+        )}
+      </p>
     </div>
   );
 }

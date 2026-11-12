@@ -72,7 +72,7 @@ jobs:
           SECRET_KEY=$(npx supabase status -o env | grep '^SECRET_KEY=' | cut -d= -f2- | tr -d '"')
           echo "::add-mask::${SECRET_KEY}"
           {
-            echo "NEXT_PUBLIC_PRODUCT_NAME=Boligplattform"
+            echo "NEXT_PUBLIC_PRODUCT_NAME=excip"
             echo "NEXT_PUBLIC_PLATFORM_DOMAIN=localhost:3000"
             echo "NEXT_PUBLIC_APP_URL=http://localhost:3000"
             echo "NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321"

@@ -8,7 +8,7 @@ import { createClient } from "@/lib/supabase/server";
 
 export async function acceptInvitation(
   token: string,
-): Promise<ActionResult<undefined, "invalidInvitation" | "wrongAccount">> {
+): Promise<ActionResult<undefined, "invalidInvitation" | "wrongAccount" | "organizationFull">> {
   return runAction(async () => {
     await requireActionUser();
     const supabase = await createClient();
@@ -19,6 +19,9 @@ export async function acceptInvitation(
           return fail("invalidInvitation");
         case "42501":
           return fail("wrongAccount");
+        // Organisasjonen har ikke plass til flere brukere i pakken sin.
+        case "P0413":
+          return fail("organizationFull");
         default:
           throw error;
       }

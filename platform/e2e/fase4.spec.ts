@@ -24,12 +24,12 @@ async function addVerifiedDomain(page: Page, orgSlug: string, hostname: string) 
 
   const card = page.locator(`[data-domain="${hostname}"]`);
   await expect(card.getByText("Venter på DNS")).toBeVisible();
-  const txtRow = card.getByRole("row").filter({ hasText: `_boligplattform.${hostname}` });
+  const txtRow = card.getByRole("row").filter({ hasText: `_excip.${hostname}` });
   const token = (await txtRow.locator("code").nth(1).textContent())?.trim() ?? "";
   expect(token).toMatch(/^[0-9a-f]{32}$/);
   await expect(card.getByRole("row").filter({ hasText: "CNAME" })).toContainText("cname.vercel-dns.com");
 
-  await setDnsRecord(`_boligplattform.${hostname}`, "TXT", [token]);
+  await setDnsRecord(`_excip.${hostname}`, "TXT", [token]);
   await setDnsRecord(hostname, "CNAME", ["cname.vercel-dns.com"]);
   await card.getByRole("button", { name: "Sjekk nå" }).click();
   await expect(card.getByText("Bekreftet", { exact: true })).toBeVisible();
@@ -113,9 +113,7 @@ test("akseptkriterium 4: Boligvelger-blokk på prosjektsiden vises på eget dome
   expect((await page.request.get("/api/public/v1/selectors/00000000-0000-4000-8000-000000000000")).status()).toBe(404);
 });
 
-test("abonnement: lesemodus når prøveperioden er ute, varsel på e-post, betaling i Checkout og grense for aktive prosjekter", async ({
-  page,
-}) => {
+test("abonnement: lesemodus når prøveperioden er ute, varsel på e-post og betaling for pakken i Checkout", async ({ page }) => {
   test.setTimeout(180_000);
   const id = uniqueId();
   const email = `abonnement-${id}@example.test`;
@@ -124,19 +122,6 @@ test("abonnement: lesemodus når prøveperioden er ute, varsel på e-post, betal
   await createOrganization(page, `Abonnement ${id}`);
   const orgId = await organizationId(orgSlug);
   const db = serviceClient();
-
-  // Prøveperioden har plass til tre aktive prosjekter
-  const { error: insertError } = await db.from("projects").insert(
-    [1, 2, 3].map((number) => ({ organization_id: orgId, name: `Aktivt ${number}`, slug: `aktivt-${number}`, phase: "for_sale" })),
-  );
-  expect(insertError).toBeNull();
-  await page.goto(`/${orgSlug}/projects/new`);
-  await field(page, "Prosjektnavn").fill("Fjerde");
-  await page.getByRole("combobox", { name: "Fase" }).click();
-  await page.getByRole("option", { name: "I salg" }).click();
-  await page.getByRole("button", { name: "Neste" }).click();
-  await page.getByRole("button", { name: "Opprett prosjekt" }).click();
-  await expect(page.getByText("Planen har ikke plass til flere aktive prosjekter.", { exact: false })).toBeVisible();
 
   // Prøveperioden er ute: lesemodus, og eieren får varsel på e-post
   await db.from("organizations").update({ trial_ends_at: new Date(Date.now() - 3_600_000).toISOString() }).eq("id", orgId);
@@ -149,23 +134,25 @@ test("abonnement: lesemodus når prøveperioden er ute, varsel på e-post, betal
 
   await page.goto(`/${orgSlug}`);
   await expect(page.getByText("Prøveperioden er over, så organisasjonen er i lesemodus.", { exact: false })).toBeVisible();
-  await page.getByRole("link", { name: "Velg abonnement" }).click();
+  await page.getByRole("link", { name: "Velg pakke" }).click();
   await expect(page).toHaveURL(new RegExp(`/${orgSlug}/settings/billing$`));
   await expect(page.getByTestId("billing-status")).toHaveText("Prøveperiode");
   await expect(page.getByText("Organisasjonen er i lesemodus. Dere kan se alt", { exact: false })).toBeVisible();
-  await expect(page.getByText("3 av 3 aktive prosjekter er i bruk.")).toBeVisible();
-  const growth = page.locator('[data-plan="growth"]');
-  await expect(growth).toContainText(/1\s490\skr per måned/);
+  const pro = page.locator('[data-plan="pro"]');
+  await expect(pro).toContainText(/2\s190\skr per måned/);
+  await expect(pro).toContainText("API og webhooks til meglersystem og CRM");
+  await expect(page.locator('[data-plan="start"]')).toContainText("Ett eget domene per prosjektside");
+  await expect(page.getByRole("cell", { name: "40–69 enheter" })).toBeVisible();
+  await expect(page.getByRole("cell", { name: /21\s900\skr/ })).toBeVisible();
 
   // Checkout i Stripe (etterlignet): betaling, webhook og tilbake til appen
-  await growth.getByRole("button", { name: "Velg Vekst" }).click();
+  await pro.getByRole("button", { name: "Velg Pro" }).click();
   await expect(page.getByRole("heading", { name: "Betaling (test)" })).toBeVisible();
   await page.getByRole("button", { name: "Betal" }).click();
   await expect(page).toHaveURL(new RegExp(`/${orgSlug}/settings/billing\\?checkout=success$`));
   await expect(page.getByText("Takk! Abonnementet er aktivt.")).toBeVisible();
-  await expect(page.getByTestId("billing-plan")).toHaveText("Vekst");
+  await expect(page.getByTestId("billing-plan")).toHaveText("Pro");
   await expect(page.getByTestId("billing-status")).toHaveText("Aktiv");
-  await expect(page.getByText("3 av 5 aktive prosjekter er i bruk.")).toBeVisible();
   await expect(page.getByText("organisasjonen er i lesemodus", { exact: false })).toHaveCount(0);
 
   // Kundeportalen

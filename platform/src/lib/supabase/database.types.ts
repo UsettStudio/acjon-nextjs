@@ -339,6 +339,32 @@ isOneToOne: false
                   Relationships: [
                     
                   ]
+                },"project_launches": {
+                  Row: {
+                    "amount": number,"created_at": string,"created_by": string | null,"currency": string,"id": string,"kind": string,"note": string | null,"organization_id": string,"paid_at": string | null,"project_id": string,"status": string,"stripe_checkout_session_id": string | null,"stripe_payment_intent_id": string | null,"unit_limit": number | null,"units": number,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "amount"?: number,"created_at"?: string,"created_by"?: string | null,"currency"?: string,"id"?: string,"kind": string,"note"?: string | null,"organization_id": string,"paid_at"?: string | null,"project_id": string,"status"?: string,"stripe_checkout_session_id"?: string | null,"stripe_payment_intent_id"?: string | null,"unit_limit"?: number | null,"units": number,"updated_at"?: string
+                  }
+                  Update: {
+                    "amount"?: number,"created_at"?: string,"created_by"?: string | null,"currency"?: string,"id"?: string,"kind"?: string,"note"?: string | null,"organization_id"?: string,"paid_at"?: string | null,"project_id"?: string,"status"?: string,"stripe_checkout_session_id"?: string | null,"stripe_payment_intent_id"?: string | null,"unit_limit"?: number | null,"units"?: number,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "project_launches_created_by_fkey"
+      columns: ["created_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "project_launches_project_id_organization_id_fkey"
+      columns: ["project_id","organization_id"]
+isOneToOne: false
+      referencedRelation: "projects"
+      referencedColumns: ["id","organization_id"]
+    }
+                  ]
                 },"project_members": {
                   Row: {
                     "created_at": string,"id": string,"organization_id": string,"project_id": string,"updated_at": string,"user_id": string
@@ -367,14 +393,14 @@ isOneToOne: false
                   ]
                 },"projects": {
                   Row: {
-                    "address": string | null,"analytics_ids": NonNullable<Json>,"city": string | null,"contacts": NonNullable<Json>,"created_at": string,"description": string | null,"id": string,"lat": number | null,"lng": number | null,"milestones": NonNullable<Json>,"municipality": string | null,"name": string,"organization_id": string,"phase": Database["public"]['Enums']["project_phase"],"postal_code": string | null,"settings": NonNullable<Json>,"slug": string,"updated_at": string
+                    "address": string | null,"analytics_ids": NonNullable<Json>,"city": string | null,"contacts": NonNullable<Json>,"created_at": string,"description": string | null,"id": string,"lat": number | null,"launch_unit_limit": number | null,"launched_at": string | null,"lng": number | null,"milestones": NonNullable<Json>,"municipality": string | null,"name": string,"organization_id": string,"phase": Database["public"]['Enums']["project_phase"],"postal_code": string | null,"settings": NonNullable<Json>,"slug": string,"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "address"?: string | null,"analytics_ids"?: NonNullable<Json>,"city"?: string | null,"contacts"?: NonNullable<Json>,"created_at"?: string,"description"?: string | null,"id"?: string,"lat"?: number | null,"lng"?: number | null,"milestones"?: NonNullable<Json>,"municipality"?: string | null,"name": string,"organization_id": string,"phase"?: Database["public"]['Enums']["project_phase"],"postal_code"?: string | null,"settings"?: NonNullable<Json>,"slug": string,"updated_at"?: string
+                    "address"?: string | null,"analytics_ids"?: NonNullable<Json>,"city"?: string | null,"contacts"?: NonNullable<Json>,"created_at"?: string,"description"?: string | null,"id"?: string,"lat"?: number | null,"launch_unit_limit"?: number | null,"launched_at"?: string | null,"lng"?: number | null,"milestones"?: NonNullable<Json>,"municipality"?: string | null,"name": string,"organization_id": string,"phase"?: Database["public"]['Enums']["project_phase"],"postal_code"?: string | null,"settings"?: NonNullable<Json>,"slug": string,"updated_at"?: string
                   }
                   Update: {
-                    "address"?: string | null,"analytics_ids"?: NonNullable<Json>,"city"?: string | null,"contacts"?: NonNullable<Json>,"created_at"?: string,"description"?: string | null,"id"?: string,"lat"?: number | null,"lng"?: number | null,"milestones"?: NonNullable<Json>,"municipality"?: string | null,"name"?: string,"organization_id"?: string,"phase"?: Database["public"]['Enums']["project_phase"],"postal_code"?: string | null,"settings"?: NonNullable<Json>,"slug"?: string,"updated_at"?: string
+                    "address"?: string | null,"analytics_ids"?: NonNullable<Json>,"city"?: string | null,"contacts"?: NonNullable<Json>,"created_at"?: string,"description"?: string | null,"id"?: string,"lat"?: number | null,"launch_unit_limit"?: number | null,"launched_at"?: string | null,"lng"?: number | null,"milestones"?: NonNullable<Json>,"municipality"?: string | null,"name"?: string,"organization_id"?: string,"phase"?: Database["public"]['Enums']["project_phase"],"postal_code"?: string | null,"settings"?: NonNullable<Json>,"slug"?: string,"updated_at"?: string
                   }
                   Relationships: [
                     {
@@ -634,6 +660,12 @@ isOneToOne: false
 "apply_stripe_subscription":
 { Args: { "p_cancel_at_period_end"?: boolean,"p_current_period_end"?: string,"p_customer_id": string,"p_plan"?: string,"p_status": Database["public"]['Enums']["subscription_status"],"p_subscription_id": string,"p_synced_at"?: string,"p_trial_ends_at"?: string }; Returns: string
                            },
+"attach_launch_checkout":
+{ Args: { "p_launch_id": string,"p_session_id": string }; Returns: undefined
+                           },
+"begin_project_launch":
+{ Args: { "p_amount": number,"p_created_by"?: string,"p_currency"?: string,"p_kind": string,"p_project_id": string,"p_unit_limit": number,"p_units": number }; Returns: string
+                           },
 "claim_webhook_deliveries":
 { Args: { "p_limit"?: number }; Returns: {
               "attempt": number,"delivery_id": string,"event": string,"payload": Json,"secret": string,"url": string,"webhook_id": string
@@ -643,6 +675,9 @@ isOneToOne: false
 { Args: { "p_delivery_id": string }; Returns: {
               "attempt": number,"delivery_id": string,"event": string,"payload": Json,"secret": string,"url": string,"webhook_id": string
             }[]
+                           },
+"complete_project_launch":
+{ Args: { "p_amount": number,"p_launch_id": string,"p_payment_intent_id"?: string,"p_session_id": string }; Returns: string
                            },
 "complete_webhook_delivery":
 { Args: { "p_delivery_id": string,"p_error"?: string,"p_response_status"?: number,"p_succeeded": boolean }; Returns: undefined
@@ -704,6 +739,9 @@ isOneToOne: false
                            },
 "import_units":
 { Args: { "p_columns": (string)[],"p_project_id": string,"p_rows": Json }; Returns: Json
+                           },
+"integration_allowed":
+{ Args: { "p_feature": string,"p_project_id"?: string,"p_selector_id"?: string }; Returns: boolean
                            },
 "link_stripe_customer":
 { Args: { "p_customer_id": string,"p_organization_id": string }; Returns: string
@@ -784,6 +822,9 @@ isOneToOne: false
                            },
 "unpublish_site":
 { Args: { "p_site_id": string }; Returns: undefined
+                           },
+"waive_project_launch":
+{ Args: { "p_note"?: string,"p_project_id": string,"p_unit_limit"?: number }; Returns: undefined
                            }
           }
           Enums: {

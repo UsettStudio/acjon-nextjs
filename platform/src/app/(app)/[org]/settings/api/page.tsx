@@ -3,12 +3,14 @@ import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { PlanFeatureNotice } from "@/features/billing/components/plan-feature-notice";
 import { ApiKeysSection } from "@/features/integrations/components/api-keys";
 import { ApiReference } from "@/features/integrations/components/api-reference";
 import { WebhooksSection } from "@/features/integrations/components/webhooks";
 import { getIntegrationsData } from "@/features/integrations/queries";
 import { getOrgContext } from "@/lib/auth/dal";
 import { can } from "@/lib/auth/permissions";
+import { planAllows } from "@/lib/billing/plans";
 import { publicEnv } from "@/lib/env";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -25,10 +27,30 @@ export default async function ApiSettingsPage({ params }: PageProps<"/[org]/sett
   }
   const [t, data] = await Promise.all([getTranslations("integrations"), getIntegrationsData(context.organization.id)]);
   const readOnly = !context.writable;
+  const { plan } = context.organization;
+  const included = planAllows(plan, "api") && planAllows(plan, "webhooks");
   return (
     <div className="grid gap-10">
-      <ApiKeysSection organizationId={context.organization.id} keys={data.apiKeys} readOnly={readOnly} />
-      <WebhooksSection organizationId={context.organization.id} webhooks={data.webhooks} projects={data.projects} readOnly={readOnly} />
+      {included ? null : (
+        <PlanFeatureNotice
+          kind="integrations"
+          plan={plan}
+          billingHref={can(context.role, "organization.billing") ? `/${org}/settings/billing` : null}
+        />
+      )}
+      <ApiKeysSection
+        organizationId={context.organization.id}
+        keys={data.apiKeys}
+        readOnly={readOnly}
+        canCreate={planAllows(plan, "api")}
+      />
+      <WebhooksSection
+        organizationId={context.organization.id}
+        webhooks={data.webhooks}
+        projects={data.projects}
+        readOnly={readOnly}
+        canCreate={planAllows(plan, "webhooks")}
+      />
       <Card>
         <CardHeader>
           <CardTitle>

@@ -27,9 +27,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Label } from "@/components/ui/label";
 import { publishSelector, unpublishSelector, updateSelectorSettings, type PublishState } from "@/features/selector/actions";
+import { useLaunchRequiredToast } from "@/features/launch/use-launch-toast";
 import { EmbedDialog } from "@/features/selector/components/editor/embed-dialog";
 import { FILTER_KEYS, type SelectorSettings } from "@/features/selector/model";
 import { selectorPreviewPath, selectorPublicPath } from "@/features/selector/paths";
+import type { Plan } from "@/lib/billing/plans";
 import { cn } from "@/lib/utils";
 
 function PreviewDialog({ open, onOpenChange, selectorId }: { open: boolean; onOpenChange: (open: boolean) => void; selectorId: string }) {
@@ -201,10 +203,13 @@ export function PublishBar({
   onPublishState,
   onSettings,
   projectName,
+  embed,
 }: {
   organizationId: string;
   selectorId: string;
   projectName: string;
+  /** Innbygging i pakken (se EmbedDialog). */
+  embed: { allowed: boolean; plan: Plan; billingHref: string | null };
   publish: PublishState;
   settings: SelectorSettings;
   canEdit: boolean;
@@ -222,6 +227,7 @@ export function PublishBar({
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [confirmUnpublish, setConfirmUnpublish] = useState(false);
   const [embedOpen, setEmbedOpen] = useState(false);
+  const launchRequired = useLaunchRequiredToast();
   const published = publish.publishedAt !== null;
 
   function errorText(code: string) {
@@ -240,6 +246,8 @@ export function PublishBar({
       if (result.ok) {
         onPublishState(result.data);
         toast.success(t("published"));
+      } else if (result.error === "launchRequired") {
+        launchRequired();
       } else {
         toast.error(errorText(result.error));
       }
@@ -337,7 +345,7 @@ export function PublishBar({
       </DropdownMenu>
 
       <PreviewDialog open={previewOpen} onOpenChange={setPreviewOpen} selectorId={selectorId} />
-      <EmbedDialog open={embedOpen} onOpenChange={setEmbedOpen} selectorId={selectorId} projectName={projectName} />
+      <EmbedDialog open={embedOpen} onOpenChange={setEmbedOpen} selectorId={selectorId} projectName={projectName} embed={embed} />
       <SettingsDialog
         open={settingsOpen}
         onOpenChange={setSettingsOpen}

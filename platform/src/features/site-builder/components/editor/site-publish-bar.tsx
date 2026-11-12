@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
+import { useLaunchRequiredToast } from "@/features/launch/use-launch-toast";
 import {
   createPreviewLink,
   listPageVersions,
@@ -288,6 +289,7 @@ export function SitePublishBar({
   const [shareOpen, setShareOpen] = useState(false);
   const [versionsOpen, setVersionsOpen] = useState(false);
   const [confirmUnpublish, setConfirmUnpublish] = useState(false);
+  const launchRequired = useLaunchRequiredToast();
   const published = publish.publishedAt !== null;
 
   function doPublish() {
@@ -302,6 +304,8 @@ export function SitePublishBar({
         toast.success(t("published"), {
           action: { label: t("open"), onClick: () => window.open(siteUrl, "_blank", "noopener") },
         });
+      } else if (result.error === "launchRequired") {
+        launchRequired();
       } else {
         toast.error(result.error === "needsHome" ? tSite("needsHome") : tErrors(result.error as "unknown"));
       }

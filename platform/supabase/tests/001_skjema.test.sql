@@ -98,9 +98,9 @@ select set_eq(
   array[
     'get_published_selector', 'get_public_units', 'get_public_unit',
     'resolve_site', 'get_published_page', 'get_public_assets', 'get_invitation',
-    'get_published_selector_project'
+    'get_published_selector_project', 'integration_allowed'
   ],
-  'anon kan bare kjøre de offentlige lesefunksjonene og invitasjonsoppslaget'
+  'anon kan bare kjøre de offentlige lesefunksjonene, invitasjonsoppslaget og sjekken for innbygging'
 );
 
 select is_empty(

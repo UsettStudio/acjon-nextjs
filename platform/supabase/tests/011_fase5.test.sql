@@ -12,9 +12,10 @@ select plan(27);
 -- Prosjektet i organisasjon A har A-101 (ledig, 4 250 000), A-303 (ledig og
 -- skjult, 3 900 000) og A-302 (solgt, 6 950 000). To visninger har bilde, A-101
 -- og A-302 er markert, og boligvelgeren og prosjektsiden er publisert.
+-- Lanseringen (fase 6) testes i 012_fase6.test.sql.
 select tests.login_as(tests.id('a', 'admin'));
 select is(
-  public.project_overview(tests.id('a', 'project')),
+  public.project_overview(tests.id('a', 'project')) - 'launch',
   jsonb_build_object(
     'statuses', jsonb_build_array(
       jsonb_build_object('status', 'available', 'units', 2, 'value', 8150000, 'unpriced', 0),
@@ -68,7 +69,7 @@ select tests.logout();
 select tests.login_as(tests.id('a', 'editor'));
 select is(
   public.project_overview(tests.id('a', 'project_other')),
-  jsonb_build_object('statuses', '[]'::jsonb, 'views_with_image', 0, 'marked_units', 0, 'selector', null, 'site', null),
+  jsonb_build_object('statuses', '[]'::jsonb, 'views_with_image', 0, 'marked_units', 0, 'selector', null, 'site', null, 'launch', null),
   'Redaktør uten tilgang til prosjektet får verken tall eller fremdrift'
 );
 select tests.logout();
@@ -77,7 +78,7 @@ select tests.logout();
 select tests.login_as(tests.id('b', 'owner'));
 select is(
   public.project_overview(tests.id('a', 'project')),
-  jsonb_build_object('statuses', '[]'::jsonb, 'views_with_image', 0, 'marked_units', 0, 'selector', null, 'site', null),
+  jsonb_build_object('statuses', '[]'::jsonb, 'views_with_image', 0, 'marked_units', 0, 'selector', null, 'site', null, 'launch', null),
   'Eier i organisasjon B får ingenting fra prosjektet i organisasjon A'
 );
 select isnt(

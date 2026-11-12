@@ -85,6 +85,10 @@ export async function importUnits(
       if (postgresErrorCode(error) === "42501") {
         return fail("forbidden");
       }
+      // Oppstartsavgiften dekker ikke så mange enheter (app.limit_launched_units).
+      if (postgresErrorCode(error) === "P0402") {
+        return fail("unitLimit");
+      }
       const index = /import_row=(\d+)/.exec(error.details ?? "")?.[1];
       const line = index ? parsed.data.rows[Number(index) - 1]?.line : undefined;
       if (line !== undefined) {

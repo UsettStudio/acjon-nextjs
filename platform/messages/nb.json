@@ -100,7 +100,10 @@
     "invalidInput": "Sjekk feltene som er markert.",
     "rateLimited": "For mange forsøk. Vent litt og prøv igjen.",
     "unknown": "Noe gikk galt. Prøv igjen om litt.",
-    "planLimit": "Planen har ikke plass til flere aktive prosjekter. Velg et større abonnement, eller sett et annet prosjekt til Ferdigstilt eller Arkivert."
+    "planLimit": "Pakken har ikke plass til flere. Velg en større pakke under Innstillinger → Abonnement.",
+    "planFeature": "Funksjonen er ikke med i pakken. Den er med i Pro og Partner.",
+    "launchRequired": "Prosjektet må lanseres før det kan publiseres. Oppstartsavgiften betales under Lansering.",
+    "unitLimit": "Oppstartsavgiften dekker ikke flere enheter i prosjektet. Utvid lanseringen under Lansering."
   },
   "auth": {
     "email": "E-post",
@@ -163,7 +166,8 @@
     "accepted": "Invitasjonen er allerede godtatt.",
     "goToOrganization": "Gå til {organization}",
     "emailNotConfirmed": "Bekreft e-postadressen din før du godtar invitasjonen.",
-    "signupHint": "Du er invitert til {organization}. Opprett konto med e-postadressen invitasjonen ble sendt til."
+    "signupHint": "Du er invitert til {organization}. Opprett konto med e-postadressen invitasjonen ble sendt til.",
+    "organizationFull": "Organisasjonen har ikke plass til flere brukere i pakken sin. Be den som inviterte deg om å bytte pakke."
   },
   "onboarding": {
     "title": "Opprett organisasjon",
@@ -410,7 +414,8 @@
       "settings": "Innstillinger",
       "selectors": "Boligvelger",
       "site": "Prosjektside",
-      "leads": "Leads"
+      "leads": "Leads",
+      "launch": "Lansering"
     },
     "list": {
       "title": "Prosjekter",
@@ -628,7 +633,8 @@
         "units": "Legg inn eller importer enheter",
         "selector": "Last opp bilde og marker enhetene",
         "template": "Velg mal for prosjektsiden",
-        "publish": "Publiser"
+        "publish": "Publiser",
+        "launch": "Lanser prosjektet"
       },
       "notes": {
         "units": "{count, plural, one {# enhet} other {# enheter}}",
@@ -642,7 +648,8 @@
         "selector": "Åpne boligvelgeren",
         "template": "Lag prosjektsiden",
         "publish": "Publiser prosjektsiden",
-        "publishSelector": "Publiser boligvelgeren"
+        "publishSelector": "Publiser boligvelgeren",
+        "launch": "Betal oppstart"
       }
     }
   },
@@ -1462,6 +1469,10 @@
       "liveStatus": "Status oppdateres fortløpende.",
       "interestHeading": "Meld interesse",
       "interestIntro": "Fyll ut skjemaet, så tar megleren kontakt med deg om {unit}."
+    },
+    "embedGate": {
+      "unavailable": "Boligvelgeren kan ikke vises her.",
+      "open": "Åpne boligvelgeren"
     }
   },
   "siteBuilder": {
@@ -2338,13 +2349,14 @@
       "added": "Domenet er lagt til. Legg inn DNS-postene som vises under domenet.",
       "addedVerified": "Domenet er lagt til og bekreftet.",
       "exists": "Domenet er allerede lagt til på denne prosjektsiden.",
-      "limit": "En prosjektside kan ha inntil ti egne domener."
-    }
+      "limit": "Pakken har plass til {count, plural, one {ett eget domene} other {# egne domener}} per prosjektside."
+    },
+    "planLimit": "Pakken har plass til {count, plural, one {ett eget domene} other {# egne domener}} per prosjektside."
   },
   "billing": {
     "title": "Abonnement",
-    "description": "Planen styrer hvor mange prosjekter som kan være aktive samtidig. Betaling, fakturaer og oppsigelse håndteres av Stripe.",
-    "plan": "Plan",
+    "description": "Pakken styrer funksjonene og hvor mange brukere og domener dere kan ha. Betaling, fakturaer og oppsigelse håndteres av Stripe.",
+    "plan": "Pakke",
     "status": "Status",
     "trialUntil": "Prøveperioden varer til {date} ({days, plural, one {# dag igjen} other {# dager igjen}}).",
     "trialEnded": "Prøveperioden er over.",
@@ -2354,21 +2366,16 @@
     "pastDue": "Betalingen feilet. Oppdater betalingsmåten i kundeportalen.",
     "ended": "Abonnementet er avsluttet.",
     "readOnlyHelp": "Organisasjonen er i lesemodus. Dere kan se alt, men ikke gjøre endringer. Publiserte prosjektsider og boligvelgere er fortsatt oppe, og nye leads kommer fortsatt inn.",
-    "usage": "{used} av {limit} aktive prosjekter er i bruk.",
-    "usageUnlimited": "{used} aktive prosjekter. Planen har ingen grense.",
-    "usageLabel": "Aktive prosjekter",
-    "usageHelp": "Aktive prosjekter er prosjekter i fasene Kommer for salg, I salg og Utsolgt. Utkast, ferdigstilte og arkiverte prosjekter teller ikke.",
     "portal": "Administrer abonnement",
-    "plansTitle": "Planer",
-    "plansHelp": "Alle planer har alle funksjoner. Prisene er per måned, og du kan bytte plan eller si opp når som helst.",
+    "plansTitle": "Pakker",
+    "plansHelp": "Prisene er per måned og uten mva. Dere kan bytte pakke eller si opp når som helst.",
     "priceInCheckout": "Pris i Stripe",
-    "projectLimit": "{count, plural, one {Ett aktivt prosjekt} other {Inntil # aktive prosjekter}}",
     "currentPlan": "Nåværende plan",
     "changeInPortal": "Bytt i kundeportalen",
     "choose": "Velg {plan}",
-    "enterprise": "Trenger dere flere enn 15 aktive prosjekter? Ta kontakt:",
-    "enterpriseNoContact": "Trenger dere flere enn 15 aktive prosjekter, kan vi lage en egen avtale.",
-    "notConfigured": "Betaling er ikke satt opp i dette miljøet, så planene kan ikke velges her.",
+    "enterprise": "Trenger dere en egen avtale, for eksempel for prosjekter med mer enn 199 enheter? Ta kontakt:",
+    "enterpriseNoContact": "Trenger dere en egen avtale, for eksempel for prosjekter med mer enn 199 enheter, kan vi lage en.",
+    "notConfigured": "Betaling er ikke satt opp i dette miljøet, så pakkene kan ikke velges her.",
     "checkoutPending": "Takk! Betalingen er registrert. Det kan ta noen sekunder før abonnementet vises her.",
     "checkoutDone": "Takk! Abonnementet er aktivt.",
     "checkoutCanceled": "Betalingen ble avbrutt. Ingenting er endret.",
@@ -2383,16 +2390,16 @@
         "name": "Prøveperiode"
       },
       "start": {
-        "name": "Start",
-        "description": "For utbyggere med ett prosjekt i salg."
-      },
-      "growth": {
-        "name": "Vekst",
-        "description": "For utbyggere med flere prosjekter i salg samtidig."
+        "name": "Prosjektside",
+        "description": "For å få prosjektet ut på nett, raskt og ryddig."
       },
       "pro": {
-        "name": "Proff",
-        "description": "For meglere og utbyggere med mange prosjekter."
+        "name": "Pro",
+        "description": "For utbyggere og meglere som kobler på egne systemer."
+      },
+      "partner": {
+        "name": "Partner",
+        "description": "Vi setter opp prosjektet og følger dere opp."
       },
       "enterprise": {
         "name": "Enterprise"
@@ -2400,7 +2407,7 @@
     },
     "errors": {
       "billingUnavailable": "Betaling er ikke satt opp i dette miljøet.",
-      "subscriptionExists": "Organisasjonen har allerede et abonnement. Bytt plan i kundeportalen.",
+      "subscriptionExists": "Organisasjonen har allerede et abonnement. Bytt pakke i kundeportalen.",
       "noCustomer": "Organisasjonen har ikke valgt abonnement ennå."
     },
     "banner": {
@@ -2408,9 +2415,40 @@
       "trialEnded": "Prøveperioden er over, så organisasjonen er i lesemodus. Publiserte sider er fortsatt oppe.",
       "ended": "Abonnementet er avsluttet, så organisasjonen er i lesemodus. Publiserte sider er fortsatt oppe.",
       "pastDue": "Betalingen for abonnementet feilet. Oppdater betalingsmåten, ellers går organisasjonen over i lesemodus.",
-      "choosePlan": "Velg abonnement",
+      "choosePlan": "Velg pakke",
       "updatePayment": "Oppdater betaling",
       "contactOwner": "Kontakt eieren av organisasjonen."
+    },
+    "trialHelp": "Prøveperioden har alt i Pro, så dere kan bygge og forhåndsvise prosjektene. For å publisere velger dere en pakke og betaler oppstart for prosjektet.",
+    "terms": "Ingen bindingstid. Abonnementet kan sies opp når som helst og stopper ved slutten av perioden.",
+    "features": {
+      "inherits": "Alt i {plan}, pluss:",
+      "site": "Prosjektside med maler, egne sider og eget design",
+      "selector": "Boligvelger og egen side for hver enhet",
+      "leads": "Interesseskjema og leads med samtykke",
+      "tracking": "Sporing med samtykke: Google Analytics, Tag Manager og Meta Pixel",
+      "domains": "{count, plural, one {Ett eget domene} other {Inntil # egne domener}} per prosjektside",
+      "members": "Inntil {count} brukere",
+      "membersUnlimited": "Ubegrenset antall brukere",
+      "api": "API og webhooks til meglersystem og CRM",
+      "embed": "Boligvelgeren bygd inn på egen nettside",
+      "onboarding": "Vi setter opp prosjektet og lærer dere opp",
+      "prioritySupport": "Prioritert support"
+    },
+    "launch": {
+      "title": "Oppstart per prosjekt",
+      "description": "Betales én gang før prosjektet publiseres første gang. Prisen følger antall enheter og er den samme i alle pakkene.",
+      "units": "Enheter",
+      "price": "Pris",
+      "range": "{min}–{max} enheter",
+      "over": "Mer enn {units} enheter",
+      "byAgreement": "Etter avtale"
+    },
+    "notice": {
+      "integrations": "Pakken {plan} har ikke API, webhooks eller innbygging. Det er med i Pro og Partner. Nøkler og webhooks som finnes, virker ikke før dere bytter pakke.",
+      "embed": "Pakken {plan} har ikke innbygging på egen nettside. Det er med i Pro og Partner. Boligvelgeren vises fortsatt på prosjektsiden.",
+      "upgrade": "Bytt pakke",
+      "askOwner": "Eieren av organisasjonen kan bytte pakke."
     }
   },
   "integrations": {
@@ -2524,6 +2562,60 @@
         "publicUnits": "Enhetene i et publisert prosjekt."
       },
       "webhooksSignature": "Webhooks er signert etter Standard Webhooks. Bruk et bibliotek for Standard Webhooks, eller beregn HMAC-SHA256 med hemmeligheten av verdiene i webhook-id og webhook-timestamp og innholdet, skilt med punktum."
+    }
+  },
+  "launch": {
+    "title": "Lansering",
+    "pageTitle": "Lansering – {name}",
+    "description": "Prosjektet kan publiseres når oppstartsavgiften er betalt. Avgiften betales én gang og følger antall enheter.",
+    "vatNote": "Alle priser er uten mva.",
+    "notLaunched": "Ikke lansert",
+    "launched": "Lansert",
+    "launchedOn": "Lansert {date}.",
+    "units": "{count, plural, =0 {Prosjektet har ingen enheter ennå.} one {Prosjektet har én enhet.} other {Prosjektet har # enheter.}}",
+    "covers": "Avgiften dekker inntil {limit} enheter.",
+    "unlimited": "Avgiften dekker alle enhetene (avtale).",
+    "chooseTier": "Velg nivå",
+    "chooseTierHelp": "Nivået må dekke enhetene i prosjektet. Skal dere legge inn flere enheter senere, kan dere velge et høyere nivå nå.",
+    "tierOption": "Inntil {units} enheter",
+    "tierRange": "{min}–{max} enheter",
+    "upgradeTitle": "Utvid",
+    "upgradeHelp": "Prosjektet kan ikke få flere enheter enn avgiften dekker. Velg et høyere nivå og betal forskjellen.",
+    "topTier": "Prosjektet har det høyeste nivået. Ta kontakt for flere enheter.",
+    "contact": "Prosjekter med mer enn {units} enheter lanseres etter avtale.",
+    "pay": "Betal {amount} og lanser",
+    "payUpgrade": "Betal {amount} og utvid",
+    "ownerOnly": "Bare eieren av organisasjonen kan betale oppstartsavgiften.",
+    "choosePlanFirst": "Velg en pakke før prosjektet lanseres.",
+    "choosePlan": "Velg pakke",
+    "notConfigured": "Betaling er ikke satt opp i dette miljøet.",
+    "checkoutDone": "Takk! Oppstartsavgiften er betalt.",
+    "checkoutPending": "Takk! Betalingen er registrert. Det kan ta litt tid før den vises her.",
+    "checkoutCanceled": "Betalingen ble avbrutt. Ingenting er endret.",
+    "goToLaunch": "Gå til lansering",
+    "historyTitle": "Betalinger",
+    "historyEmpty": "Ingen betalinger ennå.",
+    "history": {
+      "date": "Dato",
+      "kind": "Hva",
+      "level": "Nivå",
+      "amount": "Beløp uten mva."
+    },
+    "kinds": {
+      "launch": "Lansering",
+      "upgrade": "Utvidelse",
+      "waiver": "Etter avtale"
+    },
+    "levelUnlimited": "Ingen grense",
+    "checkout": {
+      "launchDescription": "Oppstart for {project}: inntil {units} enheter",
+      "upgradeDescription": "Utvidelse for {project}: inntil {units} enheter"
+    },
+    "errors": {
+      "billingUnavailable": "Betaling er ikke satt opp i dette miljøet.",
+      "choosePlanFirst": "Velg en pakke under Innstillinger → Abonnement før prosjektet lanseres.",
+      "contactUs": "Prosjektet har flere enheter enn nivåene dekker. Ta kontakt for en avtale.",
+      "tierUnavailable": "Nivået kan ikke velges nå. Last siden på nytt og prøv igjen."
     }
   }
 }

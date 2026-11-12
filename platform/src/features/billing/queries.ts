@@ -3,14 +3,7 @@ import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
 
 import { priceIdFor, stripeClient } from "@/features/billing/stripe";
-import {
-  ACTIVE_PHASES,
-  PURCHASABLE_PLANS,
-  isPlan,
-  projectLimit,
-  type Plan,
-  type PurchasablePlan,
-} from "@/lib/billing/plans";
+import { PURCHASABLE_PLANS, isPlan, type Plan, type PurchasablePlan } from "@/lib/billing/plans";
 import { subscriptionAllowsWrites, type SubscriptionStatus } from "@/lib/billing/subscription";
 import { createClient } from "@/lib/supabase/server";
 
@@ -23,8 +16,6 @@ export type BillingOverview = {
   hasCustomer: boolean;
   /** Et abonnement i Stripe som fortsatt gjelder (ikke avsluttet). */
   hasSubscription: boolean;
-  activeProjects: number;
-  limit: number | null;
   writable: boolean;
 };
 
@@ -32,25 +23,15 @@ const LIVE_STATUSES = new Set<SubscriptionStatus>(["active", "trialing", "past_d
 
 export async function getBillingOverview(organizationId: string): Promise<BillingOverview> {
   const supabase = await createClient();
-  const [organization, projects] = await Promise.all([
-    supabase
-      .from("organizations")
-      .select(
-        "plan, subscription_status, trial_ends_at, current_period_end, cancel_at_period_end, stripe_customer_id, stripe_subscription_id",
-      )
-      .eq("id", organizationId)
-      .single(),
-    supabase
-      .from("projects")
-      .select("id", { count: "exact", head: true })
-      .eq("organization_id", organizationId)
-      .in("phase", [...ACTIVE_PHASES]),
-  ]);
+  const organization = await supabase
+    .from("organizations")
+    .select(
+      "plan, subscription_status, trial_ends_at, current_period_end, cancel_at_period_end, stripe_customer_id, stripe_subscription_id",
+    )
+    .eq("id", organizationId)
+    .single();
   if (organization.error) {
     throw organization.error;
-  }
-  if (projects.error) {
-    throw projects.error;
   }
   const row = organization.data;
   const plan = isPlan(row.plan) ? row.plan : "start";
@@ -62,8 +43,6 @@ export async function getBillingOverview(organizationId: string): Promise<Billin
     cancelAtPeriodEnd: row.cancel_at_period_end,
     hasCustomer: row.stripe_customer_id !== null,
     hasSubscription: row.stripe_subscription_id !== null && LIVE_STATUSES.has(row.subscription_status),
-    activeProjects: projects.count ?? 0,
-    limit: projectLimit(plan),
     writable: subscriptionAllowsWrites(row.subscription_status, row.trial_ends_at),
   };
 }
@@ -73,8 +52,8 @@ const INTERVALS = ["day", "week", "month", "year"] as const;
 export type PlanPrice = { amount: number; currency: string; interval: (typeof INTERVALS)[number] | null };
 
 /**
- * Prisene på planene, hentet fra Stripe og mellomlagret i en time. En plan
- * uten pris (ikke satt opp, eller Stripe svarer ikke) har null.
+ * Månedsprisene på pakkene, hentet fra Stripe og mellomlagret i en time. En
+ * pakke uten pris (ikke satt opp, eller Stripe svarer ikke) har null.
  */
 export async function getPlanPrices(): Promise<Record<PurchasablePlan, PlanPrice | null>> {
   "use cache";

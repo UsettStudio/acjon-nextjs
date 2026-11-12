@@ -164,10 +164,13 @@ export function ApiKeysSection({
   organizationId,
   keys,
   readOnly,
+  canCreate,
 }: {
   organizationId: string;
   keys: ApiKeyItem[];
   readOnly: boolean;
+  /** Pakken har API. Nøkler som finnes, kan trekkes tilbake uansett. */
+  canCreate: boolean;
 }) {
   const t = useTranslations("integrations.keys");
   const tErrors = useTranslations("errors");
@@ -183,7 +186,7 @@ export function ApiKeysSection({
           </h2>
           <p className="text-sm text-muted-foreground">{t("description")}</p>
         </div>
-        <CreateApiKeyDialog organizationId={organizationId} disabled={readOnly} />
+        <CreateApiKeyDialog organizationId={organizationId} disabled={readOnly || !canCreate} />
       </div>
       {keys.length === 0 ? (
         <p className="rounded-lg border border-dashed p-6 text-sm text-muted-foreground">{t("empty")}</p>

@@ -6,7 +6,7 @@ import { evaluateDomain, parseDomainError, parseDomainRecords } from "@/features
 import { VercelDomainsClient, type VercelApiError } from "@/features/domains/vercel";
 import { primaryRedirect } from "@/lib/primary-host";
 
-const settings = { txtPrefix: "_boligplattform", cnameTarget: "cname.vercel-dns.com", aRecord: "76.76.21.21" };
+const settings = { txtPrefix: "_excip", cnameTarget: "cname.vercel-dns.com", aRecord: "76.76.21.21" };
 const token = "0123456789abcdef0123456789abcdef";
 
 function jsonResponse(body: unknown, status = 200): Response {
@@ -111,7 +111,7 @@ describe("evaluateDomain", () => {
     expect(result.status).toBe("pending");
     expect(result.error).toBe("txt_missing");
     expect(result.records).toEqual([
-      { type: "TXT", name: "_boligplattform.www.fjordparken.no", value: token, purpose: "ownership", ok: false },
+      { type: "TXT", name: "_excip.www.fjordparken.no", value: token, purpose: "ownership", ok: false },
       { type: "CNAME", name: "www.fjordparken.no", value: "cname.vercel-dns.com", purpose: "routing", ok: false },
     ]);
   });

@@ -2,6 +2,7 @@ import { expect, type Browser, type Locator, type Page } from "@playwright/test"
 import sharp from "sharp";
 
 import { createOrganization, field, signUp } from "./helpers";
+import { waiveLaunchForPage } from "./support/launch";
 
 export const IMAGE_WIDTH = 2400;
 export const IMAGE_HEIGHT = 1500;
@@ -129,7 +130,8 @@ export async function buildSelector(page: Page, orgSlug: string): Promise<string
   await expect(page.getByText("2 av 6 enheter markert")).toBeVisible();
   await expect(page.getByText("Alle endringer er lagret")).toBeVisible({ timeout: 10_000 });
 
-  // Publiser
+  // Publiser (prosjektet lanseres først uten avgift, se support/launch.ts)
+  await waiveLaunchForPage(page);
   await expect(page.getByText("Ikke publisert")).toBeVisible();
   await page.getByRole("button", { name: "Publiser", exact: true }).click();
   await expect(page.getByText("Boligvelgeren er publisert.")).toBeVisible();

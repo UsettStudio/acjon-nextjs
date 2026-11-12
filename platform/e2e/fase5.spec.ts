@@ -88,11 +88,14 @@ test.describe("universell utforming på publiserte sider (demodata)", () => {
       `${project}/selectors`,
       `${project}/selectors/${selectorId}`,
       `${project}/site`,
+      `${project}/launch`,
       `${project}/settings`,
       `${org}/leads`,
       `${org}/media`,
       `${org}/settings`,
       `${org}/settings/members`,
+      `${org}/settings/billing`,
+      `${org}/settings/api`,
     ]) {
       await page.goto(path);
       await expect(page.getByRole("main")).toBeVisible();

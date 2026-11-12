@@ -9,6 +9,7 @@ import * as Sentry from "@sentry/nextjs";
 import { after } from "next/server";
 
 import { BlockedAddressError, isPrivateAddress } from "@/features/integrations/network";
+import { productName } from "@/lib/env";
 import { serverEnv } from "@/lib/env.server";
 import { createAdminClient } from "@/lib/supabase/admin";
 
@@ -24,6 +25,11 @@ import { createAdminClient } from "@/lib/supabase/admin";
  * dermed bruke de vanlige bibliotekene for Standard Webhooks.
  * Svar 2xx er levert. Alt annet (også omdirigering) gir nytt forsøk senere.
  */
+
+/** Produktnavnet som et token i User-Agent (bare bokstaver, tall, punktum og bindestrek). */
+function userAgentName(): string {
+  return productName().replace(/[^A-Za-z0-9.-]/g, "") || "Webhooks";
+}
 
 export type ClaimedDelivery = {
   delivery_id: string;
@@ -65,7 +71,7 @@ export function buildDeliveryRequest(delivery: ClaimedDelivery, now: Date = new 
     body,
     headers: {
       "content-type": "application/json",
-      "user-agent": "Boligplattform-Webhooks/1.0",
+      "user-agent": `${userAgentName()}-Webhooks/1.0`,
       "webhook-id": messageId,
       "webhook-timestamp": String(timestamp),
       "webhook-signature": signWebhook(delivery.secret, messageId, timestamp, body),

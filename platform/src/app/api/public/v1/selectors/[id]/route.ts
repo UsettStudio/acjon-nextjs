@@ -1,6 +1,6 @@
 import * as Sentry from "@sentry/nextjs";
 
-import { UUID_PATTERN, publicError, publicJson, publicPreflight } from "@/lib/api/public";
+import { UUID_PATTERN, publicError, publicJson, publicPlanRequired, publicPreflight } from "@/lib/api/public";
 import { createPublicClient } from "@/lib/supabase/public";
 
 /**
@@ -13,12 +13,18 @@ export async function GET(_request: Request, { params }: RouteContext<"/api/publ
     return publicError(400, "invalid_id", "Id-en må være en UUID.");
   }
   const supabase = await createPublicClient();
-  const { data, error } = await supabase.rpc("get_published_selector", { p_selector_id: id });
-  if (error) {
-    Sentry.captureException(error);
+  const [{ data, error }, allowed] = await Promise.all([
+    supabase.rpc("get_published_selector", { p_selector_id: id }),
+    supabase.rpc("integration_allowed", { p_feature: "api", p_selector_id: id }),
+  ]);
+  if (error || allowed.error) {
+    Sentry.captureException(error ?? allowed.error);
     return publicError(500, "server_error", "Noe gikk galt. Prøv igjen.");
   }
-  return data ? publicJson(data) : publicError(404, "not_found", "Fant ingen publisert boligvelger med denne id-en.");
+  if (!data) {
+    return publicError(404, "not_found", "Fant ingen publisert boligvelger med denne id-en.");
+  }
+  return allowed.data ? publicJson(data) : publicPlanRequired();
 }
 
 export function OPTIONS() {

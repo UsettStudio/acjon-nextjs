@@ -15,6 +15,7 @@ function overview(patch: Partial<ProjectOverview> = {}): ProjectOverview {
     markedUnits: 0,
     selector: null,
     site: null,
+    launched: false,
     ...patch,
   };
 }
@@ -31,6 +32,7 @@ describe("parseProjectOverview", () => {
       marked_units: 24,
       selector: { id: SELECTOR, published: true },
       site: { id: SITE, published: false },
+      launch: { launched_at: "2026-11-12T10:00:00.000Z", unit_limit: 39 },
     });
     expect(result.counts).toEqual({ upcoming: 0, available: 14, reserved: 2, sold: 8 });
     expect(result.totalUnits).toBe(24);
@@ -39,11 +41,20 @@ describe("parseProjectOverview", () => {
     expect(result.markedUnits).toBe(24);
     expect(result.selector).toEqual({ id: SELECTOR, published: true });
     expect(result.site).toEqual({ id: SITE, published: false });
+    expect(result.launched).toBe(true);
   });
 
   it("gir null i verdi når ingen enheter er solgt", () => {
-    const result = parseProjectOverview({ statuses: [], views_with_image: 0, marked_units: 0, selector: null, site: null });
+    const result = parseProjectOverview({
+      statuses: [],
+      views_with_image: 0,
+      marked_units: 0,
+      selector: null,
+      site: null,
+      launch: { launched_at: null, unit_limit: null },
+    });
     expect(result.totalUnits).toBe(0);
+    expect(result.launched).toBe(false);
     expect(result.soldValue).toBe(0);
     expect(result.soldWithoutPrice).toBe(0);
   });
@@ -56,6 +67,7 @@ describe("parseProjectOverview", () => {
         marked_units: 0,
         selector: null,
         site: null,
+        launch: null,
       }),
     ).toThrow();
   });
@@ -67,7 +79,7 @@ describe("onboardingSteps", () => {
 
   it("har organisasjon og prosjekt ferdig fra start, og peker til enhetene", () => {
     const steps = onboardingSteps(overview(), base);
-    expect(steps.map((step) => step.key)).toEqual(["organization", "project", "units", "selector", "template", "publish"]);
+    expect(steps.map((step) => step.key)).toEqual(["organization", "project", "units", "selector", "template", "launch", "publish"]);
     expect(done(steps)).toEqual(["organization", "project"]);
     expect(steps.find((step) => !step.done)?.href).toBe(`${base}/units`);
   });
@@ -112,7 +124,7 @@ describe("onboardingSteps", () => {
     expect(publish?.href).toBe(`${base}/selectors/${SELECTOR}`);
   });
 
-  it("er ferdig når prosjektsiden og boligvelgeren er publisert", () => {
+  it("er ferdig når prosjektet er lansert og prosjektsiden og boligvelgeren er publisert", () => {
     const steps = onboardingSteps(
       overview({
         totalUnits: 24,
@@ -120,10 +132,21 @@ describe("onboardingSteps", () => {
         markedUnits: 24,
         selector: { id: SELECTOR, published: true },
         site: { id: SITE, published: true },
+        launched: true,
       }),
       base,
     );
     expect(steps.every((step) => step.done)).toBe(true);
+  });
+
+  it("peker til lanseringen etter malen, før publiseringen", () => {
+    const steps = onboardingSteps(
+      overview({ totalUnits: 24, viewsWithImage: 1, markedUnits: 24, selector: { id: SELECTOR, published: false }, site: { id: SITE, published: false } }),
+      base,
+    );
+    const next = steps.find((step) => !step.done);
+    expect(next?.key).toBe("launch");
+    expect(next?.href).toBe(`${base}/launch`);
   });
 
   it("godtar en publisert prosjektside uten boligvelger", () => {

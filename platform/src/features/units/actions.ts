@@ -50,6 +50,10 @@ function unitWriteError(error: unknown): ActionResult<never, UnitError> {
   if (code === "23503") {
     return fail("invalidInput");
   }
+  // Oppstartsavgiften dekker ikke flere enheter (app.limit_launched_units).
+  if (code === "P0402") {
+    return fail("unitLimit");
+  }
   throw error;
 }
 

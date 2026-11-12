@@ -78,6 +78,7 @@ platform/
     │   ├── demo/                      ✔ demodata for Fjordparken: leiligheter, fasade i SVG og markeringer
     │   ├── domains/                   ✔ vertsnavn, DNS over HTTPS, Vercel Domains API, sjekk og Innstillinger → Domener
 │   ├── billing/                   ✔ Stripe (Checkout, kundeportal, synk fra webhook), Innstillinger → Abonnement
+│   ├── launch/                    ✔ lansering med oppstartsavgift: Checkout, registrering av betalingen, siden Lansering
 │   ├── integrations/              ✔ API-nøkler, webhooks (utsending, signatur, SSRF-vern), Innstillinger → API
 │   └── platform/                  ✔ forlengelse av prøveperioden (plattformadmin)
     ├── i18n/                          ✔ språkoppsett for next-intl
@@ -88,7 +89,7 @@ platform/
     │   ├── auth/                      ✔ datatilgangslag (DAL) og roller som speiler SQL
     │   ├── actions/                   ✔ felles svarformat og kontroller for serverhandlinger
     │   ├── format/                    ✔ norsk format: 2 450 000 kr, 68 m², og tolking av norske tall
-    │   ├── billing/                   ✔ prøveperiode, lesemodus og planer (grenser for aktive prosjekter)
+    │   ├── billing/                   ✔ prøveperiode, lesemodus, pakker (grenser og funksjoner) og oppstartsavgift
 │   ├── api/                       ✔ svar og feil for det åpne API-et og API-et med nøkkel
     │   ├── email/                     ✔ Resend og maler
     │   ├── navigation/, security/     ✔ trygge omdirigeringer, tokener
@@ -295,7 +296,8 @@ Testene i `005_publisering_og_offentlig_api.test.sql` kontrollerer dette.
 | Filstier låst til filens mappe (fase 1) | Original og varianter må ligge under `{organization_id}/{asset_id}/` |
 | `organizations`: `cancel_at_period_end`, `billing_event_at`, `billing_notices` (fase 4) | Oppsigelse ved periodens slutt, rekkefølge på hendelser fra Stripe og varsler som er sendt |
 | `webhook_deliveries.is_test` (fase 4) | Testhendelser sendes én gang, uten nye forsøk |
-| Grense for aktive prosjekter per plan (fase 4) | Planene etter antall aktive prosjekter håndheves i databasen |
+| Grense for aktive prosjekter per plan (fase 4) | Erstattet i fase 6 av pakker og oppstartsavgift (avsnitt 13 og 23) |
+| Pakker, `project_launches` og lansering før publisering (fase 6) | Grenser per pakke og oppstartsavgift per prosjekt, håndhevet i databasen |
 | `api_*`-funksjoner (fase 4) | API-et med nøkkel leser og skriver bare i nøkkelens organisasjon |
 
 ## 12. Egne domener
@@ -314,22 +316,21 @@ Testene i `005_publisering_og_offentlig_api.test.sql` kontrollerer dette.
 
 ## 13. Abonnement og lesemodus
 
-- **Prøveperiode.** En ny organisasjon får 30 dagers prøveperiode uten kort. Med «Velg plan» starter eieren Stripe Checkout. Gjenstår det mer enn to døgn av prøveperioden, starter abonnementet med resten av den, så ingen dager betales to ganger.
-- **Planer etter antall aktive prosjekter** (fasene Kommer for salg, I salg og Utsolgt):
+- **Prøveperiode.** En ny organisasjon får 30 dagers prøveperiode uten kort, med det samme som i Pro. Prosjektene kan bygges og forhåndsvises, men ikke publiseres før de er lansert (avsnitt 23). Med «Velg pakke» starter eieren Stripe Checkout. Gjenstår det mer enn to døgn av prøveperioden, starter abonnementet med resten av den, så ingen dager betales to ganger.
+- **Pakker** (fase 6). Antall prosjekter er ikke begrenset. Pakkene styrer funksjoner og grenser:
 
-  | Plan | Aktive prosjekter |
-  |---|---|
-  | Prøveperiode | 3 |
-  | Start | 1 |
-  | Vekst | 5 |
-  | Proff | 15 |
-  | Enterprise | ingen grense, avtales særskilt |
+  | | Prosjektside (`start`) | Pro (`pro`) | Partner (`partner`) | Prøveperiode |
+  |---|---|---|---|---|
+  | Brukere (medlemmer og ventende invitasjoner) | 3 | 10 | ingen grense | 10 |
+  | Egne domener per prosjektside | 1 | 10 | 10 | 10 |
+  | API, webhooks og innbygging | nei | ja | ja | ja |
+  | Oppsett, opplæring og prioritert support | nei | nei | ja (utenfor appen) | nei |
 
-  Grensen håndheves av en trigger på `projects`. Prosjekter som allerede er aktive, påvirkes ikke når en organisasjon bytter til en mindre plan. Prisene settes i Stripe.
+  Enterprise avtales særskilt og har det samme som Partner. Grensene håndheves i databasen (`app.plan_member_limit`, `app.plan_domain_limit`, `app.plan_allows`) og speiles i `src/lib/billing/plans.ts`. Det som finnes fra før, beholdes etter bytte til en mindre pakke, men det kan ikke legges til mer: invitasjoner og domener avvises, nye API-nøkler og webhooks avvises, nøkler som finnes, slutter å virke, og hendelser legges ikke i utboksen. Månedsprisene settes i Stripe. Ingen bindingstid.
 - **Webhooken** (`/api/stripe/webhook`) kontrollerer signaturen og henter alltid abonnementet på nytt fra Stripe før det lagres med `apply_stripe_subscription()`. Hendelser i feil rekkefølge kan dermed ikke sette en gammel tilstand:
   - Et nytt abonnement som ikke er betalt, endrer ingenting.
   - Et gammelt abonnement som avsluttes, overskriver ikke et nyere.
-- **Kundeportalen** i Stripe brukes til betalingsmåte, fakturaer, bytte av plan og oppsigelse.
+- **Kundeportalen** i Stripe brukes til betalingsmåte, fakturaer, bytte av pakke og oppsigelse.
 - **Lesemodus.** Når prøveperioden er ute eller abonnementet er avsluttet:
   - Databasen avviser alle endringer, også fra API-et.
   - Admin viser et banner, og eieren får lenke til Abonnement.
@@ -344,6 +345,7 @@ Testene i `005_publisering_og_offentlig_api.test.sql` kontrollerer dette.
   - Iframen er reserven: på nettsteder uten skript virker den alene.
   - Se [api.md](api.md) for attributter og hendelser.
 - **Åpent lese-API** (`/api/public/v1`) bruker de offentlige databasefunksjonene og har CORS for alle. Svarene mellomlagres i høyst fem sekunder.
+- **Pakken** (fase 6): innbygging og det åpne lese-API-et er med i Pro, Partner og prøveperioden. API-et svarer 403 `plan_required` for prosjekter i Prosjektside. Den publiserte velgeren spør `integration_allowed()` når den vises i en iframe på et annet nettsted, og viser da en lenke til seg selv i stedet. På sin egen adresse og på prosjektsiden vises den som før.
 - **API med nøkkel** (`/api/v1`) bruker `api_*`-funksjonene, som bare service-rollen kan kjøre:
   - Serveren sender SHA-256 av nøkkelen. Funksjonen finner organisasjonen fra nøkkelen, kontrollerer tilgangene og holder rate limit (600 kall i minuttet).
   - Funksjonen leser og skriver bare i nøkkelens organisasjon, så et kall kan aldri nå en annen organisasjon, selv med service-rollen.
@@ -457,3 +459,22 @@ Publiserte prosjektsider (`sites/[site]/…`) lages som ferdige statiske sider p
 - Postgres kjører AFTER-triggere for rader i en kaskade først etter den ytre setningen, med `pg_trigger_depth() = 1`. Kontrollen av dybden i `audit_row_change` fanget dem derfor ikke.
 - Sletting av et prosjekt med enheter stoppet derfor på fremmednøkkelen i `audit_log`.
 - Nå kjennes kaskaden igjen på at organisasjonen eller prosjektet ikke finnes lenger. Sletting av prosjekt og organisasjon virker og er testet.
+
+## 23. Oppstartsavgift og lansering (fase 6)
+
+- **Lansering.** Et prosjekt kan ikke publiseres før det er lansert. Triggeren `require_launch` på `sites` og `selectors` avviser `published_at` for prosjekter uten `projects.launched_at` (P0402). Avpublisering er alltid lov. Prosjekter som var publisert da regelen kom, ble regnet som lansert uten grense.
+- **Oppstartsavgiften** betales én gang og følger antall enheter (kroner uten mva.):
+
+  | Enheter | 1–9 | 10–19 | 20–39 | 40–69 | 70–99 | 100–149 | 150–199 | 200+ |
+  |---|---|---|---|---|---|---|---|---|
+  | Pris | 6 900 | 11 900 | 15 900 | 21 900 | 26 900 | 35 900 | 49 900 | avtale |
+
+  Beløpene står bare i `src/lib/billing/launch.ts`. Databasen lagrer hva som er betalt og nivået det dekker (`projects.launch_unit_limit`).
+- **Tak på enheter.** Et lansert prosjekt kan ikke få flere enheter enn nivået som er betalt (`app.limit_launched_units`, P0402). Eieren utvider da til et høyere nivå og betaler forskjellen mellom nivåene. Nivået kan også velges høyere ved lanseringen.
+- **Betalingen** (Lansering i prosjektmenyen):
+  1. Bare eieren betaler, og organisasjonen må ha valgt en pakke i Stripe.
+  2. Serveren teller enhetene, regner ut nivå og beløp, og lager en rad i `project_launches` med `begin_project_launch()` (service-rollen).
+  3. Stripe Checkout i betalingsmodus med `price_data` på produktet `STRIPE_PRODUCT_LAUNCH`, mva. lagt til (`tax_behavior: exclusive`) og faktura i Stripe.
+  4. Betalingen registreres med `complete_project_launch()` både når kunden kommer tilbake fra Checkout og fra webhooken. Funksjonen tåler å bli kalt flere ganger, og beløpet uten mva. må stemme med raden. Lanseringen logges i revisjonsloggen.
+- **Etter avtale.** Prosjekter med mer enn 199 enheter, demo og support lanseres med `waive_project_launch()` (service-rollen), med eller uten grense. Det logges med notatet. Se [drift.md](drift.md).
+- **Hvem ser hva.** Eier og administrator ser betalingene (`project_launches`, RLS). Alle med tilgang til prosjektet ser om det er lansert.

@@ -29,6 +29,10 @@ function writeError(error: unknown): never {
   if (postgresErrorCode(error) === "42501") {
     throw new ActionError("forbidden");
   }
+  // Pakken har ikke API eller webhooks (app.require_plan_feature).
+  if (postgresErrorCode(error) === "P0403") {
+    throw new ActionError("planFeature");
+  }
   throw error;
 }
 

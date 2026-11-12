@@ -18,10 +18,13 @@ const serverEnvSchema = z.object({
   /** Bare lokalt og i tester: e-post uten Resend sendes til Mailpit i lokal Supabase. */
   mailpitUrl: z.url().optional(),
 
-  /** Stripe. Uten nøkkel vises planene, men betaling er ikke mulig. */
+  /** Stripe. Uten nøkkel vises pakkene, men betaling er ikke mulig. */
   stripeSecretKey: optional,
   stripeWebhookSecret: optional,
-  stripePrices: z.object({ start: optional, growth: optional, pro: optional }),
+  /** Månedsprisene for pakkene (price_…). */
+  stripePrices: z.object({ start: optional, pro: optional, partner: optional }),
+  /** Produktet oppstartsavgiften faktureres som (prod_…). Beløpet regnes ut i appen (lib/billing/launch.ts). */
+  stripeLaunchProduct: z.string().regex(/^prod_[A-Za-z0-9_]+$/).optional(),
   /** Bare i tester: en lokal etterligning av Stripe sitt API, f.eks. http://127.0.0.1:12111. */
   stripeApiBase: z.url().optional(),
   /** Stripe Tax: legger til mva. automatisk i Checkout når det er satt opp i Stripe. */
@@ -41,7 +44,7 @@ const serverEnvSchema = z.object({
 
   /** Vercel Cron sender «Authorization: Bearer {CRON_SECRET}» til jobbene under /api/cron. */
   cronSecret: optional,
-  /** Vises på Abonnement-siden for avtaler utenom planene. */
+  /** Vises på Abonnement-siden og lanseringen for avtaler utenom pakkene. */
   supportEmail: z.email().optional(),
 });
 
@@ -56,7 +59,7 @@ function value(name: string): string | undefined {
 export function serverEnv(): ServerEnv {
   cached ??= serverEnvSchema.parse({
     resendApiKey: value("RESEND_API_KEY"),
-    emailFrom: process.env.EMAIL_FROM || "Boligplattform <noreply@example.com>",
+    emailFrom: process.env.EMAIL_FROM || "excip <noreply@example.com>",
     supabaseSecretKey: value("SUPABASE_SECRET_KEY"),
     turnstileSecretKey: value("TURNSTILE_SECRET_KEY"),
     mailpitUrl: value("MAILPIT_URL"),
@@ -64,9 +67,10 @@ export function serverEnv(): ServerEnv {
     stripeWebhookSecret: value("STRIPE_WEBHOOK_SECRET"),
     stripePrices: {
       start: value("STRIPE_PRICE_START"),
-      growth: value("STRIPE_PRICE_GROWTH"),
       pro: value("STRIPE_PRICE_PRO"),
+      partner: value("STRIPE_PRICE_PARTNER"),
     },
+    stripeLaunchProduct: value("STRIPE_PRODUCT_LAUNCH"),
     stripeApiBase: value("STRIPE_API_BASE"),
     stripeAutomaticTax: process.env.STRIPE_AUTOMATIC_TAX === "true",
     vercelApiToken: value("VERCEL_API_TOKEN"),
@@ -75,7 +79,7 @@ export function serverEnv(): ServerEnv {
     dnsOverHttpsUrl: value("DNS_OVER_HTTPS_URL") ?? "https://cloudflare-dns.com/dns-query",
     domainCnameTarget: value("DOMAIN_CNAME_TARGET") ?? "cname.vercel-dns.com",
     domainARecord: value("DOMAIN_A_RECORD") ?? "76.76.21.21",
-    domainTxtPrefix: value("DOMAIN_TXT_PREFIX") ?? "_boligplattform",
+    domainTxtPrefix: value("DOMAIN_TXT_PREFIX") ?? "_excip",
     cronSecret: value("CRON_SECRET"),
     supportEmail: value("SUPPORT_EMAIL"),
   });

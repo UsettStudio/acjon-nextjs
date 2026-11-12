@@ -100,7 +100,10 @@
     "invalidInput": "Check the highlighted fields.",
     "rateLimited": "Too many attempts. Wait a moment and try again.",
     "unknown": "Something went wrong. Please try again shortly.",
-    "planLimit": "The plan has no room for more active projects. Choose a larger subscription, or set another project to Completed or Archived."
+    "planLimit": "The package has no room for more. Choose a larger package under Settings → Subscription.",
+    "planFeature": "This feature is not included in the package. It is included in Pro and Partner.",
+    "launchRequired": "The project must be launched before it can be published. Pay the launch fee under Launch.",
+    "unitLimit": "The launch fee does not cover more units in the project. Extend the launch under Launch."
   },
   "auth": {
     "email": "Email",
@@ -163,7 +166,8 @@
     "accepted": "The invitation has already been accepted.",
     "goToOrganization": "Go to {organization}",
     "emailNotConfirmed": "Confirm your email address before you accept the invitation.",
-    "signupHint": "You are invited to {organization}. Create an account with the email address the invitation was sent to."
+    "signupHint": "You are invited to {organization}. Create an account with the email address the invitation was sent to.",
+    "organizationFull": "The organisation has no room for more users in its package. Ask the person who invited you to change package."
   },
   "onboarding": {
     "title": "Create an organisation",
@@ -410,7 +414,8 @@
       "settings": "Settings",
       "selectors": "Unit selector",
       "site": "Project site",
-      "leads": "Leads"
+      "leads": "Leads",
+      "launch": "Launch"
     },
     "list": {
       "title": "Projects",
@@ -628,7 +633,8 @@
         "units": "Add or import units",
         "selector": "Upload an image and mark the units",
         "template": "Choose a template for the project site",
-        "publish": "Publish"
+        "publish": "Publish",
+        "launch": "Launch the project"
       },
       "notes": {
         "units": "{count, plural, one {# unit} other {# units}}",
@@ -642,7 +648,8 @@
         "selector": "Open the unit selector",
         "template": "Create the project site",
         "publish": "Publish the project site",
-        "publishSelector": "Publish the unit selector"
+        "publishSelector": "Publish the unit selector",
+        "launch": "Pay the launch fee"
       }
     }
   },
@@ -1462,6 +1469,10 @@
       "liveStatus": "Status updates continuously.",
       "interestHeading": "Register interest",
       "interestIntro": "Fill in the form and the agent will contact you about {unit}."
+    },
+    "embedGate": {
+      "unavailable": "The unit selector cannot be shown here.",
+      "open": "Open the unit selector"
     }
   },
   "siteBuilder": {
@@ -2338,13 +2349,14 @@
       "added": "The domain has been added. Add the DNS records shown under the domain.",
       "addedVerified": "The domain has been added and verified.",
       "exists": "The domain has already been added to this project site.",
-      "limit": "A project site can have up to ten custom domains."
-    }
+      "limit": "The package allows {count, plural, one {one custom domain} other {# custom domains}} per project site."
+    },
+    "planLimit": "The package allows {count, plural, one {one custom domain} other {# custom domains}} per project site."
   },
   "billing": {
     "title": "Subscription",
-    "description": "The plan decides how many projects can be active at the same time. Payment, invoices and cancellation are handled by Stripe.",
-    "plan": "Plan",
+    "description": "The package decides the features and how many users and domains you can have. Payment, invoices and cancellation are handled by Stripe.",
+    "plan": "Package",
     "status": "Status",
     "trialUntil": "The trial lasts until {date} ({days, plural, one {# day left} other {# days left}}).",
     "trialEnded": "The trial has ended.",
@@ -2354,21 +2366,16 @@
     "pastDue": "The payment failed. Update the payment method in the customer portal.",
     "ended": "The subscription has ended.",
     "readOnlyHelp": "The organization is in read-only mode. You can see everything, but not make changes. Published project sites and unit selectors are still online, and new leads still come in.",
-    "usage": "{used} of {limit} active projects are in use.",
-    "usageUnlimited": "{used} active projects. The plan has no limit.",
-    "usageLabel": "Active projects",
-    "usageHelp": "Active projects are projects in the phases Coming soon, For sale and Sold out. Drafts, completed and archived projects do not count.",
     "portal": "Manage subscription",
-    "plansTitle": "Plans",
-    "plansHelp": "All plans include every feature. Prices are per month, and you can change plan or cancel at any time.",
+    "plansTitle": "Packages",
+    "plansHelp": "Prices are per month and exclude VAT. You can change package or cancel at any time.",
     "priceInCheckout": "Price in Stripe",
-    "projectLimit": "{count, plural, one {One active project} other {Up to # active projects}}",
     "currentPlan": "Current plan",
     "changeInPortal": "Change in the customer portal",
     "choose": "Choose {plan}",
-    "enterprise": "Need more than 15 active projects? Get in touch:",
-    "enterpriseNoContact": "If you need more than 15 active projects, we can make a separate agreement.",
-    "notConfigured": "Payment is not set up in this environment, so the plans cannot be chosen here.",
+    "enterprise": "Need a custom agreement, for example for projects with more than 199 units? Get in touch:",
+    "enterpriseNoContact": "If you need a custom agreement, for example for projects with more than 199 units, we can set one up.",
+    "notConfigured": "Payment is not set up in this environment, so packages cannot be chosen here.",
     "checkoutPending": "Thank you! The payment has been registered. It can take a few seconds before the subscription shows up here.",
     "checkoutDone": "Thank you! The subscription is active.",
     "checkoutCanceled": "The payment was cancelled. Nothing has changed.",
@@ -2383,16 +2390,16 @@
         "name": "Trial"
       },
       "start": {
-        "name": "Start",
-        "description": "For developers with one project for sale."
-      },
-      "growth": {
-        "name": "Growth",
-        "description": "For developers with several projects for sale at once."
+        "name": "Project site",
+        "description": "Get the project online, quickly and neatly."
       },
       "pro": {
         "name": "Pro",
-        "description": "For agents and developers with many projects."
+        "description": "For developers and agents who connect their own systems."
+      },
+      "partner": {
+        "name": "Partner",
+        "description": "We set up the project and follow you up."
       },
       "enterprise": {
         "name": "Enterprise"
@@ -2400,7 +2407,7 @@
     },
     "errors": {
       "billingUnavailable": "Payment is not set up in this environment.",
-      "subscriptionExists": "The organization already has a subscription. Change plan in the customer portal.",
+      "subscriptionExists": "The organisation already has a subscription. Change package in the customer portal.",
       "noCustomer": "The organization has not chosen a subscription yet."
     },
     "banner": {
@@ -2408,9 +2415,40 @@
       "trialEnded": "The trial has ended, so the organization is in read-only mode. Published pages are still online.",
       "ended": "The subscription has ended, so the organization is in read-only mode. Published pages are still online.",
       "pastDue": "The payment for the subscription failed. Update the payment method, or the organization will switch to read-only mode.",
-      "choosePlan": "Choose subscription",
+      "choosePlan": "Choose package",
       "updatePayment": "Update payment",
       "contactOwner": "Contact the owner of the organization."
+    },
+    "trialHelp": "The trial includes everything in Pro, so you can build and preview your projects. To publish, choose a package and pay the launch fee for the project.",
+    "terms": "No minimum term. The subscription can be cancelled at any time and stops at the end of the period.",
+    "features": {
+      "inherits": "Everything in {plan}, plus:",
+      "site": "Project site with templates, your own pages and your own design",
+      "selector": "Unit selector and a page for each unit",
+      "leads": "Interest form and leads with consent",
+      "tracking": "Tracking with consent: Google Analytics, Tag Manager and Meta Pixel",
+      "domains": "{count, plural, one {One custom domain} other {Up to # custom domains}} per project site",
+      "members": "Up to {count} users",
+      "membersUnlimited": "Unlimited users",
+      "api": "API and webhooks for agent systems and CRM",
+      "embed": "Unit selector embedded on your own website",
+      "onboarding": "We set up the project and train you",
+      "prioritySupport": "Priority support"
+    },
+    "launch": {
+      "title": "Launch fee per project",
+      "description": "Paid once, before the project is published for the first time. The price depends on the number of units and is the same in all packages.",
+      "units": "Units",
+      "price": "Price",
+      "range": "{min}–{max} units",
+      "over": "More than {units} units",
+      "byAgreement": "By agreement"
+    },
+    "notice": {
+      "integrations": "The {plan} package does not include the API, webhooks or embedding. They are included in Pro and Partner. Existing keys and webhooks will not work until you change package.",
+      "embed": "The {plan} package does not include embedding on your own website. It is included in Pro and Partner. The unit selector is still shown on the project site.",
+      "upgrade": "Change package",
+      "askOwner": "The owner of the organisation can change the package."
     }
   },
   "integrations": {
@@ -2524,6 +2562,60 @@
         "publicUnits": "The units in a published project."
       },
       "webhooksSignature": "Webhooks are signed according to Standard Webhooks. Use a Standard Webhooks library, or compute HMAC-SHA256 with the secret over the values of webhook-id and webhook-timestamp and the body, separated by dots."
+    }
+  },
+  "launch": {
+    "title": "Launch",
+    "pageTitle": "Launch – {name}",
+    "description": "The project can be published once the launch fee is paid. The fee is paid once and depends on the number of units.",
+    "vatNote": "All prices exclude VAT.",
+    "notLaunched": "Not launched",
+    "launched": "Launched",
+    "launchedOn": "Launched {date}.",
+    "units": "{count, plural, =0 {The project has no units yet.} one {The project has one unit.} other {The project has # units.}}",
+    "covers": "The fee covers up to {limit} units.",
+    "unlimited": "The fee covers all units (agreement).",
+    "chooseTier": "Choose a level",
+    "chooseTierHelp": "The level must cover the units in the project. If you will add more units later, you can choose a higher level now.",
+    "tierOption": "Up to {units} units",
+    "tierRange": "{min}–{max} units",
+    "upgradeTitle": "Extend",
+    "upgradeHelp": "The project cannot have more units than the fee covers. Choose a higher level and pay the difference.",
+    "topTier": "The project has the highest level. Get in touch for more units.",
+    "contact": "Projects with more than {units} units are launched by agreement.",
+    "pay": "Pay {amount} and launch",
+    "payUpgrade": "Pay {amount} and extend",
+    "ownerOnly": "Only the owner of the organisation can pay the launch fee.",
+    "choosePlanFirst": "Choose a package before the project is launched.",
+    "choosePlan": "Choose package",
+    "notConfigured": "Payment is not set up in this environment.",
+    "checkoutDone": "Thank you! The launch fee is paid.",
+    "checkoutPending": "Thank you! The payment is registered. It may take a moment before it shows here.",
+    "checkoutCanceled": "The payment was cancelled. Nothing has changed.",
+    "goToLaunch": "Go to launch",
+    "historyTitle": "Payments",
+    "historyEmpty": "No payments yet.",
+    "history": {
+      "date": "Date",
+      "kind": "What",
+      "level": "Level",
+      "amount": "Amount excl. VAT"
+    },
+    "kinds": {
+      "launch": "Launch",
+      "upgrade": "Extension",
+      "waiver": "By agreement"
+    },
+    "levelUnlimited": "No limit",
+    "checkout": {
+      "launchDescription": "Launch fee for {project}: up to {units} units",
+      "upgradeDescription": "Extension for {project}: up to {units} units"
+    },
+    "errors": {
+      "billingUnavailable": "Payment is not set up in this environment.",
+      "choosePlanFirst": "Choose a package under Settings → Subscription before the project is launched.",
+      "contactUs": "The project has more units than the levels cover. Get in touch for an agreement.",
+      "tierUnavailable": "The level cannot be chosen right now. Reload the page and try again."
     }
   }
 }
