@@ -708,6 +708,9 @@ isOneToOne: false
 "mark_billing_notice":
 { Args: { "p_kind": string,"p_organization_id": string }; Returns: undefined
                            },
+"project_overview":
+{ Args: { "p_project_id": string }; Returns: Json
+                           },
 "publish_selector":
 { Args: { "p_selector_id": string }; Returns: string
                            },

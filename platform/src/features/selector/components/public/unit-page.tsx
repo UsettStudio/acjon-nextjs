@@ -156,7 +156,7 @@ export function PublicUnitPage({
           {address ? ` · ${address}` : ""}
         </p>
         <div className="flex flex-wrap items-center gap-3">
-          <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">{unit.title ? `${unit.unit_number} – ${unit.title}` : unit.unit_number}</h1>
+          <h1 className="site-heading text-2xl font-semibold tracking-tight sm:text-3xl">{unit.title ? `${unit.unit_number} – ${unit.title}` : unit.unit_number}</h1>
           <StatusPill status={unit.status} color={unit.statusColors[unit.status]} />
         </div>
         <p className="text-xl font-semibold" data-testid="unit-price">

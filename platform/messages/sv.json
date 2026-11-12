@@ -612,7 +612,38 @@
       "recentLeads": "Senaste leads",
       "noLeads": "Inga förfrågningar ännu.",
       "leadUnit": "om {unit}",
-      "openLeads": "Alla leads i projektet"
+      "openLeads": "Alla leads i projektet",
+      "soldValue": "Sålt värde",
+      "soldWithoutPrice": "Ej medräknade: {count, plural, one {# såld bostad} other {# sålda bostäder}} utan pris."
+    },
+    "onboarding": {
+      "title": "Kom igång",
+      "progress": "{done} av {total} steg är klara.",
+      "stepNumber": "Steg {number}:",
+      "done": "(klart)",
+      "todo": "(återstår)",
+      "steps": {
+        "organization": "Skapa organisation",
+        "project": "Skapa projekt",
+        "units": "Lägg in eller importera bostäder",
+        "selector": "Ladda upp en bild och markera bostäderna",
+        "template": "Välj mall för projektsidan",
+        "publish": "Publicera"
+      },
+      "notes": {
+        "units": "{count, plural, one {# bostad} other {# bostäder}}",
+        "marked": "{marked} av {total} bostäder är markerade",
+        "selectorUnpublished": "Projektsidan är publicerad, men bostadsväljaren är det inte än."
+      },
+      "actions": {
+        "organization": "Skapa organisation",
+        "project": "Skapa projekt",
+        "units": "Lägg in bostäder",
+        "selector": "Öppna bostadsväljaren",
+        "template": "Skapa projektsidan",
+        "publish": "Publicera projektsidan",
+        "publishSelector": "Publicera bostadsväljaren"
+      }
     }
   },
   "units": {

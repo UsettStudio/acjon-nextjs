@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { cache } from "react";
 import { z } from "zod";
 
+import { parseProjectOverview, type ProjectOverview } from "@/features/projects/overview";
 import { MILESTONE_KEYS, type Contact, type Milestone, type ProjectPhase } from "@/features/projects/schemas";
 import { UNIT_STATUSES, type UnitStatus } from "@/features/units/fields";
 import { can, isMemberRole } from "@/lib/auth/permissions";
@@ -71,6 +72,16 @@ export async function getStatusCounts(projectIds: string[]): Promise<Map<string,
     result.set(row.project_id, counts);
   }
   return result;
+}
+
+/** Antall og verdi per status, og fremdriften i oppstarten (sjekklisten på prosjektets oversikt). */
+export async function getProjectOverview(projectId: string): Promise<ProjectOverview> {
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("project_overview", { p_project_id: projectId });
+  if (error) {
+    throw error;
+  }
+  return parseProjectOverview(data);
 }
 
 // Lagret JSON leses med tilgivende skjemaer: ugyldige oppføringer hoppes over i stedet for å stoppe siden.

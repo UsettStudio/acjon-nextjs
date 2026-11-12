@@ -212,7 +212,7 @@ export function PublicSelector({
       ) : (
         <header className="flex flex-wrap items-end justify-between gap-2">
           <div>
-            <h1 className="text-xl font-semibold tracking-tight sm:text-2xl">{data.project.name}</h1>
+            <h1 className="site-heading text-xl font-semibold tracking-tight sm:text-2xl">{data.project.name}</h1>
             {address ? <p className="text-sm text-muted-foreground">{address}</p> : null}
           </div>
           <LiveIndicator state={live} />

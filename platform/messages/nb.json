@@ -612,7 +612,38 @@
       "recentLeads": "Siste leads",
       "noLeads": "Ingen henvendelser ennå.",
       "leadUnit": "om {unit}",
-      "openLeads": "Alle leads i prosjektet"
+      "openLeads": "Alle leads i prosjektet",
+      "soldValue": "Verdi solgt",
+      "soldWithoutPrice": "Ikke med: {count, plural, one {# solgt enhet} other {# solgte enheter}} uten pris."
+    },
+    "onboarding": {
+      "title": "Kom i gang",
+      "progress": "{done} av {total} steg er fullført.",
+      "stepNumber": "Steg {number}:",
+      "done": "(fullført)",
+      "todo": "(gjenstår)",
+      "steps": {
+        "organization": "Opprett organisasjon",
+        "project": "Opprett prosjekt",
+        "units": "Legg inn eller importer enheter",
+        "selector": "Last opp bilde og marker enhetene",
+        "template": "Velg mal for prosjektsiden",
+        "publish": "Publiser"
+      },
+      "notes": {
+        "units": "{count, plural, one {# enhet} other {# enheter}}",
+        "marked": "{marked} av {total} enheter er markert",
+        "selectorUnpublished": "Prosjektsiden er publisert, men boligvelgeren er ikke det ennå."
+      },
+      "actions": {
+        "organization": "Opprett organisasjon",
+        "project": "Opprett prosjekt",
+        "units": "Legg inn enheter",
+        "selector": "Åpne boligvelgeren",
+        "template": "Lag prosjektsiden",
+        "publish": "Publiser prosjektsiden",
+        "publishSelector": "Publiser boligvelgeren"
+      }
     }
   },
   "units": {

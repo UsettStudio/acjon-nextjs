@@ -5,19 +5,15 @@ import { MailIcon, MapPinIcon, PhoneIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  getProjectContext,
-  getProjectStructure,
-  getStatusCounts,
-  emptyStatusCounts,
-  listRecentStatusEvents,
-} from "@/features/projects/queries";
+import { OnboardingChecklist } from "@/features/projects/components/onboarding-checklist";
+import { onboardingSteps } from "@/features/projects/overview";
+import { getProjectContext, getProjectOverview, getProjectStructure, listRecentStatusEvents } from "@/features/projects/queries";
 import { LeadStatusBadge } from "@/features/leads/components/lead-status-badge";
 import { listRecentLeads } from "@/features/leads/queries";
 import { StatusDistribution, UnitStatusBadge } from "@/features/units/components/unit-status-badge";
 import { can } from "@/lib/auth/permissions";
 import { UNIT_STATUSES } from "@/features/units/fields";
-import { formatDate, formatDateTime, formatNumber } from "@/lib/format";
+import { formatCurrency, formatDate, formatDateTime, formatNumber } from "@/lib/format";
 
 export async function generateMetadata({ params }: PageProps<"/[org]/projects/[project]">): Promise<Metadata> {
   const { org, project } = await params;
@@ -30,22 +26,26 @@ export default async function ProjectOverviewPage({ params }: PageProps<"/[org]/
   const context = await getProjectContext(org, slug);
   const { project } = context;
   const canReadLeads = can(context.role, "leads.read");
-  const [t, tMilestones, tSources, counts, structure, events, leads] = await Promise.all([
+  const [t, tMilestones, tSources, overview, structure, events, leads] = await Promise.all([
     getTranslations("projects.overview"),
     getTranslations("projects.milestones"),
     getTranslations("units.sources"),
-    getStatusCounts([project.id]),
+    getProjectOverview(project.id),
     getProjectStructure(project.id),
     listRecentStatusEvents(project.id, 10),
     canReadLeads ? listRecentLeads(context.organization.id, project.id, 5) : Promise.resolve([]),
   ]);
-  const projectCounts = counts.get(project.id) ?? emptyStatusCounts();
-  const total = UNIT_STATUSES.reduce((sum, status) => sum + projectCounts[status], 0);
+  const projectCounts = overview.counts;
+  const total = overview.totalUnits;
   const soldShare = total > 0 ? Math.round((projectCounts.sold / total) * 100) : 0;
   const base = `/${org}/projects/${slug}`;
+  // Sjekklisten er for dem som setter opp prosjektet, og forsvinner når alt er gjort.
+  const steps = onboardingSteps(overview, base);
+  const showChecklist = can(context.role, "content.edit") && steps.some((step) => !step.done);
 
   return (
     <div className="grid gap-6 lg:grid-cols-3">
+      {showChecklist ? <OnboardingChecklist steps={steps} className="lg:col-span-3" /> : null}
       <Card className="lg:col-span-2">
         <CardHeader>
           <CardTitle>
@@ -80,6 +80,15 @@ export default async function ProjectOverviewPage({ params }: PageProps<"/[org]/
               </dl>
               <StatusDistribution counts={projectCounts} showLegend={false} />
               <p className="text-sm text-muted-foreground">{t("soldShare", { percent: soldShare })}</p>
+              <dl>
+                <dt className="text-sm text-muted-foreground">{t("soldValue")}</dt>
+                <dd className="text-2xl font-semibold tabular-nums">{formatCurrency(overview.soldValue)}</dd>
+                {overview.soldWithoutPrice > 0 ? (
+                  <dd className="text-sm text-muted-foreground">
+                    {t("soldWithoutPrice", { count: overview.soldWithoutPrice })}
+                  </dd>
+                ) : null}
+              </dl>
               <div>
                 <Button asChild variant="outline">
                   <Link href={`${base}/units`}>{t("openUnits")}</Link>

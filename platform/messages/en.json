@@ -612,7 +612,38 @@
       "recentLeads": "Latest leads",
       "noLeads": "No enquiries yet.",
       "leadUnit": "about {unit}",
-      "openLeads": "All leads in the project"
+      "openLeads": "All leads in the project",
+      "soldValue": "Value sold",
+      "soldWithoutPrice": "Not included: {count, plural, one {# sold unit} other {# sold units}} without a price."
+    },
+    "onboarding": {
+      "title": "Get started",
+      "progress": "{done} of {total} steps completed.",
+      "stepNumber": "Step {number}:",
+      "done": "(completed)",
+      "todo": "(to do)",
+      "steps": {
+        "organization": "Create an organisation",
+        "project": "Create a project",
+        "units": "Add or import units",
+        "selector": "Upload an image and mark the units",
+        "template": "Choose a template for the project site",
+        "publish": "Publish"
+      },
+      "notes": {
+        "units": "{count, plural, one {# unit} other {# units}}",
+        "marked": "{marked} of {total} units are marked",
+        "selectorUnpublished": "The project site is published, but the unit selector is not yet."
+      },
+      "actions": {
+        "organization": "Create an organisation",
+        "project": "Create a project",
+        "units": "Add units",
+        "selector": "Open the unit selector",
+        "template": "Create the project site",
+        "publish": "Publish the project site",
+        "publishSelector": "Publish the unit selector"
+      }
     }
   },
   "units": {

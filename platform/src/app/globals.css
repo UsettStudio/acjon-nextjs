@@ -109,3 +109,11 @@
     @apply bg-background text-foreground min-h-full antialiased;
   }
 }
+
+/* Prosjektsidene: overskrifter bruker skriften fra temaet. themeStyle() setter
+   --site-heading-font på rotelementet til siden. Utenfor en prosjektside arves skriften. */
+@layer components {
+  .site-heading {
+    font-family: var(--site-heading-font, inherit);
+  }
+}
