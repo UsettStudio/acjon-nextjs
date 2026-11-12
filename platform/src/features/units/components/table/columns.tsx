@@ -15,7 +15,7 @@ import {
 import { EyeOffIcon } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { useMemo } from "react";
+import { useMemo, type ReactNode } from "react";
 
 import { useUnitsTable } from "@/features/units/components/table/context";
 import { EditableCell, EmptyValue, type CellOption } from "@/features/units/components/table/editable-cell";
@@ -54,6 +54,19 @@ export const unitTableFeatures = tableFeatures({
 
 type Features = typeof unitTableFeatures;
 export type UnitTableRow = Row<Features, UnitListItem>;
+type UnitTableCell = ReturnType<UnitTableRow["getVisibleCells"]>[number];
+
+/**
+ * Tegner en celle ved å kalle cellefunksjonen direkte. FlexRender bruker funksjonen
+ * som komponenttype, og kolonnene bygges på nytt hver gang oversettelsene kommer på
+ * nytt fra serveren, for eksempel etter en lagring. Da ville alle cellene blitt
+ * montert på nytt: en åpen meny lukkes, og fokus forsvinner fra cellen.
+ * Cellefunksjonene under bruker derfor ingen hooks. Det gjør komponentene de tegner.
+ */
+export function renderUnitCell(cell: UnitTableCell): ReactNode {
+  const template = cell.column.columnDef.cell;
+  return typeof template === "function" ? template(cell.getContext()) : template;
+}
 
 const helper = createColumnHelper<Features, UnitListItem>();
 

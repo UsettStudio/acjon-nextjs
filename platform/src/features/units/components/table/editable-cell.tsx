@@ -63,6 +63,9 @@ export function EditableCell({
   const inputRef = useRef<HTMLInputElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const returnFocus = useRef(false);
+  // Bare én lagring per redigering. Feltet mister fokus når brukeren går videre
+  // under lagringen, og den blur-hendelsen skal ikke lagre en gang til.
+  const committing = useRef(false);
 
   useEffect(() => {
     if (editing && editor !== "select") {
@@ -80,6 +83,14 @@ export function EditableCell({
   }
 
   async function commit(value: string, focusBack: boolean) {
+    if (committing.current) {
+      // Brukeren gikk videre mens lagringen pågikk. Da hentes ikke fokus tilbake.
+      if (!focusBack) {
+        returnFocus.current = false;
+      }
+      return;
+    }
+    committing.current = true;
     returnFocus.current = focusBack;
     if (value.trim() === editValue.trim()) {
       setEditing(false);
@@ -90,6 +101,7 @@ export function EditableCell({
     const message = await saveField(unit, field, value === NONE ? null : value);
     setSaving(false);
     if (message) {
+      committing.current = false;
       setError(message);
       returnFocus.current = false;
       if (editor !== "select") {
@@ -102,6 +114,7 @@ export function EditableCell({
   }
 
   function start() {
+    committing.current = false;
     setDraft(editValue);
     setError(null);
     setEditing(true);
@@ -147,7 +160,8 @@ export function EditableCell({
           inputMode={editor === "number" ? "decimal" : undefined}
           aria-label={t("editField", { field: label, unit: unit.unit_number })}
           aria-invalid={error !== null}
-          disabled={saving}
+          aria-busy={saving || undefined}
+          readOnly={saving}
           className={cn("h-8 min-w-24", align === "end" && "text-right tabular-nums", saving && "pr-8")}
           onChange={(event) => setDraft(event.target.value)}
           onBlur={() => void commit(draft, false)}
@@ -157,6 +171,7 @@ export function EditableCell({
               void commit(draft, true);
             } else if (event.key === "Escape") {
               event.preventDefault();
+              committing.current = true;
               returnFocus.current = true;
               setError(null);
               setEditing(false);

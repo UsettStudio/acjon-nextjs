@@ -37,7 +37,12 @@ import {
   updateUnitFields,
   updateUnitsBulk,
 } from "@/features/units/actions";
-import { DEFAULT_HIDDEN_COLUMNS, unitTableFeatures, useUnitColumns } from "@/features/units/components/table/columns";
+import {
+  DEFAULT_HIDDEN_COLUMNS,
+  renderUnitCell,
+  unitTableFeatures,
+  useUnitColumns,
+} from "@/features/units/components/table/columns";
 import { UnitsTableContext, type UnitsTableActions } from "@/features/units/components/table/context";
 import {
   AssignDialog,
@@ -691,14 +696,14 @@ function UnitsGrid({
                               canSell ? "left-10" : "left-0",
                             )}
                           >
-                            <table.FlexRender cell={cell} />
+                            {renderUnitCell(cell)}
                           </th>
                         ) : (
                           <td
                             key={cell.id}
                             className="border-b px-1 group-hover:bg-muted/60 group-data-[state=selected]:bg-muted"
                           >
-                            <table.FlexRender cell={cell} />
+                            {renderUnitCell(cell)}
                           </td>
                         ),
                       )}

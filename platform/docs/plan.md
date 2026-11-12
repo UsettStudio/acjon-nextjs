@@ -581,6 +581,7 @@ Hver fase avsluttes med grønne tester, typekontroll og lint, og en kort oppsumm
   - **Hendelsene** har nå enhetens eksterne id og kilden til endringen.
 - **Planlagte jobber** (Vercel Cron, med `CRON_SECRET`): webhooks hvert minutt, domener hvert femte minutt, og varsler om prøveperioden daglig.
 - **Rettet fra fase 3:** import av enheter tømmer nå mellomlageret for publiserte prosjektsider.
+- **Rettet fra fase 1:** i enhetstabellen lagret Enter en celle to ganger, og fokus gikk tapt etterpå. Alle cellene ble dessuten montert på nytt etter hver lagring, så en åpen statusmeny kunne lukkes. Det gjorde en ende-til-ende-test ustabil.
 - **Database** (migrasjon `20261113090000_fase4_drift`):
   - **Planer og grense** for aktive prosjekter.
   - **Stripe (bare service-rollen):** `link_stripe_customer`, `apply_stripe_subscription`, `due_billing_notices` og `mark_billing_notice`.
