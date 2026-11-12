@@ -17,6 +17,8 @@ import {
 import { fromMediaAsset, fromPublicAsset, type SiteAsset } from "@/features/site-builder/assets";
 import { blockAssetIds, parseBlocks, type Block } from "@/features/site-builder/blocks";
 import {
+  NO_TRACKING,
+  parseCookieSettings,
   parseFooter,
   parseNav,
   parsePublishedPage,
@@ -177,6 +179,8 @@ export async function getPublishedRenderData(
     units: units.units,
     statusColors: units.statusColors,
     selectors: Object.fromEntries(selectors.flatMap((selector) => (selector ? [[selector.id, selector]] : []))),
+    tracking: site.tracking,
+    privacy: site.privacy,
   };
 }
 
@@ -195,7 +199,7 @@ type ContactRow = { name?: unknown; title?: unknown; email?: unknown; phone?: un
 export async function loadDraftSite(client: Client, siteId: string): Promise<DraftSite | null> {
   const { data: site, error } = await client
     .from("sites")
-    .select("id, organization_id, project_id, subdomain, theme, nav, footer, seo_defaults")
+    .select("id, organization_id, project_id, subdomain, theme, nav, footer, seo_defaults, cookie_settings")
     .eq("id", siteId)
     .maybeSingle();
   if (error) {
@@ -217,7 +221,11 @@ export async function loadDraftSite(client: Client, siteId: string): Promise<Dra
       .select("id, name, slug, phase, address, postal_code, city, municipality, lat, lng, description, milestones, contacts, settings")
       .eq("id", site.project_id)
       .single(),
-    client.from("organizations").select("id, name, locale, brand, status_colors, logo_asset_id").eq("id", site.organization_id).single(),
+    client
+      .from("organizations")
+      .select("id, name, locale, brand, status_colors, logo_asset_id, lead_retention_days")
+      .eq("id", site.organization_id)
+      .single(),
     client
       .from("units")
       .select(
@@ -361,6 +369,9 @@ export async function loadDraftSite(client: Client, siteId: string): Promise<Dra
     units,
     statusColors: resolveStatusColors(organization.status_colors, settings.status_colors),
     selectors,
+    // Utkastet laster aldri sporing.
+    tracking: NO_TRACKING,
+    privacy: { ...parseCookieSettings(site.cookie_settings), leadRetentionDays: organization.lead_retention_days },
   };
 }
 

@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Label } from "@/components/ui/label";
 import { publishSelector, unpublishSelector, updateSelectorSettings, type PublishState } from "@/features/selector/actions";
+import { EmbedDialog } from "@/features/selector/components/editor/embed-dialog";
 import { FILTER_KEYS, type SelectorSettings } from "@/features/selector/model";
 import { selectorPreviewPath, selectorPublicPath } from "@/features/selector/paths";
 import { cn } from "@/lib/utils";
@@ -199,9 +200,11 @@ export function PublishBar({
   flush,
   onPublishState,
   onSettings,
+  projectName,
 }: {
   organizationId: string;
   selectorId: string;
+  projectName: string;
   publish: PublishState;
   settings: SelectorSettings;
   canEdit: boolean;
@@ -218,6 +221,7 @@ export function PublishBar({
   const [previewOpen, setPreviewOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [confirmUnpublish, setConfirmUnpublish] = useState(false);
+  const [embedOpen, setEmbedOpen] = useState(false);
   const published = publish.publishedAt !== null;
 
   function errorText(code: string) {
@@ -308,6 +312,9 @@ export function PublishBar({
           <DropdownMenuItem disabled={!published} onSelect={() => void copyLink()}>
             {t("copyLink")}
           </DropdownMenuItem>
+          <DropdownMenuItem disabled={!published} onSelect={() => setEmbedOpen(true)}>
+            {t("embed")}
+          </DropdownMenuItem>
           <DropdownMenuItem disabled={!published} asChild={published}>
             {published ? (
               <a href={selectorPublicPath(selectorId)} target="_blank" rel="noreferrer">
@@ -330,6 +337,7 @@ export function PublishBar({
       </DropdownMenu>
 
       <PreviewDialog open={previewOpen} onOpenChange={setPreviewOpen} selectorId={selectorId} />
+      <EmbedDialog open={embedOpen} onOpenChange={setEmbedOpen} selectorId={selectorId} projectName={projectName} />
       <SettingsDialog
         open={settingsOpen}
         onOpenChange={setSettingsOpen}

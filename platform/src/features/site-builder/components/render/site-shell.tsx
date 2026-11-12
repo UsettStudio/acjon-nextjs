@@ -4,10 +4,12 @@ import { MenuIcon, XIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useId, useState, type ReactNode } from "react";
 
+import { ConsentManager, ConsentSettingsButton } from "@/features/site-builder/components/render/consent-manager";
 import { SiteImage } from "@/features/site-builder/components/render/primitives";
 import { RichText } from "@/features/site-builder/rich-text";
-import { pageHref, resolveLink, type NavItem, type SiteRenderData } from "@/features/site-builder/site";
+import { SITE_COOKIES_PATH, SITE_PRIVACY_PATH, pageHref, resolveLink, type NavItem, type SiteRenderData } from "@/features/site-builder/site";
 import { themeStyle } from "@/features/site-builder/theme";
+import { hasTracking } from "@/features/site-builder/tracking";
 import { cn } from "@/lib/utils";
 
 /** Lenke fra menyen. En blokk-lenke går til blokken på forsiden når besøkeren er på en annen side. */
@@ -32,6 +34,9 @@ export function SiteShell({ data, children, fontClassName }: { data: SiteRenderD
     return link ? [{ ...item, ...link }] : [];
   });
   const contacts = data.footer.show_contacts ? data.project.contacts.filter((contact) => contact.name) : [];
+  // Sporing og de genererte personvernsidene finnes bare på den publiserte siden.
+  const published = data.mode === "published";
+  const tracking = published && hasTracking(data.tracking);
 
   return (
     <div className={cn("site-root flex min-h-svh flex-col", fontClassName)} style={themeStyle(data.theme)} lang={data.organization.locale}>
@@ -41,6 +46,7 @@ export function SiteShell({ data, children, fontClassName }: { data: SiteRenderD
       >
         {t("skip")}
       </a>
+      {tracking ? <ConsentManager tracking={data.tracking} cookiesHref={SITE_COOKIES_PATH} /> : null}
       <header className="sticky top-0 z-30 border-b bg-[var(--site-background)]/95 backdrop-blur" style={{ borderColor: "color-mix(in srgb, var(--site-foreground) 12%, transparent)" }}>
         <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
           <a href={homeHref} className="flex min-w-0 items-center gap-3 font-semibold">
@@ -128,7 +134,20 @@ export function SiteShell({ data, children, fontClassName }: { data: SiteRenderD
             </nav>
           ) : null}
         </div>
-        <p className="mx-auto w-full max-w-6xl px-4 pb-8 text-sm opacity-80 sm:px-6">{data.organization.name}</p>
+        <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center gap-x-5 gap-y-2 px-4 pb-8 text-sm opacity-80 sm:px-6">
+          <span>{data.organization.name}</span>
+          {published ? (
+            <>
+              <a href={SITE_PRIVACY_PATH} className="underline-offset-2 hover:underline">
+                {t("privacy")}
+              </a>
+              <a href={SITE_COOKIES_PATH} className="underline-offset-2 hover:underline">
+                {t("cookies")}
+              </a>
+            </>
+          ) : null}
+          {tracking ? <ConsentSettingsButton className="underline-offset-2 hover:underline" /> : null}
+        </div>
       </footer>
     </div>
   );

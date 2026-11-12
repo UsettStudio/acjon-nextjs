@@ -15,7 +15,8 @@
     "you": "you",
     "readOnly": "The subscription has expired, so the organisation is read-only. Published pages are still available.",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "copyValue": "Copy {label}"
   },
   "roles": {
     "owner": "Owner",
@@ -80,7 +81,16 @@
     "pageSlugFormat": "Use lowercase letters (a–z), numbers and hyphens. At most 80 characters.",
     "pageSlugReserved": "This page address is reserved. Choose another.",
     "pageSlugTaken": "Another page already has this address.",
-    "customFieldDuplicate": "This field name is already used on this unit."
+    "customFieldDuplicate": "This field name is already used on this unit.",
+    "hostnameInvalid": "Enter a valid domain, for example www.fjordparken.no.",
+    "hostnamePlatform": "This is one of the platform's own addresses. The project site already has a free subdomain.",
+    "orgNumberInvalid": "The organization number has nine digits, for example 912 345 678.",
+    "ga4Invalid": "A Google Analytics 4 measurement ID looks like this: G-XXXXXXXXXX.",
+    "gtmInvalid": "A Google Tag Manager container ID looks like this: GTM-XXXXXXX.",
+    "metaPixelInvalid": "A Meta Pixel ID consists of digits only.",
+    "scopesRequired": "Choose at least one permission.",
+    "eventsRequired": "Choose at least one event.",
+    "webhookPrivateUrl": "The address points to a private network. Use a public address."
   },
   "errors": {
     "unauthenticated": "Please sign in again.",
@@ -89,7 +99,8 @@
     "notFound": "We could not find what you were looking for.",
     "invalidInput": "Check the highlighted fields.",
     "rateLimited": "Too many attempts. Wait a moment and try again.",
-    "unknown": "Something went wrong. Please try again shortly."
+    "unknown": "Something went wrong. Please try again shortly.",
+    "planLimit": "The plan has no room for more active projects. Choose a larger subscription, or set another project to Completed or Archived."
   },
   "auth": {
     "email": "Email",
@@ -200,7 +211,11 @@
     "tabs": {
       "organization": "Organisation",
       "members": "Users",
-      "brand": "Brand"
+      "brand": "Brand",
+      "label": "Settings",
+      "domains": "Domains",
+      "billing": "Subscription",
+      "api": "API"
     },
     "organization": {
       "title": "Organisation",
@@ -295,7 +310,12 @@
     "subscription": "Subscription",
     "members": "Users",
     "projects": "Projects",
-    "empty": "No organisations yet."
+    "empty": "No organisations yet.",
+    "trialEnds": "Trial ends",
+    "actions": "Actions",
+    "extendTrial": "Extend 14 days",
+    "extendTrialFor": "Extend the trial for {organization} by 14 days",
+    "trialExtended": "The trial for {organization} now lasts until {date}."
   },
   "notFound": {
     "title": "Page not found",
@@ -336,6 +356,26 @@
       "receiptBodyUnit": "We have received your interest in {unit} in {project}. {organization} will contact you as soon as possible.",
       "receiptPrivacy": "Your details are stored by {organization} and used only to follow up your enquiry. Reply to this email if you want them deleted.",
       "receiptFooter": "You receive this receipt because someone submitted an interest form with this email address."
+    },
+    "billing": {
+      "cta": "Choose subscription",
+      "pagesStayUp": "Published project sites and unit selectors are never taken down automatically. New leads still come in.",
+      "why": "You are receiving this email because you are an owner of {organization}.",
+      "trial_7d": {
+        "subject": "The trial for {organization} ends in {days, plural, one {# day} other {# days}}",
+        "heading": "The trial ends soon",
+        "body": "The trial for {organization} ends on {date}. Choose a subscription to keep making changes after that."
+      },
+      "trial_1d": {
+        "subject": "The trial for {organization} ends within a day",
+        "heading": "The trial ends within a day",
+        "body": "The trial for {organization} ends on {date}. After that you can see everything, but not make changes until you have chosen a subscription."
+      },
+      "read_only": {
+        "subject": "{organization} is in read-only mode",
+        "heading": "The organization is in read-only mode",
+        "body": "The trial or subscription for {organization} has ended. You can see everything, but not make changes until you have chosen a subscription."
+      }
     }
   },
   "unitStatus": {
@@ -526,6 +566,18 @@
         "help": "Custom fields stay internal until you make them public. Public fields appear on the unit page on the project site and in the unit selector.",
         "legend": "Show on the unit page",
         "empty": "No units have custom fields yet. Add them under Custom fields in the unit form."
+      },
+      "tracking": {
+        "title": "Tracking on the project site",
+        "help": "Analytics and marketing on the published project site. The codes apply right away.",
+        "ga4": "Google Analytics 4",
+        "ga4Help": "Measurement ID, for example G-XXXXXXXXXX.",
+        "gtm": "Google Tag Manager",
+        "gtmHelp": "Container ID, for example GTM-XXXXXXX.",
+        "metaPixel": "Meta Pixel",
+        "metaPixelHelp": "Pixel ID from Meta Business.",
+        "consentNote": "When a code is added, visitors see a consent banner. No code loads before the visitor has consented, and “Necessary only” is as easy to choose as “Accept all”. Submitted interest forms are measured as conversions (generate_lead and Lead) for visitors who have consented.",
+        "saved": "The tracking codes are saved and apply to the published site right away."
       }
     },
     "delete": {
@@ -1206,7 +1258,8 @@
       "unpublish": "Unpublish",
       "unpublishTitle": "Unpublish the unit selector?",
       "unpublishDescription": "The published selector stops working for buyers immediately. Views and shapes are kept, and you can publish again later.",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "embed": "Embed on a website …"
     },
     "settings": {
       "title": "Selector settings",
@@ -1239,6 +1292,23 @@
       "showPriceOnSoldHelp": "When this is off, “Sold” is shown instead of the price, and the price is never sent to the browser.",
       "organizationTitle": "Status colours",
       "organizationHelp": "The colours are used in all unit selectors in the organisation. Each project can override them. Empty fields use the default colours."
+    },
+    "embed": {
+      "title": "Embed on a website",
+      "description": "Show the unit selector on another website, for example the developer's own site. Status changes show up there right away, just like in the published selector.",
+      "frameTitle": "Unit selector for {project}",
+      "showFilters": "Show filters",
+      "list": "Unit list",
+      "listDefault": "As in the selector",
+      "listShow": "Show",
+      "listHide": "Hide",
+      "componentTab": "Web component",
+      "iframeTab": "Iframe",
+      "apiTab": "API",
+      "componentHelp": "Recommended. Paste the code where the selector should appear. The script creates a web component that fits the height to the screen and loads the selector only when it is close to view.",
+      "eventsHelp": "The host page can listen to the events boligvelger:ready, boligvelger:navigate and boligvelger:lead, for example for its own analytics. With the sync-url attribute, the unit page and filter are kept in the address.",
+      "iframeHelp": "Fallback for websites that do not allow scripts. The iframe shows the same selector, but without events.",
+      "apiHelp": "Developers can fetch the published selector as JSON. The API is open to all websites (CORS) and only returns published data."
     }
   },
   "publicSelector": {
@@ -1638,7 +1708,11 @@
         "linkUrl": "Address",
         "siteLogo": "Logo for this project site",
         "siteDescription": "Description",
-        "brandLogo": "Logo"
+        "brandLogo": "Logo",
+        "privacyController": "Data controller",
+        "orgNumber": "Organization number",
+        "privacyEmail": "Privacy email",
+        "privacyExtra": "More about privacy"
       },
       "help": {
         "richText": "Formatting: ## Heading, - bullet list, 1. numbered list, **bold**, *italic* and [link text](https://…).",
@@ -1665,7 +1739,10 @@
         "siteDescription": "Used in search results for pages without their own description.",
         "siteShareImage": "Used when a page is shared and neither the page nor its hero block has an image.",
         "useProjectContacts": "The contacts are edited in the project settings.",
-        "brandLogo": "Shown at the top of the project sites. A PNG with a transparent background works well."
+        "brandLogo": "Shown at the top of the project sites. A PNG with a transparent background works well.",
+        "privacyController": "The company responsible for the information from the interest form. If left empty, the organization's name is used.",
+        "privacyEmail": "Visitors can write here for access and deletion. If left empty, the email of the first contact person is used.",
+        "privacyExtra": "Your own text at the bottom of the privacy page, for example about other processing. A blank line starts a new paragraph."
       },
       "options": {
         "heroHeight": {
@@ -1864,7 +1941,10 @@
         "delete": "Delete the project site",
         "deleteConfirmTitle": "Delete the project site?",
         "deleteConfirmDescription": "All pages and versions are deleted, and the published site disappears immediately. This cannot be undone.",
-        "deleted": "The project site has been deleted."
+        "deleted": "The project site has been deleted.",
+        "privacyTitle": "Privacy",
+        "privacyIntro": "The Privacy and Cookies pages are created automatically and linked from the footer. Fill in who the data controller is. Changes go live when you publish.",
+        "trackingIntro": "Tracking codes for Google Analytics, Tag Manager and Meta Pixel are added in the project settings. A consent banner is then shown, and the codes load only after the visitor has consented."
       },
       "preview": {
         "device": "Screen size",
@@ -1885,7 +1965,9 @@
       "openMenu": "Open menu",
       "closeMenu": "Close menu",
       "contact": "Contact",
-      "footerLinks": "Links"
+      "footerLinks": "Links",
+      "privacy": "Privacy",
+      "cookies": "Cookies"
     },
     "editor": {
       "emptyText": "Text block without content. Write a heading and text in the panel.",
@@ -1978,6 +2060,75 @@
     },
     "unit": {
       "back": "Back to {project}"
+    },
+    "consent": {
+      "title": "Cookies",
+      "text": "We would like to use cookies for analytics and marketing. We only do so if you accept. Necessary features, such as the interest form and favorites, work regardless.",
+      "readMore": "Read more about cookies",
+      "choose": "Choose what you accept",
+      "necessary": "Necessary",
+      "necessaryHelp": "remembers your choice and your favorites. Always on.",
+      "statistics": "Analytics",
+      "statisticsHelp": "shows us how the site is used, so we can improve it.",
+      "marketing": "Marketing",
+      "marketingHelp": "measures ads and shows you relevant ads elsewhere.",
+      "acceptAll": "Accept all",
+      "necessaryOnly": "Necessary only",
+      "save": "Save choices",
+      "customize": "Let me choose",
+      "change": "Change consent"
+    },
+    "privacy": {
+      "title": "Privacy",
+      "intro": "This page explains how {controller} processes personal data on the website for {project}.",
+      "controllerTitle": "Data controller",
+      "controller": "{controller} is the data controller.",
+      "controllerWithNumber": "{controller} (org. no. {number}) is the data controller.",
+      "contactAt": "Questions about privacy can be sent to",
+      "collectedTitle": "What we collect",
+      "collected": "When you register interest in {project}, we store your name, email address, phone number and message, which home you are interested in, when you sent the form, and which version of the consent text you accepted. If you came from an ad or campaign, we also store the campaign.",
+      "purposeTitle": "Why we use the information",
+      "purpose": "We use the information to contact you about {project}. If you have also consented to it, we may contact you about similar projects. The legal basis is your consent (GDPR Article 6(1)(a)).",
+      "retentionTitle": "How long the information is kept",
+      "retentionDays": "The information is deleted automatically after {days} days, or earlier if you ask.",
+      "retentionUntilDeleted": "The information is kept until you ask for it to be deleted, or until it is no longer needed.",
+      "processorsTitle": "Where the information is stored",
+      "processors": "The information is stored in the EU (Stockholm). The providers that run the website and send email process the information only on behalf of {controller}.",
+      "trackingTitle": "Analytics and marketing",
+      "tracking": "If you consent, the website uses {tools}. You can change your consent at any time.",
+      "noTracking": "The website does not use tools for analytics or marketing.",
+      "cookiesLink": "See which cookies are used",
+      "rightsTitle": "Your rights",
+      "rights": "You can ask for access to, correction of and deletion of the information about you, and you can withdraw your consent at any time. Contact {controller}.",
+      "complaint": "If you believe the information is processed incorrectly, you can complain to",
+      "authority": "the Norwegian Data Protection Authority (Datatilsynet)",
+      "moreTitle": "More about privacy"
+    },
+    "cookies": {
+      "title": "Cookies",
+      "intro": "Cookies and similar storage in the browser are used to remember your choices and, if you consent, for analytics and marketing.",
+      "consentNeeded": "Analytics and marketing are only used if you consent. You can change your consent at any time.",
+      "noConsentNeeded": "The website only uses storage needed for it to work, so you do not need to consent.",
+      "name": "Name",
+      "purpose": "Purpose",
+      "category": "Category",
+      "duration": "Duration",
+      "consentPurpose": "Remembers your choice about cookies.",
+      "favoritesPurpose": "Remembers your favorites in the unit selector. Stored only in your browser.",
+      "gaPurpose": "Google Analytics: tells visitors apart for analytics.",
+      "gtmPurpose": "Google Tag Manager: loads analytics and marketing tools according to what you have consented to.",
+      "pixelPurpose": "Meta Pixel: measures ads on Facebook and Instagram.",
+      "necessary": "Necessary",
+      "statistics": "Analytics",
+      "marketing": "Marketing",
+      "statisticsAndMarketing": "Analytics and marketing",
+      "twelveMonths": "12 months",
+      "untilDeleted": "Until you delete them",
+      "twoYears": "2 years",
+      "threeMonths": "3 months",
+      "dependsOnTools": "Depends on the tools loaded",
+      "turnstile": "The interest form uses Cloudflare Turnstile to stop spam. Turnstile can read technical information about your browser when you send the form.",
+      "privacyLink": "Read how personal data is processed"
     }
   },
   "leads": {
@@ -2082,6 +2233,264 @@
       "internal_note": "Internal note",
       "yes": "Yes",
       "no": "No"
+    }
+  },
+  "domains": {
+    "title": "Custom domains",
+    "description": "Give the project sites their own domain, for example www.fjordparken.no. You add two DNS records with your domain provider. The domain is verified automatically, and the HTTPS certificate is created for you.",
+    "vercelMissing": "Vercel is not connected in this environment. Domains are verified with DNS lookups, but the certificate must be set up in Vercel.",
+    "noSites": "No projects have a project site yet. Create a project site first, then you can give it a custom domain.",
+    "noDomains": "No custom domains.",
+    "subdomain": "Free address: {address}.",
+    "unpublished": "The project site is not published yet.",
+    "primary": "Primary domain",
+    "lastChecked": "Last checked {time}",
+    "notChecked": "Not checked yet",
+    "check": "Check now",
+    "makePrimary": "Make primary domain",
+    "clearPrimary": "Use the subdomain as the main address",
+    "primarySet": "{hostname} is now the primary domain. Other addresses send visitors there.",
+    "primaryCleared": "The subdomain is now the main address.",
+    "remove": "Remove",
+    "cancel": "Cancel",
+    "removeTitle": "Remove {hostname}?",
+    "removeBody": "The domain is removed from the project site. You can delete the DNS records with your provider.",
+    "removeVerifiedBody": "The project site stops answering on this domain right away. Links to the domain will no longer work.",
+    "removed": "{hostname} has been removed.",
+    "showRecords": "Show DNS records",
+    "verifiedHelp": "The domain is verified and shows the project site. The HTTPS certificate is created automatically, usually within a few minutes.",
+    "verifiedPrimaryHelp": "The domain is verified and is the project site's main address. The subdomain and other domains send visitors here.",
+    "warning": "The last check found a problem, but the domain is still in use: {message}",
+    "statuses": {
+      "pending": "Waiting for DNS",
+      "verified": "Verified",
+      "misconfigured": "Not pointing here",
+      "error": "Error"
+    },
+    "errors": {
+      "txt_missing": "The TXT record was not found. Add it with your domain provider. DNS changes can take a while to show up.",
+      "dns_not_pointing": "Ownership is verified, but the domain does not point to the platform yet. Check the CNAME or A record.",
+      "vercel_verification": "The domain is in use on another Vercel account. Also add the TXT record marked “Vercel”.",
+      "vercel_unavailable": "Could not reach Vercel. Try again in a moment.",
+      "lookup_failed": "The DNS lookup failed. Try again in a moment.",
+      "hostname_taken": "The domain is already in use on another project site."
+    },
+    "records": {
+      "help": "Add the records with your domain provider. Some providers want the name without the domain at the end, for example “www” instead of “www.fjordparken.no”.",
+      "type": "Type",
+      "name": "Name",
+      "value": "Value",
+      "purpose": "Used for",
+      "state": "Status",
+      "nameLabel": "the name of the {type} record",
+      "valueLabel": "the value of the {type} record",
+      "found": "Found",
+      "missing": "Missing",
+      "notChecked": "Not checked",
+      "purposes": {
+        "ownership": "Verifies that you own the domain",
+        "routing": "Sends visitors to the project site",
+        "vercel": "Verification with Vercel"
+      }
+    },
+    "add": {
+      "open": "Add domain",
+      "title": "Add domain",
+      "description": "The domain is connected to the project site you choose. You must be able to change DNS for the domain.",
+      "site": "Project site",
+      "sitePlaceholder": "Choose project",
+      "hostname": "Domain",
+      "hostnameHelp": "For example www.fjordparken.no or fjordparken.no.",
+      "submit": "Add",
+      "added": "The domain has been added. Add the DNS records shown under the domain.",
+      "addedVerified": "The domain has been added and verified.",
+      "exists": "The domain has already been added to this project site.",
+      "limit": "A project site can have up to ten custom domains."
+    }
+  },
+  "billing": {
+    "title": "Subscription",
+    "description": "The plan decides how many projects can be active at the same time. Payment, invoices and cancellation are handled by Stripe.",
+    "plan": "Plan",
+    "status": "Status",
+    "trialUntil": "The trial lasts until {date} ({days, plural, one {# day left} other {# days left}}).",
+    "trialEnded": "The trial has ended.",
+    "trialThenPlan": "Free until {date}. Then {plan} starts automatically.",
+    "renewsAt": "Renews on {date}.",
+    "endsAt": "The subscription has been cancelled and stops on {date}.",
+    "pastDue": "The payment failed. Update the payment method in the customer portal.",
+    "ended": "The subscription has ended.",
+    "readOnlyHelp": "The organization is in read-only mode. You can see everything, but not make changes. Published project sites and unit selectors are still online, and new leads still come in.",
+    "usage": "{used} of {limit} active projects are in use.",
+    "usageUnlimited": "{used} active projects. The plan has no limit.",
+    "usageLabel": "Active projects",
+    "usageHelp": "Active projects are projects in the phases Coming soon, For sale and Sold out. Drafts, completed and archived projects do not count.",
+    "portal": "Manage subscription",
+    "plansTitle": "Plans",
+    "plansHelp": "All plans include every feature. Prices are per month, and you can change plan or cancel at any time.",
+    "priceInCheckout": "Price in Stripe",
+    "projectLimit": "{count, plural, one {One active project} other {Up to # active projects}}",
+    "currentPlan": "Current plan",
+    "changeInPortal": "Change in the customer portal",
+    "choose": "Choose {plan}",
+    "enterprise": "Need more than 15 active projects? Get in touch:",
+    "enterpriseNoContact": "If you need more than 15 active projects, we can make a separate agreement.",
+    "notConfigured": "Payment is not set up in this environment, so the plans cannot be chosen here.",
+    "checkoutPending": "Thank you! The payment has been registered. It can take a few seconds before the subscription shows up here.",
+    "checkoutDone": "Thank you! The subscription is active.",
+    "checkoutCanceled": "The payment was cancelled. Nothing has changed.",
+    "perInterval": {
+      "day": "{amount} per day",
+      "week": "{amount} per week",
+      "month": "{amount} per month",
+      "year": "{amount} per year"
+    },
+    "plans": {
+      "trial": {
+        "name": "Trial"
+      },
+      "start": {
+        "name": "Start",
+        "description": "For developers with one project for sale."
+      },
+      "growth": {
+        "name": "Growth",
+        "description": "For developers with several projects for sale at once."
+      },
+      "pro": {
+        "name": "Pro",
+        "description": "For agents and developers with many projects."
+      },
+      "enterprise": {
+        "name": "Enterprise"
+      }
+    },
+    "errors": {
+      "billingUnavailable": "Payment is not set up in this environment.",
+      "subscriptionExists": "The organization already has a subscription. Change plan in the customer portal.",
+      "noCustomer": "The organization has not chosen a subscription yet."
+    },
+    "banner": {
+      "trialEnding": "The trial ends in {days, plural, one {# day} other {# days}}.",
+      "trialEnded": "The trial has ended, so the organization is in read-only mode. Published pages are still online.",
+      "ended": "The subscription has ended, so the organization is in read-only mode. Published pages are still online.",
+      "pastDue": "The payment for the subscription failed. Update the payment method, or the organization will switch to read-only mode.",
+      "choosePlan": "Choose subscription",
+      "updatePayment": "Update payment",
+      "contactOwner": "Contact the owner of the organization."
+    }
+  },
+  "integrations": {
+    "title": "API",
+    "keys": {
+      "title": "API keys",
+      "description": "Give other systems, such as broker systems, access to projects, units and leads. The key is shown only once, when it is created.",
+      "empty": "No API keys yet.",
+      "create": "New API key",
+      "createTitle": "New API key",
+      "createHelp": "Give the key a name that says where it is used, and only the permissions the system needs.",
+      "createSubmit": "Create key",
+      "createdTitle": "Copy the key now",
+      "createdHelp": "The key will not be shown again. Store it where the system that uses it can read it.",
+      "keyLabel": "The API key",
+      "done": "Done",
+      "name": "Name",
+      "namePlaceholder": "For example Broker system",
+      "key": "Key",
+      "scopes": "Permissions",
+      "expiry": "Expires",
+      "never": "Never",
+      "days": "In {days} days",
+      "lastUsed": "Last used",
+      "neverUsed": "Never used",
+      "status": "Status",
+      "actions": "Actions",
+      "activeUntil": "Active until {date}",
+      "states": {
+        "active": "Active",
+        "revoked": "Revoked",
+        "expired": "Expired"
+      },
+      "revoke": "Revoke",
+      "revokeTitle": "Revoke “{name}”?",
+      "revokeBody": "The key stops working right away. Systems using it will get errors until they get a new key.",
+      "revoked": "“{name}” has been revoked.",
+      "cancel": "Cancel",
+      "scopeHelp": {
+        "projects_read": "read the projects",
+        "units_read": "read all units, including hidden ones, with external id",
+        "units_write": "change status and price on units",
+        "leads_read": "read leads with contact information"
+      }
+    },
+    "webhooks": {
+      "title": "Webhooks",
+      "description": "Notifies other systems when a unit changes status or someone registers interest. Every delivery is signed, and failed deliveries are retried for about two hours.",
+      "empty": "No webhooks yet.",
+      "create": "New webhook",
+      "createTitle": "New webhook",
+      "editTitle": "Edit webhook",
+      "createHelp": "The address must use https. Events are sent as JSON with POST.",
+      "createSubmit": "Create webhook",
+      "createdTitle": "The webhook has been created",
+      "createdHelp": "Use the secret to verify the signature on every delivery. You can show it again later.",
+      "done": "Done",
+      "saved": "The webhook has been saved.",
+      "url": "Address",
+      "descriptionLabel": "Description",
+      "events": "Events",
+      "projects": "Projects",
+      "allProjects": "All projects",
+      "active": "Active",
+      "isActive": "Active",
+      "inactive": "Turned off",
+      "failures": "{count, plural, one {# failure in a row} other {# failures in a row}}",
+      "lastSuccess": "Last delivered {time}",
+      "noSuccess": "Not delivered yet",
+      "lastFailure": "last failure {time}",
+      "secret": "Secret",
+      "secretHelp": "The signature follows Standard Webhooks (standardwebhooks.com): the headers webhook-id, webhook-timestamp and webhook-signature.",
+      "showSecret": "Show secret",
+      "rotateSecret": "Create new secret",
+      "rotated": "A new secret has been created. The old one no longer works.",
+      "sendTest": "Send test event",
+      "testOk": "The test event was delivered (HTTP {status}).",
+      "testFailed": "The test event was not delivered (HTTP {status}). {error}",
+      "edit": "Edit",
+      "delete": "Delete",
+      "deleteTitle": "Delete the webhook?",
+      "deleteBody": "{url} will get no more events. Pending deliveries are deleted too.",
+      "deleted": "The webhook has been deleted.",
+      "cancel": "Cancel",
+      "deliveries": "{count, plural, one {Last delivery} other {Last # deliveries}}",
+      "noDeliveries": "No deliveries yet.",
+      "attempts": "{count, plural, one {# attempt} other {# attempts}}",
+      "retry": "Try again",
+      "deliveryStatus": {
+        "pending": "Pending",
+        "succeeded": "Delivered",
+        "failed": "Failed"
+      },
+      "eventHelp": {
+        "unit_status_changed": "a unit gets a new status",
+        "lead_created": "someone sends an interest form"
+      }
+    },
+    "reference": {
+      "title": "About the API",
+      "description": "The API is for server-to-server use. Responses are JSON. The limit is 600 calls per minute per key.",
+      "auth": "Send the key in the header",
+      "scope": "Requires {scope}.",
+      "open": "Open to everyone, published data only (CORS).",
+      "endpoints": {
+        "projects": "The projects in the organization, with the number of units per status.",
+        "units": "All units in a project. “updated_since” returns only changed units.",
+        "updateUnit": "Change status (with a note) and price on a unit, given by id or unit number.",
+        "leads": "Leads, oldest first. Use “since” and “project_id” to fetch new ones.",
+        "publicSelector": "A published unit selector with units and status.",
+        "publicUnits": "The units in a published project."
+      },
+      "webhooksSignature": "Webhooks are signed according to Standard Webhooks. Use a Standard Webhooks library, or compute HMAC-SHA256 with the secret over the values of webhook-id and webhook-timestamp and the body, separated by dots."
     }
   }
 }

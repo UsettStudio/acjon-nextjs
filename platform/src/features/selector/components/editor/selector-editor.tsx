@@ -123,6 +123,7 @@ export function SelectorEditor({
   orgSlug,
   projectId,
   projectSlug,
+  projectName,
   data,
   canEdit,
   canSell,
@@ -131,6 +132,7 @@ export function SelectorEditor({
   orgSlug: string;
   projectId: string;
   projectSlug: string;
+  projectName: string;
   data: SelectorEditorData;
   canEdit: boolean;
   canSell: boolean;
@@ -538,6 +540,7 @@ export function SelectorEditor({
         <PublishBar
           organizationId={organizationId}
           selectorId={selectorId}
+          projectName={projectName}
           publish={publish}
           settings={settings}
           canEdit={canEdit}

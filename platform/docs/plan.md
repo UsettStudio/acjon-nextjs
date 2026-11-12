@@ -10,8 +10,9 @@ Hver fase avsluttes med grønne tester, typekontroll og lint, og en kort oppsumm
 | 0 Grunnmur | Ferdig, se oppsummeringen under fase 0 |
 | 1 Prosjekter og enheter | Ferdig, se oppsummeringen under fase 1 |
 | 2 Boligvelger | Ferdig, se oppsummeringen under fase 2 |
-| 3 Prosjektside | Neste |
-| 4–5 | Ikke påbegynt |
+| 3 Prosjektside | Ferdig, se oppsummeringen under fase 3 |
+| 4 Drift | Ferdig, se oppsummeringen under fase 4 |
+| 5 Kvalitet | Neste |
 
 ## Leveranse 1: datamodell og RLS (godkjent)
 
@@ -519,6 +520,141 @@ Hver fase avsluttes med grønne tester, typekontroll og lint, og en kort oppsumm
   - API-nøkler i admin.
 - **E2E:** akseptkriterium 4 på eget domene.
 
+### Oppsummering av fase 4
+
+**Bygget:**
+
+- **Egne domener** (Innstillinger → Domener, eier og administrator):
+  - Domenet legges til på en prosjektside. Plattformens egne adresser og ugyldige toppdomener avvises.
+  - **DNS-veiledning:** TXT-post for eierskap, og CNAME (underdomene) eller A (rotdomene) for trafikken. Hver post har kopiknapp og status. Har domenet vært i bruk hos en annen Vercel-konto, vises også posten Vercel krever.
+  - **Automatisk bekreftelse:**
+    - Oppslag med DNS over HTTPS, og Vercel sin vurdering når kontoen er koblet til.
+    - «Sjekk nå», og en planlagt sjekk hvert femte minutt det første døgnet og deretter hver time.
+    - Siden lastes inn på nytt mens noe venter.
+  - **Sertifikat:** domenet legges til i Vercel-prosjektet med Domains API, og Vercel lager sertifikatet.
+  - **Primærdomene:**
+    - Første bekreftede domene blir primærdomene, og det kan byttes.
+    - Kanonisk adresse, sitemap og Open Graph bruker det.
+    - Underdomenet og andre domener sender besøkende dit (308) med sti og filter.
+  - **Fjerning:** domenet tas bort fra Vercel bare når ingen andre prosjektsider har samme vertsnavn.
+- **Abonnement med Stripe** (Innstillinger → Abonnement, bare eier):
+  - **Prøveperiode:** 30 dager uten kort, med plass til tre aktive prosjekter.
+  - **Planene Start, Vekst og Proff** har plass til 1, 5 og 15 aktive prosjekter. Prisene hentes fra Stripe.
+  - **Checkout:** velges en plan under prøveperioden, starter abonnementet med resten av prøveperioden.
+  - **Kundeportal:** betalingsmåte, fakturaer, bytte av plan og oppsigelse.
+  - **Webhook:** henter alltid abonnementet på nytt fra Stripe, så hendelser i feil rekkefølge ikke kan sette en gammel tilstand.
+  - **Grensen for aktive prosjekter** håndheves i databasen. Feilmeldingen i veiviseren og innstillingene forklarer hva man kan gjøre.
+  - **Bannere i admin:** prøveperioden slutter om sju dager eller mindre, betalingen feilet, eller lesemodus. Eieren får lenke til Abonnement, andre får beskjed om å kontakte eieren.
+  - **Varsel på e-post** til eierne sju dager og ett døgn før prøveperioden er ute, og når organisasjonen går i lesemodus. E-posten sier at publiserte sider aldri tas ned.
+  - **Plattformadmin** kan forlenge prøveperioden med 14 dager. Det logges.
+- **Innbygging:**
+  - **Web-komponenten** `<boligvelger-embed>` (`/embed/v1.js`) viser den publiserte velgeren med alt fra fase 2: filtre, liste, enhetskort, enhetssider, interesseskjema og sanntid.
+  - **Attributter:** startvisning, filtre, liste, høyde og tittel.
+  - **Hendelser** til vertssiden: `ready`, `navigate` og `lead`. Med `sync-url` huskes enhetsside og filter i adressen.
+  - **Iframe som reserve** for nettsteder uten skript. Uten skript vises iframen i `<noscript>` alene.
+  - **Kode i admin:** «Bygg inn på nettsted …» i boligvelgeren, med fanene Web-komponent, Iframe og API.
+- **Offentlig lese-API med CORS** (`/api/public/v1`): publisert boligvelger, enheter og én enhet. Bare publiserte data, og mellomlager i høyst fem sekunder.
+- **Samtykke og sporing:**
+  - **Sporingskoder** (Google Analytics 4, Tag Manager og Meta Pixel) i prosjektinnstillingene. De kontrolleres strengt i appen og i databasen.
+  - **Samtykkebanner** med «Godta alle», «Bare nødvendige» (like enkel å velge) og «Velg selv», og «Endre samtykke» i bunnteksten.
+  - **Ingenting lastes før samtykke.** Google Consent Mode får de samme valgene. Trekkes samtykket tilbake, slettes informasjonskapslene, og siden lastes på nytt.
+  - **Genererte sider** `/personvern` og `/informasjonskapsler`, laget fra:
+    - behandlingsansvarlig, organisasjonsnummer og e-post (nytt under Innstillinger i prosjektsiden),
+    - lagringstiden for leads,
+    - sporingskodene som er i bruk.
+  - **Konvertering:** sendte interesseskjema måles som konvertering for besøkende som har samtykket.
+- **Integrasjoner** (Innstillinger → API, eier og administrator):
+  - **API-nøkler:** navn, tilganger (`projects:read`, `units:read`, `units:write`, `leads:read`) og utløp. Nøkkelen vises bare én gang, og kan trekkes tilbake.
+  - **API med nøkkel** (`/api/v1`):
+    - prosjekter, enheter (også skjulte, med ekstern id og endringer siden et tidspunkt), og leads (nye siden et tidspunkt),
+    - endring av status med notat og pris på én enhet.
+    - Rate limit og lesemodus gjelder.
+  - **Webhooks:**
+    - Hendelser og prosjekter velges. Private adresser avvises.
+    - Hemmeligheten kan vises og fornyes.
+    - Testhendelse, logg over de siste leveransene og «Prøv igjen».
+  - **Utsending:**
+    - Signatur etter Standard Webhooks.
+    - Sendes rett etter endringen, og fra en planlagt jobb hvert minutt.
+    - Nye forsøk i omtrent to timer.
+    - Vern mot SSRF også ved DNS-oppslag. Omdirigeringer følges ikke.
+  - **Hendelsene** har nå enhetens eksterne id og kilden til endringen.
+- **Planlagte jobber** (Vercel Cron, med `CRON_SECRET`): webhooks hvert minutt, domener hvert femte minutt, og varsler om prøveperioden daglig.
+- **Rettet fra fase 3:** import av enheter tømmer nå mellomlageret for publiserte prosjektsider.
+- **Database** (migrasjon `20261113090000_fase4_drift`):
+  - **Planer og grense** for aktive prosjekter.
+  - **Stripe (bare service-rollen):** `link_stripe_customer`, `apply_stripe_subscription`, `due_billing_notices` og `mark_billing_notice`.
+  - **Støtte og domener:** `extend_trial` for plattformadmin, `record_domain_check` og `domains_due_for_check` (bare service-rollen), og `set_primary_domain`.
+  - **API med nøkkel:** `api_projects`, `api_units`, `api_update_unit` og `api_leads`.
+  - **Webhooks:** testhendelse, «Prøv igjen», henting av én leveranse og kontroll av sporingskoder.
+  - **Revisjonsloggen** viser API-nøkkelen som aktør.
+- **Tester:**
+
+  | Type | Antall | Nytt i fase 4 |
+  |---|---|---|
+  | pgTAP | 467 | 108 nye: plangrenser, Stripe-synk (rekkefølge, ubetalte og gamle abonnementer, lesemodus), varsler, forlenget prøveperiode, domenesjekk (bekreftelse, varsel, opptatt vertsnavn, primærdomene, grense), sporingskoder, API med nøkkel (ugyldig, trukket tilbake og utløpt nøkkel, tilganger, isolasjon mellom organisasjoner, validering, lesemodus, rate limit, revisjonslogg) og webhooks (testhendelser, nye forsøk, avslåtte webhooks og vedlikehold) |
+  | Vitest | 287 | 84 nye: vertsnavn, DNS-oppslag, vurdering av domener, Vercel-klienten, videresending til primærdomenet, planer, Stripe-hendelser og webhook med ekte signaturkontroll, web-komponenten (jsdom) og innbyggingskoden, samtykke og sporingskoder, SSRF-vern, signatur mot eksempelet i Standard Webhooks, levering og API-nøkler |
+  | Playwright | 16 | 4 nye, se under |
+
+  - **Akseptkriterium 4:**
+    - En Boligvelger-blokk legges på prosjektsiden og publiseres.
+    - Eget domene legges til og bekreftes med DNS.
+    - Den publiserte siden på eget domene viser velgeren med markeringene og riktig kanonisk adresse.
+    - Underdomenet sender videre til primærdomenet.
+    - Testen dekker også innbyggingskoden på en annen side, hendelsen fra web-komponenten og det offentlige API-et.
+  - **Abonnement:**
+    - Plangrensen stopper et fjerde aktivt prosjekt i prøveperioden.
+    - Når prøveperioden er ute, gir det lesemodus, banner og e-post.
+    - Betaling i Checkout (etterlignet) via webhook gjør organisasjonen aktiv. Kundeportalen virker.
+  - **Samtykke:**
+    - Ingen sporing lastes før samtykke, og «Bare nødvendige» huskes.
+    - «Endre samtykke» til statistikk laster bare Google Analytics.
+    - Personvernsidene viser behandlingsansvarlig og verktøyene som brukes.
+  - **API og webhooks:**
+    - API-nøkkelen lages i admin, leser prosjekter og endrer status. Leads avvises uten tilgang.
+    - En privat webhookadresse avvises.
+    - Testhendelsen og statusendringen står i leveranseloggen.
+    - En nøkkel som er trukket tilbake, virker ikke.
+  - **Etterligning av Stripe og DNS over HTTPS** (`e2e/support/fake-services.mjs`): Playwright starter den, så hele flyten testes uten kontoer.
+
+**Gjenstår (ikke del av fase 4):**
+
+- **Ikke testet mot ekte tjenester:**
+  - Stripe og Vercel Domains API er bygget etter dokumentasjonen og testet mot etterligninger og med enhetstester, men ikke mot ekte kontoer, fordi kontoene ikke finnes ennå.
+  - Når kontoene er opprettet, bør det kjøres en prøve i Stripe sin testmodus og med et ekte domene.
+- **Planer og priser er standardvalg.** Åpent spørsmål 3 er ikke besvart:
+  - Grensene (1, 5 og 15 aktive prosjekter, og 3 i prøveperioden) og plannavnene er mitt forslag.
+  - Prisene settes i Stripe.
+  - Enterprise avtales særskilt og settes av plattformadmin i databasen.
+- **Sertifikatstatus vises ikke i admin.** Vercel lager sertifikatet når DNS peker riktig, men admin viser bare at domenet er bekreftet.
+- **Eierskifte for domener:** et bekreftet domene beholdes til det fjernes. Bytter domenet eier, må plattformadmin fjerne det fra den gamle prosjektsiden.
+- **Webhooks som feiler over tid** slås ikke av automatisk. Admin viser antall feil på rad.
+- **Fra fase 3, fortsatt utsatt:** egne felt i CSV-import og -eksport, språk per bruker i admin, og angre og gjør om i blokkeditoren.
+- **Ikke lagt til noen fase ennå:** spesifikasjonens sjekkliste for oppstart på prosjektoversikten og «verdi solgt» i prosjektoversikten. Jeg foreslår å ta dem i fase 5.
+
+**Valg i fase 4:**
+
+- **Bekreftelse av egne domener:**
+  - **Egen TXT-post for eierskap,** i tillegg til Vercel. Alle kundene deler ett Vercel-prosjekt, så Vercel alene kan ikke avgjøre hvilken kunde som eier et domene.
+  - **DNS over HTTPS** gir ferske svar og kan etterlignes i testene. Uten Vercel-konto (lokalt og i CI) sjekkes domenene bare med DNS.
+- **Videresending til primærdomenet** skjer i proxyen med en kort hukommelse per serverinstans (ett minutt). Dermed blir det en ekte 308 og ikke en omdirigering i nettleseren.
+- **Stripe:**
+  - Abonnementet hentes alltid på nytt fra Stripe i webhooken, i stedet for å stole på innholdet i hendelsen. Stripe-API-versjonen er låst.
+  - Prøveperioden styres av appen (uten kort) til en plan velges. Deretter tar Stripe over prøveperioden.
+- **Aktive prosjekter** telles etter fase, som foreslått i åpent spørsmål 3. Publiserte sider tas aldri ned, heller ikke når grensen er nådd eller abonnementet er utløpt.
+- **Web-komponenten bruker en iframe inne i shadow DOM.** Da virker alt i den publiserte velgeren på samme måte overalt: tastatur, skjermleser, sanntid og interesseskjema. En egen versjon av velgeren for vertssiden ville gitt dobbelt vedlikehold.
+  - Høyden er fast etter skjermen (85vh). En ramme som vokser med innholdet, ville skjøvet enhetskortet og andre dialoger ut av synsfeltet på vertssiden.
+  - Iframen er reserven for nettsteder uten skript.
+- **Samtykke:**
+  - Banneret vises bare når prosjektet har sporingskoder. Uten sporing trengs ikke samtykke.
+  - Valget lagres i nettleseren (localStorage) i tolv måneder, med versjon.
+- **Personvern:**
+  - Behandlingsansvarlig ligger i prosjektsidens innstillinger (`cookie_settings`) og publiseres med siden.
+  - Sporingskodene ligger på prosjektet (`analytics_ids`), som i spesifikasjonen, og gjelder med en gang.
+- **API med nøkkel går gjennom databasefunksjoner** som finner organisasjonen fra nøkkelen. Serveren bruker service-nøkkelen, men et kall kan likevel aldri nå en annen organisasjon. API-et har ingen CORS, så nøkler ikke havner i nettlesere.
+- **Webhooks følger Standard Webhooks,** så mottakere kan bruke ferdige bibliotek for å kontrollere signaturen.
+- **Stripe-biblioteket** (`stripe`) er lagt til som avhengighet. Det hører til Stripe Billing i spesifikasjonen.
+
 ## Fase 5: Kvalitet
 
 - **Universell utforming:** WCAG 2.1 AA, med axe i Playwright og manuell test med tastatur og skjermleser.
@@ -529,6 +665,10 @@ Hver fase avsluttes med grønne tester, typekontroll og lint, og en kort oppsumm
   - SVG-fasade med ferdige markeringer.
   - Publisert prosjektside.
 - **Drift og personvern:** GDPR-eksport per person og driftsrutiner.
+- **Forslag til resten fra tidligere faser** (må godkjennes):
+  - Sjekkliste for oppstart og «verdi solgt» på prosjektoversikten (modul 5 i spesifikasjonen).
+  - Egne felt i CSV-import og -eksport.
+  - Språk per bruker i admin.
 
 ## Valg som er godkjent
 
@@ -569,5 +709,5 @@ Spørsmålene under er ikke besvart ennå. Standardvalgene i parentes brukes inn
 
 1. **Navn og domene:** hva er `[PRODUKTNAVN]` og `[PLATTFORMDOMENE]`? Domenet trengs til underdomener (fase 4) og e-postavsender. (Arbeidsnavnet «Boligplattform», satt med miljøvariabler.)
 2. **Repo:** er det greit at plattformen ligger i `platform/` i dette repoet, eller ønsker dere et eget repo? (`platform/` i dette repoet.)
-3. **Abonnement:** hvilke planer skal finnes (antall aktive prosjekter og pris per måned)? Hva teller som aktivt prosjekt? Trengs i fase 4. (Aktive prosjekter er de i fasene «Kommer for salg», «I salg» og «Utsolgt».)
-4. **Kontoer:** hvem oppretter Supabase, Vercel, Stripe, Resend, Cloudflare Turnstile og Sentry, og når? (Alt utvikles og testes lokalt til kontoene finnes.)
+3. **Abonnement:** hvilke planer skal finnes (antall aktive prosjekter og pris per måned)? Hva teller som aktivt prosjekt? (Aktive prosjekter er de i fasene «Kommer for salg», «I salg» og «Utsolgt». Planene er Start, Vekst og Proff med 1, 5 og 15 aktive prosjekter, og prøveperioden har plass til 3. Prisene settes i Stripe.)
+4. **Kontoer:** hvem oppretter Supabase, Vercel, Stripe, Resend, Cloudflare Turnstile og Sentry, og når? (Alt utvikles og testes lokalt til kontoene finnes. Oppsettet står i README.)

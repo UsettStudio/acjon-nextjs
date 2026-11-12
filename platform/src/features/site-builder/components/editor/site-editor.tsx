@@ -27,11 +27,20 @@ import { SitePublishBar } from "@/features/site-builder/components/editor/site-p
 import { useDraftAutosave, type DraftSaveStatus } from "@/features/site-builder/components/editor/use-draft-autosave";
 import type { PreviewUpdate } from "@/features/site-builder/components/preview-frame";
 import type { EditorPage, SiteEditorData } from "@/features/site-builder/queries";
-import { footerSchema, navSchema, seoDefaultsSchema, type NavItem, type SeoDefaults, type SiteFooter } from "@/features/site-builder/site";
+import {
+  cookieSettingsSchema,
+  footerSchema,
+  navSchema,
+  seoDefaultsSchema,
+  type CookieSettings,
+  type NavItem,
+  type SeoDefaults,
+  type SiteFooter,
+} from "@/features/site-builder/site";
 import { missingForFull } from "@/features/site-builder/templates";
 import { themeSchema, type ThemeOverrides } from "@/features/site-builder/theme";
 
-type SiteSettings = { nav: NavItem[]; footer: SiteFooter; theme: ThemeOverrides; seoDefaults: SeoDefaults };
+type SiteSettings = { nav: NavItem[]; footer: SiteFooter; theme: ThemeOverrides; seoDefaults: SeoDefaults; cookieSettings: CookieSettings };
 
 type Tab = "content" | "pages" | "navigation" | "theme" | "settings";
 
@@ -43,7 +52,8 @@ function settingsValid(value: SiteSettings): boolean {
     navSchema.safeParse(value.nav).success &&
     footerSchema.safeParse(value.footer).success &&
     themeSchema.safeParse(value.theme).success &&
-    seoDefaultsSchema.safeParse(value.seoDefaults).success
+    seoDefaultsSchema.safeParse(value.seoDefaults).success &&
+    cookieSettingsSchema.safeParse(value.cookieSettings).success
   );
 }
 
@@ -112,6 +122,7 @@ export function SiteEditor({
     footer: data.site.footer,
     theme: data.site.theme,
     seoDefaults: data.site.seoDefaults,
+    cookieSettings: data.site.cookieSettings,
   });
   const [assets, setAssets] = useState<Record<string, MediaAsset>>(data.assets);
   const [address, setAddress] = useState({ subdomain: data.site.subdomain, url: data.site.url });
@@ -478,10 +489,15 @@ export function SiteEditor({
                   subdomain={address.subdomain}
                   url={address.url}
                   seoDefaults={settings.seoDefaults}
+                  cookieSettings={settings.cookieSettings}
                   disabled={!canEdit}
                   onSeoDefaultsChange={(seoDefaults) => {
                     clearError();
                     setSettings((previous) => ({ ...previous, seoDefaults }));
+                  }}
+                  onCookieSettingsChange={(cookieSettings) => {
+                    clearError();
+                    setSettings((previous) => ({ ...previous, cookieSettings }));
                   }}
                   onSubdomainChange={(subdomain, url) => setAddress({ subdomain, url })}
                 />

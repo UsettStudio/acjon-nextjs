@@ -15,27 +15,29 @@ Repoet inneholder i dag Usett-nettsiden (Next.js med Bootstrap, publisert på Ne
 ```
 platform/
 ├── README.md                          ✔ oppstart, kommandoer, miljøer
-├── docs/                              ✔ arkitektur og plan
+├── docs/                              ✔ arkitektur, plan og API (api.md)
 ├── supabase/
 │   ├── config.toml                    ✔ lokal Supabase (CLI)
-│   ├── migrations/                    ✔ datamodell, RLS, funksjoner, lagring, sanntid, fase 0–3
-│   ├── tests/                         ✔ pgTAP: skjema, isolasjon, roller, status, publisering, fase 0–3
+│   ├── migrations/                    ✔ datamodell, RLS, funksjoner, lagring, sanntid, fase 0–4
+│   ├── tests/                         ✔ pgTAP: skjema, isolasjon, roller, status, publisering, fase 0–4
 │   └── templates/                     ✔ norske e-postmaler for Supabase Auth
 ├── package.json, tsconfig.json        ✔ TypeScript strict
 ├── next.config.ts                     ✔ Cache Components, sikkerhetshoder, next-intl, Sentry
 ├── eslint.config.mjs, vitest.config.mts, playwright.config.ts   ✔
 ├── instrumentation.ts, instrumentation-client.ts                ✔ Sentry (EU, uten personopplysninger)
 ├── components.json                    ✔ shadcn/ui
-├── vercel.json                        ✔ funksjoner i Stockholm (arn1)
+├── vercel.json                        ✔ funksjoner i Stockholm (arn1) og planlagte jobber (cron)
 ├── .env.example                       ✔
 ├── messages/                          ✔ all tekst: nb.json (standard), en.json, sv.json
-├── e2e/                               ✔ Playwright (fase 0–3): akseptkriterium 2 og 3 i fase2.spec.ts, 5 og 1 i fase3.spec.ts
+├── e2e/                               ✔ Playwright (fase 0–4): akseptkriterium 2 og 3 i fase2.spec.ts, 5 og 1 i fase3.spec.ts,
+│                                      4 i fase4.spec.ts. support/ etterligner Stripe og DNS over HTTPS.
 ├── scripts/copy-vendor.mjs            ✔ kopierer MapLibre sin web-worker til public/vendor/ før dev og build
+├── scripts/build-embed.mjs            ✔ bygger web-komponenten til public/embed/v1.js før dev og build
 ├── test/                              ✔ tester på tvers av moduler (oversettelser)
 ├── scripts/seed-demo.ts               Demo Bolig AS / Fjordparken (fase 5)
 └── src/
     ├── proxy.ts                       ✔ fornyer sesjonen, krever innlogging, husker organisasjon, sender
-    │                                  underdomener og egne domener til sites/
+    │                                  underdomener og egne domener til sites/, og videre til primærdomenet
     ├── app/
     │   ├── (auth)/                    ✔ login, signup, forgot-password, reset-password, invite/[token]
     │   ├── auth/confirm/              ✔ mål for lenker i e-post fra Supabase Auth
@@ -44,16 +46,18 @@ platform/
     │   │   ├── (user)/                ✔ onboarding, account, platform (plattformadmin)
     │   │   └── [org]/                 ✔ admin per organisasjon: app.[PLATTFORMDOMENE]/{org}/…
     │   │       ├── page.tsx           ✔ Oversikt
-    │   │       ├── settings/          ✔ organisasjon, brukere og merkevare; domener, abonnement og API i fase 4
+    │   │       ├── settings/          ✔ organisasjon, brukere, merkevare, domener, abonnement og API
     │   │       ├── projects/          ✔ liste, veiviser, oversikt, innstillinger, enheter, enhetsskjema, CSV-eksport,
     │   │       │                      ✔ boligvelgere og editor (selectors/), prosjektside (site/), leads per prosjekt
     │   │       ├── leads/             ✔ liste med filter, detalj, status og notat, CSV-eksport (export/)
     │   │       └── media/             ✔ mediebibliotek
-    │   ├── sites/[site]/              ✔ publiserte prosjektsider: sider, bolig/[slug], sitemap.xml, robots.txt
+    │   ├── sites/[site]/              ✔ publiserte prosjektsider: sider, bolig/[slug], personvern, informasjonskapsler,
+│   │                              sitemap.xml, robots.txt
     │   ├── preview/[token]/           ✔ delt forhåndsvisning av utkastet (signert lenke)
     │   ├── site-preview/[siteId]/     ✔ forhåndsvisningen i editoren (iframe, krever innlogging)
     │   ├── embed/selector/[id]/       ✔ publisert boligvelger, preview/ (utkast for innloggede), bolig/[slug] (enhetsside)
-    │   └── api/                       offentlig API, Stripe og cron (fase 4). Leads og bildebehandling er serverhandlinger.
+    │   └── api/                       ✔ public/v1 (åpent lese-API), v1 (API med nøkkel), stripe/webhook og cron/
+│                                  (webhooks, domener, varsler). Leads og bildebehandling er serverhandlinger.
     ├── components/
     │   ├── ui/                        ✔ shadcn/ui
     │   ├── forms/                     ✔ felles skjemahjelpere
@@ -66,7 +70,10 @@ platform/
     │   ├── selector/                  ✔ geometri, angre, filtre, visningstre, editor/, public/, serverhandlinger
     │   ├── site-builder/              ✔ blokker, maler, tema, rik tekst, SEO, editor/, render/, mellomlager
     │   ├── leads/                     ✔ interesseskjema, samtykke, Turnstile, innsending, admin og CSV
-    │   └── billing/  domains/         (fase 4)
+    │   ├── domains/                   ✔ vertsnavn, DNS over HTTPS, Vercel Domains API, sjekk og Innstillinger → Domener
+│   ├── billing/                   ✔ Stripe (Checkout, kundeportal, synk fra webhook), Innstillinger → Abonnement
+│   ├── integrations/              ✔ API-nøkler, webhooks (utsending, signatur, SSRF-vern), Innstillinger → API
+│   └── platform/                  ✔ forlengelse av prøveperioden (plattformadmin)
     ├── i18n/                          ✔ språkoppsett for next-intl
     ├── lib/
     │   ├── supabase/                  ✔ klient for server, proxy og nettleser (opplasting og sanntid), anonym klient for
@@ -75,11 +82,14 @@ platform/
     │   ├── auth/                      ✔ datatilgangslag (DAL) og roller som speiler SQL
     │   ├── actions/                   ✔ felles svarformat og kontroller for serverhandlinger
     │   ├── format/                    ✔ norsk format: 2 450 000 kr, 68 m², og tolking av norske tall
-    │   ├── billing/                   ✔ prøveperiode og lesemodus
+    │   ├── billing/                   ✔ prøveperiode, lesemodus og planer (grenser for aktive prosjekter)
+│   ├── api/                       ✔ svar og feil for det åpne API-et og API-et med nøkkel
     │   ├── email/                     ✔ Resend og maler
     │   ├── navigation/, security/     ✔ trygge omdirigeringer, tokener
-    │   └── hosts.ts                   ✔ vertsnavn: admin, underdomene eller eget domene
-    └── embed/                         web-komponenten (fase 4)
+    │   ├── cron.ts                    ✔ kontroll av CRON_SECRET for planlagte jobber
+│   ├── primary-host.ts            ✔ primærdomenet bak et vertsnavn, for videresending i proxyen
+│   └── hosts.ts                   ✔ vertsnavn: admin, underdomene eller eget domene
+    └── embed/                         ✔ web-komponenten <boligvelger-embed> (selvstendig, uten avhengigheter)
 ```
 
 ## 3. Systemoversikt
@@ -89,6 +99,8 @@ platform/
 | Next.js 16 (App Router) på Vercel | Admin, publiserte prosjektsider, enhetssider, innbygging, offentlig API, serverhandlinger, bildebehandling |
 | Supabase i EU (Stockholm, `eu-north-1`) | PostgreSQL med RLS, Auth, Storage (bucket `media`), Realtime, pg_cron |
 | Stripe Billing | Abonnement. Webhook oppdaterer abonnementsfeltene på `organizations`. |
+| Vercel Domains API | Egne domener legges til i Vercel-prosjektet, og Vercel lager sertifikatene |
+| Vercel Cron | Webhooks hvert minutt, domenesjekk hvert femte minutt og varsler om prøveperioden daglig |
 | Resend | Invitasjoner, varsel om nye leads, kvittering til boligkjøper |
 | Cloudflare Turnstile | Spambeskyttelse på interesseskjema |
 | Sentry (EU-region) | Feilsporing |
@@ -214,7 +226,9 @@ Testene i `005_publisering_og_offentlig_api.test.sql` kontrollerer dette.
      - publisering og avpublisering,
      - sletting av sider og endring av underdomene,
      - endring av status, pris og andre enhetsfelt (tabell, skjema, Status-modus, masseendring og sletting),
-     - endring av prosjekt, egne felt, boligvelger og merkevare.
+     - endring av prosjekt, egne felt, sporingskoder, boligvelger og merkevare,
+     - import av enheter og endringer via API-et,
+     - bekreftelse, fjerning og bytte av primærdomene.
    - **Levetid:** innholdet regnes som ferskt i 60 s, fornyes etter 5 minutter og kastes etter en time. Taggene gjør at endringer vises med en gang, uansett levetid.
    - Ende-til-ende-testen for akseptkriterium 5 kontrollerer at HTML-en fra serveren viser ny status rett etter en endring.
    - Boligvelgeren under `/embed/` leser fortsatt ferske data ved hver visning.
@@ -235,7 +249,7 @@ Testene i `005_publisering_og_offentlig_api.test.sql` kontrollerer dette.
 ## 10. Revisjon, integrasjoner og personvern
 
 - **`audit_log`** registrerer pålogging, statusendringer, publisering og avpublisering, endringer i medlemskap, invitasjoner og prosjekttilgang, opprettelse og sletting av prosjekter, sletting av enheter, API-nøkler, webhooks, domener og sletting av leads. Slettede leads logges uten personopplysninger.
-- **Webhooks.** `unit.status_changed` og `lead.created` legges i en utboks (`webhook_deliveries`) i samme transaksjon som hendelsen. En jobb sender dem med HMAC-signatur og nye forsøk med eksponentiell ventetid (fase 4).
+- **Webhooks og API.** Se avsnitt 15 og [api.md](api.md).
 - **Forberedt for senere synk.** `unit_status_events` er en egen hendelseslogg, og `external_id` og `source` finnes på enheter, unike per kilde og prosjekt.
 - **GDPR.**
   - Alle data ligger i EU.
@@ -273,11 +287,94 @@ Testene i `005_publisering_og_offentlig_api.test.sql` kontrollerer dette.
 | `unit_status_events.changed_by` → `profiles` (fase 1) | Navnet på den som endret status, i samme spørring |
 | Enhetens adresse følger enhetsnummeret (fase 1) | En adresse som er laget automatisk, endres med nummeret. En adresse satt for hånd beholdes. |
 | Filstier låst til filens mappe (fase 1) | Original og varianter må ligge under `{organization_id}/{asset_id}/` |
+| `organizations`: `cancel_at_period_end`, `billing_event_at`, `billing_notices` (fase 4) | Oppsigelse ved periodens slutt, rekkefølge på hendelser fra Stripe og varsler som er sendt |
+| `webhook_deliveries.is_test` (fase 4) | Testhendelser sendes én gang, uten nye forsøk |
+| Grense for aktive prosjekter per plan (fase 4) | Planene etter antall aktive prosjekter håndheves i databasen |
+| `api_*`-funksjoner (fase 4) | API-et med nøkkel leser og skriver bare i nøkkelens organisasjon |
 
-## 12. Supabase sin sikkerhetsrådgiver
+## 12. Egne domener
+
+- **Legge til.** Eier og administrator legger til et vertsnavn på en prosjektside under Innstillinger → Domener. Plattformens egne adresser og ugyldige toppdomener avvises.
+- **Vercel.** Domenet legges til i Vercel-prosjektet med Domains API, når kontoen er koblet til.
+- **Bekreftelse.** Domenet bekreftes når to ting er på plass:
+  - TXT-posten `_boligplattform.{domene}` har domenets token. Det viser at kunden eier domenet, også når alle kundene deler ett Vercel-prosjekt.
+  - Trafikken går til plattformen: CNAME for underdomener, A for rotdomener, eller Vercel sin vurdering når kontoen er koblet til.
+- **DNS-oppslag.** Oppslagene går med DNS over HTTPS (`DNS_OVER_HTTPS_URL`), så svaret ikke påvirkes av mellomlager i serverens nett.
+- **Status lagres av serveren.** `record_domain_check()` kan bare kjøres av service-rollen. Brukere kan ikke bekrefte domener selv.
+- **Bekreftede domener tas ikke ned.** En senere feil i DNS vises som varsel. Et vertsnavn som er bekreftet på én prosjektside, kan ikke bekreftes på en annen.
+- **Planlagt sjekk.** Jobben sjekker ubekreftede domener hvert femte minutt det første døgnet, deretter hver time i 30 dager, og bekreftede domener daglig.
+- **Primærdomene.** Første bekreftede domene blir primærdomene. Kanonisk adresse, sitemap og Open Graph bruker det. Proxyen sender besøkende fra underdomenet og andre domener dit med 308. Primærdomenet huskes i ett minutt per serverinstans.
+- **Fjerning.** Et domene tas bort fra Vercel bare når ingen andre prosjektsider har lagt inn samme vertsnavn.
+
+## 13. Abonnement og lesemodus
+
+- **Prøveperiode.** En ny organisasjon får 30 dagers prøveperiode uten kort. Med «Velg plan» starter eieren Stripe Checkout. Gjenstår det mer enn to døgn av prøveperioden, starter abonnementet med resten av den, så ingen dager betales to ganger.
+- **Planer etter antall aktive prosjekter** (fasene Kommer for salg, I salg og Utsolgt):
+
+  | Plan | Aktive prosjekter |
+  |---|---|
+  | Prøveperiode | 3 |
+  | Start | 1 |
+  | Vekst | 5 |
+  | Proff | 15 |
+  | Enterprise | ingen grense, avtales særskilt |
+
+  Grensen håndheves av en trigger på `projects`. Prosjekter som allerede er aktive, påvirkes ikke når en organisasjon bytter til en mindre plan. Prisene settes i Stripe.
+- **Webhooken** (`/api/stripe/webhook`) kontrollerer signaturen og henter alltid abonnementet på nytt fra Stripe før det lagres med `apply_stripe_subscription()`. Hendelser i feil rekkefølge kan dermed ikke sette en gammel tilstand:
+  - Et nytt abonnement som ikke er betalt, endrer ingenting.
+  - Et gammelt abonnement som avsluttes, overskriver ikke et nyere.
+- **Kundeportalen** i Stripe brukes til betalingsmåte, fakturaer, bytte av plan og oppsigelse.
+- **Lesemodus.** Når prøveperioden er ute eller abonnementet er avsluttet:
+  - Databasen avviser alle endringer, også fra API-et.
+  - Admin viser et banner, og eieren får lenke til Abonnement.
+  - Publiserte sider, boligvelgere og interesseskjema virker som før.
+- **Varsler.** En daglig jobb sender e-post til eierne sju dager og ett døgn før prøveperioden er ute, og når organisasjonen går over i lesemodus. Hvert varsel sendes én gang.
+- **Plattformadmin** kan forlenge prøveperioden med 14 dager for en organisasjon uten abonnement. Det logges.
+
+## 14. Innbygging og offentlig API
+
+- **Web-komponenten** `<boligvelger-embed>` (`src/embed/`, bygget til `public/embed/v1.js`) viser den publiserte velgeren i en iframe i sin egen shadow DOM.
+  - Velgeren sender hendelser til komponenten med `postMessage` (`EmbedBridge`). Komponenten godtar bare meldinger fra sin egen iframe og fra plattformens opprinnelse.
+  - Iframen er reserven: på nettsteder uten skript virker den alene.
+  - Se [api.md](api.md) for attributter og hendelser.
+- **Åpent lese-API** (`/api/public/v1`) bruker de offentlige databasefunksjonene og har CORS for alle. Svarene mellomlagres i høyst fem sekunder.
+- **API med nøkkel** (`/api/v1`) bruker `api_*`-funksjonene, som bare service-rollen kan kjøre:
+  - Serveren sender SHA-256 av nøkkelen. Funksjonen finner organisasjonen fra nøkkelen, kontrollerer tilgangene og holder rate limit (600 kall i minuttet).
+  - Funksjonen leser og skriver bare i nøkkelens organisasjon, så et kall kan aldri nå en annen organisasjon, selv med service-rollen.
+  - Statusendringer logges med kilden `api` og nøkkelen som aktør i revisjonsloggen.
+
+## 15. Webhooks
+
+- **Utboks.** `unit.status_changed` og `lead.created` legges i utboksen (`webhook_deliveries`) i samme transaksjon som hendelsen.
+- **Utsending:**
+  - Rett etter endringen (`after()` i serverhandlinger og API).
+  - Fra en planlagt jobb hvert minutt, med `claim_webhook_deliveries()` og `for update skip locked`, så to jobber aldri sender samme leveranse.
+- **Signatur** etter Standard Webhooks: `webhook-id`, `webhook-timestamp` og `webhook-signature` (HMAC-SHA256).
+- **Nye forsøk** med eksponentiell ventetid, høyst åtte forsøk og omtrent to timer.
+- **Vern mot SSRF.** Adresser i private nett avvises når webhooken lagres, og igjen ved hvert DNS-oppslag når den sendes. Omdirigeringer følges ikke.
+- **Admin** har testhendelse, logg over de siste leveransene, «Prøv igjen», visning og fornyelse av hemmeligheten.
+
+## 16. Samtykke og sporing
+
+- **Sporingskoder** (Google Analytics 4, Tag Manager og Meta Pixel) legges inn i prosjektinnstillingene.
+  - De kontrolleres med faste mønstre både i appen og i databasen, fordi de settes inn i skript.
+  - Banneret vises bare når prosjektet har sporingskoder.
+- **Ingen kode lastes før samtykke.**
+  - Statistikk gir Google Analytics og Tag Manager. Markedsføring gir Meta Pixel og Tag Manager. Google Consent Mode får de samme valgene.
+  - «Bare nødvendige» er like enkelt å velge som «Godta alle».
+  - Valget lagres i nettleseren i tolv måneder.
+  - Trekkes samtykket tilbake, slettes informasjonskapslene fra sporingen, og siden lastes på nytt.
+- **Genererte sider.** `/personvern` og `/informasjonskapsler` lages fra:
+  - organisasjonen,
+  - behandlingsansvarlig i prosjektsidens innstillinger,
+  - lagringstiden for leads,
+  - sporingskodene som er i bruk.
+- **Konvertering.** Sendte interesseskjema måles som `generate_lead` og `Lead`, bare med samtykke.
+
+## 17. Supabase sin sikkerhetsrådgiver
 
 `supabase db lint` gir ingen feil. Supabase Security Advisor (splinter) viser disse funnene, som alle er bevisste:
 
-- **`anon_security_definer_function_executable`** og **`authenticated_security_definer_function_executable`.** Gjelder de seks offentlige lesefunksjonene og funksjonene for organisasjon, invitasjon, innlogging og publisering. De er SECURITY DEFINER nettopp for at anon og brukere ikke skal trenge direkte tabelltilgang. Hver funksjon sjekker selv tilgang eller publiseringsstatus, og det er dekket av tester.
+- **`anon_security_definer_function_executable`** og **`authenticated_security_definer_function_executable`.** Gjelder de offentlige lesefunksjonene og funksjonene for organisasjon, invitasjon, innlogging, publisering, primærdomene, testhendelser og nye forsøk for webhooks, og forlengelse av prøveperioden (plattformadmin). De er SECURITY DEFINER nettopp for at anon og brukere ikke skal trenge direkte tabelltilgang. Hver funksjon sjekker selv tilgang eller publiseringsstatus, og det er dekket av tester.
 - **`rls_enabled_no_policy`** på `rate_limit_buckets`. Tabellen brukes bare av service-rollen.
 - **`unused_index`.** Forventet i en tom database.

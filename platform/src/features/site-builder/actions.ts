@@ -8,7 +8,15 @@ import { getAssetsByIds, type MediaAsset } from "@/features/media/assets";
 import { blockAssetIds, blocksSchema, parseBlocks, type Block } from "@/features/site-builder/blocks";
 import { createPreviewToken } from "@/features/site-builder/preview-token";
 import { siteTags } from "@/features/site-builder/render-data";
-import { footerSchema, navSchema, pageSlugSchema, seoDefaultsSchema, siteUrl, subdomainSchema } from "@/features/site-builder/site";
+import {
+  cookieSettingsSchema,
+  footerSchema,
+  navSchema,
+  pageSlugSchema,
+  seoDefaultsSchema,
+  siteUrl,
+  subdomainSchema,
+} from "@/features/site-builder/site";
 import { buildTemplate, expandToFull, TEMPLATE_KINDS, type TemplateContext, type TemplateText } from "@/features/site-builder/templates";
 import { themeSchema } from "@/features/site-builder/theme";
 import { isLocale } from "@/i18n/config";
@@ -375,12 +383,13 @@ const siteSettingsSchema = z
     footer: footerSchema,
     theme: themeSchema,
     seoDefaults: seoDefaultsSchema,
+    cookieSettings: cookieSettingsSchema,
   })
   .partial();
 
 export type SiteSettingsInput = z.input<typeof siteSettingsSchema>;
 
-/** Meny, bunntekst, tema og SEO-standarder. Går ut på den publiserte siden ved neste publisering. */
+/** Meny, bunntekst, tema, SEO-standarder og personvern. Går ut på den publiserte siden ved neste publisering. */
 export async function saveSiteSettings(
   organizationId: string,
   siteId: string,
@@ -405,6 +414,9 @@ export async function saveSiteSettings(
     }
     if (parsed.data.seoDefaults) {
       values.seo_defaults = parsed.data.seoDefaults;
+    }
+    if (parsed.data.cookieSettings) {
+      values.cookie_settings = parsed.data.cookieSettings;
     }
     const { error } = await supabase
       .from("sites")

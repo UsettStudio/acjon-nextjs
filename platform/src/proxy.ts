@@ -4,6 +4,7 @@ import { ORG_SLUG_PATTERN, RESERVED_ORG_SLUGS } from "@/features/organizations/s
 import { publicEnv } from "@/lib/env";
 import { classifyHost } from "@/lib/hosts";
 import { safeNextPath } from "@/lib/navigation/safe-redirect";
+import { primaryHostFor, primaryRedirect } from "@/lib/primary-host";
 import { updateSession } from "@/lib/supabase/proxy";
 
 /** Sider som kan vises uten innlogging. */
@@ -36,7 +37,16 @@ export async function proxy(request: NextRequest) {
   const host = classifyHost(request.headers.get("host") ?? "", env.appUrl, env.platformDomain);
 
   // Publiserte prosjektsider: skrives om til app/sites/[site]. Ingen innlogging og ingen cookies.
+  // Har siden et primærdomene, sendes besøkende dit fra underdomenet og andre domener.
   if (host.kind === "site") {
+    const primary = await primaryHostFor(host.key).catch((error: unknown) => {
+      console.error(error);
+      return null;
+    });
+    const redirect = primaryRedirect(host.key, primary, pathname, search);
+    if (redirect) {
+      return NextResponse.redirect(redirect, 308);
+    }
     const url = request.nextUrl.clone();
     url.pathname = `/sites/${encodeURIComponent(host.key)}${pathname === "/" ? "" : pathname}`;
     return NextResponse.rewrite(url);
@@ -44,6 +54,11 @@ export async function proxy(request: NextRequest) {
   // Prosjektsidene skal bare nås via eget vertsnavn, ikke som /sites/ på admin.
   if (pathname === "/sites" || pathname.startsWith("/sites/")) {
     return new NextResponse(null, { status: 404 });
+  }
+  // API-et, Stripe-webhooken og planlagte jobber har egen kontroll (nøkkel, signatur
+  // eller hemmelighet) og bruker aldri innloggingen i cookies.
+  if (pathname.startsWith("/api/")) {
+    return NextResponse.next();
   }
 
   const { response, userId } = await updateSession(request);
@@ -80,6 +95,6 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon\\.ico|icon\\.svg|.*\\.(?:svg|png|jpg|jpeg|gif|webp|avif|ico)$).*)",
+    "/((?!_next/static|_next/image|favicon\\.ico|icon\\.svg|embed/v1\\.js|.*\\.(?:svg|png|jpg|jpeg|gif|webp|avif|ico)$).*)",
   ],
 };

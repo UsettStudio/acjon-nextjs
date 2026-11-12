@@ -15,7 +15,8 @@
     "you": "du",
     "readOnly": "Abonnemanget har gått ut, så organisationen är skrivskyddad. Publicerade sidor är fortfarande tillgängliga.",
     "yes": "Ja",
-    "no": "Nej"
+    "no": "Nej",
+    "copyValue": "Kopiera {label}"
   },
   "roles": {
     "owner": "Ägare",
@@ -80,7 +81,16 @@
     "pageSlugFormat": "Använd små bokstäver (a–z), siffror och bindestreck. Högst 80 tecken.",
     "pageSlugReserved": "Den här sidadressen är reserverad. Välj en annan.",
     "pageSlugTaken": "En annan sida har redan den här adressen.",
-    "customFieldDuplicate": "Fältnamnet används redan på den här bostaden."
+    "customFieldDuplicate": "Fältnamnet används redan på den här bostaden.",
+    "hostnameInvalid": "Skriv en giltig domän, till exempel www.fjordparken.se.",
+    "hostnamePlatform": "Det här är en av plattformens egna adresser. Projektsidan har redan en gratis underdomän.",
+    "orgNumberInvalid": "Organisationsnumret har nio siffror, till exempel 912 345 678.",
+    "ga4Invalid": "Ett mät-ID från Google Analytics 4 ser ut så här: G-XXXXXXXXXX.",
+    "gtmInvalid": "Ett container-ID från Google Tag Manager ser ut så här: GTM-XXXXXXX.",
+    "metaPixelInvalid": "Ett Meta Pixel-ID består bara av siffror.",
+    "scopesRequired": "Välj minst en behörighet.",
+    "eventsRequired": "Välj minst en händelse.",
+    "webhookPrivateUrl": "Adressen pekar till ett privat nätverk. Använd en offentlig adress."
   },
   "errors": {
     "unauthenticated": "Du måste logga in igen.",
@@ -89,7 +99,8 @@
     "notFound": "Det du letade efter hittades inte.",
     "invalidInput": "Kontrollera de markerade fälten.",
     "rateLimited": "För många försök. Vänta en stund och försök igen.",
-    "unknown": "Något gick fel. Försök igen om en stund."
+    "unknown": "Något gick fel. Försök igen om en stund.",
+    "planLimit": "Planen har inte plats för fler aktiva projekt. Välj ett större abonnemang, eller sätt ett annat projekt till Färdigställt eller Arkiverat."
   },
   "auth": {
     "email": "E-post",
@@ -200,7 +211,11 @@
     "tabs": {
       "organization": "Organisation",
       "members": "Användare",
-      "brand": "Varumärke"
+      "brand": "Varumärke",
+      "label": "Inställningar",
+      "domains": "Domäner",
+      "billing": "Abonnemang",
+      "api": "API"
     },
     "organization": {
       "title": "Organisation",
@@ -295,7 +310,12 @@
     "subscription": "Abonnemang",
     "members": "Användare",
     "projects": "Projekt",
-    "empty": "Inga organisationer ännu."
+    "empty": "Inga organisationer ännu.",
+    "trialEnds": "Provperioden slutar",
+    "actions": "Åtgärder",
+    "extendTrial": "Förläng 14 dagar",
+    "extendTrialFor": "Förläng provperioden för {organization} med 14 dagar",
+    "trialExtended": "Provperioden för {organization} varar nu till {date}."
   },
   "notFound": {
     "title": "Sidan hittades inte",
@@ -336,6 +356,26 @@
       "receiptBodyUnit": "Vi har tagit emot ditt intresse för {unit} i {project}. {organization} kontaktar dig så snart som möjligt.",
       "receiptPrivacy": "Dina uppgifter sparas hos {organization} och används bara för att följa upp förfrågan. Svara på det här mejlet om du vill att de raderas.",
       "receiptFooter": "Du får det här kvittot eftersom någon skickade ett intresseformulär med den här e-postadressen."
+    },
+    "billing": {
+      "cta": "Välj abonnemang",
+      "pagesStayUp": "Publicerade projektsidor och bostadsväljare tas aldrig ned automatiskt. Nya leads kommer fortfarande in.",
+      "why": "Du får det här mejlet eftersom du är ägare av {organization}.",
+      "trial_7d": {
+        "subject": "Provperioden för {organization} slutar om {days, plural, one {# dag} other {# dagar}}",
+        "heading": "Provperioden slutar snart",
+        "body": "Provperioden för {organization} slutar {date}. Välj ett abonnemang för att fortsätta göra ändringar efter det."
+      },
+      "trial_1d": {
+        "subject": "Provperioden för {organization} slutar inom ett dygn",
+        "heading": "Provperioden slutar inom ett dygn",
+        "body": "Provperioden för {organization} slutar {date}. Därefter kan ni se allt men inte göra ändringar förrän ni har valt ett abonnemang."
+      },
+      "read_only": {
+        "subject": "{organization} är i läsläge",
+        "heading": "Organisationen är i läsläge",
+        "body": "Provperioden eller abonnemanget för {organization} är avslutat. Ni kan se allt men inte göra ändringar förrän ni har valt ett abonnemang."
+      }
     }
   },
   "unitStatus": {
@@ -526,6 +566,18 @@
         "help": "Egna fält är interna tills du gör dem offentliga. Offentliga fält visas på bostadssidan på projektsidan och i bostadsväljaren.",
         "legend": "Visa på bostadssidan",
         "empty": "Inga bostäder har egna fält ännu. Lägg till dem under Egna fält i bostadsformuläret."
+      },
+      "tracking": {
+        "title": "Spårning på projektsidan",
+        "help": "Statistik och marknadsföring på den publicerade projektsidan. Koderna gäller direkt.",
+        "ga4": "Google Analytics 4",
+        "ga4Help": "Mät-ID, till exempel G-XXXXXXXXXX.",
+        "gtm": "Google Tag Manager",
+        "gtmHelp": "Container-ID, till exempel GTM-XXXXXXX.",
+        "metaPixel": "Meta Pixel",
+        "metaPixelHelp": "Pixel-ID från Meta Business.",
+        "consentNote": "När en kod är inlagd ser besökare en samtyckesbanner. Ingen kod laddas innan besökaren har samtyckt, och ”Bara nödvändiga” är lika enkelt att välja som ”Godkänn alla”. Skickade intresseformulär mäts som konvertering (generate_lead och Lead) för besökare som har samtyckt.",
+        "saved": "Spårningskoderna är sparade och gäller den publicerade sidan direkt."
       }
     },
     "delete": {
@@ -1206,7 +1258,8 @@
       "unpublish": "Avpublicera",
       "unpublishTitle": "Avpublicera bostadsväljaren?",
       "unpublishDescription": "Den publicerade väljaren slutar fungera för köpare direkt. Vyer och markeringar behålls, och du kan publicera igen senare.",
-      "cancel": "Avbryt"
+      "cancel": "Avbryt",
+      "embed": "Bädda in på webbplats …"
     },
     "settings": {
       "title": "Inställningar för väljaren",
@@ -1239,6 +1292,23 @@
       "showPriceOnSoldHelp": "När detta är av visas ”Såld” i stället för priset, och priset skickas aldrig till webbläsaren.",
       "organizationTitle": "Statusfärger",
       "organizationHelp": "Färgerna används i alla bostadsväljare i organisationen. Varje projekt kan åsidosätta dem. Tomma fält använder standardfärgerna."
+    },
+    "embed": {
+      "title": "Bädda in på webbplats",
+      "description": "Visa bostadsväljaren på en annan webbplats, till exempel byggherrens egen sida. Statusändringar syns där direkt, precis som i den publicerade väljaren.",
+      "frameTitle": "Bostadsväljare för {project}",
+      "showFilters": "Visa filter",
+      "list": "Bostadslista",
+      "listDefault": "Som i väljaren",
+      "listShow": "Visa",
+      "listHide": "Dölj",
+      "componentTab": "Webbkomponent",
+      "iframeTab": "Iframe",
+      "apiTab": "API",
+      "componentHelp": "Rekommenderas. Klistra in koden där väljaren ska visas. Skriptet skapar en webbkomponent som anpassar höjden efter skärmen och laddar väljaren först när den är nära.",
+      "eventsHelp": "Värdsidan kan lyssna på händelserna boligvelger:ready, boligvelger:navigate och boligvelger:lead, till exempel för egen statistik. Med attributet sync-url sparas bostadssida och filter i adressen.",
+      "iframeHelp": "Reserv för webbplatser som inte tillåter skript. Iframen visar samma väljare, men utan händelser.",
+      "apiHelp": "Utvecklare kan hämta den publicerade väljaren som JSON. API:t är öppet för alla webbplatser (CORS) och ger bara publicerade data."
     }
   },
   "publicSelector": {
@@ -1638,7 +1708,11 @@
         "linkUrl": "Adress",
         "siteLogo": "Logotyp för den här projektsidan",
         "siteDescription": "Beskrivning",
-        "brandLogo": "Logotyp"
+        "brandLogo": "Logotyp",
+        "privacyController": "Personuppgiftsansvarig",
+        "orgNumber": "Organisationsnummer",
+        "privacyEmail": "E-post för integritet",
+        "privacyExtra": "Mer om integritet"
       },
       "help": {
         "richText": "Formatering: ## Rubrik, - punktlista, 1. numrerad lista, **fet**, *kursiv* och [länktext](https://…).",
@@ -1665,7 +1739,10 @@
         "siteDescription": "Används i sökresultat för sidor som saknar egen beskrivning.",
         "siteShareImage": "Används när en sida delas och varken sidan eller heroblocket har en bild.",
         "useProjectContacts": "Kontaktpersonerna redigeras i projektinställningarna.",
-        "brandLogo": "Visas överst på projektsidorna. Använd gärna PNG med genomskinlig bakgrund."
+        "brandLogo": "Visas överst på projektsidorna. Använd gärna PNG med genomskinlig bakgrund.",
+        "privacyController": "Företaget som ansvarar för uppgifterna från intresseformuläret. Är fältet tomt används organisationens namn.",
+        "privacyEmail": "Hit kan besökare skriva för insyn och radering. Är fältet tomt används e-posten till första kontaktpersonen.",
+        "privacyExtra": "Egen text längst ned på integritetssidan, till exempel om andra behandlingar. En tom rad ger nytt stycke."
       },
       "options": {
         "heroHeight": {
@@ -1864,7 +1941,10 @@
         "delete": "Ta bort projektsidan",
         "deleteConfirmTitle": "Ta bort projektsidan?",
         "deleteConfirmDescription": "Alla sidor och versioner tas bort, och den publicerade sidan försvinner direkt. Detta kan inte ångras.",
-        "deleted": "Projektsidan har tagits bort."
+        "deleted": "Projektsidan har tagits bort.",
+        "privacyTitle": "Integritet",
+        "privacyIntro": "Sidorna Integritet och Cookies skapas automatiskt och länkas från sidfoten. Fyll i vem som är personuppgiftsansvarig. Ändringarna går ut när du publicerar.",
+        "trackingIntro": "Spårningskoder för Google Analytics, Tag Manager och Meta Pixel läggs in i projektinställningarna. Då visas en samtyckesbanner, och koderna laddas först när besökaren har samtyckt."
       },
       "preview": {
         "device": "Skärmstorlek",
@@ -1885,7 +1965,9 @@
       "openMenu": "Öppna menyn",
       "closeMenu": "Stäng menyn",
       "contact": "Kontakt",
-      "footerLinks": "Länkar"
+      "footerLinks": "Länkar",
+      "privacy": "Integritet",
+      "cookies": "Cookies"
     },
     "editor": {
       "emptyText": "Textblock utan innehåll. Skriv rubrik och text i panelen.",
@@ -1978,6 +2060,75 @@
     },
     "unit": {
       "back": "Tillbaka till {project}"
+    },
+    "consent": {
+      "title": "Cookies",
+      "text": "Vi vill gärna använda cookies för statistik och marknadsföring. Det gör vi bara om du godkänner det. Nödvändiga funktioner, som intresseformuläret och favoriter, fungerar ändå.",
+      "readMore": "Läs mer om cookies",
+      "choose": "Välj vad du godkänner",
+      "necessary": "Nödvändiga",
+      "necessaryHelp": "kommer ihåg ditt val och dina favoriter. Alltid på.",
+      "statistics": "Statistik",
+      "statisticsHelp": "visar oss hur sidan används, så att vi kan förbättra den.",
+      "marketing": "Marknadsföring",
+      "marketingHelp": "mäter annonser och visar dig relevanta annonser på andra ställen.",
+      "acceptAll": "Godkänn alla",
+      "necessaryOnly": "Bara nödvändiga",
+      "save": "Spara valen",
+      "customize": "Välj själv",
+      "change": "Ändra samtycke"
+    },
+    "privacy": {
+      "title": "Integritet",
+      "intro": "Här står det hur {controller} behandlar personuppgifter på webbplatsen för {project}.",
+      "controllerTitle": "Personuppgiftsansvarig",
+      "controller": "{controller} är personuppgiftsansvarig.",
+      "controllerWithNumber": "{controller} (org.nr {number}) är personuppgiftsansvarig.",
+      "contactAt": "Frågor om integritet kan skickas till",
+      "collectedTitle": "Vad vi samlar in",
+      "collected": "När du anmäler intresse för {project} sparar vi namn, e-postadress, telefonnummer och ditt meddelande, vilken bostad du är intresserad av, när du skickade formuläret och vilken version av samtyckestexten du godkände. Kommer du från en annons eller kampanj sparar vi även kampanjen.",
+      "purposeTitle": "Varför vi använder uppgifterna",
+      "purpose": "Vi använder uppgifterna för att kontakta dig om {project}. Har du även samtyckt till det kan vi kontakta dig om liknande projekt. Grunden är ditt samtycke (dataskyddsförordningen artikel 6.1 a).",
+      "retentionTitle": "Hur länge uppgifterna sparas",
+      "retentionDays": "Uppgifterna raderas automatiskt efter {days} dagar, eller tidigare om du ber om det.",
+      "retentionUntilDeleted": "Uppgifterna sparas tills du ber om att de raderas, eller tills de inte längre behövs.",
+      "processorsTitle": "Var uppgifterna lagras",
+      "processors": "Uppgifterna lagras i EU (Stockholm). Leverantörerna som driver webbplatsen och skickar e-post behandlar uppgifterna bara för {controller}s räkning.",
+      "trackingTitle": "Statistik och marknadsföring",
+      "tracking": "Om du samtycker använder webbplatsen {tools}. Du kan ändra ditt samtycke när som helst.",
+      "noTracking": "Webbplatsen använder inte verktyg för statistik eller marknadsföring.",
+      "cookiesLink": "Se vilka cookies som används",
+      "rightsTitle": "Dina rättigheter",
+      "rights": "Du kan begära insyn i, rättelse av och radering av uppgifterna om dig, och du kan återkalla ditt samtycke när som helst. Kontakta {controller}.",
+      "complaint": "Anser du att uppgifterna behandlas felaktigt kan du klaga till",
+      "authority": "norska Datatilsynet",
+      "moreTitle": "Mer om integritet"
+    },
+    "cookies": {
+      "title": "Cookies",
+      "intro": "Cookies och liknande lagring i webbläsaren används för att komma ihåg dina val och, om du samtycker, för statistik och marknadsföring.",
+      "consentNeeded": "Statistik och marknadsföring används bara om du samtycker. Du kan ändra ditt samtycke när som helst.",
+      "noConsentNeeded": "Webbplatsen använder bara lagring som behövs för att den ska fungera, så du behöver inte samtycka.",
+      "name": "Namn",
+      "purpose": "Syfte",
+      "category": "Kategori",
+      "duration": "Varaktighet",
+      "consentPurpose": "Kommer ihåg ditt val om cookies.",
+      "favoritesPurpose": "Kommer ihåg dina favoriter i bostadsväljaren. Sparas bara i din webbläsare.",
+      "gaPurpose": "Google Analytics: skiljer besökare åt för statistik.",
+      "gtmPurpose": "Google Tag Manager: laddar verktyg för statistik och marknadsföring efter vad du har samtyckt till.",
+      "pixelPurpose": "Meta Pixel: mäter annonser på Facebook och Instagram.",
+      "necessary": "Nödvändig",
+      "statistics": "Statistik",
+      "marketing": "Marknadsföring",
+      "statisticsAndMarketing": "Statistik och marknadsföring",
+      "twelveMonths": "12 månader",
+      "untilDeleted": "Tills du raderar dem",
+      "twoYears": "2 år",
+      "threeMonths": "3 månader",
+      "dependsOnTools": "Beror på verktygen som laddas",
+      "turnstile": "Intresseformuläret använder Cloudflare Turnstile för att stoppa spam. Turnstile kan läsa teknisk information om din webbläsare när du skickar formuläret.",
+      "privacyLink": "Läs om hur personuppgifter behandlas"
     }
   },
   "leads": {
@@ -2082,6 +2233,264 @@
       "internal_note": "Intern anteckning",
       "yes": "Ja",
       "no": "Nej"
+    }
+  },
+  "domains": {
+    "title": "Egna domäner",
+    "description": "Ge projektsidorna en egen domän, till exempel www.fjordparken.se. Du lägger in två DNS-poster hos domänleverantören. Domänen bekräftas automatiskt och HTTPS-certifikatet skapas av sig självt.",
+    "vercelMissing": "Vercel är inte anslutet i den här miljön. Domäner bekräftas med DNS-uppslag, men certifikatet måste ordnas i Vercel.",
+    "noSites": "Inga projekt har en projektsida ännu. Skapa en projektsida först, sedan kan du ge den en egen domän.",
+    "noDomains": "Inga egna domäner.",
+    "subdomain": "Gratis adress: {address}.",
+    "unpublished": "Projektsidan är inte publicerad ännu.",
+    "primary": "Primär domän",
+    "lastChecked": "Senast kontrollerad {time}",
+    "notChecked": "Inte kontrollerad ännu",
+    "check": "Kontrollera nu",
+    "makePrimary": "Gör till primär domän",
+    "clearPrimary": "Använd underdomänen som huvudadress",
+    "primarySet": "{hostname} är nu primär domän. Andra adresser skickar besökare dit.",
+    "primaryCleared": "Underdomänen är nu huvudadressen.",
+    "remove": "Ta bort",
+    "cancel": "Avbryt",
+    "removeTitle": "Ta bort {hostname}?",
+    "removeBody": "Domänen tas bort från projektsidan. DNS-posterna kan du radera hos leverantören.",
+    "removeVerifiedBody": "Projektsidan slutar svara på den här domänen direkt. Länkar till domänen fungerar inte längre.",
+    "removed": "{hostname} har tagits bort.",
+    "showRecords": "Visa DNS-posterna",
+    "verifiedHelp": "Domänen är bekräftad och visar projektsidan. HTTPS-certifikatet skapas automatiskt, vanligtvis inom några minuter.",
+    "verifiedPrimaryHelp": "Domänen är bekräftad och är projektsidans huvudadress. Underdomänen och andra domäner skickar besökare hit.",
+    "warning": "Senaste kontrollen hittade ett fel, men domänen används fortfarande: {message}",
+    "statuses": {
+      "pending": "Väntar på DNS",
+      "verified": "Bekräftad",
+      "misconfigured": "Pekar inte hit",
+      "error": "Fel"
+    },
+    "errors": {
+      "txt_missing": "TXT-posten hittades inte. Lägg in den hos domänleverantören. Det kan ta en stund innan ändringar i DNS syns.",
+      "dns_not_pointing": "Ägandet är bekräftat, men domänen pekar inte till plattformen ännu. Kontrollera CNAME- eller A-posten.",
+      "vercel_verification": "Domänen används på ett annat Vercel-konto. Lägg även in TXT-posten märkt ”Vercel”.",
+      "vercel_unavailable": "Fick ingen kontakt med Vercel. Försök igen om en stund.",
+      "lookup_failed": "DNS-uppslaget misslyckades. Försök igen om en stund.",
+      "hostname_taken": "Domänen används redan på en annan projektsida."
+    },
+    "records": {
+      "help": "Lägg in posterna hos domänleverantören. Vissa leverantörer vill ha namnet utan domänen på slutet, till exempel ”www” i stället för ”www.fjordparken.se”.",
+      "type": "Typ",
+      "name": "Namn",
+      "value": "Värde",
+      "purpose": "Används till",
+      "state": "Status",
+      "nameLabel": "namnet på {type}-posten",
+      "valueLabel": "värdet i {type}-posten",
+      "found": "Hittad",
+      "missing": "Saknas",
+      "notChecked": "Inte kontrollerad",
+      "purposes": {
+        "ownership": "Bekräftar att du äger domänen",
+        "routing": "Skickar besökare till projektsidan",
+        "vercel": "Bekräftelse hos Vercel"
+      }
+    },
+    "add": {
+      "open": "Lägg till domän",
+      "title": "Lägg till domän",
+      "description": "Domänen kopplas till den projektsida du väljer. Du måste kunna ändra DNS för domänen.",
+      "site": "Projektsida",
+      "sitePlaceholder": "Välj projekt",
+      "hostname": "Domän",
+      "hostnameHelp": "Till exempel www.fjordparken.se eller fjordparken.se.",
+      "submit": "Lägg till",
+      "added": "Domänen har lagts till. Lägg in DNS-posterna som visas under domänen.",
+      "addedVerified": "Domänen har lagts till och bekräftats.",
+      "exists": "Domänen har redan lagts till på den här projektsidan.",
+      "limit": "En projektsida kan ha upp till tio egna domäner."
+    }
+  },
+  "billing": {
+    "title": "Abonnemang",
+    "description": "Planen styr hur många projekt som kan vara aktiva samtidigt. Betalning, fakturor och uppsägning hanteras av Stripe.",
+    "plan": "Plan",
+    "status": "Status",
+    "trialUntil": "Provperioden varar till {date} ({days, plural, one {# dag kvar} other {# dagar kvar}}).",
+    "trialEnded": "Provperioden är slut.",
+    "trialThenPlan": "Gratis till {date}. Därefter startar {plan} automatiskt.",
+    "renewsAt": "Förnyas {date}.",
+    "endsAt": "Abonnemanget är uppsagt och upphör {date}.",
+    "pastDue": "Betalningen misslyckades. Uppdatera betalningssättet i kundportalen.",
+    "ended": "Abonnemanget är avslutat.",
+    "readOnlyHelp": "Organisationen är i läsläge. Ni kan se allt men inte göra ändringar. Publicerade projektsidor och bostadsväljare är fortfarande uppe, och nya leads kommer fortfarande in.",
+    "usage": "{used} av {limit} aktiva projekt används.",
+    "usageUnlimited": "{used} aktiva projekt. Planen har ingen gräns.",
+    "usageLabel": "Aktiva projekt",
+    "usageHelp": "Aktiva projekt är projekt i faserna Kommer till salu, Till salu och Slutsålt. Utkast, färdigställda och arkiverade projekt räknas inte.",
+    "portal": "Hantera abonnemang",
+    "plansTitle": "Planer",
+    "plansHelp": "Alla planer har alla funktioner. Priserna är per månad, och du kan byta plan eller säga upp när som helst.",
+    "priceInCheckout": "Pris i Stripe",
+    "projectLimit": "{count, plural, one {Ett aktivt projekt} other {Upp till # aktiva projekt}}",
+    "currentPlan": "Nuvarande plan",
+    "changeInPortal": "Byt i kundportalen",
+    "choose": "Välj {plan}",
+    "enterprise": "Behöver ni fler än 15 aktiva projekt? Kontakta oss:",
+    "enterpriseNoContact": "Behöver ni fler än 15 aktiva projekt kan vi göra ett eget avtal.",
+    "notConfigured": "Betalning är inte konfigurerad i den här miljön, så planerna kan inte väljas här.",
+    "checkoutPending": "Tack! Betalningen är registrerad. Det kan ta några sekunder innan abonnemanget visas här.",
+    "checkoutDone": "Tack! Abonnemanget är aktivt.",
+    "checkoutCanceled": "Betalningen avbröts. Inget har ändrats.",
+    "perInterval": {
+      "day": "{amount} per dag",
+      "week": "{amount} per vecka",
+      "month": "{amount} per månad",
+      "year": "{amount} per år"
+    },
+    "plans": {
+      "trial": {
+        "name": "Provperiod"
+      },
+      "start": {
+        "name": "Start",
+        "description": "För byggherrar med ett projekt till salu."
+      },
+      "growth": {
+        "name": "Tillväxt",
+        "description": "För byggherrar med flera projekt till salu samtidigt."
+      },
+      "pro": {
+        "name": "Proffs",
+        "description": "För mäklare och byggherrar med många projekt."
+      },
+      "enterprise": {
+        "name": "Enterprise"
+      }
+    },
+    "errors": {
+      "billingUnavailable": "Betalning är inte konfigurerad i den här miljön.",
+      "subscriptionExists": "Organisationen har redan ett abonnemang. Byt plan i kundportalen.",
+      "noCustomer": "Organisationen har inte valt abonnemang ännu."
+    },
+    "banner": {
+      "trialEnding": "Provperioden slutar om {days, plural, one {# dag} other {# dagar}}.",
+      "trialEnded": "Provperioden är slut, så organisationen är i läsläge. Publicerade sidor är fortfarande uppe.",
+      "ended": "Abonnemanget är avslutat, så organisationen är i läsläge. Publicerade sidor är fortfarande uppe.",
+      "pastDue": "Betalningen för abonnemanget misslyckades. Uppdatera betalningssättet, annars går organisationen över i läsläge.",
+      "choosePlan": "Välj abonnemang",
+      "updatePayment": "Uppdatera betalning",
+      "contactOwner": "Kontakta ägaren av organisationen."
+    }
+  },
+  "integrations": {
+    "title": "API",
+    "keys": {
+      "title": "API-nycklar",
+      "description": "Ger andra system, till exempel mäklarsystem, åtkomst till projekt, bostäder och leads. Nyckeln visas bara en gång, när den skapas.",
+      "empty": "Inga API-nycklar ännu.",
+      "create": "Ny API-nyckel",
+      "createTitle": "Ny API-nyckel",
+      "createHelp": "Ge nyckeln ett namn som säger var den används, och bara de behörigheter systemet behöver.",
+      "createSubmit": "Skapa nyckel",
+      "createdTitle": "Kopiera nyckeln nu",
+      "createdHelp": "Nyckeln visas inte igen. Spara den där systemet som ska använda den kan läsa den.",
+      "keyLabel": "API-nyckeln",
+      "done": "Klar",
+      "name": "Namn",
+      "namePlaceholder": "Till exempel Mäklarsystem",
+      "key": "Nyckel",
+      "scopes": "Behörigheter",
+      "expiry": "Upphör",
+      "never": "Aldrig",
+      "days": "Om {days} dagar",
+      "lastUsed": "Senast använd",
+      "neverUsed": "Aldrig använd",
+      "status": "Status",
+      "actions": "Åtgärder",
+      "activeUntil": "Aktiv till {date}",
+      "states": {
+        "active": "Aktiv",
+        "revoked": "Återkallad",
+        "expired": "Utgången"
+      },
+      "revoke": "Återkalla",
+      "revokeTitle": "Återkalla ”{name}”?",
+      "revokeBody": "Nyckeln slutar fungera direkt. System som använder den får fel tills de får en ny nyckel.",
+      "revoked": "”{name}” har återkallats.",
+      "cancel": "Avbryt",
+      "scopeHelp": {
+        "projects_read": "läsa projekten",
+        "units_read": "läsa alla bostäder, även dolda, med externt id",
+        "units_write": "ändra status och pris på bostäder",
+        "leads_read": "läsa leads med kontaktuppgifter"
+      }
+    },
+    "webhooks": {
+      "title": "Webhooks",
+      "description": "Meddelar andra system när en bostad byter status eller någon anmäler intresse. Varje leverans är signerad, och misslyckade leveranser försöks igen i ungefär två timmar.",
+      "empty": "Inga webhooks ännu.",
+      "create": "Ny webhook",
+      "createTitle": "Ny webhook",
+      "editTitle": "Ändra webhook",
+      "createHelp": "Adressen måste använda https. Händelserna skickas som JSON med POST.",
+      "createSubmit": "Skapa webhook",
+      "createdTitle": "Webhooken har skapats",
+      "createdHelp": "Använd hemligheten för att kontrollera signaturen på varje leverans. Du kan visa den igen senare.",
+      "done": "Klar",
+      "saved": "Webhooken har sparats.",
+      "url": "Adress",
+      "descriptionLabel": "Beskrivning",
+      "events": "Händelser",
+      "projects": "Projekt",
+      "allProjects": "Alla projekt",
+      "active": "Aktiv",
+      "isActive": "Aktiv",
+      "inactive": "Avstängd",
+      "failures": "{count, plural, one {# fel i rad} other {# fel i rad}}",
+      "lastSuccess": "Senast levererad {time}",
+      "noSuccess": "Inte levererad ännu",
+      "lastFailure": "senaste fel {time}",
+      "secret": "Hemlighet",
+      "secretHelp": "Signaturen följer Standard Webhooks (standardwebhooks.com): headrarna webhook-id, webhook-timestamp och webhook-signature.",
+      "showSecret": "Visa hemlighet",
+      "rotateSecret": "Skapa ny hemlighet",
+      "rotated": "En ny hemlighet har skapats. Den gamla fungerar inte längre.",
+      "sendTest": "Skicka testhändelse",
+      "testOk": "Testhändelsen levererades (HTTP {status}).",
+      "testFailed": "Testhändelsen levererades inte (HTTP {status}). {error}",
+      "edit": "Ändra",
+      "delete": "Radera",
+      "deleteTitle": "Radera webhooken?",
+      "deleteBody": "{url} får inga fler händelser. Väntande leveranser raderas också.",
+      "deleted": "Webhooken har raderats.",
+      "cancel": "Avbryt",
+      "deliveries": "{count, plural, one {Senaste leveransen} other {Senaste # leveranserna}}",
+      "noDeliveries": "Inga leveranser ännu.",
+      "attempts": "{count, plural, one {# försök} other {# försök}}",
+      "retry": "Försök igen",
+      "deliveryStatus": {
+        "pending": "Väntar",
+        "succeeded": "Levererad",
+        "failed": "Misslyckad"
+      },
+      "eventHelp": {
+        "unit_status_changed": "en bostad får ny status",
+        "lead_created": "någon skickar ett intresseformulär"
+      }
+    },
+    "reference": {
+      "title": "Om API:t",
+      "description": "API:t är för server-till-server. Svaren är JSON. Gränsen är 600 anrop per minut och nyckel.",
+      "auth": "Skicka nyckeln i headern",
+      "scope": "Kräver {scope}.",
+      "open": "Öppet för alla, bara publicerade data (CORS).",
+      "endpoints": {
+        "projects": "Projekten i organisationen, med antal bostäder per status.",
+        "units": "Alla bostäder i ett projekt. ”updated_since” ger bara ändrade bostäder.",
+        "updateUnit": "Ändra status (med anteckning) och pris på en bostad, angiven med id eller bostadsnummer.",
+        "leads": "Leads, äldsta först. Använd ”since” och ”project_id” för att hämta nya.",
+        "publicSelector": "En publicerad bostadsväljare med bostäder och status.",
+        "publicUnits": "Bostäderna i ett publicerat projekt."
+      },
+      "webhooksSignature": "Webhooks signeras enligt Standard Webhooks. Använd ett bibliotek för Standard Webhooks, eller beräkna HMAC-SHA256 med hemligheten av värdena i webhook-id och webhook-timestamp och innehållet, åtskilda med punkt."
     }
   }
 }

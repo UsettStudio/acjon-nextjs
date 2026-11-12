@@ -319,8 +319,12 @@ test("megler kan endre status og pris, men ikke resten av enheten", async ({ pag
   await price.press("Enter");
   await expect(row).toContainText("2 950 000 kr");
 
-  // Status kan endres
-  await row.getByRole("button", { name: /Status for C-1: Ledig/ }).click();
+  // Status kan endres. Tabellen kan tegnes på nytt når prisendringen er lagret og
+  // kommer tilbake i sanntid, og da lukkes en åpen meny. Prøv til menyen står åpen.
+  await expect(async () => {
+    await row.getByRole("button", { name: /Status for C-1: Ledig/ }).click();
+    await expect(page.getByRole("menuitem", { name: "Reservert" })).toBeVisible({ timeout: 1000 });
+  }).toPass({ timeout: 15_000 });
   await page.getByRole("menuitem", { name: "Reservert" }).click();
   await expect(page.getByText("Status for C-1 er endret til «Reservert».")).toBeVisible();
 

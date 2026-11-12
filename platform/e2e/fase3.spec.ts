@@ -2,13 +2,7 @@ import { expect, test, type Page } from "@playwright/test";
 
 import { anonymousPage, buildSelector, facadeImage, IMAGE_HEIGHT, IMAGE_WIDTH, pointIn, setUpProject } from "./boligvelger";
 import { createOrganization, emailTo, field, signUp, uniqueId } from "./helpers";
-
-const port = Number(process.env.E2E_PORT ?? 3000);
-
-/** Adressen til en publisert prosjektside. *.localhost peker til maskinen selv i Chromium. */
-function siteAddress(subdomain: string, path = "/") {
-  return `http://${subdomain}.localhost:${port}${path}`;
-}
+import { createAndPublishSite, publish, siteAddress } from "./site";
 
 /** Legger til en kontaktperson som får varsel om leads. */
 async function addLeadContact(page: Page, orgSlug: string, email: string) {
@@ -20,23 +14,6 @@ async function addLeadContact(page: Page, orgSlug: string, email: string) {
   await expect(form.getByLabel("Får varsel om nye leads")).toBeChecked();
   await form.getByRole("button", { name: "Lagre" }).click();
   await expect(page.getByText("Endringene er lagret.")).toBeVisible();
-}
-
-/** Lager prosjektside fra mal og publiserer den. */
-async function createAndPublishSite(page: Page, orgSlug: string, template: RegExp, subdomain: string) {
-  await page.goto(`/${orgSlug}/projects/solsiden/site`);
-  await page.getByRole("radio", { name: template }).check();
-  await field(page, "Adresse").fill(subdomain);
-  await page.getByRole("button", { name: "Lag prosjektside" }).click();
-  await expect(page.getByText("Prosjektsiden er laget som utkast.")).toBeVisible();
-  await expect(page.getByRole("list", { name: "Blokker på siden" })).toBeVisible();
-}
-
-async function publish(page: Page) {
-  await expect(page.getByText("Utkastet er lagret")).toBeVisible({ timeout: 10_000 });
-  await page.getByRole("button", { name: /^Publiser/ }).click();
-  await expect(page.getByText("Prosjektsiden er publisert.")).toBeVisible();
-  await expect(page.getByRole("button", { name: "Publisert", exact: true })).toBeDisabled();
 }
 
 test("akseptkriterium 5: besøkende filtrerer, åpner en enhet og sender interesseskjema; leadet vises i admin og kontaktpersonen får e-post", async ({

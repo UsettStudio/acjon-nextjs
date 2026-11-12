@@ -25,7 +25,15 @@ import { newBlockId, type Block } from "@/features/site-builder/blocks";
 import { issuesByPath, type FieldSpec } from "@/features/site-builder/components/editor/field-specs";
 import { FieldContextProvider, FieldList, type FieldContext } from "@/features/site-builder/components/editor/fields";
 import { ThemeFields } from "@/features/site-builder/components/editor/theme-fields";
-import { footerSchema, navSchema, type NavItem, type SeoDefaults, type SiteFooter } from "@/features/site-builder/site";
+import {
+  cookieSettingsSchema,
+  footerSchema,
+  navSchema,
+  type CookieSettings,
+  type NavItem,
+  type SeoDefaults,
+  type SiteFooter,
+} from "@/features/site-builder/site";
 import { resolveTheme, type ThemeOverrides } from "@/features/site-builder/theme";
 import { publicEnv } from "@/lib/env";
 
@@ -189,6 +197,14 @@ const SEO_FIELDS: FieldSpec[] = [
   { kind: "image", key: "og_asset_id", label: "shareImage", help: "siteShareImage" },
 ];
 
+/** Personvern: teksten på /personvern og /informasjonskapsler lages fra disse feltene. */
+const PRIVACY_FIELDS: FieldSpec[] = [
+  { kind: "text", key: "controller", label: "privacyController", help: "privacyController", max: 200 },
+  { kind: "text", key: "org_number", label: "orgNumber", max: 11 },
+  { kind: "text", key: "email", label: "privacyEmail", help: "privacyEmail", max: 320, inputType: "email" },
+  { kind: "textarea", key: "extra", label: "privacyExtra", help: "privacyExtra", max: 5000, rows: 5 },
+];
+
 /** Adresse, standardverdier for SEO og sletting av prosjektsiden. */
 export function SettingsPanel({
   organizationId,
@@ -196,8 +212,10 @@ export function SettingsPanel({
   subdomain,
   url,
   seoDefaults,
+  cookieSettings,
   disabled,
   onSeoDefaultsChange,
+  onCookieSettingsChange,
   onSubdomainChange,
 }: {
   organizationId: string;
@@ -205,8 +223,10 @@ export function SettingsPanel({
   subdomain: string;
   url: string;
   seoDefaults: SeoDefaults;
+  cookieSettings: CookieSettings;
   disabled: boolean;
   onSeoDefaultsChange: (seoDefaults: SeoDefaults) => void;
+  onCookieSettingsChange: (cookieSettings: CookieSettings) => void;
   onSubdomainChange: (subdomain: string, url: string) => void;
 }) {
   const t = useTranslations("siteBuilder.editor.settings");
@@ -219,6 +239,10 @@ export function SettingsPanel({
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [pending, startTransition] = useTransition();
   const platformDomain = publicEnv().platformDomain;
+  const privacyErrors = useMemo(() => {
+    const parsed = cookieSettingsSchema.safeParse(cookieSettings);
+    return parsed.success ? {} : issuesByPath(parsed.error.issues);
+  }, [cookieSettings]);
 
   function saveSubdomain() {
     startTransition(async () => {
@@ -307,6 +331,20 @@ export function SettingsPanel({
           errors={{}}
           onChange={(values) => onSeoDefaultsChange(values as unknown as SeoDefaults)}
         />
+      </section>
+
+      <section className="grid gap-3" aria-labelledby="site-privacy-heading">
+        <h3 id="site-privacy-heading" className="font-semibold">
+          {t("privacyTitle")}
+        </h3>
+        <p className="text-sm text-muted-foreground">{t("privacyIntro")}</p>
+        <FieldList
+          specs={PRIVACY_FIELDS}
+          values={cookieSettings as unknown as Record<string, unknown>}
+          errors={privacyErrors}
+          onChange={(values) => onCookieSettingsChange(values as unknown as CookieSettings)}
+        />
+        <p className="text-sm text-muted-foreground">{t("trackingIntro")}</p>
       </section>
 
       {!disabled ? (

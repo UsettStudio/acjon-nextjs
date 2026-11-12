@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 
 import { AppHeader, AppHeaderSkeleton } from "@/components/admin/app-header";
-import { ReadOnlyBanner } from "@/components/admin/read-only-banner";
+import { SubscriptionBanner } from "@/components/admin/subscription-banner";
 import { getOrgContext } from "@/lib/auth/dal";
 
 async function OrganizationHeader({ params }: { params: LayoutProps<"/[org]">["params"] }) {
@@ -10,7 +10,7 @@ async function OrganizationHeader({ params }: { params: LayoutProps<"/[org]">["p
   return (
     <>
       <AppHeader orgSlug={org} role={context.role} />
-      {context.writable ? null : <ReadOnlyBanner />}
+      <SubscriptionBanner context={context} />
     </>
   );
 }

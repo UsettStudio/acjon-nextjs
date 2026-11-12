@@ -5,28 +5,35 @@ import { Suspense } from "react";
 
 import { PublicSelector } from "@/features/selector/components/public/public-selector";
 import { SelectorSkeleton } from "@/features/selector/components/public/selector-skeleton";
+import { embedOptionsFromQuery } from "@/features/selector/embed-code";
 import { getPublishedSelector } from "@/features/selector/public-queries";
 
-export async function generateMetadata({ params }: PageProps<"/embed/selector/[id]">): Promise<Metadata> {
+type Props = PageProps<"/embed/selector/[id]">;
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const [data, t] = await Promise.all([getPublishedSelector(id), getTranslations("publicSelector")]);
   return data ? { title: t("pageTitle", { project: data.project.name }) } : {};
 }
 
-async function PublishedSelector({ params }: { params: PageProps<"/embed/selector/[id]">["params"] }) {
-  const { id } = await params;
+async function PublishedSelector({ params, searchParams }: Pick<Props, "params" | "searchParams">) {
+  const [{ id }, query] = await Promise.all([params, searchParams]);
   const data = await getPublishedSelector(id);
   if (!data) {
     notFound();
   }
-  return <PublicSelector data={data} options={{ interest: true }} />;
+  return <PublicSelector data={data} options={{ interest: true, ...embedOptionsFromQuery(query) }} />;
 }
 
-/** Publisert boligvelger. Data hentes ved hver visning, så status alltid er fersk; sanntid tar endringene etterpå. */
-export default function PublishedSelectorPage({ params }: PageProps<"/embed/selector/[id]">) {
+/**
+ * Publisert boligvelger, også når den er bygd inn på andre nettsteder
+ * (web-komponenten eller iframe). Data hentes ved hver visning, så status
+ * alltid er fersk; sanntid tar endringene etterpå.
+ */
+export default function PublishedSelectorPage({ params, searchParams }: Props) {
   return (
     <Suspense fallback={<SelectorSkeleton />}>
-      <PublishedSelector params={params} />
+      <PublishedSelector params={params} searchParams={searchParams} />
     </Suspense>
   );
 }

@@ -15,7 +15,8 @@
     "you": "deg",
     "readOnly": "Abonnementet er utløpt, så organisasjonen er i lesemodus. Publiserte sider er fortsatt tilgjengelige.",
     "yes": "Ja",
-    "no": "Nei"
+    "no": "Nei",
+    "copyValue": "Kopier {label}"
   },
   "roles": {
     "owner": "Eier",
@@ -80,7 +81,16 @@
     "pageSlugFormat": "Bruk små bokstaver (a–z), tall og bindestrek. Høyst 80 tegn.",
     "pageSlugReserved": "Denne sideadressen er reservert. Velg en annen.",
     "pageSlugTaken": "En annen side har allerede denne adressen.",
-    "customFieldDuplicate": "Feltnavnet er allerede brukt på denne enheten."
+    "customFieldDuplicate": "Feltnavnet er allerede brukt på denne enheten.",
+    "hostnameInvalid": "Skriv et gyldig domene, for eksempel www.fjordparken.no.",
+    "hostnamePlatform": "Dette er en av plattformens egne adresser. Prosjektsiden har allerede et gratis underdomene.",
+    "orgNumberInvalid": "Organisasjonsnummeret har ni sifre, for eksempel 912 345 678.",
+    "ga4Invalid": "En måle-ID fra Google Analytics 4 ser slik ut: G-XXXXXXXXXX.",
+    "gtmInvalid": "En container-ID fra Google Tag Manager ser slik ut: GTM-XXXXXXX.",
+    "metaPixelInvalid": "En Meta Pixel-ID består bare av sifre.",
+    "scopesRequired": "Velg minst én tilgang.",
+    "eventsRequired": "Velg minst én hendelse.",
+    "webhookPrivateUrl": "Adressen peker til et privat nettverk. Bruk en offentlig adresse."
   },
   "errors": {
     "unauthenticated": "Du må logge inn på nytt.",
@@ -89,7 +99,8 @@
     "notFound": "Fant ikke det du lette etter.",
     "invalidInput": "Sjekk feltene som er markert.",
     "rateLimited": "For mange forsøk. Vent litt og prøv igjen.",
-    "unknown": "Noe gikk galt. Prøv igjen om litt."
+    "unknown": "Noe gikk galt. Prøv igjen om litt.",
+    "planLimit": "Planen har ikke plass til flere aktive prosjekter. Velg et større abonnement, eller sett et annet prosjekt til Ferdigstilt eller Arkivert."
   },
   "auth": {
     "email": "E-post",
@@ -200,7 +211,11 @@
     "tabs": {
       "organization": "Organisasjon",
       "members": "Brukere",
-      "brand": "Merkevare"
+      "brand": "Merkevare",
+      "label": "Innstillinger",
+      "domains": "Domener",
+      "billing": "Abonnement",
+      "api": "API"
     },
     "organization": {
       "title": "Organisasjon",
@@ -295,7 +310,12 @@
     "subscription": "Abonnement",
     "members": "Brukere",
     "projects": "Prosjekter",
-    "empty": "Ingen organisasjoner ennå."
+    "empty": "Ingen organisasjoner ennå.",
+    "trialEnds": "Prøveperioden slutter",
+    "actions": "Handlinger",
+    "extendTrial": "Forleng 14 dager",
+    "extendTrialFor": "Forleng prøveperioden for {organization} med 14 dager",
+    "trialExtended": "Prøveperioden for {organization} varer nå til {date}."
   },
   "notFound": {
     "title": "Fant ikke siden",
@@ -336,6 +356,26 @@
       "receiptBodyUnit": "Vi har mottatt interessen din for {unit} i {project}. {organization} tar kontakt med deg så snart som mulig.",
       "receiptPrivacy": "Opplysningene dine lagres hos {organization} og brukes bare til å følge opp henvendelsen. Svar på denne e-posten hvis du vil at de skal slettes.",
       "receiptFooter": "Du får denne kvitteringen fordi noen sendte et interesseskjema med denne e-postadressen."
+    },
+    "billing": {
+      "cta": "Velg abonnement",
+      "pagesStayUp": "Publiserte prosjektsider og boligvelgere tas aldri ned automatisk. Nye leads kommer fortsatt inn.",
+      "why": "Du får denne e-posten fordi du er eier av {organization}.",
+      "trial_7d": {
+        "subject": "Prøveperioden for {organization} slutter om {days, plural, one {# dag} other {# dager}}",
+        "heading": "Prøveperioden slutter snart",
+        "body": "Prøveperioden for {organization} slutter {date}. Velg et abonnement for å fortsette å gjøre endringer etter det."
+      },
+      "trial_1d": {
+        "subject": "Prøveperioden for {organization} slutter innen et døgn",
+        "heading": "Prøveperioden slutter i løpet av et døgn",
+        "body": "Prøveperioden for {organization} slutter {date}. Etter det kan dere se alt, men ikke gjøre endringer før dere har valgt et abonnement."
+      },
+      "read_only": {
+        "subject": "{organization} er i lesemodus",
+        "heading": "Organisasjonen er i lesemodus",
+        "body": "Prøveperioden eller abonnementet for {organization} er avsluttet. Dere kan se alt, men ikke gjøre endringer før dere har valgt et abonnement."
+      }
     }
   },
   "unitStatus": {
@@ -526,6 +566,18 @@
         "help": "Egne felt er interne til du gjør dem offentlige. Offentlige felt vises på enhetssiden på prosjektsiden og i boligvelgeren.",
         "legend": "Vis på enhetssiden",
         "empty": "Ingen enheter har egne felt ennå. Legg dem til under Egne felt i enhetsskjemaet."
+      },
+      "tracking": {
+        "title": "Sporing på prosjektsiden",
+        "help": "Statistikk og markedsføring på den publiserte prosjektsiden. Kodene gjelder med en gang.",
+        "ga4": "Google Analytics 4",
+        "ga4Help": "Måle-ID, for eksempel G-XXXXXXXXXX.",
+        "gtm": "Google Tag Manager",
+        "gtmHelp": "Container-ID, for eksempel GTM-XXXXXXX.",
+        "metaPixel": "Meta Pixel",
+        "metaPixelHelp": "Pixel-ID fra Meta Business.",
+        "consentNote": "Når en kode er lagt inn, ser besøkende et samtykkebanner. Ingen kode lastes før besøkeren har samtykket, og «Bare nødvendige» er like enkelt å velge som «Godta alle». Innsendte interesseskjema måles som konvertering (generate_lead og Lead) for besøkende som har samtykket.",
+        "saved": "Sporingskodene er lagret og gjelder den publiserte siden med en gang."
       }
     },
     "delete": {
@@ -1206,7 +1258,8 @@
       "unpublish": "Avpubliser",
       "unpublishTitle": "Avpublisere boligvelgeren?",
       "unpublishDescription": "Den publiserte velgeren slutter å virke for kjøpere med en gang. Visninger og markeringer beholdes, og du kan publisere igjen senere.",
-      "cancel": "Avbryt"
+      "cancel": "Avbryt",
+      "embed": "Bygg inn på nettsted …"
     },
     "settings": {
       "title": "Innstillinger for velgeren",
@@ -1239,6 +1292,23 @@
       "showPriceOnSoldHelp": "Er dette av, vises «Solgt» i stedet for prisen, og prisen sendes aldri til nettleseren.",
       "organizationTitle": "Statusfarger",
       "organizationHelp": "Fargene brukes i alle boligvelgere i organisasjonen. Hvert prosjekt kan overstyre dem. Tomme felt bruker standardfargene."
+    },
+    "embed": {
+      "title": "Bygg inn på nettsted",
+      "description": "Vis boligvelgeren på et annet nettsted, for eksempel utbyggerens egen side. Statusendringer vises der med en gang, akkurat som på den publiserte velgeren.",
+      "frameTitle": "Boligvelger for {project}",
+      "showFilters": "Vis filtre",
+      "list": "Enhetsliste",
+      "listDefault": "Som i velgeren",
+      "listShow": "Vis",
+      "listHide": "Skjul",
+      "componentTab": "Web-komponent",
+      "iframeTab": "Iframe",
+      "apiTab": "API",
+      "componentHelp": "Anbefalt. Lim inn koden der velgeren skal stå. Skriptet lager en web-komponent som tilpasser høyden til skjermen og laster velgeren først når den er i nærheten.",
+      "eventsHelp": "Vertssiden kan lytte på hendelsene boligvelger:ready, boligvelger:navigate og boligvelger:lead, for eksempel for egen statistikk. Med attributtet sync-url huskes enhetsside og filter i adressen.",
+      "iframeHelp": "Reserve for nettsteder som ikke tillater skript. Iframen viser den samme velgeren, men uten hendelser.",
+      "apiHelp": "Utviklere kan hente den publiserte velgeren som JSON. API-et er åpent for alle nettsteder (CORS) og gir bare publiserte data."
     }
   },
   "publicSelector": {
@@ -1638,7 +1708,11 @@
         "linkUrl": "Adresse",
         "siteLogo": "Logo for denne prosjektsiden",
         "siteDescription": "Beskrivelse",
-        "brandLogo": "Logo"
+        "brandLogo": "Logo",
+        "privacyController": "Behandlingsansvarlig",
+        "orgNumber": "Organisasjonsnummer",
+        "privacyEmail": "E-post for personvern",
+        "privacyExtra": "Mer om personvern"
       },
       "help": {
         "richText": "Formatering: ## Overskrift, - punktliste, 1. nummerert liste, **fet**, *kursiv* og [lenketekst](https://…).",
@@ -1665,7 +1739,10 @@
         "siteDescription": "Brukes i søkeresultater for sider som ikke har sin egen beskrivelse.",
         "siteShareImage": "Brukes når en side deles og verken siden eller hero-blokken har bilde.",
         "useProjectContacts": "Kontaktpersonene redigeres i prosjektinnstillingene.",
-        "brandLogo": "Vises øverst på prosjektsidene. Bruk gjerne PNG med gjennomsiktig bakgrunn."
+        "brandLogo": "Vises øverst på prosjektsidene. Bruk gjerne PNG med gjennomsiktig bakgrunn.",
+        "privacyController": "Firmaet som er ansvarlig for opplysningene fra interesseskjemaet. Står feltet tomt, brukes organisasjonens navn.",
+        "privacyEmail": "Hit kan besøkende skrive for innsyn og sletting. Står feltet tomt, brukes e-posten til første kontaktperson.",
+        "privacyExtra": "Egen tekst nederst på personvernsiden, for eksempel om andre behandlinger. Tom linje gir nytt avsnitt."
       },
       "options": {
         "heroHeight": {
@@ -1864,7 +1941,10 @@
         "delete": "Slett prosjektsiden",
         "deleteConfirmTitle": "Slette prosjektsiden?",
         "deleteConfirmDescription": "Alle sidene og versjonene slettes, og den publiserte siden forsvinner med en gang. Dette kan ikke angres.",
-        "deleted": "Prosjektsiden er slettet."
+        "deleted": "Prosjektsiden er slettet.",
+        "privacyTitle": "Personvern",
+        "privacyIntro": "Sidene Personvern og Informasjonskapsler lages automatisk og lenkes fra bunnteksten. Fyll inn hvem som er behandlingsansvarlig. Endringene går ut når du publiserer.",
+        "trackingIntro": "Sporingskoder for Google Analytics, Tag Manager og Meta Pixel legges inn under prosjektinnstillingene. Da vises et samtykkebanner, og kodene lastes først når besøkeren har samtykket."
       },
       "preview": {
         "device": "Skjermstørrelse",
@@ -1885,7 +1965,9 @@
       "openMenu": "Åpne meny",
       "closeMenu": "Lukk meny",
       "contact": "Kontakt",
-      "footerLinks": "Lenker"
+      "footerLinks": "Lenker",
+      "privacy": "Personvern",
+      "cookies": "Informasjonskapsler"
     },
     "editor": {
       "emptyText": "Tekstblokk uten innhold. Skriv overskrift og tekst i panelet.",
@@ -1978,6 +2060,75 @@
     },
     "unit": {
       "back": "Tilbake til {project}"
+    },
+    "consent": {
+      "title": "Informasjonskapsler",
+      "text": "Vi vil gjerne bruke informasjonskapsler til statistikk og markedsføring. Det gjør vi bare hvis du godtar det. Nødvendige funksjoner, som interesseskjemaet og favoritter, virker uansett.",
+      "readMore": "Les mer om informasjonskapsler",
+      "choose": "Velg hva du godtar",
+      "necessary": "Nødvendige",
+      "necessaryHelp": "husker valget ditt og favorittene dine. Alltid på.",
+      "statistics": "Statistikk",
+      "statisticsHelp": "viser oss hvordan siden brukes, så vi kan gjøre den bedre.",
+      "marketing": "Markedsføring",
+      "marketingHelp": "måler annonser og viser deg relevante annonser andre steder.",
+      "acceptAll": "Godta alle",
+      "necessaryOnly": "Bare nødvendige",
+      "save": "Lagre valgene",
+      "customize": "Velg selv",
+      "change": "Endre samtykke"
+    },
+    "privacy": {
+      "title": "Personvern",
+      "intro": "Her står det hvordan {controller} behandler personopplysninger på nettstedet for {project}.",
+      "controllerTitle": "Behandlingsansvarlig",
+      "controller": "{controller} er behandlingsansvarlig.",
+      "controllerWithNumber": "{controller} (org.nr. {number}) er behandlingsansvarlig.",
+      "contactAt": "Spørsmål om personvern kan sendes til",
+      "collectedTitle": "Hva vi samler inn",
+      "collected": "Når du melder interesse for {project}, lagrer vi navn, e-postadresse, telefonnummer og beskjeden din, hvilken bolig du er interessert i, når du sendte skjemaet, og hvilken versjon av samtykketeksten du godtok. Kommer du fra en annonse eller kampanje, lagrer vi også kampanjen.",
+      "purposeTitle": "Hvorfor vi bruker opplysningene",
+      "purpose": "Vi bruker opplysningene for å kontakte deg om {project}. Har du også samtykket til det, kan vi kontakte deg om lignende prosjekter. Grunnlaget er samtykket ditt (personvernforordningen artikkel 6 nr. 1 bokstav a).",
+      "retentionTitle": "Hvor lenge opplysningene lagres",
+      "retentionDays": "Opplysningene slettes automatisk etter {days} dager, eller tidligere hvis du ber om det.",
+      "retentionUntilDeleted": "Opplysningene lagres til du ber om at de slettes, eller til de ikke lenger trengs.",
+      "processorsTitle": "Hvor opplysningene lagres",
+      "processors": "Opplysningene lagres i EU (Stockholm). Leverandørene som drifter nettstedet og sender e-post, behandler opplysningene bare på vegne av {controller}.",
+      "trackingTitle": "Statistikk og markedsføring",
+      "tracking": "Hvis du samtykker, bruker nettstedet {tools}. Du kan endre samtykket når som helst.",
+      "noTracking": "Nettstedet bruker ikke verktøy for statistikk eller markedsføring.",
+      "cookiesLink": "Se hvilke informasjonskapsler som brukes",
+      "rightsTitle": "Dine rettigheter",
+      "rights": "Du kan be om innsyn i, retting av og sletting av opplysningene om deg, og du kan trekke tilbake samtykket når som helst. Ta kontakt med {controller}.",
+      "complaint": "Mener du at opplysningene behandles feil, kan du klage til",
+      "authority": "Datatilsynet",
+      "moreTitle": "Mer om personvern"
+    },
+    "cookies": {
+      "title": "Informasjonskapsler",
+      "intro": "Informasjonskapsler (cookies) og lignende lagring i nettleseren brukes til å huske valgene dine og, hvis du samtykker, til statistikk og markedsføring.",
+      "consentNeeded": "Statistikk og markedsføring brukes bare hvis du samtykker. Du kan endre samtykket når som helst.",
+      "noConsentNeeded": "Nettstedet bruker bare lagring som trengs for at det skal virke, så du trenger ikke å samtykke.",
+      "name": "Navn",
+      "purpose": "Formål",
+      "category": "Kategori",
+      "duration": "Varighet",
+      "consentPurpose": "Husker valget ditt om informasjonskapsler.",
+      "favoritesPurpose": "Husker favorittene dine i boligvelgeren. Lagres bare i nettleseren din.",
+      "gaPurpose": "Google Analytics: skiller besøkende fra hverandre for statistikk.",
+      "gtmPurpose": "Google Tag Manager: laster verktøy for statistikk og markedsføring etter hva du har samtykket til.",
+      "pixelPurpose": "Meta Pixel: måler annonser på Facebook og Instagram.",
+      "necessary": "Nødvendig",
+      "statistics": "Statistikk",
+      "marketing": "Markedsføring",
+      "statisticsAndMarketing": "Statistikk og markedsføring",
+      "twelveMonths": "12 måneder",
+      "untilDeleted": "Til du sletter dem",
+      "twoYears": "2 år",
+      "threeMonths": "3 måneder",
+      "dependsOnTools": "Etter verktøyene som lastes",
+      "turnstile": "Interesseskjemaet bruker Cloudflare Turnstile for å stoppe spam. Turnstile kan lese teknisk informasjon om nettleseren din når du sender skjemaet.",
+      "privacyLink": "Les om hvordan personopplysninger behandles"
     }
   },
   "leads": {
@@ -2082,6 +2233,264 @@
       "internal_note": "Internt notat",
       "yes": "Ja",
       "no": "Nei"
+    }
+  },
+  "domains": {
+    "title": "Egne domener",
+    "description": "Gi prosjektsidene et eget domene, for eksempel www.fjordparken.no. Du legger inn to DNS-poster hos leverandøren av domenet. Domenet bekreftes automatisk, og HTTPS-sertifikatet lages av seg selv.",
+    "vercelMissing": "Vercel er ikke koblet til i dette miljøet. Domener bekreftes med DNS-oppslag, men sertifikatet må ordnes i Vercel.",
+    "noSites": "Ingen prosjekter har prosjektside ennå. Lag en prosjektside først, så kan du gi den et eget domene.",
+    "noDomains": "Ingen egne domener.",
+    "subdomain": "Gratis adresse: {address}.",
+    "unpublished": "Prosjektsiden er ikke publisert ennå.",
+    "primary": "Primærdomene",
+    "lastChecked": "Sist sjekket {time}",
+    "notChecked": "Ikke sjekket ennå",
+    "check": "Sjekk nå",
+    "makePrimary": "Gjør til primærdomene",
+    "clearPrimary": "Bruk underdomenet som hovedadresse",
+    "primarySet": "{hostname} er nå primærdomenet. Andre adresser sender besøkende dit.",
+    "primaryCleared": "Underdomenet er nå hovedadressen.",
+    "remove": "Fjern",
+    "cancel": "Avbryt",
+    "removeTitle": "Fjerne {hostname}?",
+    "removeBody": "Domenet fjernes fra prosjektsiden. DNS-postene kan du slette hos leverandøren.",
+    "removeVerifiedBody": "Prosjektsiden slutter å svare på dette domenet med en gang. Lenker til domenet virker ikke lenger.",
+    "removed": "{hostname} er fjernet.",
+    "showRecords": "Vis DNS-postene",
+    "verifiedHelp": "Domenet er bekreftet og viser prosjektsiden. HTTPS-sertifikatet lages automatisk, vanligvis i løpet av noen minutter.",
+    "verifiedPrimaryHelp": "Domenet er bekreftet og er prosjektsidens hovedadresse. Underdomenet og andre domener sender besøkende hit.",
+    "warning": "Siste sjekk fant en feil, men domenet er fortsatt i bruk: {message}",
+    "statuses": {
+      "pending": "Venter på DNS",
+      "verified": "Bekreftet",
+      "misconfigured": "Peker ikke hit",
+      "error": "Feil"
+    },
+    "errors": {
+      "txt_missing": "Fant ikke TXT-posten. Legg den inn hos leverandøren av domenet. Det kan ta litt tid før endringer i DNS er synlige.",
+      "dns_not_pointing": "Eierskapet er bekreftet, men domenet peker ikke til plattformen ennå. Sjekk CNAME- eller A-posten.",
+      "vercel_verification": "Domenet er i bruk hos en annen Vercel-konto. Legg også inn TXT-posten merket «Vercel».",
+      "vercel_unavailable": "Fikk ikke kontakt med Vercel. Prøv igjen om litt.",
+      "lookup_failed": "DNS-oppslaget feilet. Prøv igjen om litt.",
+      "hostname_taken": "Domenet er allerede i bruk på en annen prosjektside."
+    },
+    "records": {
+      "help": "Legg inn postene hos leverandøren av domenet. Noen leverandører vil ha navnet uten domenet til slutt, for eksempel «www» i stedet for «www.fjordparken.no».",
+      "type": "Type",
+      "name": "Navn",
+      "value": "Verdi",
+      "purpose": "Brukes til",
+      "state": "Status",
+      "nameLabel": "navnet på {type}-posten",
+      "valueLabel": "verdien i {type}-posten",
+      "found": "Funnet",
+      "missing": "Mangler",
+      "notChecked": "Ikke sjekket",
+      "purposes": {
+        "ownership": "Bekrefter at du eier domenet",
+        "routing": "Sender besøkende til prosjektsiden",
+        "vercel": "Bekreftelse hos Vercel"
+      }
+    },
+    "add": {
+      "open": "Legg til domene",
+      "title": "Legg til domene",
+      "description": "Domenet kobles til prosjektsiden du velger. Du må kunne endre DNS for domenet.",
+      "site": "Prosjektside",
+      "sitePlaceholder": "Velg prosjekt",
+      "hostname": "Domene",
+      "hostnameHelp": "For eksempel www.fjordparken.no eller fjordparken.no.",
+      "submit": "Legg til",
+      "added": "Domenet er lagt til. Legg inn DNS-postene som vises under domenet.",
+      "addedVerified": "Domenet er lagt til og bekreftet.",
+      "exists": "Domenet er allerede lagt til på denne prosjektsiden.",
+      "limit": "En prosjektside kan ha inntil ti egne domener."
+    }
+  },
+  "billing": {
+    "title": "Abonnement",
+    "description": "Planen styrer hvor mange prosjekter som kan være aktive samtidig. Betaling, fakturaer og oppsigelse håndteres av Stripe.",
+    "plan": "Plan",
+    "status": "Status",
+    "trialUntil": "Prøveperioden varer til {date} ({days, plural, one {# dag igjen} other {# dager igjen}}).",
+    "trialEnded": "Prøveperioden er over.",
+    "trialThenPlan": "Gratis til {date}. Deretter starter {plan} automatisk.",
+    "renewsAt": "Fornyes {date}.",
+    "endsAt": "Abonnementet er sagt opp og stopper {date}.",
+    "pastDue": "Betalingen feilet. Oppdater betalingsmåten i kundeportalen.",
+    "ended": "Abonnementet er avsluttet.",
+    "readOnlyHelp": "Organisasjonen er i lesemodus. Dere kan se alt, men ikke gjøre endringer. Publiserte prosjektsider og boligvelgere er fortsatt oppe, og nye leads kommer fortsatt inn.",
+    "usage": "{used} av {limit} aktive prosjekter er i bruk.",
+    "usageUnlimited": "{used} aktive prosjekter. Planen har ingen grense.",
+    "usageLabel": "Aktive prosjekter",
+    "usageHelp": "Aktive prosjekter er prosjekter i fasene Kommer for salg, I salg og Utsolgt. Utkast, ferdigstilte og arkiverte prosjekter teller ikke.",
+    "portal": "Administrer abonnement",
+    "plansTitle": "Planer",
+    "plansHelp": "Alle planer har alle funksjoner. Prisene er per måned, og du kan bytte plan eller si opp når som helst.",
+    "priceInCheckout": "Pris i Stripe",
+    "projectLimit": "{count, plural, one {Ett aktivt prosjekt} other {Inntil # aktive prosjekter}}",
+    "currentPlan": "Nåværende plan",
+    "changeInPortal": "Bytt i kundeportalen",
+    "choose": "Velg {plan}",
+    "enterprise": "Trenger dere flere enn 15 aktive prosjekter? Ta kontakt:",
+    "enterpriseNoContact": "Trenger dere flere enn 15 aktive prosjekter, kan vi lage en egen avtale.",
+    "notConfigured": "Betaling er ikke satt opp i dette miljøet, så planene kan ikke velges her.",
+    "checkoutPending": "Takk! Betalingen er registrert. Det kan ta noen sekunder før abonnementet vises her.",
+    "checkoutDone": "Takk! Abonnementet er aktivt.",
+    "checkoutCanceled": "Betalingen ble avbrutt. Ingenting er endret.",
+    "perInterval": {
+      "day": "{amount} per dag",
+      "week": "{amount} per uke",
+      "month": "{amount} per måned",
+      "year": "{amount} per år"
+    },
+    "plans": {
+      "trial": {
+        "name": "Prøveperiode"
+      },
+      "start": {
+        "name": "Start",
+        "description": "For utbyggere med ett prosjekt i salg."
+      },
+      "growth": {
+        "name": "Vekst",
+        "description": "For utbyggere med flere prosjekter i salg samtidig."
+      },
+      "pro": {
+        "name": "Proff",
+        "description": "For meglere og utbyggere med mange prosjekter."
+      },
+      "enterprise": {
+        "name": "Enterprise"
+      }
+    },
+    "errors": {
+      "billingUnavailable": "Betaling er ikke satt opp i dette miljøet.",
+      "subscriptionExists": "Organisasjonen har allerede et abonnement. Bytt plan i kundeportalen.",
+      "noCustomer": "Organisasjonen har ikke valgt abonnement ennå."
+    },
+    "banner": {
+      "trialEnding": "Prøveperioden slutter om {days, plural, one {# dag} other {# dager}}.",
+      "trialEnded": "Prøveperioden er over, så organisasjonen er i lesemodus. Publiserte sider er fortsatt oppe.",
+      "ended": "Abonnementet er avsluttet, så organisasjonen er i lesemodus. Publiserte sider er fortsatt oppe.",
+      "pastDue": "Betalingen for abonnementet feilet. Oppdater betalingsmåten, ellers går organisasjonen over i lesemodus.",
+      "choosePlan": "Velg abonnement",
+      "updatePayment": "Oppdater betaling",
+      "contactOwner": "Kontakt eieren av organisasjonen."
+    }
+  },
+  "integrations": {
+    "title": "API",
+    "keys": {
+      "title": "API-nøkler",
+      "description": "Gir andre systemer, for eksempel meglersystemer, tilgang til prosjekter, enheter og leads. Nøkkelen vises bare én gang når den lages.",
+      "empty": "Ingen API-nøkler ennå.",
+      "create": "Ny API-nøkkel",
+      "createTitle": "Ny API-nøkkel",
+      "createHelp": "Gi nøkkelen et navn som sier hvor den brukes, og bare tilgangene systemet trenger.",
+      "createSubmit": "Lag nøkkel",
+      "createdTitle": "Kopier nøkkelen nå",
+      "createdHelp": "Nøkkelen vises ikke igjen. Lagre den der systemet som skal bruke den, kan lese den.",
+      "keyLabel": "API-nøkkelen",
+      "done": "Ferdig",
+      "name": "Navn",
+      "namePlaceholder": "For eksempel Meglersystem",
+      "key": "Nøkkel",
+      "scopes": "Tilganger",
+      "expiry": "Utløper",
+      "never": "Aldri",
+      "days": "Om {days} dager",
+      "lastUsed": "Sist brukt",
+      "neverUsed": "Aldri brukt",
+      "status": "Status",
+      "actions": "Handlinger",
+      "activeUntil": "Aktiv til {date}",
+      "states": {
+        "active": "Aktiv",
+        "revoked": "Trukket tilbake",
+        "expired": "Utløpt"
+      },
+      "revoke": "Trekk tilbake",
+      "revokeTitle": "Trekke tilbake «{name}»?",
+      "revokeBody": "Nøkkelen slutter å virke med en gang. Systemer som bruker den, får feil til de får en ny nøkkel.",
+      "revoked": "«{name}» er trukket tilbake.",
+      "cancel": "Avbryt",
+      "scopeHelp": {
+        "projects_read": "lese prosjektene",
+        "units_read": "lese alle enheter, også skjulte, med ekstern id",
+        "units_write": "endre status og pris på enheter",
+        "leads_read": "lese leads med kontaktinformasjon"
+      }
+    },
+    "webhooks": {
+      "title": "Webhooks",
+      "description": "Varsler andre systemer når en enhet endrer status eller noen melder interesse. Hver levering er signert, og mislykkede leveranser prøves igjen i omtrent to timer.",
+      "empty": "Ingen webhooks ennå.",
+      "create": "Ny webhook",
+      "createTitle": "Ny webhook",
+      "editTitle": "Endre webhook",
+      "createHelp": "Adressen må bruke https. Hendelsene sendes som JSON med POST.",
+      "createSubmit": "Lag webhook",
+      "createdTitle": "Webhooken er laget",
+      "createdHelp": "Bruk hemmeligheten til å kontrollere signaturen på hver levering. Du kan vise den igjen senere.",
+      "done": "Ferdig",
+      "saved": "Webhooken er lagret.",
+      "url": "Adresse",
+      "descriptionLabel": "Beskrivelse",
+      "events": "Hendelser",
+      "projects": "Prosjekter",
+      "allProjects": "Alle prosjekter",
+      "active": "Aktiv",
+      "isActive": "Aktiv",
+      "inactive": "Slått av",
+      "failures": "{count, plural, one {# feil på rad} other {# feil på rad}}",
+      "lastSuccess": "Sist levert {time}",
+      "noSuccess": "Ikke levert ennå",
+      "lastFailure": "sist feil {time}",
+      "secret": "Hemmelighet",
+      "secretHelp": "Signaturen følger Standard Webhooks (standardwebhooks.com): headerne webhook-id, webhook-timestamp og webhook-signature.",
+      "showSecret": "Vis hemmelighet",
+      "rotateSecret": "Lag ny hemmelighet",
+      "rotated": "Ny hemmelighet er laget. Den gamle virker ikke lenger.",
+      "sendTest": "Send testhendelse",
+      "testOk": "Testhendelsen ble levert (HTTP {status}).",
+      "testFailed": "Testhendelsen ble ikke levert (HTTP {status}). {error}",
+      "edit": "Endre",
+      "delete": "Slett",
+      "deleteTitle": "Slette webhooken?",
+      "deleteBody": "{url} får ingen flere hendelser. Leveranser som venter, slettes også.",
+      "deleted": "Webhooken er slettet.",
+      "cancel": "Avbryt",
+      "deliveries": "{count, plural, one {Siste leveranse} other {Siste # leveranser}}",
+      "noDeliveries": "Ingen leveranser ennå.",
+      "attempts": "{count, plural, one {# forsøk} other {# forsøk}}",
+      "retry": "Prøv igjen",
+      "deliveryStatus": {
+        "pending": "Venter",
+        "succeeded": "Levert",
+        "failed": "Feilet"
+      },
+      "eventHelp": {
+        "unit_status_changed": "en enhet får ny status",
+        "lead_created": "noen sender et interesseskjema"
+      }
+    },
+    "reference": {
+      "title": "Om API-et",
+      "description": "API-et er for server-til-server. Svarene er JSON. Grensen er 600 kall i minuttet per nøkkel.",
+      "auth": "Send nøkkelen i headeren",
+      "scope": "Krever {scope}.",
+      "open": "Åpent for alle, bare publiserte data (CORS).",
+      "endpoints": {
+        "projects": "Prosjektene i organisasjonen, med antall enheter per status.",
+        "units": "Alle enheter i et prosjekt. «updated_since» gir bare endrede enheter.",
+        "updateUnit": "Endre status (med notat) og pris på en enhet, oppgitt med id eller enhetsnummer.",
+        "leads": "Leads, eldste først. Bruk «since» og «project_id» for å hente nye.",
+        "publicSelector": "En publisert boligvelger med enheter og status.",
+        "publicUnits": "Enhetene i et publisert prosjekt."
+      },
+      "webhooksSignature": "Webhooks er signert etter Standard Webhooks. Bruk et bibliotek for Standard Webhooks, eller beregn HMAC-SHA256 med hemmeligheten av verdiene i webhook-id og webhook-timestamp og innholdet, skilt med punktum."
     }
   }
 }

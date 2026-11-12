@@ -24,6 +24,10 @@ export const RESERVED_PAGE_SLUGS = new Set([
   "sitemap-xml", "robots-txt", "favoritter", "sammenlign",
 ]);
 
+/** De genererte sidene om personvern på hver prosjektside (reserverte sideadresser). */
+export const SITE_PRIVACY_PATH = "/personvern";
+export const SITE_COOKIES_PATH = "/informasjonskapsler";
+
 export const subdomainSchema = z
   .string()
   .trim()
@@ -76,6 +80,29 @@ export const seoDefaultsSchema = z.object({
 
 export type SeoDefaults = z.output<typeof seoDefaultsSchema>;
 
+/**
+ * Personvern for prosjektsiden (sites.cookie_settings): hvem som er
+ * behandlingsansvarlig, og hvordan besøkende tar kontakt. Brukes i de
+ * genererte sidene /personvern og /informasjonskapsler.
+ */
+export const cookieSettingsSchema = z.object({
+  controller: text(200),
+  org_number: z
+    .string()
+    .trim()
+    .regex(/^(\d{3} ?\d{3} ?\d{3})?$/, { error: "orgNumberInvalid" })
+    .default(""),
+  email: z.union([z.literal(""), z.email({ error: "email" }).max(320, { error: "textTooLong" })]).default(""),
+  extra: text(5000),
+});
+
+export type CookieSettings = z.output<typeof cookieSettingsSchema>;
+
+export function parseCookieSettings(value: unknown): CookieSettings {
+  const parsed = cookieSettingsSchema.safeParse(value ?? {});
+  return parsed.success ? parsed.data : cookieSettingsSchema.parse({});
+}
+
 export function parseNav(value: unknown): NavItem[] {
   if (!Array.isArray(value)) {
     return [];
@@ -125,6 +152,14 @@ export type SiteContact = { name: string | null; title: string | null; email: st
 
 export type SiteRenderMode = "published" | "preview" | "editor";
 
+/** Sporingskoder fra prosjektet. Lastes bare på den publiserte siden, og først etter samtykke. */
+export type SiteTracking = { ga4: string | null; gtm: string | null; metaPixel: string | null };
+
+export const NO_TRACKING: SiteTracking = { ga4: null, gtm: null, metaPixel: null };
+
+/** Det de genererte personvernsidene trenger. */
+export type SitePrivacy = CookieSettings & { leadRetentionDays: number | null };
+
 /** Alt som trengs for å vise en side på prosjektsiden. */
 export type SiteRenderData = {
   mode: SiteRenderMode;
@@ -153,6 +188,8 @@ export type SiteRenderData = {
   units: PublicUnit[];
   statusColors: Record<UnitStatus, string>;
   selectors: Record<string, PublishedSelector>;
+  tracking: SiteTracking;
+  privacy: SitePrivacy;
 };
 
 /** Adressen til en side på prosjektsiden, med basePath for forhåndsvisning. */
@@ -226,9 +263,10 @@ const resolvedSiteSchema = z.object({
         nav: z.unknown(),
         footer: z.unknown(),
         seo_defaults: z.unknown(),
+        cookie_settings: z.unknown(),
         home_page_id: nullableString,
       })
-      .catch({ theme: {}, nav: [], footer: {}, seo_defaults: {}, home_page_id: null }),
+      .catch({ theme: {}, nav: [], footer: {}, seo_defaults: {}, cookie_settings: {}, home_page_id: null }),
   }),
   project: z.object({
     id: z.string(),
@@ -246,6 +284,7 @@ const resolvedSiteSchema = z.object({
       .array(z.object({ key: z.string().catch("custom"), label: nullableString, text: nullableString, date: nullableString }))
       .catch([]),
     show_price_on_sold: z.boolean().catch(false),
+    analytics_ids: z.unknown(),
     contacts: z
       .array(
         z.object({
@@ -263,6 +302,7 @@ const resolvedSiteSchema = z.object({
     locale: z.string().catch("nb"),
     brand: z.unknown(),
     logo: publicAssetLike,
+    lead_retention_days: nullableNumber.catch(null),
   }),
   pages: z
     .array(z.object({ id: z.string(), slug: z.string(), title: nullableString, is_home: z.boolean() }))
@@ -282,7 +322,24 @@ export type ResolvedSite = {
   footer: SiteFooter;
   seoDefaults: SeoDefaults;
   pages: SitePageSummary[];
+  tracking: SiteTracking;
+  privacy: SitePrivacy;
 };
+
+const TRACKING_PATTERNS = { ga4: /^G-[A-Z0-9]{4,20}$/, gtm: /^GTM-[A-Z0-9]{4,12}$/, meta_pixel: /^[0-9]{6,20}$/ } as const;
+
+/**
+ * Sporingskodene fra projects.analytics_ids. Databasen godtar bare gyldige
+ * koder, men de kontrolleres på nytt her fordi de settes inn i skript.
+ */
+export function parseTrackingIds(value: unknown): SiteTracking {
+  const ids = typeof value === "object" && value !== null ? (value as Record<string, unknown>) : {};
+  const pick = (key: keyof typeof TRACKING_PATTERNS) => {
+    const id = ids[key];
+    return typeof id === "string" && TRACKING_PATTERNS[key].test(id) ? id : null;
+  };
+  return { ga4: pick("ga4"), gtm: pick("gtm"), metaPixel: pick("meta_pixel") };
+}
 
 export function parseResolvedSite(value: unknown): ResolvedSite | null {
   const parsed = resolvedSiteSchema.safeParse(value);
@@ -324,6 +381,8 @@ export function parseResolvedSite(value: unknown): ResolvedSite | null {
     footer: parseFooter(site.config.footer),
     seoDefaults: parseSeoDefaults(site.config.seo_defaults),
     pages: pages.map((page) => ({ id: page.id, title: page.title ?? page.slug, slug: page.slug, isHome: page.is_home })),
+    tracking: parseTrackingIds(project.analytics_ids),
+    privacy: { ...parseCookieSettings(site.config.cookie_settings), leadRetentionDays: organization.lead_retention_days },
   };
 }
 

@@ -2,28 +2,82 @@ import "server-only";
 
 import { z } from "zod";
 
+const optional = z.string().min(1).optional();
+
 const serverEnvSchema = z.object({
-  resendApiKey: z.string().optional(),
+  resendApiKey: optional,
   emailFrom: z.string().min(3),
-  /** Hemmelig Supabase-nøkkel (service-rollen). Brukes bare på serveren: leads og delt forhåndsvisning. */
-  supabaseSecretKey: z.string().min(1).optional(),
+  /**
+   * Hemmelig Supabase-nøkkel (service-rollen). Brukes bare på serveren: leads,
+   * delt forhåndsvisning, Stripe-webhooken, domenesjekk, API med nøkkel og
+   * webhook-utsending. Alle kall går gjennom databasefunksjoner med egne kontroller.
+   */
+  supabaseSecretKey: optional,
   /** Cloudflare Turnstile. Uten nøkkel brukes bare honeypot og rate limit (lokalt og i tester). */
-  turnstileSecretKey: z.string().min(1).optional(),
+  turnstileSecretKey: optional,
   /** Bare lokalt og i tester: e-post uten Resend sendes til Mailpit i lokal Supabase. */
   mailpitUrl: z.url().optional(),
+
+  /** Stripe. Uten nøkkel vises planene, men betaling er ikke mulig. */
+  stripeSecretKey: optional,
+  stripeWebhookSecret: optional,
+  stripePrices: z.object({ start: optional, growth: optional, pro: optional }),
+  /** Bare i tester: en lokal etterligning av Stripe sitt API, f.eks. http://127.0.0.1:12111. */
+  stripeApiBase: z.url().optional(),
+  /** Stripe Tax: legger til mva. automatisk i Checkout når det er satt opp i Stripe. */
+  stripeAutomaticTax: z.boolean(),
+
+  /** Vercel Domains API for egne domener. Uten token sjekkes domener bare med DNS. */
+  vercelApiToken: optional,
+  vercelProjectId: optional,
+  vercelTeamId: optional,
+  /** DNS-oppslag for domenesjekk (DNS over HTTPS, JSON-format). */
+  dnsOverHttpsUrl: z.url(),
+  /** Hva egne domener skal peke på når Vercel ikke oppgir noe annet. */
+  domainCnameTarget: z.string().min(3),
+  domainARecord: z.ipv4(),
+  /** Navnet på TXT-posten som bekrefter eierskapet: {prefix}.{domene}. */
+  domainTxtPrefix: z.string().regex(/^_[a-z0-9-]{1,40}$/),
+
+  /** Vercel Cron sender «Authorization: Bearer {CRON_SECRET}» til jobbene under /api/cron. */
+  cronSecret: optional,
+  /** Vises på Abonnement-siden for avtaler utenom planene. */
+  supportEmail: z.email().optional(),
 });
 
 export type ServerEnv = z.infer<typeof serverEnvSchema>;
 
 let cached: ServerEnv | undefined;
 
+function value(name: string): string | undefined {
+  return process.env[name] || undefined;
+}
+
 export function serverEnv(): ServerEnv {
   cached ??= serverEnvSchema.parse({
-    resendApiKey: process.env.RESEND_API_KEY || undefined,
+    resendApiKey: value("RESEND_API_KEY"),
     emailFrom: process.env.EMAIL_FROM || "Boligplattform <noreply@example.com>",
-    supabaseSecretKey: process.env.SUPABASE_SECRET_KEY || undefined,
-    turnstileSecretKey: process.env.TURNSTILE_SECRET_KEY || undefined,
-    mailpitUrl: process.env.MAILPIT_URL || undefined,
+    supabaseSecretKey: value("SUPABASE_SECRET_KEY"),
+    turnstileSecretKey: value("TURNSTILE_SECRET_KEY"),
+    mailpitUrl: value("MAILPIT_URL"),
+    stripeSecretKey: value("STRIPE_SECRET_KEY"),
+    stripeWebhookSecret: value("STRIPE_WEBHOOK_SECRET"),
+    stripePrices: {
+      start: value("STRIPE_PRICE_START"),
+      growth: value("STRIPE_PRICE_GROWTH"),
+      pro: value("STRIPE_PRICE_PRO"),
+    },
+    stripeApiBase: value("STRIPE_API_BASE"),
+    stripeAutomaticTax: process.env.STRIPE_AUTOMATIC_TAX === "true",
+    vercelApiToken: value("VERCEL_API_TOKEN"),
+    vercelProjectId: value("VERCEL_PROJECT_ID"),
+    vercelTeamId: value("VERCEL_TEAM_ID"),
+    dnsOverHttpsUrl: value("DNS_OVER_HTTPS_URL") ?? "https://cloudflare-dns.com/dns-query",
+    domainCnameTarget: value("DOMAIN_CNAME_TARGET") ?? "cname.vercel-dns.com",
+    domainARecord: value("DOMAIN_A_RECORD") ?? "76.76.21.21",
+    domainTxtPrefix: value("DOMAIN_TXT_PREFIX") ?? "_boligplattform",
+    cronSecret: value("CRON_SECRET"),
+    supportEmail: value("SUPPORT_EMAIL"),
   });
   return cached;
 }

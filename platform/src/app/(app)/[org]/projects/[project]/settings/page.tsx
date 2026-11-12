@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { analyticsIdsFormValues } from "@/features/projects/analytics";
+import { AnalyticsIdsForm } from "@/features/projects/components/analytics-ids-form";
 import { DeleteProject } from "@/features/projects/components/delete-project";
 import {
   ProjectContactsForm,
@@ -11,7 +13,7 @@ import {
   ProjectMilestonesForm,
 } from "@/features/projects/components/project-settings-forms";
 import { StructureManager } from "@/features/projects/components/structure-manager";
-import { getProjectContext, getProjectStructure, listMemberOptions } from "@/features/projects/queries";
+import { getAnalyticsIds, getProjectContext, getProjectStructure, listMemberOptions } from "@/features/projects/queries";
 import { StatusColorsForm } from "@/features/selector/components/status-colors-form";
 import { resolveStatusColors } from "@/features/selector/model";
 import { getDisplaySettings } from "@/features/selector/queries";
@@ -33,13 +35,14 @@ export default async function ProjectSettingsPage({ params }: PageProps<"/[org]/
     notFound();
   }
   const { project } = context;
-  const [t, structure, members, display, customFieldNames, publicCustomFields] = await Promise.all([
+  const [t, structure, members, display, customFieldNames, publicCustomFields, analyticsIds] = await Promise.all([
     getTranslations("projects.settings"),
     getProjectStructure(project.id),
     listMemberOptions(context.organization.id),
     getDisplaySettings(context.organization.id, project.id),
     listCustomFieldNames(project.id),
     getPublicCustomFieldNames(project.id),
+    getAnalyticsIds(project.id),
   ]);
   const disabled = !context.canEditContent;
   const common = { organizationId: context.organization.id, project, disabled };
@@ -119,6 +122,22 @@ export default async function ProjectSettingsPage({ params }: PageProps<"/[org]/
             initial={display.projectColors}
             inherited={resolveStatusColors(display.organizationColors, {})}
             showPriceOnSold={display.showPriceOnSold}
+            disabled={disabled}
+          />
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>
+            <h2>{t("tracking.title")}</h2>
+          </CardTitle>
+          <CardDescription>{t("tracking.help")}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <AnalyticsIdsForm
+            organizationId={context.organization.id}
+            projectId={project.id}
+            initial={analyticsIdsFormValues(analyticsIds)}
             disabled={disabled}
           />
         </CardContent>

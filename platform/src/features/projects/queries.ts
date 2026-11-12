@@ -270,3 +270,13 @@ export async function listMemberOptions(organizationId: string): Promise<MemberO
     }))
     .filter((member) => member.name !== "");
 }
+
+/** Sporingskodene til prosjektsiden (projects.analytics_ids), slik de er lagret. */
+export async function getAnalyticsIds(projectId: string): Promise<unknown> {
+  const supabase = await createClient();
+  const { data, error } = await supabase.from("projects").select("analytics_ids").eq("id", projectId).single();
+  if (error) {
+    throw error;
+  }
+  return data.analytics_ids;
+}

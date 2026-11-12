@@ -4,6 +4,7 @@ import * as Sentry from "@sentry/nextjs";
 import { headers } from "next/headers";
 import { z } from "zod";
 
+import { scheduleWebhookDelivery } from "@/features/integrations/webhook-sender";
 import { leadSubmissionSchema, type LeadSubmission } from "@/features/leads/schemas";
 import { verifyTurnstile } from "@/features/leads/turnstile";
 import { fail, ok, type ActionResult } from "@/lib/actions/result";
@@ -87,6 +88,7 @@ export async function submitLead(input: LeadSubmission): Promise<ActionResult<{ 
       }
     }
     const result = submitResultSchema.parse(data);
+    scheduleWebhookDelivery();
 
     const emailData: LeadEmailData = {
       locale: result.locale,

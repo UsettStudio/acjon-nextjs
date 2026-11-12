@@ -1,8 +1,10 @@
 "use server";
 
-import { refresh } from "next/cache";
+import { refresh, updateTag } from "next/cache";
 import { z } from "zod";
 
+import { scheduleWebhookDelivery } from "@/features/integrations/webhook-sender";
+import { siteTags } from "@/features/site-builder/render-data";
 import { IMPORT_FIELDS, isImportField, type ImportField } from "@/features/units/import/columns";
 import { importRowSchema, MAX_IMPORT_ROWS, validateImportValues } from "@/features/units/import/validate";
 import { fail, ok, type ActionResult } from "@/lib/actions/result";
@@ -96,6 +98,11 @@ export async function importUnits(
       throw error;
     }
     const summary = summarySchema.parse(data);
+    // Nye og endrede enheter skal vises på publiserte prosjektsider med en gang.
+    updateTag(siteTags.units(projectId));
+    if (summary.status_changed > 0) {
+      scheduleWebhookDelivery();
+    }
     refresh();
     return ok({
       inserted: summary.inserted,

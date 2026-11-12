@@ -247,14 +247,14 @@ isOneToOne: false
                   ]
                 },"organizations": {
                   Row: {
-                    "brand": NonNullable<Json>,"created_at": string,"current_period_end": string | null,"id": string,"lead_retention_days": number | null,"locale": string,"logo_asset_id": string | null,"name": string,"organization_id": string | null,"plan": string,"slug": string,"status_colors": NonNullable<Json>,"stripe_customer_id": string | null,"stripe_subscription_id": string | null,"subscription_status": Database["public"]['Enums']["subscription_status"],"trial_ends_at": string | null,"updated_at": string
+                    "billing_event_at": string | null,"billing_notices": NonNullable<Json>,"brand": NonNullable<Json>,"cancel_at_period_end": boolean,"created_at": string,"current_period_end": string | null,"id": string,"lead_retention_days": number | null,"locale": string,"logo_asset_id": string | null,"name": string,"organization_id": string | null,"plan": string,"slug": string,"status_colors": NonNullable<Json>,"stripe_customer_id": string | null,"stripe_subscription_id": string | null,"subscription_status": Database["public"]['Enums']["subscription_status"],"trial_ends_at": string | null,"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "brand"?: NonNullable<Json>,"created_at"?: string,"current_period_end"?: string | null,"id"?: string,"lead_retention_days"?: number | null,"locale"?: string,"logo_asset_id"?: string | null,"name": string,"organization_id"?: never,"plan"?: string,"slug": string,"status_colors"?: NonNullable<Json>,"stripe_customer_id"?: string | null,"stripe_subscription_id"?: string | null,"subscription_status"?: Database["public"]['Enums']["subscription_status"],"trial_ends_at"?: string | null,"updated_at"?: string
+                    "billing_event_at"?: string | null,"billing_notices"?: NonNullable<Json>,"brand"?: NonNullable<Json>,"cancel_at_period_end"?: boolean,"created_at"?: string,"current_period_end"?: string | null,"id"?: string,"lead_retention_days"?: number | null,"locale"?: string,"logo_asset_id"?: string | null,"name": string,"organization_id"?: never,"plan"?: string,"slug": string,"status_colors"?: NonNullable<Json>,"stripe_customer_id"?: string | null,"stripe_subscription_id"?: string | null,"subscription_status"?: Database["public"]['Enums']["subscription_status"],"trial_ends_at"?: string | null,"updated_at"?: string
                   }
                   Update: {
-                    "brand"?: NonNullable<Json>,"created_at"?: string,"current_period_end"?: string | null,"id"?: string,"lead_retention_days"?: number | null,"locale"?: string,"logo_asset_id"?: string | null,"name"?: string,"organization_id"?: never,"plan"?: string,"slug"?: string,"status_colors"?: NonNullable<Json>,"stripe_customer_id"?: string | null,"stripe_subscription_id"?: string | null,"subscription_status"?: Database["public"]['Enums']["subscription_status"],"trial_ends_at"?: string | null,"updated_at"?: string
+                    "billing_event_at"?: string | null,"billing_notices"?: NonNullable<Json>,"brand"?: NonNullable<Json>,"cancel_at_period_end"?: boolean,"created_at"?: string,"current_period_end"?: string | null,"id"?: string,"lead_retention_days"?: number | null,"locale"?: string,"logo_asset_id"?: string | null,"name"?: string,"organization_id"?: never,"plan"?: string,"slug"?: string,"status_colors"?: NonNullable<Json>,"stripe_customer_id"?: string | null,"stripe_subscription_id"?: string | null,"subscription_status"?: Database["public"]['Enums']["subscription_status"],"trial_ends_at"?: string | null,"updated_at"?: string
                   }
                   Relationships: [
                     {
@@ -569,14 +569,14 @@ isOneToOne: false
                   ]
                 },"webhook_deliveries": {
                   Row: {
-                    "attempts": number,"created_at": string,"delivered_at": string | null,"event": string,"id": string,"last_error": string | null,"last_response_status": number | null,"next_attempt_at": string,"organization_id": string,"payload": NonNullable<Json>,"status": string,"updated_at": string,"webhook_id": string
+                    "attempts": number,"created_at": string,"delivered_at": string | null,"event": string,"id": string,"is_test": boolean,"last_error": string | null,"last_response_status": number | null,"next_attempt_at": string,"organization_id": string,"payload": NonNullable<Json>,"status": string,"updated_at": string,"webhook_id": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "attempts"?: number,"created_at"?: string,"delivered_at"?: string | null,"event": string,"id"?: string,"last_error"?: string | null,"last_response_status"?: number | null,"next_attempt_at"?: string,"organization_id": string,"payload": NonNullable<Json>,"status"?: string,"updated_at"?: string,"webhook_id": string
+                    "attempts"?: number,"created_at"?: string,"delivered_at"?: string | null,"event": string,"id"?: string,"is_test"?: boolean,"last_error"?: string | null,"last_response_status"?: number | null,"next_attempt_at"?: string,"organization_id": string,"payload": NonNullable<Json>,"status"?: string,"updated_at"?: string,"webhook_id": string
                   }
                   Update: {
-                    "attempts"?: number,"created_at"?: string,"delivered_at"?: string | null,"event"?: string,"id"?: string,"last_error"?: string | null,"last_response_status"?: number | null,"next_attempt_at"?: string,"organization_id"?: string,"payload"?: NonNullable<Json>,"status"?: string,"updated_at"?: string,"webhook_id"?: string
+                    "attempts"?: number,"created_at"?: string,"delivered_at"?: string | null,"event"?: string,"id"?: string,"is_test"?: boolean,"last_error"?: string | null,"last_response_status"?: number | null,"next_attempt_at"?: string,"organization_id"?: string,"payload"?: NonNullable<Json>,"status"?: string,"updated_at"?: string,"webhook_id"?: string
                   }
                   Relationships: [
                     {
@@ -619,8 +619,28 @@ isOneToOne: false
 "adjust_unit_prices":
 { Args: { "p_percent": number,"p_round_to"?: number,"p_unit_ids": (string)[] }; Returns: number
                            },
+"api_leads":
+{ Args: { "p_key_hash": string,"p_limit"?: number,"p_project_id"?: string,"p_since"?: string }; Returns: Json
+                           },
+"api_projects":
+{ Args: { "p_key_hash": string }; Returns: Json
+                           },
+"api_units":
+{ Args: { "p_key_hash": string,"p_project_id": string,"p_updated_since"?: string }; Returns: Json
+                           },
+"api_update_unit":
+{ Args: { "p_changes": Json,"p_key_hash": string,"p_project_id": string,"p_unit": string }; Returns: Json
+                           },
+"apply_stripe_subscription":
+{ Args: { "p_cancel_at_period_end"?: boolean,"p_current_period_end"?: string,"p_customer_id": string,"p_plan"?: string,"p_status": Database["public"]['Enums']["subscription_status"],"p_subscription_id": string,"p_synced_at"?: string,"p_trial_ends_at"?: string }; Returns: string
+                           },
 "claim_webhook_deliveries":
 { Args: { "p_limit"?: number }; Returns: {
+              "attempt": number,"delivery_id": string,"event": string,"payload": Json,"secret": string,"url": string,"webhook_id": string
+            }[]
+                           },
+"claim_webhook_delivery":
+{ Args: { "p_delivery_id": string }; Returns: {
               "attempt": number,"delivery_id": string,"event": string,"payload": Json,"secret": string,"url": string,"webhook_id": string
             }[]
                            },
@@ -635,6 +655,19 @@ isOneToOne: false
                            },
 "create_site":
 { Args: { "p_pages": Json,"p_project_id": string,"p_site": Json,"p_subdomain": string }; Returns: string
+                           },
+"domains_due_for_check":
+{ Args: { "p_limit"?: number }; Returns: {
+              "domain_id": string,"hostname": string,"organization_id": string,"site_id": string,"verification_token": string,"verified": boolean
+            }[]
+                           },
+"due_billing_notices":
+{ Args: Record<PropertyKey, never>; Returns: {
+              "kind": string,"locale": string,"organization_id": string,"organization_name": string,"organization_slug": string,"recipients": (string)[],"trial_ends_at": string
+            }[]
+                           },
+"extend_trial":
+{ Args: { "p_days": number,"p_organization_id": string }; Returns: string
                            },
 "get_invitation":
 { Args: { "p_token": string }; Returns: Json
@@ -669,6 +702,12 @@ isOneToOne: false
 "import_units":
 { Args: { "p_columns": (string)[],"p_project_id": string,"p_rows": Json }; Returns: Json
                            },
+"link_stripe_customer":
+{ Args: { "p_customer_id": string,"p_organization_id": string }; Returns: string
+                           },
+"mark_billing_notice":
+{ Args: { "p_kind": string,"p_organization_id": string }; Returns: undefined
+                           },
 "publish_selector":
 { Args: { "p_selector_id": string }; Returns: string
                            },
@@ -677,6 +716,9 @@ isOneToOne: false
                            },
 "rate_limit_hit":
 { Args: { "p_key": string,"p_limit": number,"p_organization_id": string,"p_window_seconds": number }; Returns: boolean
+                           },
+"record_domain_check":
+{ Args: { "p_dns_records": Json,"p_domain_id": string,"p_error"?: string,"p_status": string }; Returns: string
                            },
 "record_login":
 { Args: Record<PropertyKey, never>; Returns: undefined
@@ -693,11 +735,20 @@ isOneToOne: false
 "restore_page_version":
 { Args: { "p_version_id": string }; Returns: undefined
                            },
+"retry_webhook_delivery":
+{ Args: { "p_delivery_id": string }; Returns: undefined
+                           },
 "save_view_hotspots":
 { Args: { "p_hotspots": Json,"p_view_id": string }; Returns: number
                            },
+"send_test_webhook":
+{ Args: { "p_webhook_id": string }; Returns: string
+                           },
 "set_home_page":
 { Args: { "p_page_id": string }; Returns: undefined
+                           },
+"set_primary_domain":
+{ Args: { "p_domain_id"?: string,"p_site_id": string }; Returns: undefined
                            },
 "set_project_access":
 { Args: { "p_organization_id": string,"p_project_ids": (string)[],"p_user_id": string }; Returns: undefined

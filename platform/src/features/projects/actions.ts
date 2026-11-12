@@ -4,6 +4,7 @@ import { refresh, updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
+import { analyticsIdsSchema, compactAnalyticsIds, type AnalyticsIdsInput } from "@/features/projects/analytics";
 import {
   buildingSchema,
   contactsSchema,
@@ -39,6 +40,9 @@ function mapWriteError(error: unknown): never {
       throw new ActionError("forbidden");
     case "PGRST116":
       throw new ActionError("notFound");
+    // Planen har ikke plass til flere aktive prosjekter (app.enforce_project_limit).
+    case "P0402":
+      throw new ActionError("planLimit");
     default:
       throw error;
   }
@@ -419,3 +423,25 @@ export async function updateBuilding(
     return ok();
   });
 }
+
+/**
+ * Sporingskoder for prosjektsiden. Gjelder den publiserte siden med en gang, og
+ * kodene lastes der først etter samtykke fra besøkeren.
+ */
+export async function updateAnalyticsIds(
+  organizationId: string,
+  projectId: string,
+  input: AnalyticsIdsInput,
+): Promise<ActionResult> {
+  return runAction(async () => {
+    await requireOrgCapability(requireId(organizationId), "content.edit");
+    const parsed = parseInput(analyticsIdsSchema, input);
+    if (!parsed.success) {
+      return fail("invalidInput", parsed.fieldErrors);
+    }
+    const supabase = await createClient();
+    await updateProjectRow(supabase, organizationId, requireId(projectId), { analytics_ids: compactAnalyticsIds(parsed.data) });
+    return ok();
+  });
+}
+

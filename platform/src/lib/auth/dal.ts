@@ -44,6 +44,8 @@ export type OrganizationSummary = {
   slug: string;
   subscriptionStatus: SubscriptionStatus;
   trialEndsAt: string | null;
+  /** Organisasjonen har et abonnement i Stripe (ikke bare prøveperioden). */
+  hasSubscription: boolean;
 };
 
 export type Membership = {
@@ -59,7 +61,7 @@ export const getMemberships = cache(async (): Promise<Membership[]> => {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("memberships")
-    .select("role, organization:organizations(id, name, slug, subscription_status, trial_ends_at)")
+    .select("role, organization:organizations(id, name, slug, subscription_status, trial_ends_at, stripe_subscription_id)")
     .eq("user_id", user.id)
     .order("created_at");
   if (error) {
@@ -78,6 +80,7 @@ export const getMemberships = cache(async (): Promise<Membership[]> => {
           slug: row.organization.slug,
           subscriptionStatus: row.organization.subscription_status,
           trialEndsAt: row.organization.trial_ends_at,
+          hasSubscription: row.organization.stripe_subscription_id !== null,
         },
       },
     ];

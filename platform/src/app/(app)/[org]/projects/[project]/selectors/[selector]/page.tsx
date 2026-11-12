@@ -29,6 +29,7 @@ export default async function SelectorEditorPage({ params }: PageProps<"/[org]/p
       orgSlug={org}
       projectId={context.project.id}
       projectSlug={slug}
+      projectName={context.project.name}
       data={data}
       canEdit={context.canEditContent}
       canSell={context.canSell}

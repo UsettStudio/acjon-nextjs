@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { consentTexts, CURRENT_CONSENT_VERSION } from "@/features/leads/consent";
+import { announceLeadSubmitted } from "@/features/leads/events";
 import { submitLead } from "@/features/leads/submit";
 import { publicEnv } from "@/lib/env";
 import { cn } from "@/lib/utils";
@@ -171,6 +172,7 @@ export function LeadForm({
       });
       if (result.ok) {
         setSent(true);
+        announceLeadSubmitted({ projectId, unitId: values.unitId || null, source });
         return;
       }
       if (result.fieldErrors) {

@@ -4,7 +4,18 @@ import { cache } from "react";
 
 import { getAssetsByIds, type MediaAsset } from "@/features/media/assets";
 import { blockAssetIds, parseBlocks, type Block } from "@/features/site-builder/blocks";
-import { parseFooter, parseNav, parseSeoDefaults, siteUrl, themeLogoId, type NavItem, type SeoDefaults, type SiteFooter } from "@/features/site-builder/site";
+import {
+  parseFooter,
+  parseNav,
+  parseSeoDefaults,
+  siteUrl,
+  themeLogoId,
+  type NavItem,
+  type SeoDefaults,
+  type SiteFooter,
+  parseCookieSettings,
+  type CookieSettings,
+} from "@/features/site-builder/site";
 import { parseTheme, type ThemeOverrides } from "@/features/site-builder/theme";
 import { publicEnv } from "@/lib/env";
 import { createClient } from "@/lib/supabase/server";
@@ -30,6 +41,7 @@ export type SiteEditorData = {
     nav: NavItem[];
     footer: SiteFooter;
     seoDefaults: SeoDefaults;
+    cookieSettings: CookieSettings;
     publishedAt: string | null;
   };
   pages: EditorPage[];
@@ -48,7 +60,7 @@ export const getSiteEditorData = cache(async (organizationId: string, projectId:
   const supabase = await createClient();
   const { data: site, error } = await supabase
     .from("sites")
-    .select("id, subdomain, theme, nav, footer, seo_defaults, published_at")
+    .select("id, subdomain, theme, nav, footer, seo_defaults, cookie_settings, published_at")
     .eq("project_id", projectId)
     .maybeSingle();
   if (error) {
@@ -107,6 +119,7 @@ export const getSiteEditorData = cache(async (organizationId: string, projectId:
       nav: parseNav(site.nav),
       footer: parseFooter(site.footer),
       seoDefaults,
+      cookieSettings: parseCookieSettings(site.cookie_settings),
       publishedAt: site.published_at,
     },
     pages: editorPages,

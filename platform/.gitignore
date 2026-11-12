@@ -29,3 +29,6 @@ npm-debug.log*
 
 # Kopiert fra node_modules av scripts/copy-vendor.mjs
 /public/vendor/
+
+# Bygget av scripts/build-embed.mjs
+/public/embed/

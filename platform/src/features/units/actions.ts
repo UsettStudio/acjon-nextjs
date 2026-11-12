@@ -4,6 +4,7 @@ import { refresh, updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
+import { scheduleWebhookDelivery } from "@/features/integrations/webhook-sender";
 import type { StatusEvent } from "@/features/projects/queries";
 import { siteTags } from "@/features/site-builder/render-data";
 import {
@@ -162,6 +163,9 @@ export async function changeUnitStatus(input: {
       throw error;
     }
     await purgePublishedUnits(supabase, parsed.data.unitIds);
+    if (data > 0) {
+      scheduleWebhookDelivery();
+    }
     if (parsed.data.source === "form") {
       refresh();
     }
