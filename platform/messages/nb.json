@@ -292,7 +292,11 @@
       "alreadyInvited": "{email} har allerede en ventende invitasjon. Send den på nytt fra listen.",
       "done": "Ferdig",
       "expiredBadge": "Utløpt"
-    }
+    },
+    "seats": "{used} av {limit} plasser i pakken {plan} er i bruk (brukere og ventende invitasjoner).",
+    "seatsUnlimited": "{used, plural, one {# bruker} other {# brukere}} og ventende invitasjoner. Pakken {plan} har ingen grense.",
+    "seatsUpgrade": "Bytt pakke for flere brukere",
+    "seatsAskOwner": "Pakken er full. Eieren kan bytte pakke."
   },
   "account": {
     "title": "Min profil",
@@ -318,8 +322,35 @@
     "trialEnds": "Prøveperioden slutter",
     "actions": "Handlinger",
     "extendTrial": "Forleng 14 dager",
-    "extendTrialFor": "Forleng prøveperioden for {organization} med 14 dager",
-    "trialExtended": "Prøveperioden for {organization} varer nå til {date}."
+    "extendTrialFor": "Forleng 14 dager: {organization}",
+    "trialExtended": "Prøveperioden for {organization} varer nå til {date}.",
+    "organization": {
+      "back": "← Alle organisasjoner",
+      "summary": "{plan} · {status} · {members, plural, one {# bruker} other {# brukere}} · opprettet {created}",
+      "projectsTitle": "Prosjekter",
+      "noProjects": "Organisasjonen har ingen prosjekter.",
+      "project": "Prosjekt",
+      "phase": "Fase",
+      "units": "Enheter",
+      "launch": "Lansering",
+      "actions": "Handlinger",
+      "notLaunched": "Ikke lansert",
+      "launchedLimit": "Lansert {date}, inntil {count} enheter",
+      "launchedUnlimited": "Lansert {date}, uten grense",
+      "launchAction": "Lanser etter avtale",
+      "launchActionFor": "Lanser etter avtale: {project}",
+      "extendAction": "Utvid etter avtale",
+      "extendActionFor": "Utvid etter avtale: {project}",
+      "dialogTitle": "Lansering av {project} etter avtale",
+      "dialogDescription": "Prosjektet lanseres uten oppstartsavgift i appen. Avgiften etter avtalen faktureres i Stripe for seg.",
+      "unitLimit": "Grense for antall enheter",
+      "unitLimitHelp": "La feltet stå tomt for ingen grense.",
+      "unitLimitHelpCurrent": "Avgiften dekker nå inntil {count} enheter. Grensen kan bare økes. La feltet stå tomt for ingen grense.",
+      "note": "Avtalen",
+      "noteHelp": "Står i revisjonsloggen. For eksempel: Avtale november 2026, 260 enheter, faktura sendt.",
+      "submit": "Lanser",
+      "launchDone": "{project} er lansert etter avtale."
+    }
   },
   "notFound": {
     "title": "Fant ikke siden",
@@ -425,7 +456,8 @@
       "emptyTitle": "Ingen prosjekter ennå",
       "emptyBody": "Opprett det første prosjektet. Veiviseren tar deg gjennom adresse, fremdrift, kontaktpersoner og byggetrinn.",
       "emptyBodyNoAccess": "Du er ikke tildelt noen prosjekter ennå. Be en administrator om tilgang.",
-      "unitCount": "{count, plural, =0 {Ingen enheter} one {# enhet} other {# enheter}}"
+      "unitCount": "{count, plural, =0 {Ingen enheter} one {# enhet} other {# enheter}}",
+      "notLaunched": "Ikke lansert"
     },
     "wizard": {
       "title": "Nytt prosjekt",
@@ -1996,6 +2028,12 @@
         "reload": "Last inn på nytt",
         "hint": "Klikk på en blokk for å redigere den.",
         "frameTitle": "Forhåndsvisning av siden"
+      },
+      "history": {
+        "undo": "Angre",
+        "redo": "Gjør om",
+        "undoShortcut": "Angre (Ctrl+Z eller ⌘Z)",
+        "redoShortcut": "Gjør om (Ctrl+Shift+Z eller ⌘⇧Z)"
       }
     }
   },

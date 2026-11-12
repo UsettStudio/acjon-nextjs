@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
@@ -57,7 +58,11 @@ async function OrganizationsTable() {
       <TableBody>
         {data.map((organization) => (
           <TableRow key={organization.id}>
-            <TableCell className="font-medium">{organization.name}</TableCell>
+            <TableCell className="font-medium">
+              <Link href={`/platform/${organization.slug}`} className="underline-offset-4 hover:underline">
+                {organization.name}
+              </Link>
+            </TableCell>
             <TableCell className="text-muted-foreground">{organization.slug}</TableCell>
             <TableCell>
               {tPlans(`${isPlan(organization.plan) ? organization.plan : "start"}.name`)}

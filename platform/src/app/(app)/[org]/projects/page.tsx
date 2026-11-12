@@ -63,7 +63,10 @@ export default async function ProjectsPage({ params }: PageProps<"/[org]/project
               >
                 <div className="flex items-start justify-between gap-3">
                   <h2 className="text-lg font-semibold">{project.name}</h2>
-                  <Badge variant="secondary">{tPhases(project.phase)}</Badge>
+                  <div className="flex flex-wrap justify-end gap-1.5">
+                    <Badge variant="secondary">{tPhases(project.phase)}</Badge>
+                    {project.launched ? null : <Badge variant="outline">{t("notLaunched")}</Badge>}
+                  </div>
                 </div>
                 {project.address || project.city ? (
                   <p className="flex items-center gap-1.5 text-sm text-muted-foreground">

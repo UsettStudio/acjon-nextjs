@@ -26,6 +26,8 @@ export type ProjectSummary = {
   city: string | null;
   counts: StatusCounts;
   totalUnits: number;
+  /** Oppstartsavgiften er betalt eller frafalt, så prosjektet kan publiseres. */
+  launched: boolean;
   updatedAt: string;
 };
 
@@ -33,7 +35,7 @@ export async function listProjects(organizationId: string): Promise<ProjectSumma
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("projects")
-    .select("id, name, slug, phase, address, city, updated_at")
+    .select("id, name, slug, phase, address, city, launched_at, updated_at")
     .eq("organization_id", organizationId)
     .order("name");
   if (error) {
@@ -51,6 +53,7 @@ export async function listProjects(organizationId: string): Promise<ProjectSumma
       city: project.city,
       counts: projectCounts,
       totalUnits: UNIT_STATUSES.reduce((sum, status) => sum + projectCounts[status], 0),
+      launched: project.launched_at !== null,
       updatedAt: project.updated_at,
     };
   });

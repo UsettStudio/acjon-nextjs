@@ -752,6 +752,9 @@ isOneToOne: false
 "mark_billing_notice":
 { Args: { "p_kind": string,"p_organization_id": string }; Returns: undefined
                            },
+"platform_launch_project":
+{ Args: { "p_note"?: string,"p_project_id": string,"p_unit_limit"?: number }; Returns: undefined
+                           },
 "project_overview":
 { Args: { "p_project_id": string }; Returns: Json
                            },

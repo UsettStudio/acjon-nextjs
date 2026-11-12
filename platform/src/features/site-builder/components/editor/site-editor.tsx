@@ -1,8 +1,8 @@
 "use client";
 
-import { CheckIcon, LoaderCircleIcon, SparklesIcon, TriangleAlertIcon } from "lucide-react";
+import { CheckIcon, LoaderCircleIcon, Redo2Icon, SparklesIcon, TriangleAlertIcon, Undo2Icon } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useCallback, useMemo, useState, useTransition } from "react";
+import { useCallback, useEffect, useMemo, useState, useTransition } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -17,6 +17,15 @@ import {
   type SitePublishState,
 } from "@/features/site-builder/actions";
 import { fromMediaAsset } from "@/features/site-builder/assets";
+import {
+  canRedo,
+  canUndo,
+  keepPages,
+  recordBlocks,
+  redoBlocks,
+  undoBlocks,
+  type BlockHistories,
+} from "@/features/site-builder/block-history";
 import { blocksSchema, createBlock, duplicateBlock, type Block, type BlockType } from "@/features/site-builder/blocks";
 import { AddBlockDialog, BlockForm, BlockList, blockErrors, blockSummary } from "@/features/site-builder/components/editor/block-list";
 import { FieldContextProvider, type FieldContext } from "@/features/site-builder/components/editor/fields";
@@ -43,6 +52,23 @@ import { themeSchema, type ThemeOverrides } from "@/features/site-builder/theme"
 type SiteSettings = { nav: NavItem[]; footer: SiteFooter; theme: ThemeOverrides; seoDefaults: SeoDefaults; cookieSettings: CookieSettings };
 
 type Tab = "content" | "pages" | "navigation" | "theme" | "settings";
+
+/** Sidene med blokkene, og angre-historikken per side. De endres sammen, så historikken alltid passer til sidene. */
+type EditorState = { pages: EditorPage[]; histories: BlockHistories };
+
+/** Angre og gjør om gjelder når fokus er i blokkene eller ikke i et felt utenfor dem (meny, tema, innstillinger). */
+const HISTORY_SCOPE = "[data-block-history]";
+
+function inHistoryScope(target: EventTarget | null): boolean {
+  if (!(target instanceof Element) || target === document.body) {
+    return true;
+  }
+  if (target.closest('[role="dialog"]')) {
+    return false;
+  }
+  const editable = target.closest("input, textarea, select, [contenteditable=''], [contenteditable='true'], [role='combobox']");
+  return editable === null || target.closest(HISTORY_SCOPE) !== null;
+}
 
 const SITE_KEY = "site";
 const pageKey = (pageId: string) => `page:${pageId}`;
@@ -113,7 +139,8 @@ export function SiteEditor({
   const tTypes = useTranslations("siteBuilder.blockTypes");
   const tErrors = useTranslations("errors");
   const siteId = data.site.id;
-  const [pages, setPages] = useState<EditorPage[]>(data.pages);
+  const [editor, setEditor] = useState<EditorState>(() => ({ pages: data.pages, histories: {} }));
+  const pages = editor.pages;
   const [currentPageId, setCurrentPageId] = useState(() => (data.pages.find((page) => page.isHome) ?? data.pages[0])?.id ?? "");
   const [selectedBlockId, setSelectedBlockId] = useState<string | null>(null);
   const [tab, setTab] = useState<Tab>("content");
@@ -168,16 +195,79 @@ export function SiteEditor({
   // Blokker
   // ---------------------------------------------------------------------------
 
+  /**
+   * Endrer blokkene på en side og tar vare på forrige tilstand, så endringen
+   * kan angres. Endringer i samme gruppe (for eksempel skriving i en blokk)
+   * innen ett sekund blir ett steg.
+   */
   const updateBlocks = useCallback(
-    (pageId: string, update: (blocks: Block[]) => Block[]) => {
+    (pageId: string, update: (blocks: Block[]) => Block[], group: string | null = null) => {
       if (!canEdit) {
         return;
       }
       clearError();
-      setPages((previous) => previous.map((page) => (page.id === pageId ? { ...page, blocks: update(page.blocks) } : page)));
+      const now = Date.now();
+      setEditor((previous) => {
+        const page = previous.pages.find((item) => item.id === pageId);
+        if (!page) {
+          return previous;
+        }
+        const next = update(page.blocks);
+        if (next === page.blocks) {
+          return previous;
+        }
+        return {
+          pages: previous.pages.map((item) => (item.id === pageId ? { ...item, blocks: next } : item)),
+          histories: recordBlocks(previous.histories, pageId, page.blocks, group, now),
+        };
+      });
     },
     [canEdit, clearError],
   );
+
+  const stepHistory = useCallback(
+    (direction: "undo" | "redo") => {
+      if (!canEdit || !currentPage) {
+        return;
+      }
+      clearError();
+      const pageId = currentPage.id;
+      setEditor((previous) => {
+        const page = previous.pages.find((item) => item.id === pageId);
+        const result = page
+          ? (direction === "undo" ? undoBlocks : redoBlocks)(previous.histories, pageId, page.blocks)
+          : null;
+        if (!result) {
+          return previous;
+        }
+        return {
+          pages: previous.pages.map((item) => (item.id === pageId ? { ...item, blocks: result.blocks } : item)),
+          histories: result.histories,
+        };
+      });
+    },
+    [canEdit, clearError, currentPage],
+  );
+
+  // Ctrl/Cmd+Z angrer og Ctrl/Cmd+Shift+Z (eller Ctrl+Y) gjør om, også mens man skriver i en blokk.
+  useEffect(() => {
+    if (!canEdit) {
+      return;
+    }
+    function onKeyDown(event: KeyboardEvent) {
+      if (!(event.metaKey || event.ctrlKey) || event.altKey || event.defaultPrevented) {
+        return;
+      }
+      const key = event.key.toLowerCase();
+      if ((key !== "z" && key !== "y") || !inHistoryScope(event.target)) {
+        return;
+      }
+      event.preventDefault();
+      stepHistory(key === "y" || event.shiftKey ? "redo" : "undo");
+    }
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [canEdit, stepHistory]);
 
   const blockLabel = useCallback(
     (block: Block) => {
@@ -278,7 +368,7 @@ export function SiteEditor({
         markSaved(pageKey(page.id), page.blocks);
       }
     }
-    setPages(next);
+    setEditor((previous) => ({ pages: next, histories: keepPages(previous.histories, new Set(next.map((page) => page.id))) }));
     if (!next.some((page) => page.id === currentPageId)) {
       setCurrentPageId((next.find((page) => page.isHome) ?? next[0])?.id ?? "");
       setSelectedBlockId(null);
@@ -287,20 +377,26 @@ export function SiteEditor({
 
   function onRestored(restored: RestoredPage) {
     setAssets((previous) => ({ ...previous, ...Object.fromEntries(restored.assets.map((asset) => [asset.id, asset])) }));
-    setPages((previous) =>
-      previous.map((page) =>
-        page.id === restored.pageId
-          ? {
-              ...page,
-              title: restored.title,
-              seoTitle: restored.seoTitle,
-              seoDescription: restored.seoDescription,
-              ogAssetId: restored.ogAssetId,
-              blocks: restored.blocks,
-            }
-          : page,
-      ),
-    );
+    // En gjenopprettet versjon kan angres som andre endringer.
+    const now = Date.now();
+    setEditor((previous) => {
+      const page = previous.pages.find((item) => item.id === restored.pageId);
+      return {
+        pages: previous.pages.map((item) =>
+          item.id === restored.pageId
+            ? {
+                ...item,
+                title: restored.title,
+                seoTitle: restored.seoTitle,
+                seoDescription: restored.seoDescription,
+                ogAssetId: restored.ogAssetId,
+                blocks: restored.blocks,
+              }
+            : item,
+        ),
+        histories: page ? recordBlocks(previous.histories, page.id, page.blocks, null, now) : previous.histories,
+      };
+    });
     markSaved(pageKey(restored.pageId), restored.blocks);
     setSelectedBlockId(null);
     setPublish((previous) => ({ ...previous, hasUnpublishedChanges: true }));
@@ -372,6 +468,32 @@ export function SiteEditor({
                 ))}
               </SelectContent>
             </Select>
+            {canEdit ? (
+              <div className="flex items-center gap-1">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  aria-label={t("history.undo")}
+                  title={t("history.undoShortcut")}
+                  disabled={!canUndo(editor.histories, currentPage.id)}
+                  onClick={() => stepHistory("undo")}
+                >
+                  <Undo2Icon aria-hidden="true" />
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  aria-label={t("history.redo")}
+                  title={t("history.redoShortcut")}
+                  disabled={!canRedo(editor.histories, currentPage.id)}
+                  onClick={() => stepHistory("redo")}
+                >
+                  <Redo2Icon aria-hidden="true" />
+                </Button>
+              </div>
+            ) : null}
             <SaveIndicator status={autosave.status} error={autosave.error} onRetry={() => void flush()} />
           </div>
           <SitePublishBar
@@ -397,14 +519,16 @@ export function SiteEditor({
               <TabsTrigger value="settings">{t("tabs.settings")}</TabsTrigger>
             </TabsList>
             <div className="min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto rounded-md border p-4">
-              <TabsContent value="content" className="grid grid-cols-[minmax(0,1fr)] gap-4">
+              <TabsContent value="content" className="grid grid-cols-[minmax(0,1fr)] gap-4" data-block-history="">
                 {selectedBlock ? (
                   <BlockForm
                     key={selectedBlock.id}
                     block={selectedBlock}
                     disabled={!canEdit}
                     onBack={() => setSelectedBlockId(null)}
-                    onChange={(next) => updateBlocks(currentPage.id, (current) => current.map((block) => (block.id === next.id ? next : block)))}
+                    onChange={(next) =>
+                      updateBlocks(currentPage.id, (current) => current.map((block) => (block.id === next.id ? next : block)), `block:${next.id}`)
+                    }
                   />
                 ) : (
                   <>

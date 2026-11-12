@@ -1,22 +1,11 @@
 import { readFileSync } from "node:fs";
 
-import { AxeBuilder } from "@axe-core/playwright";
-import { devices, expect, test, type Browser, type Page } from "@playwright/test";
+import { devices, expect, test, type Browser } from "@playwright/test";
 
 import { createOrganization, PASSWORD, signIn, signUp, uniqueId } from "./helpers";
+import { expectNoWcagViolations } from "./support/axe";
 import { organizationId, serviceClient, userClient } from "./support/db";
 import { createDemo, type Demo } from "./support/demo";
-
-/** WCAG 2.1 nivå A og AA, som spesifikasjonen krever for publiserte sider. */
-const WCAG_21_AA = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"];
-
-async function expectNoWcagViolations(page: Page, name: string) {
-  const result = await new AxeBuilder({ page }).withTags(WCAG_21_AA).analyze();
-  const violations = result.violations.map(
-    (violation) => `${violation.id} (${violation.impact}): ${violation.nodes.map((node) => node.target.join(" ")).join(", ")}`,
-  );
-  expect(violations, `WCAG 2.1 AA-brudd på ${name}`).toEqual([]);
-}
 
 const VIEWPORTS = {
   desktop: { viewport: { width: 1440, height: 900 } },

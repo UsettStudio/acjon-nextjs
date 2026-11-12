@@ -23,7 +23,7 @@ import {
   zoomAt,
   type Point,
 } from "@/features/selector/geometry";
-import { createHistory, HISTORY_LIMIT, pushHistory, redoHistory, undoHistory } from "@/features/selector/history";
+import { createHistory, HISTORY_LIMIT, pushHistory, redoHistory, undoHistory } from "@/lib/history";
 import {
   FILTER_KEYS,
   fromHotspotRow,

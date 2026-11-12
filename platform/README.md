@@ -21,6 +21,7 @@ Selvbetjent SaaS for boligutbyggere og eiendomsmeglere. Kunden setter selv opp p
 | 4 Drift | Ferdig |
 | 5 Kvalitet | Ferdig |
 | 6 Pakker og oppstartsavgift | Ferdig |
+| 7 Oppfølging | Ferdig |
 
 Fase 0 omfatter Next.js-appen, databasen med RLS, pålogging, organisasjoner, invitasjoner, brukeradministrasjon, plattformadmin, tester og CI.
 
@@ -104,6 +105,13 @@ Fase 6 omfatter:
   - Partner (3 990): i tillegg ubegrenset antall brukere, oppsett, opplæring og prioritert support.
 - **Oppstartsavgift per prosjekt** (prosjektmenyen → Lansering): betales én gang før prosjektet publiseres, etter antall enheter (6 900–49 900 kr, over 199 enheter etter avtale). Utvidelse til et høyere nivå koster forskjellen.
 - **Navnet excip** og sjekklisten for kontoene i [docs/kontoer.md](docs/kontoer.md).
+
+Fase 7 omfatter:
+
+- **Plattformadmin:** en side per organisasjon med pakke, brukere og prosjektene, og lansering etter avtale uten SQL.
+- **Brukere** viser hvor mange plasser i pakken som er i bruk, og invitasjon er sperret når pakken er full.
+- **Prosjektlisten** viser prosjekter som ikke er lansert.
+- **Angre og gjør om i blokkeditoren:** knapper og Ctrl/Cmd+Z og Ctrl/Cmd+Shift+Z, med egen historikk per side.
 
 ## Kom i gang lokalt
 
@@ -189,7 +197,7 @@ Kontoene opprettes av eieren. Sjekklisten med regioner, produkter og priser i St
 | `src/components/` | shadcn/ui og felles admin-komponenter |
 | `messages/` | All tekst på bokmål, engelsk og svensk |
 | `supabase/migrations/` | Datamodell, RLS, funksjoner, lagring, sanntid og jobber |
-| `supabase/tests/` | pgTAP-tester (553 tester) |
+| `supabase/tests/` | pgTAP-tester (562 tester) |
 | `supabase/templates/` | Norske e-postmaler for Supabase Auth |
 | `src/embed/` | Web-komponenten for innbygging, bygget til `public/embed/v1.js` |
 | `e2e/` | Playwright-tester, med en Excel-fil for importtesten i `e2e/fixtures/`. Fasadebildet til boligvelgertestene lages med sharp. `e2e/support/` har etterligningen av Stripe og DNS. |

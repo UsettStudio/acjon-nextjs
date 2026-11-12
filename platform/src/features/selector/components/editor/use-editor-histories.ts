@@ -2,8 +2,8 @@
 
 import { useCallback, useState } from "react";
 
-import { createHistory, pushHistory, redoHistory, undoHistory, type History } from "@/features/selector/history";
 import type { EditorHotspot } from "@/features/selector/model";
+import { createHistory, pushHistory, redoHistory, undoHistory, type History } from "@/lib/history";
 
 export type ViewHistories = Record<string, History<EditorHotspot[]>>;
 

@@ -292,7 +292,11 @@
       "alreadyInvited": "{email} already has a pending invitation. Send it again from the list.",
       "done": "Done",
       "expiredBadge": "Expired"
-    }
+    },
+    "seats": "{used} of {limit} seats in the {plan} package are in use (users and pending invitations).",
+    "seatsUnlimited": "{used, plural, one {# user} other {# users}} and pending invitations. The {plan} package has no limit.",
+    "seatsUpgrade": "Change package for more users",
+    "seatsAskOwner": "The package is full. The owner can change the package."
   },
   "account": {
     "title": "My profile",
@@ -318,8 +322,35 @@
     "trialEnds": "Trial ends",
     "actions": "Actions",
     "extendTrial": "Extend 14 days",
-    "extendTrialFor": "Extend the trial for {organization} by 14 days",
-    "trialExtended": "The trial for {organization} now lasts until {date}."
+    "extendTrialFor": "Extend 14 days: {organization}",
+    "trialExtended": "The trial for {organization} now lasts until {date}.",
+    "organization": {
+      "back": "← All organisations",
+      "summary": "{plan} · {status} · {members, plural, one {# user} other {# users}} · created {created}",
+      "projectsTitle": "Projects",
+      "noProjects": "The organisation has no projects.",
+      "project": "Project",
+      "phase": "Phase",
+      "units": "Units",
+      "launch": "Launch",
+      "actions": "Actions",
+      "notLaunched": "Not launched",
+      "launchedLimit": "Launched {date}, up to {count} units",
+      "launchedUnlimited": "Launched {date}, no limit",
+      "launchAction": "Launch by agreement",
+      "launchActionFor": "Launch by agreement: {project}",
+      "extendAction": "Extend by agreement",
+      "extendActionFor": "Extend by agreement: {project}",
+      "dialogTitle": "Launch {project} by agreement",
+      "dialogDescription": "The project is launched without the launch fee in the app. The fee in the agreement is invoiced separately in Stripe.",
+      "unitLimit": "Limit for the number of units",
+      "unitLimitHelp": "Leave empty for no limit.",
+      "unitLimitHelpCurrent": "The fee now covers up to {count} units. The limit can only be raised. Leave empty for no limit.",
+      "note": "Agreement",
+      "noteHelp": "Shown in the audit log. For example: Agreement November 2026, 260 units, invoice sent.",
+      "submit": "Launch",
+      "launchDone": "{project} is launched by agreement."
+    }
   },
   "notFound": {
     "title": "Page not found",
@@ -425,7 +456,8 @@
       "emptyTitle": "No projects yet",
       "emptyBody": "Create the first project. The wizard takes you through address, progress, contacts and stages.",
       "emptyBodyNoAccess": "You are not assigned to any projects yet. Ask an administrator for access.",
-      "unitCount": "{count, plural, =0 {No units} one {# unit} other {# units}}"
+      "unitCount": "{count, plural, =0 {No units} one {# unit} other {# units}}",
+      "notLaunched": "Not launched"
     },
     "wizard": {
       "title": "New project",
@@ -1996,6 +2028,12 @@
         "reload": "Reload",
         "hint": "Click a block to edit it.",
         "frameTitle": "Page preview"
+      },
+      "history": {
+        "undo": "Undo",
+        "redo": "Redo",
+        "undoShortcut": "Undo (Ctrl+Z or ⌘Z)",
+        "redoShortcut": "Redo (Ctrl+Shift+Z or ⌘⇧Z)"
       }
     }
   },

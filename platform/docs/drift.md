@@ -45,16 +45,12 @@ All kundedata lagres i EU. Avtale om databehandling (DPA) inngås med alle under
 
 - **Månedsprisene** for pakkene endres i Stripe. Nye priser får nye id-er: legg dem inn i `STRIPE_PRICE_START`, `STRIPE_PRICE_PRO` og `STRIPE_PRICE_PARTNER`, og i kundeportalen. Abonnementer på gamle priser fortsetter til kunden bytter.
 - **Oppstartsavgiften** står i `src/lib/billing/launch.ts` og endres med en ny utrulling. Endringen gjelder nye lanseringer og utvidelser, ikke det som er betalt.
-- **Lansering etter avtale** (prosjekter med mer enn 199 enheter, eller annen avtale). Kjør i SQL-editoren i Supabase, med id-en til prosjektet:
+- **Lansering etter avtale** (prosjekter med mer enn 199 enheter, eller annen avtale):
+  1. Plattformadmin → organisasjonen → «Lanser etter avtale» på prosjektet.
+  2. Skriv avtalen i notatet, og eventuelt en grense for antall enheter. Uten grense dekker lanseringen alle enhetene.
+  3. Et prosjekt som er lansert med grense, kan utvides på samme måte. En grense kan bare økes.
 
-  ```sql
-  -- Ingen grense for antall enheter:
-  select public.waive_project_launch('{prosjekt-id}', null, 'Avtale 2026-11: Fjordbyen, 260 enheter');
-  -- Eller en grense:
-  select public.waive_project_launch('{prosjekt-id}', 300, 'Avtale 2026-11: Fjordbyen, inntil 300 enheter');
-  ```
-
-  Det står i revisjonsloggen med notatet. Avgiften etter avtalen faktureres i Stripe for seg (faktura uten abonnement).
+  Det står i revisjonsloggen med notatet og plattformadmin som aktør. Avgiften etter avtalen faktureres i Stripe for seg (faktura uten abonnement). Uten tilgang til appen kan det samme gjøres i SQL-editoren i Supabase: `select public.waive_project_launch('{prosjekt-id}', null, 'Avtale …');`.
 - **Betaling som ikke er registrert.** Webhooken og returen fra Checkout registrerer betalingen. Står et prosjekt som ikke lansert etter betalt Checkout, se etter feil i Sentry (`stripe_event`) og send hendelsen på nytt fra Stripe (Developers → Events → Resend). Beløpet uten mva. må være det samme som da betalingen ble gjort klar, ellers avvises den.
 
 ## Planlagte jobber

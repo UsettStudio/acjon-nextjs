@@ -476,5 +476,5 @@ Publiserte prosjektsider (`sites/[site]/…`) lages som ferdige statiske sider p
   2. Serveren teller enhetene, regner ut nivå og beløp, og lager en rad i `project_launches` med `begin_project_launch()` (service-rollen).
   3. Stripe Checkout i betalingsmodus med `price_data` på produktet `STRIPE_PRODUCT_LAUNCH`, mva. lagt til (`tax_behavior: exclusive`) og faktura i Stripe.
   4. Betalingen registreres med `complete_project_launch()` både når kunden kommer tilbake fra Checkout og fra webhooken. Funksjonen tåler å bli kalt flere ganger, og beløpet uten mva. må stemme med raden. Lanseringen logges i revisjonsloggen.
-- **Etter avtale.** Prosjekter med mer enn 199 enheter, demo og support lanseres med `waive_project_launch()` (service-rollen), med eller uten grense. Det logges med notatet. Se [drift.md](drift.md).
+- **Etter avtale.** Prosjekter med mer enn 199 enheter, demo og support lanseres med `waive_project_launch()` (service-rollen), med eller uten grense. Plattformadmin gjør det i Plattformadmin → organisasjonen, gjennom `platform_launch_project()`, som krever et notat om avtalen (fase 7). Det logges med notatet. Se [drift.md](drift.md).
 - **Hvem ser hva.** Eier og administrator ser betalingene (`project_launches`, RLS). Alle med tilgang til prosjektet ser om det er lansert.

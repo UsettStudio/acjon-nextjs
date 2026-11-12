@@ -292,7 +292,11 @@
       "alreadyInvited": "{email} har redan en väntande inbjudan. Skicka den igen från listan.",
       "done": "Klar",
       "expiredBadge": "Utgången"
-    }
+    },
+    "seats": "{used} av {limit} platser i paketet {plan} används (användare och väntande inbjudningar).",
+    "seatsUnlimited": "{used, plural, one {# användare} other {# användare}} och väntande inbjudningar. Paketet {plan} har ingen gräns.",
+    "seatsUpgrade": "Byt paket för fler användare",
+    "seatsAskOwner": "Paketet är fullt. Ägaren kan byta paket."
   },
   "account": {
     "title": "Min profil",
@@ -318,8 +322,35 @@
     "trialEnds": "Provperioden slutar",
     "actions": "Åtgärder",
     "extendTrial": "Förläng 14 dagar",
-    "extendTrialFor": "Förläng provperioden för {organization} med 14 dagar",
-    "trialExtended": "Provperioden för {organization} varar nu till {date}."
+    "extendTrialFor": "Förläng 14 dagar: {organization}",
+    "trialExtended": "Provperioden för {organization} varar nu till {date}.",
+    "organization": {
+      "back": "← Alla organisationer",
+      "summary": "{plan} · {status} · {members, plural, one {# användare} other {# användare}} · skapad {created}",
+      "projectsTitle": "Projekt",
+      "noProjects": "Organisationen har inga projekt.",
+      "project": "Projekt",
+      "phase": "Fas",
+      "units": "Enheter",
+      "launch": "Lansering",
+      "actions": "Åtgärder",
+      "notLaunched": "Inte lanserat",
+      "launchedLimit": "Lanserat {date}, upp till {count} enheter",
+      "launchedUnlimited": "Lanserat {date}, ingen gräns",
+      "launchAction": "Lansera enligt avtal",
+      "launchActionFor": "Lansera enligt avtal: {project}",
+      "extendAction": "Utöka enligt avtal",
+      "extendActionFor": "Utöka enligt avtal: {project}",
+      "dialogTitle": "Lansering av {project} enligt avtal",
+      "dialogDescription": "Projektet lanseras utan startavgift i appen. Avgiften enligt avtalet faktureras separat i Stripe.",
+      "unitLimit": "Gräns för antalet enheter",
+      "unitLimitHelp": "Lämna fältet tomt för ingen gräns.",
+      "unitLimitHelpCurrent": "Avgiften täcker nu upp till {count} enheter. Gränsen kan bara höjas. Lämna fältet tomt för ingen gräns.",
+      "note": "Avtalet",
+      "noteHelp": "Visas i revisionsloggen. Till exempel: Avtal november 2026, 260 enheter, faktura skickad.",
+      "submit": "Lansera",
+      "launchDone": "{project} är lanserat enligt avtal."
+    }
   },
   "notFound": {
     "title": "Sidan hittades inte",
@@ -425,7 +456,8 @@
       "emptyTitle": "Inga projekt ännu",
       "emptyBody": "Skapa det första projektet. Guiden tar dig igenom adress, tidplan, kontaktpersoner och etapper.",
       "emptyBodyNoAccess": "Du är inte tilldelad några projekt ännu. Be en administratör om åtkomst.",
-      "unitCount": "{count, plural, =0 {Inga bostäder} one {# bostad} other {# bostäder}}"
+      "unitCount": "{count, plural, =0 {Inga bostäder} one {# bostad} other {# bostäder}}",
+      "notLaunched": "Inte lanserat"
     },
     "wizard": {
       "title": "Nytt projekt",
@@ -1996,6 +2028,12 @@
         "reload": "Ladda om",
         "hint": "Klicka på ett block för att redigera det.",
         "frameTitle": "Förhandsvisning av sidan"
+      },
+      "history": {
+        "undo": "Ångra",
+        "redo": "Gör om",
+        "undoShortcut": "Ångra (Ctrl+Z eller ⌘Z)",
+        "redoShortcut": "Gör om (Ctrl+Shift+Z eller ⌘⇧Z)"
       }
     }
   },

@@ -14,6 +14,7 @@ Hver fase avsluttes med grønne tester, typekontroll og lint, og en kort oppsumm
 | 4 Drift | Ferdig, se oppsummeringen under fase 4 |
 | 5 Kvalitet | Ferdig, se oppsummeringen under fase 5 |
 | 6 Pakker og oppstartsavgift | Ferdig, se oppsummeringen under fase 6 |
+| 7 Oppfølging | Ferdig, se oppsummeringen under fase 7 |
 
 ## Leveranse 1: datamodell og RLS (godkjent)
 
@@ -792,7 +793,7 @@ Propti hadde 12.11.: tre månedspakker (Prosjektside 990, Pro 2 490 og Partner 4
 
 - **Ikke testet mot ekte Stripe.** Flyten er testet med etterligningen. Når kontoen finnes, bør hele flyten gås gjennom i testmodus (se kontoer.md).
 - **Partner** sine tjenester (oppsett, opplæring og prioritert support) leveres utenfor appen. Proptis Pro og Partner har også tilvalg, BankID-signering, salgsprospekt, meldinger til kjøpere og 360°-visning. Ingen av delene finnes i excip.
-- **Lansering etter avtale** gjøres med SQL (drift.md). Det finnes ingen knapp for det i plattformadmin.
+- **Lansering etter avtale** gjøres med SQL (drift.md). Det finnes ingen knapp for det i plattformadmin. (Rettet i fase 7.)
 - **Avgift ved flere enheter enn betalt** sperrer nye enheter til forskjellen er betalt. Skjulte enheter teller med. Bare enheter som slettes, frigjør plass.
 
 **Valg i fase 6:**
@@ -804,6 +805,45 @@ Propti hadde 12.11.: tre månedspakker (Prosjektside 990, Pro 2 490 og Partner 4
 - **Betalingen registreres to steder** (retur fra Checkout og webhook), så prosjektet er lansert med en gang kunden kommer tilbake.
 - **Innbygging sperres bare på andre nettsteder.** Lenken til den publiserte velgeren og prosjektsiden virker i alle pakkene.
 - **Interne navn er beholdt:** pakkenavnet i `package.json`, `project_id` i Supabase, prefikset `bpk_` på API-nøkler og web-komponenten `<boligvelger-embed>`. De vises ikke for kunder (nøkkelprefikset vises, men gamle nøkler ville sluttet å virke). De kan endres når navnet er bestemt.
+
+## Fase 7: Oppfølging
+
+Alt i spesifikasjonen er bygget. Fase 7 tar det som sto igjen og ikke trenger kontoene: support for lansering etter avtale, synlige grenser i pakkene, og angre og gjør om i blokkeditoren.
+
+### Oppsummering av fase 7
+
+**Bygget:**
+
+- **Plattformadmin → organisasjon:** pakke, status, brukere og prosjektene med enheter og lansering. «Lanser etter avtale» lanserer et prosjekt uten oppstartsavgift, med eller uten grense for enheter, og krever et notat om avtalen. Et prosjekt med grense kan utvides. Databasefunksjonen `platform_launch_project()` sjekker at brukeren er plattformadmin, og revisjonsloggen viser plattformadmin som aktør. SQL-steget i drift.md trengs ikke lenger.
+- **Brukere** viser plassene i pakken («4 av 10 plasser i pakken Pro er i bruk»), med samme telling som databasen. Når pakken er full, er invitasjon sperret, og eieren får lenke til Abonnement.
+- **Prosjektlisten** merker prosjekter som ikke er lansert.
+- **Angre og gjør om i blokkeditoren:** knapper ved lagringsstatusen og Ctrl/Cmd+Z og Ctrl/Cmd+Shift+Z (eller Ctrl+Y).
+  - Egen historikk per side, inntil 100 steg.
+  - Skriving i en blokk innen ett sekund er ett steg.
+  - En gjenopprettet versjon kan også angres.
+  - Snarveiene virker i blokkene, og ikke i feltene for meny, tema og innstillinger, der nettleseren angrer selv.
+  - Historikken (`src/lib/history.ts`) deles med boligvelgeren.
+- **Rettet:** knappene for prøveperioden i plattformadmin hadde et navn som ikke inneholdt den synlige teksten (WCAG 2.5.3).
+- **Tester:**
+
+  | Type | Antall | Nytt i fase 7 |
+  |---|---|---|
+  | pgTAP | 562 | 9 nye: bare plattformadmin kan lansere etter avtale, notatet er påkrevd, grensen og loggen |
+  | Vitest | 332 | 5 nye: historikken i blokkeditoren (steg, sammenslåing av skriving, per side, grense) |
+  | Playwright | 25 | Ny: plassene på Brukere, merket i prosjektlisten, angre og gjør om (knapper, tastatur og i et felt), lansering etter avtale i plattformadmin, og axe på de nye sidene |
+
+**Gjenstår:**
+
+- **Domenet** og **kontoene** (se åpne spørsmål og [kontoer.md](kontoer.md)). Flyten mot ekte Stripe testes når kontoene finnes.
+- **Content-Security-Policy med nonce** er fortsatt ikke lagt til. Sidene i admin har et statisk skall fra Cache Components, og det kan ikke ha en nonce per forespørsel. Admin må da rendres helt dynamisk, og det gjør sidene tregere å åpne. Det bør veies når produksjonen er satt opp.
+- **Utsatt fra før:** egne felt i CSV-import og -eksport, og språk per bruker i admin. Begge ble valgt bort i fase 5.
+- **Proptis funksjoner i Pro og Partner** (tilvalg, BankID-signering, salgsprospekt, meldinger til kjøpere, 360°-visning) står under «Ikke med nå» i spesifikasjonen og er ikke bygget.
+
+**Valg i fase 7:**
+
+- **Lansering etter avtale i plattformadmin** gjennom en egen databasefunksjon for plattformadmin, i stedet for service-nøkkelen. Det følger samme mønster som forlengelse av prøveperioden, og loggen viser hvem som gjorde det.
+- **Én tilstand for sidene og historikken** i blokkeditoren, oppdatert med rene funksjoner. Da passer historikken alltid til sidene, også i Reacts strenge modus.
+- **Ctrl/Cmd+Z i et felt i en blokk** angrer i editoren, ikke bare teksten i feltet. Feltene styres av editoren, så nettleserens egen angring virker dårlig der.
 
 ## Valg som er godkjent
 
