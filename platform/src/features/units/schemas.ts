@@ -139,7 +139,7 @@ export const statusChangeSchema = z.object({
     .trim()
     .max(1000, { error: "textTooLong" })
     .transform((value) => value || null),
-  source: z.enum(["table", "form"]),
+  source: z.enum(["table", "form", "selector"]),
 });
 
 export const priceAdjustmentSchema = z.object({

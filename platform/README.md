@@ -13,8 +13,9 @@ Produktnavn og plattformdomene er ikke bestemt ennå. «Boligplattform» er et a
 |---|---|
 | 0 Grunnmur | Ferdig |
 | 1 Prosjekter og enheter | Ferdig |
-| 2 Boligvelger | Neste |
-| 3–5 | Ikke påbegynt |
+| 2 Boligvelger | Ferdig |
+| 3 Prosjektside | Neste |
+| 4–5 | Ikke påbegynt |
 
 Fase 0 omfatter Next.js-appen, databasen med RLS, pålogging, organisasjoner, invitasjoner, brukeradministrasjon, plattformadmin, tester og CI.
 
@@ -25,6 +26,22 @@ Fase 1 omfatter:
 - Enhetsskjema med faner.
 - Mediebibliotek med bildevarianter.
 - Import fra CSV og Excel, og eksport til CSV.
+
+Fase 2 omfatter:
+
+- Editor for boligvelgeren:
+  - Tegn: polygon og rektangel, punkter, angre og gjør om, zoom og autolagring.
+  - Koble: enheter, visninger, prosjekter og lenker.
+  - Status: statusendring med notat og flervalg.
+- Visningstre med vinkler, bytte av bilde, publisering og forhåndsvisning.
+- Publisert boligvelger (`/embed/selector/{id}`):
+  - Verktøytips og enhetskort.
+  - Filtre i adressen og sorterbar liste.
+  - Favoritter og sammenligning.
+  - Mobilvisning med bunnark og knipezoom.
+  - Status i sanntid.
+- Enhetsside (`/embed/selector/{id}/bolig/{slug}`).
+- Statusfarger per organisasjon og prosjekt.
 
 ## Kom i gang lokalt
 
@@ -63,7 +80,7 @@ insert into public.platform_admins (user_id) select id from auth.users where ema
 | `npm run test:e2e` | Ende-til-ende-tester (Playwright). Krever `npm run build` og lokal Supabase. |
 | `npm run db:start` | Starter lokal Supabase |
 | `npm run db:reset` | Bygger databasen på nytt fra migrasjonene |
-| `npm run db:test` | Databasetester (pgTAP): RLS, isolasjon, roller, statuslogg, publisering og import |
+| `npm run db:test` | Databasetester (pgTAP): RLS, isolasjon, roller, statuslogg, publisering, import og boligvelger |
 | `npm run db:lint` | Statisk sjekk av alle databasefunksjoner |
 | `npm run db:types` | Genererer TypeScript-typer fra databasen |
 
@@ -87,13 +104,13 @@ Kontoene er ikke opprettet ennå. Slik skal de settes opp:
 
 | Mappe | Innhold |
 |---|---|
-| `src/app/` | Sider og ruter: `(auth)` for innlogging og invitasjon, `(app)/[org]` for admin per organisasjon, `(app)/(user)` for profil, ny organisasjon og plattformadmin |
+| `src/app/` | Sider og ruter: `(auth)` for innlogging og invitasjon, `(app)/[org]` for admin per organisasjon, `(app)/(user)` for profil, ny organisasjon og plattformadmin, `embed/` for publisert boligvelger og enhetsside |
 | `src/features/` | Domenemoduler med Zod-skjema, serverhandlinger, spørringer og komponenter |
 | `src/lib/` | Supabase-klienter, datatilgangslag (DAL), roller, tallformat, e-post og sikkerhet |
 | `src/components/` | shadcn/ui og felles admin-komponenter |
 | `messages/` | All tekst på bokmål, engelsk og svensk |
 | `supabase/migrations/` | Datamodell, RLS, funksjoner, lagring, sanntid og jobber |
-| `supabase/tests/` | pgTAP-tester (274 tester) |
+| `supabase/tests/` | pgTAP-tester (307 tester) |
 | `supabase/templates/` | Norske e-postmaler for Supabase Auth |
-| `e2e/` | Playwright-tester, med en Excel-fil for importtesten i `e2e/fixtures/` |
+| `e2e/` | Playwright-tester, med en Excel-fil for importtesten i `e2e/fixtures/`. Fasadebildet til boligvelgertestene lages med sharp. |
 | `scripts/` | Kopierer filer fra `node_modules` som nettleseren må hente direkte |

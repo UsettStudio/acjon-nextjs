@@ -6,7 +6,8 @@ import { updateSession } from "@/lib/supabase/proxy";
 
 /** Sider som kan vises uten innlogging. */
 const PUBLIC_EXACT = new Set(["/login", "/signup", "/forgot-password"]);
-const PUBLIC_PREFIXES = ["/auth/", "/invite/"];
+// /embed/: publisert boligvelger og enhetssider. Forhåndsvisningen der sjekker innlogging selv.
+const PUBLIC_PREFIXES = ["/auth/", "/invite/", "/embed/"];
 /** Innloggingssider en innlogget bruker ikke trenger å se. */
 const GUEST_ONLY = new Set(["/login", "/signup", "/forgot-password"]);
 

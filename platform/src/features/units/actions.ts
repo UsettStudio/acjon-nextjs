@@ -123,7 +123,7 @@ export async function changeUnitStatus(input: {
   unitIds: string[];
   status: string;
   note: string;
-  source: "table" | "form";
+  source: "table" | "form" | "selector";
 }): Promise<ActionResult<{ changed: number }>> {
   return runAction(async () => {
     await requireOrgCapability(requireId(input.organizationId), "units.sales");

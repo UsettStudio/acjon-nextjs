@@ -38,6 +38,7 @@ async function ProjectHeader({ params }: { params: LayoutProps<"/[org]/projects/
           {t("tabs.overview")}
         </NavLink>
         <NavLink href={`${base}/units`}>{t("tabs.units")}</NavLink>
+        <NavLink href={`${base}/selectors`}>{t("tabs.selectors")}</NavLink>
         {can(context.role, "content.edit") ? <NavLink href={`${base}/settings`}>{t("tabs.settings")}</NavLink> : null}
       </nav>
     </div>

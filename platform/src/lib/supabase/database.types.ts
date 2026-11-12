@@ -651,7 +651,13 @@ isOneToOne: false
 "get_published_selector":
 { Args: { "p_selector_id": string }; Returns: Json
                            },
+"get_published_selector_project":
+{ Args: { "p_selector_id": string }; Returns: string
+                           },
 "get_selector_preview":
+{ Args: { "p_selector_id": string }; Returns: Json
+                           },
+"get_selector_publish_state":
 { Args: { "p_selector_id": string }; Returns: Json
                            },
 "import_units":
@@ -669,11 +675,20 @@ isOneToOne: false
 "record_login":
 { Args: Record<PropertyKey, never>; Returns: undefined
                            },
+"reorder_selector_views":
+{ Args: { "p_selector_id": string,"p_view_ids": (string)[] }; Returns: undefined
+                           },
 "resolve_site":
 { Args: { "p_hostname"?: string,"p_subdomain"?: string }; Returns: Json
                            },
+"save_view_hotspots":
+{ Args: { "p_hotspots": Json,"p_view_id": string }; Returns: number
+                           },
 "set_project_access":
 { Args: { "p_organization_id": string,"p_project_ids": (string)[],"p_user_id": string }; Returns: undefined
+                           },
+"set_project_display_settings":
+{ Args: { "p_project_id": string,"p_show_price_on_sold": boolean,"p_status_colors": Json }; Returns: undefined
                            },
 "set_unit_status":
 { Args: { "p_note"?: string,"p_source"?: string,"p_status": Database["public"]['Enums']["unit_status"],"p_unit_ids": (string)[] }; Returns: number

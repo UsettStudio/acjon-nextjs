@@ -48,7 +48,7 @@ import {
   type AssignChange,
   type PriceChange,
 } from "@/features/units/components/table/dialogs";
-import { useUnitsRealtime, type RealtimeState } from "@/features/units/components/table/use-units-realtime";
+import { useUnitsRealtime, type RealtimeState } from "@/features/units/use-units-realtime";
 import { STATUS_STYLES } from "@/features/units/components/unit-status-badge";
 import { UNIT_STATUSES, type UnitStatus } from "@/features/units/fields";
 import type { UnitListItem } from "@/features/units/queries";

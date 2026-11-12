@@ -9,8 +9,9 @@ Hver fase avsluttes med grønne tester, typekontroll og lint, og en kort oppsumm
 | Datamodell og RLS | Godkjent |
 | 0 Grunnmur | Ferdig, se oppsummeringen under fase 0 |
 | 1 Prosjekter og enheter | Ferdig, se oppsummeringen under fase 1 |
-| 2 Boligvelger | Neste |
-| 3–5 | Ikke påbegynt |
+| 2 Boligvelger | Ferdig, se oppsummeringen under fase 2 |
+| 3 Prosjektside | Neste |
+| 4–5 | Ikke påbegynt |
 
 ## Leveranse 1: datamodell og RLS (godkjent)
 
@@ -232,6 +233,107 @@ Hver fase avsluttes med grønne tester, typekontroll og lint, og en kort oppsumm
 - **Tester:**
   - Enhetstester for koordinatomregning og filterlogikk.
   - E2E: akseptkriterium 2 og 3 (360, 768 og 1920 px).
+
+### Oppsummering av fase 2
+
+**Bygget:**
+
+- **Editor** (`/{org}/projects/{prosjekt}/selectors/{id}`), med modusene Tegn, Koble og Status. Meglere får bare Status.
+  - **Tegn:**
+    - Polygon: klikk punkter. Formen lukkes ved klikk på første punkt, dobbeltklikk eller Enter. Escape avbryter, og Backspace fjerner siste punkt.
+    - Rektangel: dra.
+    - Flytting av én eller flere former. Punkter dras, og klikk på en kant gir nytt punkt. Dobbeltklikk eller Alt-klikk fjerner et punkt.
+    - Delete, Ctrl/Cmd+D, Ctrl/Cmd+A og piltaster (1 px, med Shift 10 px).
+    - Angre og gjør om, 100 steg per visning.
+    - Zoom med hjul og knip. Panorering med mellomrom, midtknapp, håndverktøy eller to fingre. Knapp for «tilpass til vinduet».
+    - Autolagring 0,7 s etter siste endring. Status vises øverst: «Alle endringer er lagret», «Lagrer …», eller feil med «Prøv igjen». Varsel før siden lukkes med endringer som ikke er lagret.
+  - **Koble:**
+    - Søkbart panel gruppert på byggetrinn og etasje.
+    - Teller («2 av 6 enheter markert»). Umarkerte enheter er flagget, og listen kan vise bare dem.
+    - Kobling ved å klikke form og så enhet, eller ved å dra enheten til formen.
+    - Mål: enhet, visning, prosjekt eller lenke, med valgfri etikett.
+    - Varsel og rød stiplet kant når samme enhet er koblet to ganger i én visning.
+  - **Status:**
+    - Statusfarger, med skravur på solgte.
+    - Klikk åpner en meny med de fire statusene og et valgfritt notat.
+    - Flervalg med Shift-klikk eller dra-ramme.
+    - Sanntidsindikator og tegnforklaring med antall per status.
+    - Endringene logges med kilde «boligvelgeren».
+  - **Visningstre:**
+    - Dra og slipp blant søsken, også med tastatur.
+    - Vinkelgrupper og startvisning.
+    - Innstillinger: navn, type, forelder og vinkelgruppe.
+    - Bytte av bilde, med varsel når sideforholdet er et annet.
+    - Sletting.
+  - **Publisering:**
+    - Merket «Upubliserte endringer».
+    - Forhåndsvisning av utkastet på desktop og mobil (iframe).
+    - Kopier lenke og avpubliser.
+    - Innstillinger for filtre, liste og skravur.
+- **Publisert velger** (`/embed/selector/{id}`):
+  - **Bilde og markeringer:**
+    - Bildet har et SVG-lag og hentes som WebP i riktig størrelse (srcset).
+    - Markeringene er lenker, så de virker med mus, berøring og tastatur (Tab og Enter) og har tekst for skjermlesere.
+  - **Verktøytips** viser enhet, rom, BRA-i, pris og status. Markeringer som lenker til en visning, viser antall ledige boliger.
+  - **Enhetskort:**
+    - Plantegning, nøkkelinfo og totalpris.
+    - Knappene «Se bolig», favoritt, sammenlign og «Vis i bildet».
+    - Vises som bunnark på mobil.
+  - **Filtre og liste:**
+    - Filtre på status, rom, pris, areal og etasje, og på favoritter. Filteret ligger i adressen og kan deles.
+    - Sorterbar liste: Enhet, Etasje, Rom, BRA-i, Pris og Status. Peker over listen markerer formen, og omvendt.
+    - Favoritter lagres i nettleseren (localStorage). Inntil tre boliger kan sammenlignes.
+  - **Navigasjon:**
+    - Brødsmuler, tilbakeknapp og bytte mellom vinkler.
+    - Nettleserens tilbakeknapp går til forrige visning.
+  - **Mobil:** listen kommer først, og bildet ligger i egen fane med knipezoom, dobbelttrykk og zoomknapper.
+  - **Solgte boliger** viser «Solgt». Prisen skjules når prosjektet er satt opp slik, også når status endres i sanntid.
+  - **Sanntid** kommer via den offentlige kanalen, med én oppfriskning etter tilkobling.
+- **Enhetsside** (`/embed/selector/{id}/bolig/{slug}`):
+  - Galleri, plantegninger og nøkkelinfo.
+  - Prisoppstilling: pris, omkostninger, totalpris, fellesgjeld og felleskostnader.
+  - Beskrivelse, dokumenter og megler.
+  - Status i sanntid.
+- **Statusfarger:**
+  - Per organisasjon (organisasjonsinnstillinger) og per prosjekt (prosjektinnstillinger).
+  - Tomme felt arver.
+  - Valget «Vis pris på solgte enheter» ligger i prosjektinnstillingene.
+- **Database (migrasjon 0010):**
+  - `save_view_hotspots` lagrer hele visningen i én transaksjon.
+  - `reorder_selector_views`, `get_selector_publish_state` og `get_published_selector_project`.
+  - `set_project_display_settings` endrer bare sine to nøkler i `projects.settings`.
+- **Tester:**
+
+  | Type | Antall | Nytt i fase 2 |
+  |---|---|---|
+  | pgTAP | 307 | 33 nye: lagring av markeringer (beholdt id, sletting, ugyldige former og lenker, markering fra en annen visning, mål i et annet prosjekt eller en annen velger), roller og lesemodus, rekkefølge, publiseringsstatus, oppslag uten innlogging, statusfarger og pris på solgte |
+  | Vitest | 161 | 38 nye: koordinater og skalering (360, 768 og 1920 px), former, punkter og flytting, zoom, angre med minst 50 steg, filter i adressen, filterlogikk, visningstreet, statusfarger og tolking av publiserte data |
+  | Playwright | 10 | 2 nye: akseptkriterium 2 (Status-modus til publisert velger, liste og enhetsside innen fem sekunder, uten ny publisering, med bruker og tidspunkt i loggen) og akseptkriterium 3 (markeringene ligger riktig på 360, 768 og 1920 px). Begge bygger velgeren i editoren: opplasting, polygon, rektangel, angre, kobling og publisering. |
+
+**Gjenstår (ikke del av fase 2):**
+
+- **«Meld interesse»** i enhetskortet og på enhetssiden kommer med interesseskjemaet og leads i fase 3. Knappen vises ikke før den virker.
+- **Enhetssiden på prosjektsidens egen adresse** (`/bolig/{slug}` på underdomene eller eget domene) kommer med prosjektsiden i fase 3. Den bruker de samme komponentene. I fase 2 ligger enhetssiden under velgeren.
+- **Innbyggingsskriptet** (web-komponent) og listen over domener som kan bygge inn, kommer i fase 4. `/embed/` kan allerede vises i en iframe.
+- **Lenker til andre prosjekter** virker først når prosjektet har en publisert prosjektside (fase 3).
+- **Egne felt på enheter** (`custom_fields`) flyttes til fase 3, sammen med Enhetsliste-blokken og enhetssiden på prosjektsiden. I fase 1 var de lovet til fase 2. Databasen sender allerede bare felt som er gjort offentlige.
+- **Språk på offentlige sider** er bokmål. Organisasjonens språk tas i bruk med prosjektsiden i fase 3.
+- **Mellomlager for publiserte sider:** data leses ferskt ved hver visning. Kort mellomlager med tagger vurderes i fase 5 (ytelse).
+
+**Valg i fase 2:**
+
+- **Autolagring sender hele visningen**, og databasen lagrer den i én transaksjon. Id-ene lages i nettleseren. Angre og gjør om kan derfor aldri gi en halvlagret visning, og rekkefølgen på lagringene spiller ingen rolle.
+- **Angre gjelder visningen som er åpen.** Et steg endrer aldri en visning du ikke ser.
+- **Koordinater lagres som andeler (0–1) med seks desimaler:**
+  - SVG-laget har viewBox i bildepiksler og `vector-effect: non-scaling-stroke`, så kantlinjen er 2 px på alle skjermer.
+  - Rammen har samme sideforhold som bildet, så markeringene treffer på alle bredder.
+- **En kopi får ingen kobling**, så samme enhet ikke kobles to ganger ved et uhell.
+- **Publiserte sider bruker en anonym klient med bare den publiserbare nøkkelen** og leser data ved hver visning. Sanntid tar endringene etterpå. Rett etter tilkobling hentes enhetene én gang, så en endring mellom sidevisning og tilkobling ikke går tapt.
+- **Pris i sanntid:** blir en enhet solgt og prisen skal skjules, fjernes prisen også i nettleseren med en gang. Blir enheten ledig igjen, hentes prisen fra databasen.
+- **Velger og enhetsside ligger under `/embed/selector/{id}` i fase 2**, så de kan vises i en iframe og testes nå.
+- **Mobil:** listen vises først, fordi små markeringer er vanskelige å treffe med fingeren. Bildet ligger i egen fane, og kortet er et bunnark.
+- **Startvisning:** den valgte visningen, ellers første visning øverst i treet.
+- **Hurtigtaster** virker ikke mens man skriver i et felt eller er i en dialog eller meny.
 
 ## Fase 3: Prosjektside
 

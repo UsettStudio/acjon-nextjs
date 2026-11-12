@@ -97,7 +97,8 @@ select set_eq(
        and has_function_privilege('anon', p.oid, 'execute') $$,
   array[
     'get_published_selector', 'get_public_units', 'get_public_unit',
-    'resolve_site', 'get_published_page', 'get_public_assets', 'get_invitation'
+    'resolve_site', 'get_published_page', 'get_public_assets', 'get_invitation',
+    'get_published_selector_project'
   ],
   'anon kan bare kjøre de offentlige lesefunksjonene og invitasjonsoppslaget'
 );

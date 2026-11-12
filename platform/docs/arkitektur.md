@@ -18,8 +18,8 @@ platform/
 ├── docs/                              ✔ arkitektur og plan
 ├── supabase/
 │   ├── config.toml                    ✔ lokal Supabase (CLI)
-│   ├── migrations/                    ✔ datamodell, RLS, funksjoner, lagring, sanntid, fase 0 og 1
-│   ├── tests/                         ✔ pgTAP: skjema, isolasjon, roller, status, publisering, fase 0 og 1
+│   ├── migrations/                    ✔ datamodell, RLS, funksjoner, lagring, sanntid, fase 0–2
+│   ├── tests/                         ✔ pgTAP: skjema, isolasjon, roller, status, publisering, fase 0–2
 │   └── templates/                     ✔ norske e-postmaler for Supabase Auth
 ├── package.json, tsconfig.json        ✔ TypeScript strict
 ├── next.config.ts                     ✔ Cache Components, sikkerhetshoder, next-intl, Sentry
@@ -29,7 +29,7 @@ platform/
 ├── vercel.json                        ✔ funksjoner i Stockholm (arn1)
 ├── .env.example                       ✔
 ├── messages/                          ✔ all tekst: nb.json (standard), en.json, sv.json
-├── e2e/                               ✔ Playwright (fase 0 og 1); flere akseptkriterier per fase
+├── e2e/                               ✔ Playwright (fase 0–2), akseptkriterium 2 og 3 i fase2.spec.ts
 ├── scripts/copy-vendor.mjs            ✔ kopierer MapLibre sin web-worker til public/vendor/ før dev og build
 ├── test/                              ✔ tester på tvers av moduler (oversettelser)
 ├── scripts/seed-demo.ts               Demo Bolig AS / Fjordparken (fase 5)
@@ -44,12 +44,12 @@ platform/
     │   │   └── [org]/                 ✔ admin per organisasjon: app.[PLATTFORMDOMENE]/{org}/…
     │   │       ├── page.tsx           ✔ Oversikt
     │   │       ├── settings/          ✔ organisasjon og brukere; merkevare, domener, abonnement, API senere
-    │   │       ├── projects/          ✔ liste, veiviser, oversikt, innstillinger, enheter, enhetsskjema, CSV-eksport
-│   │       │                          boligvelger og prosjektside (fase 2–3)
+    │   │       ├── projects/          ✔ liste, veiviser, oversikt, innstillinger, enheter, enhetsskjema, CSV-eksport,
+    │   │       │                      ✔ boligvelgere og editor (selectors/); prosjektside (fase 3)
     │   │       ├── leads/             (fase 3)
     │   │       └── media/             ✔ mediebibliotek
     │   ├── sites/[site]/              publiserte prosjektsider med egen rotlayout (fase 3)
-    │   ├── embed/selector/[id]/       iframe-reserve for innbygging (fase 4)
+    │   ├── embed/selector/[id]/       ✔ publisert boligvelger, preview/ (utkast for innloggede), bolig/[slug] (enhetsside)
     │   └── api/                       offentlig API, leads, Stripe, cron (fase 3–4). Bildebehandling skjer i serverhandlinger.
     ├── components/
     │   ├── ui/                        ✔ shadcn/ui
@@ -60,10 +60,12 @@ platform/
     │   ├── projects/                  ✔ veiviser, Kartverket, kart, fremdrift, kontakter, byggetrinn og bygg
     │   ├── units/                     ✔ felt og tolking, prisberegning, tabell, skjema, import/, eksport
     │   ├── media/                     ✔ opplasting, bildevarianter (sharp), bibliotek, filvelger
-    │   └── selector/  site-builder/  leads/  billing/  domains/
+    │   ├── selector/                  ✔ geometri, angre, filtre, visningstre, editor/, public/, serverhandlinger
+    │   └── site-builder/  leads/  billing/  domains/
     ├── i18n/                          ✔ språkoppsett for next-intl
     ├── lib/
-    │   ├── supabase/                  ✔ klient for server, proxy og nettleser (opplasting og sanntid), genererte typer
+    │   ├── supabase/                  ✔ klient for server, proxy og nettleser (opplasting og sanntid), anonym klient for
+    │   │                              publiserte sider (public.ts, public-browser.ts), genererte typer
     │   ├── hooks/                     ✔ valg som huskes i nettleseren (kolonner i tabellen)
     │   ├── auth/                      ✔ datatilgangslag (DAL) og roller som speiler SQL
     │   ├── actions/                   ✔ felles svarformat og kontroller for serverhandlinger
@@ -71,7 +73,7 @@ platform/
     │   ├── billing/                   ✔ prøveperiode og lesemodus
     │   ├── email/                     ✔ Resend og maler
     │   ├── navigation/, security/     ✔ trygge omdirigeringer, tokener
-    │   └── cache/                     cache-tagger og revalidering (fase 2–3)
+    │   └── cache/                     cache-tagger og revalidering (fase 3–5)
     └── embed/                         web-komponenten (fase 4)
 ```
 
@@ -165,6 +167,7 @@ Slik håndheves det:
 | Funksjon | Brukes til |
 |---|---|
 | `get_published_selector(selector_id)` | publisert boligvelger: visninger, markeringer, enheter med live status, statusfarger |
+| `get_published_selector_project(selector_id)` | prosjektet til en publisert velger (enhetssiden under velgeren) |
 | `get_public_units(project_id)` | Enhetsliste-blokken og API-et |
 | `get_public_unit(project_id, slug)` | enhetssiden `/bolig/{slug}` |
 | `resolve_site(hostname, subdomain)` | vertsnavn → publisert prosjektside, meny, tema, sider |
@@ -190,8 +193,8 @@ Testene i `005_publisering_og_offentlig_api.test.sql` kontrollerer dette.
 
 1. Status endres via `set_unit_status()` fra tabellen, enhetsskjemaet eller Status-modus, med valgfritt notat. Direkte oppdateringer logges også.
 2. En trigger skriver `unit_status_events` med bruker, tidspunkt, kilde og notat. Deretter legger den inn en linje i revisjonsloggen og en webhook-leveranse, og kringkaster `{unit_id, status}` på den offentlige Realtime-kanalen `project:{id}:units`.
-3. Publiserte velgere, enhetslister og enhetssider abonnerer på kanalen og oppdaterer fargene uten ny lasting. Målt lokalt tok det 35 ms fra endring i databasen til en anonym klient mottok meldingen.
-4. Serverhandlingen tømmer Next.js-mellomlageret for prosjektet (cache-tagger), slik at neste sidevisning også viser riktig status.
+3. Publiserte velgere, enhetslister og enhetssider abonnerer på kanalen og oppdaterer fargene uten ny lasting. Målt lokalt tok det 35 ms fra endring i databasen til en anonym klient mottok meldingen. Rett etter tilkobling (også ny tilkobling) hentes enhetene én gang med `get_public_units`, så en endring mellom sidevisning og tilkobling ikke går tapt. Blir en enhet solgt og prisen skal skjules, fjernes prisen også i nettleseren med en gang.
+4. Publiserte sider leser data ved hver visning med en anonym klient (`src/lib/supabase/public.ts`, bare den publiserbare nøkkelen), så neste sidevisning alltid viser riktig status. Mellomlager med cache-tagger vurderes i fase 5.
 5. Admin (Status-modus og enhetstabellen) lytter på `units` med Postgres Changes. Der gjelder RLS. Nettleseren gir sanntidsklienten brukerens innlogging før den abonnerer; ellers kobler den seg på som anonym, og RLS stopper alle hendelser. Enhetstabellen viser om sanntid er aktiv. I ende-til-ende-testen vises en statusendring i en annen fane innen fem sekunder (målt lokalt: under ett sekund).
 
 ## 9. Filer og bilder
