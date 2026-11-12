@@ -24,7 +24,6 @@ platform/
 ├── package.json, tsconfig.json        ✔ TypeScript strict
 ├── next.config.ts                     ✔ Cache Components, sikkerhetshoder, next-intl, Sentry
 ├── eslint.config.mjs, vitest.config.mts, playwright.config.ts   ✔
-├── instrumentation.ts, instrumentation-client.ts                ✔ Sentry (EU, uten personopplysninger)
 ├── components.json                    ✔ shadcn/ui
 ├── vercel.json                        ✔ funksjoner i Stockholm (arn1) og planlagte jobber (cron)
 ├── .env.example                       ✔
@@ -38,6 +37,7 @@ platform/
 └── src/
     ├── proxy.ts                       ✔ fornyer sesjonen, krever innlogging, husker organisasjon, sender
     │                                  underdomener og egne domener til sites/, og videre til primærdomenet
+    ├── instrumentation.ts, instrumentation-client.ts   ✔ Sentry (EU, uten personopplysninger)
     ├── app/
     │   ├── (auth)/                    ✔ login, signup, forgot-password, reset-password, invite/[token]
     │   ├── auth/confirm/              ✔ mål for lenker i e-post fra Supabase Auth
