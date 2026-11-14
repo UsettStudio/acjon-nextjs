@@ -1,3 +1,5 @@
+import { readdirSync } from "node:fs";
+
 import { expect, test } from "@playwright/test";
 
 import { signIn } from "./helpers";
@@ -32,6 +34,15 @@ test("prosjektsiden bruker stilen Nordisk, og stilen kan byttes til Klassisk", a
   const map = visitor.getByRole("region", { name: "Nærområdet" });
   await expect(map.getByRole("listitem")).toHaveCount(6);
   await expect(map.getByRole("listitem").first()).toContainText("Strandtorget");
+  // Arbeidsfilen til kartet lastes fra prosjektsidens eget vertsnavn. Hentes i nettleseren,
+  // som slår opp *.localhost selv.
+  const worker = readdirSync("public/vendor").find((name) => name.startsWith("maplibre-gl-worker-"));
+  const workerResponse = await visitor.evaluate(async (path) => {
+    const response = await fetch(path);
+    return { status: response.status, type: response.headers.get("content-type") ?? "" };
+  }, `/vendor/${worker}`);
+  expect(workerResponse.status).toBe(200);
+  expect(workerResponse.type).toMatch(/javascript/);
 
   // Editoren: bytt til Klassisk. Forhåndsvisningen endres med en gang, og farger
   // som ikke er satt, kommer fra den nye stilen.

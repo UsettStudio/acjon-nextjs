@@ -880,6 +880,7 @@ Eieren ønsket prosjektsider i retning av konowsutsikt.no. Fase 8 lager en egen 
   - Tekst og bilde uten bilde viser bare teksten på den publiserte siden, ikke en tom flate.
   - Skillelinjene i spørsmål og svar og i nærområdet hadde standardfargen fra admin.
   - Den klassiske bunnteksten hadde gjennomsiktig tekst på hovedfargen. Med den grønne fargen kom kontrasten under 4,5:1. axe fant feilen.
+  - Kartet på prosjektsidene kunne ikke tegnes: arbeidsfilen til MapLibre (`public/vendor/`) ble skrevet om til `/sites/...` på prosjektsidenes vertsnavn og ga 404. Feilen fantes fra fase 3. Den ble ikke oppdaget fordi kartflisene fra Kartverket ikke lastes i utviklingsmiljøet. E2E-testen for fase 8 sjekker nå at filen lastes fra prosjektsiden.
 - **Tester:**
 
   | Type | Antall | Nytt i fase 8 |

@@ -93,8 +93,10 @@ export async function proxy(request: NextRequest) {
   return response;
 }
 
+// Statiske filer i public/ (vendor/ er arbeidsfilen til kartet) må nås fra alle vertsnavn,
+// også prosjektsidene. Ellers skrives de om til /sites/... og gir 404.
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon\\.ico|icon\\.svg|embed/v1\\.js|.*\\.(?:svg|png|jpg|jpeg|gif|webp|avif|ico)$).*)",
+    "/((?!_next/static|_next/image|vendor/|favicon\\.ico|icon\\.svg|embed/v1\\.js|.*\\.(?:svg|png|jpg|jpeg|gif|webp|avif|ico)$).*)",
   ],
 };
